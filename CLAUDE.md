@@ -45,6 +45,7 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 8. `bp_merge` and `np_merge` use their own taller grids; `az_merge` (Azure Sea Coast, np_merge's grid) must stay the LAST land change, right after np_merge/np_markers. Don't extend `gap_fill`'s grid (float rounding moves things elsewhere).
 9. Fonts are embedded from `src/fonts/` for the bake; screenshots without them show different label placement.
 10. Leaflet snaps to whole zoom levels (zoomSnap 1) to avoid tile seams.
+12. Tiles and data are served from `site/tiles/<stamp>/` and `site/data/<stamp>/` (stamp = hash of the build): a `?v=` query let old zoomed-in tiles show on Pages (Oct 12).
 11. Preview artifact limit is 16 MB (preview is ~14 MB): another reason the site now lives on Pages.
 
 ## Working rules (save credits)

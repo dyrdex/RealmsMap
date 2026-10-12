@@ -8,6 +8,7 @@
 - A cliff edge (dark band and hachures) all along the coast that faces the new sea.
 - The links of the five hidden rooms (14273, 14275, 14278, 14279, 14287) are small dashed lines (15); the shown rooms' links to the mainland are ordinary trails (6, two of them 42-43 rooms long, from 14271 and 14272 to the Peaks).
 - A Village of Edo marker at 7746, with your directions traced on its card (the line joins straight across 5965, which is not in the editor).
+- Fixed: zoomed in, the map could show old pictures from before the latest change (the new coast vanished on zooming in); each build's pictures now have their own address.
 
  and the areas that open off it · October 12, 2026
 - New layout editor for the Northern Plains (`tools/northern_plains_editor`, October 10): 474 Plains rooms and 134 spacer rooms, movable in 13 pieces (595, 2, 1, 1 and 9 rooms with no exits), starting where TinTin's exits put them, north of and over the top of the Barren Peaks; the 75 rooms of the Northern Trade Route past the long bridge are movable too and start where they are on the map; everything else on the map, including the Barren Peaks as arranged, is shown as fixed dots. The map itself is unchanged until the layout is merged.

@@ -133,17 +133,23 @@ def main():
     for f in ('leaflet.js', 'leaflet.css'):
         shutil.copy(os.path.join('vendor', 'leaflet-1.9.4', f), os.path.join(SITE, 'vendor', f))
     page = open('site_template.html', encoding='utf-8').read().replace('__VERSION__', open('VERSION').read().strip())
-    # a stamp of this build on the tile and data addresses, so browsers never show tiles or data saved from an older build
+    # a stamp of this build in the tile and data folder names (tiles/<stamp>/z/x/y.webp, data/<stamp>/...), so neither a browser nor the
+    # Pages CDN can show tiles or data saved from an older build (a ?v= query was not enough: Oct 12, zoomed-in tiles stayed old)
     stamp = hashlib.sha1(open(SRC, 'rb').read() + ''.join(files.values()).encode()).hexdigest()[:10]
-    for a, b in (("'tiles/{z}/{x}/{y}.webp'", "'tiles/{z}/{x}/{y}.webp?v=" + stamp + "'"), ("fetch('data/'+f)", "fetch('data/'+f+'?v=" + stamp + "')")):
+    os.rename(os.path.join(SITE, 'tiles'), os.path.join(SITE, '_tiles')); os.makedirs(os.path.join(SITE, 'tiles'))
+    os.rename(os.path.join(SITE, '_tiles'), os.path.join(SITE, 'tiles', stamp))
+    os.makedirs(os.path.join(SITE, 'data', stamp))
+    for f, s in files.items():
+        open(os.path.join(SITE, 'data', stamp, f), 'w', encoding='utf-8').write(s)
+    for a, b in (("'tiles/{z}/{x}/{y}.webp'", "'tiles/" + stamp + "/{z}/{x}/{y}.webp'"), ("fetch('data/'+f)", "fetch('data/" + stamp + "/'+f)")):
         assert page.count(a) == 1; page = page.replace(a, b)
     open(os.path.join(SITE, 'index.html'), 'w', encoding='utf-8').write(page)
     # single-file preview: same page with Leaflet, data and tiles inlined
     tiles = {}
     for z in range(ZMIN, ZMAX + 1):
-        for dx in sorted(os.listdir(os.path.join(SITE, 'tiles', str(z))), key=int):
-            for fy in sorted(os.listdir(os.path.join(SITE, 'tiles', str(z), dx)), key=lambda s: int(s[:-5])):
-                tiles[f'{z}/{dx}/{fy[:-5]}'] = base64.b64encode(open(os.path.join(SITE, 'tiles', str(z), dx, fy), 'rb').read()).decode()
+        for dx in sorted(os.listdir(os.path.join(SITE, 'tiles', stamp, str(z))), key=int):
+            for fy in sorted(os.listdir(os.path.join(SITE, 'tiles', stamp, str(z), dx)), key=lambda s: int(s[:-5])):
+                tiles[f'{z}/{dx}/{fy[:-5]}'] = base64.b64encode(open(os.path.join(SITE, 'tiles', stamp, str(z), dx, fy), 'rb').read()).decode()
     rd = lambda f: open(os.path.join(SITE, f), encoding='utf-8').read()
     safe = lambda s: s.replace('</', '<\\/')
     pv = page.replace('<link rel="stylesheet" href="vendor/leaflet.css">', '<style>' + rd('vendor/leaflet.css') + '</style>')
