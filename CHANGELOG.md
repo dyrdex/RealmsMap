@@ -15,6 +15,7 @@
 - The name "Azure Sea Coastal Path" on the water beside the route's long north-east stretch, north-east of the City of Iniquity (map only: no card or sidebar entry).
 - A small island (about 8.6 sq rooms) just north of the Village of Edo marker.
 - The sea continues south down the Ashen Forest's east coast (about 9 rooms out from the shore, 599 sq rooms), fading out round the south-east corner; it replaces the old pale shallows there, so the sea is one body and looks the same everywhere. The beach is unchanged.
+- The Azure Sea Coastal Path is now a dark navy line, darker than the sea (it was a bright blue that stood out too much).
 - Fixed: zoomed in, the map could show old pictures from before the latest change (the new coast vanished on zooming in); each build's pictures now have their own address.
 
  and the areas that open off it · October 12, 2026
