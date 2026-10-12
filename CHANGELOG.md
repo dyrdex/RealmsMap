@@ -1,5 +1,27 @@
 # Realm Map changelog
 
+## Version 12 · The Azure Sea Coast and the Village of Edo · October 12, 2026
+- New layout editor for the Azure Sea rooms that join the map (`tools/azure_sea_editor`, October 12): 49 rooms in the end (under the Barren Peaks cliffs, the shore walk to the Ashen beach, the coast north to the Plains, the path to the Village of Edo, and spacers 14314 and 22557).
+- The Azure Sea Coast is on the map (October 12), from the layout saved in the editor: a dark blue water route along the foot of the cliffs, from room 14265 north round the Plains to 7746.
+- At its south end, 14257 to 14265 is a small stream winding over the land, a little wider than a path; the land there is unchanged.
+- Open sea east of the mainland, from the coast out past the route (about 8 rooms beyond it), 3,320 sq rooms; only 14 sq of land cut back where the route lay on it (no new land).
+- A cliff edge (dark band and hachures) all along the coast that faces the new sea.
+- The links of the five hidden rooms (14273, 14275, 14278, 14279, 14287) are small dashed lines (15); the shown rooms' links to the mainland are ordinary trails (6, two of them 42-43 rooms long, from 14271 and 14272 to the Peaks).
+- A Village of Edo marker at 7746, with your directions traced on its card (the line joins straight across 5965, which is not in the editor).
+- The Azure Sea Coast's links to the mainland are now all small dashed lines (8, including those from the hidden rooms 14278 and 14279); no solid trails, and the hidden rooms' other links are no longer drawn.
+- Every destination whose directions go through the painting (13: the Plains areas, the Village of Edo, and Village of Tar'pa Cithm, Mountain of Lost Souls and Morgul Vale in the Peaks) now shows one unbroken route line from Alms for the Poor to the Northern Plains; the three Peaks routes are now traced across the Plains too, and lose their "areas that aren't drawn yet" note.
+- The sea now runs along the whole north coast of the Northern Plains, joining the north-west sea to the Azure Sea (452 sq rooms added).
+- The small bay just north of Ocean Keep is now part of the Azure Sea (35 sq rooms).
+- The name "Azure Sea Coastal Path" on the water beside the route's long north-east stretch, north-east of the City of Iniquity (map only: no card or sidebar entry).
+- A small island (about 8.6 sq rooms) just north of the Village of Edo marker.
+- The sea continues south down the Ashen Forest's east coast (about 9 rooms out from the shore, 599 sq rooms), fading out round the south-east corner; it replaces the old pale shallows there, so the sea is one body and looks the same everywhere. The beach is unchanged.
+- The Azure Sea Coastal Path is now a dark navy line, darker than the sea (it was a bright blue that stood out too much).
+- The stream at the south end of the Azure Sea Coastal Path (by Ocean Keep) is now the same dark navy as the rest of the path.
+- The "Azure Sea Coastal Path" name is a little bigger (size 1.25, was 1.0).
+- The Z'hyal marker and its sidebar entry are removed.
+- Legend: "Entrance to a place" is now "Area", the off-ramp entry is now "Trade Route Entrance/Exit", and "Guild", "Landmark" and "Town gate" are removed.
+- Fixed: zoomed in, the map could show old pictures from before the latest change (the new coast vanished on zooming in); each build's pictures now have their own address.
+
 ## Version 11 · The Northern Plains and the areas that open off it · October 12, 2026
 - New layout editor for the Northern Plains (`tools/northern_plains_editor`, October 10): 474 Plains rooms and 134 spacer rooms, movable in 13 pieces (595, 2, 1, 1 and 9 rooms with no exits), starting where TinTin's exits put them, north of and over the top of the Barren Peaks; the 75 rooms of the Northern Trade Route past the long bridge are movable too and start where they are on the map; everything else on the map, including the Barren Peaks as arranged, is shown as fixed dots. The map itself is unchanged until the layout is merged.
 - Spacer rooms 4216, 4219 and 4382 (between road rooms 4213 and 4214) can now be moved in the Northern Plains editor, with the road; 78 movable road rooms.

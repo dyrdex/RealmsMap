@@ -31,6 +31,7 @@ def add_np_subareas(w, np_layout, routes):
             for v, area in r['trail']:
                 p = at(v)
                 if p: cur.append([round(p[0], 3), round(p[1], 3)])
+                elif v in PORTAL: continue                  # the painting: the line runs straight on from Alms for the Poor to the Plains (owner, Oct 12)
                 elif cur:
                     segs.append(cur); cur = []
                     if v not in PORTAL: gaps += 1
