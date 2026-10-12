@@ -4,7 +4,7 @@ tiled site to ../site/ (index.html, tiles/, data/, vendor/) and the single-file 
 Called by build.py; run alone with: python3 site_build.py
 Zoom z: 2**z px per room, z1..z5 rendered; tile (z,x,y) pixel 0 = world bounds x0,y0.
 Needs: playwright (+ chromium), Pillow."""
-import base64, io, json, os, shutil, sys, time
+import hashlib, base64, io, json, os, shutil, sys, time
 from PIL import Image
 from playwright.sync_api import sync_playwright
 
@@ -133,6 +133,10 @@ def main():
     for f in ('leaflet.js', 'leaflet.css'):
         shutil.copy(os.path.join('vendor', 'leaflet-1.9.4', f), os.path.join(SITE, 'vendor', f))
     page = open('site_template.html', encoding='utf-8').read().replace('__VERSION__', open('VERSION').read().strip())
+    # a stamp of this build on the tile and data addresses, so browsers never show tiles or data saved from an older build
+    stamp = hashlib.sha1(open(SRC, 'rb').read() + ''.join(files.values()).encode()).hexdigest()[:10]
+    for a, b in (("'tiles/{z}/{x}/{y}.webp'", "'tiles/{z}/{x}/{y}.webp?v=" + stamp + "'"), ("fetch('data/'+f)", "fetch('data/'+f+'?v=" + stamp + "')")):
+        assert page.count(a) == 1; page = page.replace(a, b)
     open(os.path.join(SITE, 'index.html'), 'w', encoding='utf-8').write(page)
     # single-file preview: same page with Leaflet, data and tiles inlined
     tiles = {}
