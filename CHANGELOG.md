@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress (after version 11)
+## Version 12 · The Azure Sea Coast and the Village of Edo · October 12, 2026
 - New layout editor for the Azure Sea rooms that join the map (`tools/azure_sea_editor`, October 12): 49 rooms in the end (under the Barren Peaks cliffs, the shore walk to the Ashen beach, the coast north to the Plains, the path to the Village of Edo, and spacers 14314 and 22557).
 - The Azure Sea Coast is on the map (October 12), from the layout saved in the editor: a dark blue water route along the foot of the cliffs, from room 14265 north round the Plains to 7746.
 - At its south end, 14257 to 14265 is a small stream winding over the land, a little wider than a path; the land there is unchanged.
@@ -22,7 +22,7 @@
 - Legend: "Entrance to a place" is now "Area", the off-ramp entry is now "Trade Route Entrance/Exit", and "Guild", "Landmark" and "Town gate" are removed.
 - Fixed: zoomed in, the map could show old pictures from before the latest change (the new coast vanished on zooming in); each build's pictures now have their own address.
 
- and the areas that open off it · October 12, 2026
+## Version 11 · The Northern Plains and the areas that open off it · October 12, 2026
 - New layout editor for the Northern Plains (`tools/northern_plains_editor`, October 10): 474 Plains rooms and 134 spacer rooms, movable in 13 pieces (595, 2, 1, 1 and 9 rooms with no exits), starting where TinTin's exits put them, north of and over the top of the Barren Peaks; the 75 rooms of the Northern Trade Route past the long bridge are movable too and start where they are on the map; everything else on the map, including the Barren Peaks as arranged, is shown as fixed dots. The map itself is unchanged until the layout is merged.
 - Spacer rooms 4216, 4219 and 4382 (between road rooms 4213 and 4214) can now be moved in the Northern Plains editor, with the road; 78 movable road rooms.
 - In the Northern Plains editor, the Northern Trade Route inside the Barren Peaks (4136–4155) is fixed again; only its 58 rooms in the Plains (from 4156) move, drawn on top of the Plains rooms so they can be grabbed. Spacer rooms 4216, 4219 and 4382 can now actually be picked up one at a time (bigger grab area; 4219 was under a Plains room).
