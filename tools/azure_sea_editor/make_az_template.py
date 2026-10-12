@@ -37,8 +37,9 @@ rep("'nplayout/current'", "'azlayout/current'", 2)
 rep("'nplayout/b'", "'azlayout/b'")
 rep("const FORMAT='np-layout-1';", "const FORMAT='az-layout-1';")
 rep("filename:'northern_plains_layout.json'", "filename:'azure_sea_layout.json'")
-rep("return {format:FORMAT,v:4,savedAt:", "return {format:FORMAT,v:1,savedAt:")
-rep("(o.locked||[]).forEach(id=>{if(pos.has(id)&&((o.v||0)>=4||!(D.unlocked||[]).includes(id)))locked.add(id)});", "(o.locked||[]).forEach(id=>{if(pos.has(id))locked.add(id)});")
+# saves are v:2 since 14314, 22557 were unlocked (Oct 12): an older save (or autosave) listed them as locked fixed rooms, so it doesn't re-lock D.unlocked
+rep("return {format:FORMAT,v:4,savedAt:", "return {format:FORMAT,v:2,savedAt:")
+rep("(o.locked||[]).forEach(id=>{if(pos.has(id)&&((o.v||0)>=4||!(D.unlocked||[]).includes(id)))locked.add(id)});", "(o.locked||[]).forEach(id=>{if(pos.has(id)&&((o.v||0)>=2||!(D.unlocked||[]).includes(id)))locked.add(id)});")
 assert 'nplayout' not in t and "area==='NP'" not in t
 open(out, 'w', encoding='utf-8').write(t)
 print('ok')

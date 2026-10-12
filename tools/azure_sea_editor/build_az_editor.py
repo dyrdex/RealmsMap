@@ -140,7 +140,7 @@ ctx = dict(land=[rd(p) for p in w['geo']['land']], water=[rd(p) for p in w['geo'
            tracks=[rd(t) for t in trk if len(t) > 1], mazes=[dict(poly=rd(m['poly'])) for m in w['fwmazes']], town=[-7.4, -9.4, 7.4, 9.4],
            labels=[[0, 0.4, 'Darkhaven', 2.4], [3, -14.2, 'Shadow Grove', 1.5], [1, -47.3, 'Forgotten Woods', 2.4], [-0.03, -120.14, 'Barren Peaks', 2.4],
                    [-26.5, -164.0, 'Northern Plains', 2.4], [40.25, -24.0, 'Ashen Forest', 2.0]])
-D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=[])
+D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=UNLOCK)
 t = open(os.path.join(here, 'az_editor_template.html'), encoding='utf-8').read()
 open(out, 'w', encoding='utf-8').write(t.replace('__DATA__', json.dumps(D, separators=(',', ':'))))
 json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed', 'src', 'area', 'grp', 'piece') if k in r} for r in R], edges=EDG),

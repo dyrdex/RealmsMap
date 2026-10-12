@@ -410,12 +410,12 @@ $('q').addEventListener('input',e=>{const s=e.target.value.trim().toLowerCase();
 /* ---------- saving and loading ---------- */
 const FORMAT='az-layout-1';
 function layoutObject(){const ids=[],xsv=[],ysv=[];for(const [id,p] of pos){ids.push(id);xsv.push(+p[0].toFixed(2));ysv.push(+p[1].toFixed(2))}
-  return {format:FORMAT,v:1,savedAt:new Date().toISOString(),moved:movedCount(),ids,xs:xsv,ys:ysv,locked:[...locked],hidden:[...hidden]}}
+  return {format:FORMAT,v:2,savedAt:new Date().toISOString(),moved:movedCount(),ids,xs:xsv,ys:ysv,locked:[...locked],hidden:[...hidden]}}
 function loadLayout(o,note){
   if(!o||o.format!==FORMAT||!o.ids||!o.xs||!o.ys)throw new Error('That is not a layout from this editor.');
   const list=[];for(let i=0;i<o.ids.length;i++){const id=o.ids[i];if(pos.has(id)&&!byId.get(id).fixed)list.push([id,[o.xs[i],o.ys[i]]])}
   const ch=list.map(([id,p])=>[id,pos.get(id).slice(),p]);applyPositions(list);
-  (o.locked||[]).forEach(id=>{if(pos.has(id))locked.add(id)});refreshLocks();
+  (o.locked||[]).forEach(id=>{if(pos.has(id)&&((o.v||0)>=2||!(D.unlocked||[]).includes(id)))locked.add(id)});refreshLocks();
   if(o.hidden){hidden.clear();o.hidden.forEach(id=>{if(pos.has(id))hidden.add(id)});refreshHidden()}
   commit(ch);afterChange();
   if(note)toast(note)}
