@@ -1,0 +1,116 @@
+# Realm Map changelog
+
+## Version 10 · The Barren Peaks of Tahjliera and the areas that open off it · October 10, 2026
+- The Barren Peaks are on the map (October 10), from the layout saved in the editor: new land to the north of the Forgotten Woods covered in mountains, the Peaks' own paths as dirt trails, and the Northern Trade Route carried on past the long bridge as the same formal road. Rooms hidden in the editor, up/down exits and spacer rooms that lead nowhere are left off. The bridge sits where it was placed in the editor. Published in the working map and the tiled preview.
+- Later on October 10: two maze outlines (Valley of Mists Maze; Where Power & Sorcery Collide Maze); the climb between Ancient Ladders and The Treacherous Climb drawn as a trail; the Peaks repainted as brown dirt with clusters of boulders instead of mountain icons; markers for the 14 areas that open off the Peaks; and the sea brought right up to the coastal paths on the west (from 7061 north to 7078) and east (from 6925 north to 7286), with a strip of beach.
+- Later still on October 10: the coasts turned the right way round (sea only along the two coastal paths; elsewhere the land carries on off the map); Asgard Nexus renamed Z'hyal; both mazes drawn as dark grey mist; Drow City, Reign of Madness, The Slime Pit and The Crimson Caverns markers moved (Crimson Caverns now has directions); World Housing removed; a Tower of Enlightenment marker in the Forgotten Woods; the trail from 7125 to the spacer room by the Slime Pit; and two map-only names, The Lost City of Tahjliera and The Keep of the Huitz.
+- Then: the coastline changes undone (the Barren Peaks keep their own natural edge again, with no sea cut into them and no land beyond them), and the two mazes redrawn as maze blobs like the Forgotten Woods' ones, but dark and ominous.
+- The two dark mazes now sit over the paths and hide them; their names, and Z'hyal's marker, show on top.
+- Small drawings added: a keep beside Barrik's Keep, a palisade village of sharpened poles under the Village of Tar'pa Cithm, stone cities above Drow City and Revelation City (whose name now sits to the left of its marker), and a crumbling stone building below The Slime Pit.
+- Ofcol is now called New Ofcol (the Forgotten Woods' New Ofcol marker keeps its name too).
+- The Forgotten Woods' New Ofcol marker removed; the Sorcery maze's name moved below it; the Tar'pa Cithm village drawing moved beside the village (clear of its name), Revelation City's drawing moved above its name, the Slime Pit's ruin moved; room 7213 moved north with its path.
+- The Slime Pit's ruin moved clear of its marker; Revelation City's drawing brought down closer to its name; Mountain of Lost Souls' name moved to the west of its marker; a big dark mountain drawn beside it; paths joined between 6652 and 18145 and through 5570, 5571 and 5772; and the area name "Barren Peaks of Tahjliera" added, in the same style as the Ashen Forest's.
+- New layout editor for the Barren Peaks of Tahjliera (`tools/barren_peaks_editor`): 528 Peaks rooms, the 72 rooms of the Northern Trade Route past the long bridge and 38 spacer rooms, movable in 7 pieces (581, 44, 9 and 4 single rooms), with up/down levels marked; every room already on the map, including the Northern Trade Route up to the bridge, shown as a fixed dot. The map itself is unchanged until the layout is merged.
+- The three rooms of the long bridge (4133–4135) can now be moved in the Barren Peaks editor.
+- Room 7058 (The Barrier) and its exits are left out of the Barren Peaks, so it will not be on the map.
+
+## After version 10 · The Northern Plains (in progress)
+- New layout editor for the Northern Plains (`tools/northern_plains_editor`, October 10): 474 Plains rooms and 134 spacer rooms, movable in 13 pieces (595, 2, 1, 1 and 9 rooms with no exits), starting where TinTin's exits put them, north of and over the top of the Barren Peaks; the 75 rooms of the Northern Trade Route past the long bridge are movable too and start where they are on the map; everything else on the map, including the Barren Peaks as arranged, is shown as fixed dots. The map itself is unchanged until the layout is merged.
+- Spacer rooms 4216, 4219 and 4382 (between road rooms 4213 and 4214) can now be moved in the Northern Plains editor, with the road; 78 movable road rooms.
+- In the Northern Plains editor, the Northern Trade Route inside the Barren Peaks (4136–4155) is fixed again; only its 58 rooms in the Plains (from 4156) move, drawn on top of the Plains rooms so they can be grabbed. Spacer rooms 4216, 4219 and 4382 can now actually be picked up one at a time (bigger grab area; 4219 was under a Plains room).
+- Plains rooms 4363, 4417 and 4515 and the five spacer rooms joined to them are left out of the Northern Plains editor, so they will not be on the map.
+- The Northern Plains are on the map (October 11), from the layout saved in the editor: a wide wheat-coloured field north of the Barren Peaks with paler and grassier stretches, grass tufts and low brush, and no paths across the open field. Paths are drawn only where you asked: the Northern Trade Route (as before, now where you placed it in the Plains), every link between the Plains and the Barren Peaks, and the seven linear paths you listed (the western one up to its two exits back into the field). The Peaks' brown ground stops where the wheat begins.
+- The ground between the Plains' open field and the Barren Peaks is now an overgrown, impassable thicket of trees, rocks, brush and tall grass, so it is clear the only ways through are the southern paths; about one room of clear ground is left beside every path, the road and every room.
+- Off-ramp pads on the Northern Trade Route wherever it has an exit into the Plains (11). The thicket is now dark brown and beige with bare trees, like the Barren Peaks' ground. The north-west corner between the Dark Cliffs / Grey Dunes path and the field is impassable: rocky crags by the Dark Cliffs, grey dunes by the Grey Dunes and Beach. A drawing of The Barrow Mound, and groves of trees where the rooms are named The Fringe of Trees and Tall Trees. The tangle of links along the Barren Peaks is now one wide dirt road, with a single short spur to each Peaks room it joins.
+- Some Barren Peaks rooms near the Plains (7188–7220) and the canyon road (4152–4155) can be moved in the Northern Plains editor; the map rebuilt from the new Northern Plains layout (October 11).
+
+## v9 · The Northern Trade Route and its sub-areas, the new west coast and Ocean Keep's bay · October 9, 2026
+- The Northern Trade Route is on the map from the layout you arranged in the new editor: from the gate beside Darkhaven's north gate, through the Shadow Grove and across the Forgotten Woods to the long bridge at the Woods' north coast (54 road rooms; the road past the bridge, in the Barren Peaks and the Northern Plains, is not mapped). It is drawn as one continuous formal road, in the same style as the Eastern Trade Route, over the top of the Maze of Trees (whose name moves clear of it). Short dead-end spurs (spacer rooms leading to areas that are not mapped) are left off so nothing looks like a loose piece of road.
+- Every road is now drawn layer by layer across all its stretches, so there are no seams where stretches meet. The legend reads "Road (Trade Routes)".
+- Off-ramps: a small round junction pad is set into the road wherever it joins a path in the Forgotten Woods or the Shadow Grove (10 pads), and wherever a link to a sub-area leaves it (3 more). The legend explains them.
+- Sub-areas off the road: the City of Salburg (the same walled-town emblem as Ofcol, in forest east of the Maze of Trees, reached by a curved path from an off-ramp), the Keep of Belial (a medieval keep tower at the end of the spacer-room stub below the road) and the Wolf's Den, each with a marker, a short link, and your directions on its card. Troll Den is not connected to the road (its only exit is to the Ashen Forest).
+- The coast: it comes straight down from the Forgotten Woods' north-east coast past Salburg (the old indent in the coast is filled with forest) and curves in to a small rounded bay, with Ocean Keep on the water at its south end; the shallow water follows it. On the west, a new smooth coast runs from the Woods' westernmost edge down to the middle of the Forest of Tears, with forest filling the open water between, so no path runs out over the sea and the Western Trade Route has land on both sides.
+- Drawings and labels: a keep tower (Belial), a small inn on the Ashen Forest Inn with its label, a castle (King's Castle), a windmill, and a town (Ocean Keep); "Ashen / Forest" stacked and gently arched in the open ground north of Shai'ghool; the darker ground at Shai'ghool and Shadar Logoth kept close to the markers; Tullfuhrzky Manor and Ofcol moved a little west clear of the road; The Hermit's Hut removed.
+- New layout editor (`tools/northern_trade_route_editor`): the 1,089 rooms already on the map in Darkhaven, the Grove and the Woods shown as fixed dots, with the road's rooms as the movable ones. New build modules: `ntr_merge.py`, `ntr_marker_routes.py`, `ntr_markers.py`, `west_coast.py`, `bay.py`; `fot_extract.py` now tracks every Darkhaven, Grove and Woods room to its final position.
+
+## v8 · The Ashen Forest and the Eastern Trade Route, markers and drawings · October 8, 2026
+- The Ashen Forest and the Eastern Trade Route are on the map, east of Darkhaven, from the layout you arranged in the layout editor (431 rooms: 317 forest rooms, 81 Trade Route rooms with their spacer rooms, the King's Castle room, 14 rooms from Ocean Keep and the Azure Sea, and 18 fixed rooms in Darkhaven, the Shadow Grove and the Forgotten Woods). The two piles of stacked rooms and the underground burrows are left out. Ground, grey ash tint and trees are painted around every room; the little white trees were removed.
+- Trails are drawn between every two rooms that are both shown. The 132 rooms you hid get ground but no trails. Trails start and stop exactly on the fixed rooms so every junction joins.
+- The Eastern Trade Route is a formal road: wide, paved, with stone curbs, a worn middle line and a cleared verge, in the legend as "Road (Eastern Trade Route)". Trails where it meets the forest stay dirt.
+- Darkhaven's east road runs straight out of the Darkpass gate to the Cross Roads, and a path runs southeast from the Cross Roads to "Paths Diverge at the Edge of the Trees", joining the forest's path there.
+- The far east is a beach and the ocean: the forest thins, a sand strip runs along the shore (your north-south paths lie on it), and the land becomes water about midway along each east-west dead-end path. A pale shallows wash follows the coast, round the north-east corner to Ocean Keep, where a small headland carries the village.
+- Markers (13 new, each at the room where your directions step out of the forest or road): King's Castle, Mountains of Desolation, Shai'ghool, Shadar Logoth, Troll Den, Ocean Keep, Glimwinkle's Windmill, White Pine Camp, Moria (one entry only; the Miden'nir one was removed), City of Eldestra, Land of the Fire Newts and Machine Dreams (they share one dot at room 1255), Fire Station (inside White Pine Camp), and the Eastern Trade Route entrance. Names beside Troll Den, White Pine Camp, Fire Station, Moria, the Fire Newts, Machine Dreams, King's Castle, Glimwinkle's Windmill, Ocean Keep and the Trade Route entrance are placed by hand.
+- Drawings: a castle above the King's Castle name, a windmill above the Glimwinkle's Windmill name, a town above the Ocean Keep marker, and an inn on the Ashen Forest Inn (vnum 2991) with a small label in the same style as "A Mysterious Inn". The ring of road round the inn is drawn half a room wider north and south so the inn fits between the roads.
+- The ground around Shai'ghool and Shadar Logoth is a little darker, with a few more dark trees, kept close to the markers. The Hermit's Hut is off the map.
+- New layout editor (`tools/ashen_forest_editor`): rooms start in TinTin's own shape; hide rooms from the map (H), lock rooms, select a whole area, send rooms to where TinTin's exits suggest; shows an import check against the map file.
+- New build modules: `ashen_forest.py`, `visual_nudges.py`, `af_marker_routes.py`, `af_markers.py`, `dh_paths.py`, `east_shore.py`, `scenery.py`. The map drawing area now reaches east to x = 96 (it stopped at 66), and trails pin to fixed rooms.
+
+## v7 · Lake Tich, the forest moved west, bigger names, search · October 7, 2026
+- Lake Tich ("Lake of Tich'Pyga") is now a big lake. The old lake, the pond by Keep of Lomar and the bay between the Forest of Tears and the Forgotten Woods are one body of water. Its north shore sits at the bottom of the Lost in the Swamp maze, its north-east shore runs along the Woods trail and bulges toward Tullfuhrzky Manor, and its south-west shore is a natural, nearly straight line from Ezard's Fields toward a south-east tip. It stays about 3 rooms from the Western Trade Route. The west end of the bay is closed with a strip of woodland. Its name is set large across the middle.
+- The Forest of Tears is stretched east-west (about as wide as the Forgotten Woods), and the forest was moved west by half the town's width (6.6 rooms), leaving a buffer next to Darkhaven. These moves came from an arrangement made in the new map arranger (`src/build_arranger.py`, `src/arranger.js`); the saved arrangement is `src/arrangement_1.json`.
+- The gaps those moves left are filled: lake water, or the same forest and grassland as the ground around them (tints, trees and grass). The gaps are beside Keep of Lomar and Ofcol, between the lake and Darkhaven, and between Along the Forest Path and the forest.
+- Falcon's Nest Tavern: the Falcon's Talon and Jelarid's Track Shoppe are removed, and the trade route sweeps around the tavern in a wide arc instead of turning sharply.
+- The Forgotten Woods title moved to the open forest above Dobra, and the Forest of Tears title moved into the middle of the pines and set in the same size.
+- Marker names outside the town are 50% larger, and the page places each one so it does not overlap another name, a marker, a title or a trail.
+- Sidebar: one alphabetical list of areas, then one of mobs, with a search box (it filters as you type, Enter opens the first match, Escape clears).
+- New build modules: `lake_reshape.py`, `partition.py`, `arrange_apply.py`, `gap_fill.py`, `label_tweaks.py`.
+
+## v6 · your directions on every card, trade route tidied · October 7, 2026
+- Directions for the places that had none, as you gave them (condensed to numbered quantities): Notre Dame de Sioux, Sonoria, the three guilds, V'laresch, Falcon's Nest Tavern, Darkhaven Marina, Blackcoggle Manor, The Grimdog Port Authority, the Northern Trade Route and Gnarlwood Forest. Old Thalos shows your second route under "Another way". They are stored in `directions.py` (MORE_DIRECTIONS and ALT_DIRECTIONS).
+- Every information box now shows only directions that came from you. Castle Darkhawk is the one place still waiting for directions, and its box says so.
+- Guilds corrected to your final directions: Spirit `nw;w;n`, Nature `#3 s;e;s`, Origin `#2 ne;e;ne;nw`.
+- The extra "Thalos" marker removed; only Old Thalos is on the map.
+- Western Trade Route: drawn in full to its end (a fade-out that had moved out of place after the scaling is gone), the sharp corner just north of the Falcon's Nest Tavern rounded off (the tavern building nudged one room south to make room), and the road cut where it passes the V'laresch marker.
+- New build helper `apply_directions.py`, which attaches your directions to the town markers by where they lead.
+
+## v5 · + Shadow Grove, Forgotten Woods and the Lake · October 7, 2026
+- The Shadow Grove, north of Darkhaven: dusky fields and low hills wrapped around the town, with The Hermit's Hut and the trail north out of Darktrail. Area markers for Wendle Mansion, Ofcol, Keep of Lomar, Tullfuhrzky Manor, Green Forest, the Northern Trade Route (at the north gate), The Ashen Forest and the link to the Forgotten Woods.
+- The Lake of Tich'Pyga drawn larger, with a single marker and its name running along the water.
+- The Forgotten Woods, laid out by hand in the layout editor (593 rooms) and placed north of the Shadow Grove where the trail from Darktrail enters them. Terrain painted from each room's terrain type. Every real exit between walkable rooms drawn as a soft dirt trail. The Maze of Trees, Lost in the Swamp and The Hidden Grove drawn as maze areas.
+- Forgotten Woods markers: Pixie Forest, Nevermore, Corruption of Anciastra, Vale of Nidaros, Valley of Mysts, The Tower of Zenothir, Wyvern's Tower, La Chute D'eau De L'ancients, Raven Tor, New Ofcol, Gnarlwood Forest, Keep of Mahn-Tor (Ogre Village) and Reomyr Village; mobs Dobra and Catobeplas.
+- Information boxes now show only directions that came from you (your original lists and the ones you typed in chat). Traced route lines follow those directions step by step, with breaks where they pass through areas that aren't drawn yet. 14 places with no directions from you say so: Castle Darkhawk, Notre Dame de Sioux, Sonoria, Guilds of Origin, Spirit and Nature, V'laresch, Falcon's Nest Tavern, Darkhaven Marina, Blackcoggle Manor, Thalos, The Grimdog Port Authority, the Northern Trade Route and Gnarlwood Forest.
+- The Forgotten Woods scaled down 20% and the Forest of Tears scaled up 20%, each as a whole, so they are closer in size. Everything inside each area keeps its exact arrangement.
+- Ofcol marked as a town, with a walled-town emblem about 2.5 rooms wide, and a "Town or city" entry in the legend. Gallow Hill removed.
+- The map's land extends further north and east to hold the Woods.
+- Included in this bundle (tools folder): the Forgotten Woods layout editor and the layout you saved from it.
+
+## v4 · + Miden'nir and the south · October 6, 2026
+- Miden'nir, across the rusted bridge below Darkwall: the Black Forest (darkest at its heart), the Mysterious Inn, the bramble thicket to the east and Mount Doom with its cave mouth to the south.
+- Areas off Miden'nir: Intrigues of the Miden'nir, Shattered Refuge, Southern Plains (say "story" at Jed's Desk), Moria (through the brambles) and the Southern Mountain Range (up from Gazing Upon Mount Doom).
+- The gap southwest of Darkhaven filled: Along the Forest Path as an approximate patch of woodland with its massive tree, between the Forest of Tears and the Shattered Refuge; the Refuge's labs and homes with their tracks, running east into the Black Forest. The forest, the town and Miden'nir are now one landmass.
+- South of the walls: the old path from the Precarious Bridge past the Elm Tree and over the Crumbling Bridge into Miden'nir, drawn as a faint track; the river's western stretch moved slightly south to match its rooms.
+- The Darkhaven Marina: a boathouse and pier on the river, with a town landmark.
+- Clean-ups: no boats or stray graphics on the river; Shattered Refuge's label sits over its village; the Refuge's south road ends among its homes.
+
+## v3 · + Western Trade Route · October 6, 2026
+- The Western Trade Route drawn as a rough, rutted track winding through the Forest of Tears: from Darkguard's southwest exit past the village near Bartok Grove and Major Oak, north over the bridges, out across the northern country past the tavern, then back south through the groves, fading out toward Thalos. Its northern loop is set just north of the Lost Between Woods path.
+- A small village of three log buildings on the route: the Falcon's Nest Tavern (with a map landmark, from your `fal` landmark), The Falcon's Talon and Jelarid's Track Shoppe.
+- Places opening off the route: Blackcoggle Manor, Ezard's Fields, The Grimdog Port Authority, Haven of Everlasting Light, Old Thalos and Thalos.
+- Major Oak and Bartok Grove now pinned where they open off the trade route, which is how your directions reach them.
+- The Lost Between Woods path corrected: its eastern stretch rejoins the forest a few rooms east of V'laresch; a separate western stretch rejoins at Path to the Cliffs.
+- The road from Darkguard now stops where the forest begins.
+- Bare ground in the forest (stretches made only of spacer rooms) filled with light woodland.
+- Markers near Florebit, Haven of Everlasting Light, Old Thalos and V'laresch nudged apart so no labels overlap; Guild of Origin label lifted clear of Notre Dame de Sioux.
+- Water only where the rooms are water: the stray pools from "Deep Waters" and "West of Silver Lake" removed.
+
+## v2 · New Darkhaven + Forest of Tears · October 6, 2026
+- The whole map is now drawn in a hand-painted style, generated from each area's terrain and room names.
+- New Darkhaven redrawn to match: rough stone walls and towers, gatehouses, cobbled streets, groves and a paved square; Castle Darkhawk shown as a single small keep; Notre Dame de Sioux as a cathedral. All streets, structures, routes and markers from v1 kept.
+- The trail circling Darkhaven outside the walls, joined to each gate.
+- The road west from Darkguard into the Forest of Tears, fading into the trees.
+- The Forest of Tears: deep woods, lighter woods, bogs, Silver Lake and pools, the Fog Cliffs (with mist only over the Fog Cliffs rooms).
+- Town and forest joined as one landmass, with open meadow around the walls.
+- The Lost Between Woods path along the north edge, set apart by a line of dark trees and fog: the eastern stretch from Silver Lake rejoins the forest a few rooms east of V'laresch; a separate western stretch rejoins at Path to the Cliffs.
+- Forest of Tears sub-areas: Along the Forest Path, Bartok Grove, D'Morian's Lands, Florebit in Immortalis Iuvenis, The Graveyard, Kontaur, Lake of Tich'Pyga, Major Oak, The Sentinel, The Shire, Silvermoon Outpost, Tree of Life, Treetops and Canopy.
+- Forest of Tears landmark: V'laresch (room 2090, in the Asgard Nexus).
+
+## v1 · New Darkhaven · October 6, 2026
+First snapshot of the map built from the TinTin++ map file.
+
+- The walled town of New Darkhaven: walls, corner towers, the four gates (Darktrail, Darkpass, Darkwall, Darkguard), all streets including Thieves Alley and Park Avenue, and Darkhaven Square.
+- Areas in the New Darkhaven geo: Darkhaven Art Gallery, Dragon Cult, Warehouse, Halls of Knowledge, and (inside the Halls) Isle of the Monkeys and A Moment in Nature.
+- Landmarks: Castle Darkhawk (room 12550) and Notre Dame de Sioux (room 780).
+- Guilds: Origin, Spirit and Nature.
+- Mob: Sonoria (room 1310, the Altar to Thoric).
+- Footpaths to Spirit, Origin, Castle Darkhawk, Notre Dame and Sonoria.
+- Click any place for full directions from Darkhaven Square, traced room by room through the TinTin map.

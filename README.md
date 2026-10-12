@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/33338754/README.md)
 # Realm Map, version 9
 
 Open `realm_map.html` in any web browser. It is self-contained and works offline.

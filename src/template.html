@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#1B2220">
+<title>The Realms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#1B2220; --ink:#DCE3D7; --soft:#9AA79E; --panel:#232B28; --edge:#39443F; --halo:rgba(27,34,32,.9);
+  --ground:#2B3826; --city:#2F2D27; --block:#3A372F; --street:#46423A; --street-edge:#5F5849; --wall:#A89B8A;
+  --water:#2A4652; --pick:#F0A04B; --glow:rgba(240,160,75,.3); --pin:#DCE3D7; --grove:#34452E; --landmark:#4A4338; --mob:#E07A85; --lane:#544E43;
+  --roof1:#7A5646; --roof2:#6A5C4B; --roof3:#545B5E; --roof-shade:rgba(0,0,0,.22); --roof-line:rgba(0,0,0,.5); --stone-hi:rgba(220,210,190,.22);
+  --w-land:#28332A; --maze-fill:#2F3829; --maze-line:#9FAE93; --sand:#4F4733; --blight:#3E2B26; --dread:#050805; --g-stone:#7D7766; --g-wall:#8D7F63; --g-roof:#7A4638; --g-wood:#6B5334; --g-cloth:#B6AE98; --g-flag:#A33426; --g-line:#14110D; --g-dark:#0C0A07; --g-lit:#C9A24C; --road:#6F6759; --road-edge:#1F1C17; --road-hi:#8B8271; --road-ground:#3B382F; --w-ash:#4A4A43; --ash-tree:#9C988A; --peak:#4A463E;--dmaze-fill:#1A1719;--dmaze-line:#5E4A5C;--dmaze-eye:#8A2E2E;--barren:#5A4733;--barren2:#4B3C2C;--wheat:#6E6040;--wheat2:#857348;--wheat3:#55593A;--thicket:#4B3E2D;--thbrush:#5E4B33;--th-tree:#5C4B37;--th-grass:#80704F;--thbrush-hi:#7D6748;--crag:#36322E;--crag-rock:#57514A;--crag-hi:#6F685D;--crag-line:#1A1715;--dune:#6C695C;--dune-line:#8E8A77;--wheat-tuft:#A8956A;--brush:#4E5532;--brush-hi:#6A7044;--boulder:#77705F;--boulder-shade:rgba(0,0,0,.32); --peak-shade:rgba(0,0,0,.3); --peak-line:#A49A86; --peak-snow:#CFCAC0; --lake-label:#A9CBD8; --shadow-grass:#2B3029; --shadow-grass2:#252A23; --hill:#4B4535; --hill-line:#A89A78; --stone:#9A9182; --stone-top:#4A4740; --sail:#B9B2A2; --t-black:#06080A; --t-black2:#141A16; --thorn:#B4604C; --bramble:#463B2E; --black-wood:#18201B; --black-heart:#0F1411; --doom:#38332F; --doom-dark:#1E1A17; --rust:#B0683F; --wood:#6E5440; --wood-roof:#4E3626; --wood-line:#2A1E14; --wood-win:#C9A35A; --w-path:#3A4431; --t-darkest:#0A120D; --darkfog:0,0,0; --w-meadow:#34412E; --tuft:#7E8C5E; --dirt:#6A5A42; --dirt-edge:#2F271D; --dirt-hi:#8C7A5C; --w-edge:rgba(200,215,200,.18); --w-wood:#2C3A2D; --w-sparse:#353B2B; --w-deep:#1F2B24; --w-bog:#2E3326; --w-bogdeep:#252A1F; --w-water:#24404A; --w-shore:#5E8794; --w-cliff:#3C3A35; --w-hach:#A39A88;
+  --t-dark:#16241C; --t-mid:#2A3D2C; --t-light:#3E5236; --t-shade:rgba(0,0,0,.35); --reed:#7E8C62; --trail:#A8977C; --mist:170,190,185; --w-label:#DCE3D7; --w-labelhalo:rgba(10,16,12,.7);
+  --serif:"Alegreya","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Alegreya Sans","Gill Sans","Segoe UI","Helvetica Neue",Arial,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden}
+#app{position:relative;height:100%;display:flex}
+#side{width:300px;flex:0 0 300px;background:var(--panel);border-right:1px solid var(--edge);display:flex;flex-direction:column;z-index:3;min-height:0}
+#side header{padding:18px 18px 10px}
+h1{font-family:var(--serif);font-weight:700;font-size:1.65rem;line-height:1.1;margin:0 0 4px}
+.sub{font-size:.9rem;color:var(--soft);margin:0;line-height:1.4}
+.gh{font-weight:700;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);padding:14px 18px 4px}
+#searchBox{padding:2px 14px 8px;position:relative}
+#q{width:100%;box-sizing:border-box;font:inherit;font-size:.95rem;padding:8px 10px;border-radius:8px;border:1px solid var(--edge);background:var(--paper);color:var(--ink)}
+#q:focus{outline:2px solid var(--pick);outline-offset:0;border-color:var(--pick)}
+#qCount{display:block;font-family:var(--sans);font-size:.76rem;color:var(--soft);min-height:1em;padding:3px 4px 0}
+#list .none{padding:10px 12px;font-size:.92rem;color:var(--soft);font-family:var(--sans)}
+#list mark{background:var(--glow);color:inherit;border-radius:2px;padding:0 1px}
+#list{list-style:none;margin:0;padding:0 8px 12px;overflow:auto;flex:1;min-height:0}
+#list button{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;gap:8px;width:100%;padding:7px 10px;border-radius:6px;cursor:pointer;font-family:var(--serif);font-size:1.02rem}
+#list button:hover,#list button:focus-visible{background:var(--paper)}
+#list button:focus-visible{outline:2px solid var(--pick)}
+#list button[aria-current="true"]{background:var(--glow)}
+#list .meta{font-family:var(--sans);font-size:.78rem;color:var(--soft);align-self:center;white-space:nowrap}
+#side footer{padding:10px 18px 14px;border-top:1px solid var(--edge);font-size:.8rem;color:var(--soft);line-height:1.45}
+#stage{position:relative;flex:1;min-width:0}
+svg#map{display:block;width:100%;height:100%;touch-action:none;cursor:grab;user-select:none}
+svg#map.dragging{cursor:grabbing}
+text{font-family:var(--serif)}
+.lbl{fill:var(--ink);paint-order:stroke;stroke:var(--halo);stroke-width:3.5px;stroke-linejoin:round}
+.st{font-family:var(--serif);font-style:italic;font-size:.4px;letter-spacing:.02em;fill:var(--soft);paint-order:stroke;stroke:var(--street);stroke-width:.1px;stroke-linejoin:round}
+.pin{cursor:pointer}
+.pin:hover .dot,.pin.sel .dot{fill:var(--pick)}
+#detail{position:absolute;top:14px;right:14px;width:min(360px,calc(100% - 28px));background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.45);display:none;max-height:calc(100% - 28px);overflow:auto}
+#detail.open{display:block}
+#detail h2{font-family:var(--serif);font-size:1.4rem;margin:0 26px 2px 0;line-height:1.15}
+#detail .kind{font-size:.88rem;color:var(--soft);margin:0 0 10px}
+#detail p{margin:6px 0;font-size:.93rem;line-height:1.45}
+#detail .note{border-left:3px solid var(--pick);padding-left:9px}
+#detail code{display:block;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.8rem;background:var(--paper);border-radius:6px;padding:8px 10px;margin-top:8px;white-space:pre-wrap;word-break:break-word;line-height:1.5}
+#close{position:absolute;top:8px;right:8px;width:30px;height:30px;border:0;background:transparent;color:var(--soft);font-size:1.3rem;cursor:pointer;border-radius:6px}
+#close:hover{background:var(--paper)}
+#tools{position:absolute;left:14px;bottom:14px;display:flex;flex-direction:column;gap:6px}
+#tools button{width:36px;height:36px;border-radius:8px;border:1px solid var(--edge);background:var(--panel);color:var(--ink);font-size:1.15rem;cursor:pointer}
+#tools button:focus-visible,#close:focus-visible{outline:2px solid var(--pick)}
+#legend{position:absolute;right:14px;bottom:14px;background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:10px 12px;font-size:.8rem;color:var(--soft)}
+#legend .keys{display:grid;grid-template-columns:18px 1fr;gap:4px 6px;align-items:center}
+#tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--edge);border-radius:6px;padding:4px 8px;font-family:var(--serif);font-size:.95rem;display:none;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.45)}
+@media (max-width:760px){
+  #side{position:absolute;left:0;right:0;bottom:0;width:auto;height:min(55%,440px);border-right:0;border-top:1px solid var(--edge);border-radius:14px 14px 0 0;transform:translateY(calc(100% - 64px));transition:transform .25s ease}
+  #side.open{transform:none}#side header{padding:12px 16px 6px;cursor:pointer}h1{font-size:1.3rem}
+  #legend{display:none}#tools{bottom:78px}#detail{top:10px;right:10px;width:calc(100% - 20px);max-height:45%}#stage{position:absolute;inset:0}
+}
+@media (prefers-reduced-motion: reduce){#side{transition:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="side" aria-label="Places">
+    <header id="sideHead"><h1>The Realms</h1><p class="sub">New Darkhaven, and the wild country beginning to spread out around it.</p></header>
+    <div id="searchBox"><input id="q" type="search" placeholder="Search areas and mobs" aria-label="Search areas and mobs" autocomplete="off" spellcheck="false"><span id="qCount" aria-live="polite"></span></div>
+    <ul id="list"></ul>
+    <footer>Drawn from your TinTin map and painted from each area's terrain and room names; trees are illustrative. Routes start at Darkhaven Square and follow your directions room by room.<br><span style="display:inline-block;margin-top:6px;font-weight:700;letter-spacing:.04em">__VERSION__</span></footer>
+  </aside>
+  <main id="stage">
+    <svg id="map" aria-label="Map of New Darkhaven"><g id="world"></g></svg>
+    <div id="tip"></div>
+    <div id="tools"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button><button id="zfit" aria-label="Show whole town">⤢</button></div>
+    <section id="detail" aria-live="polite"><button id="close" aria-label="Close">×</button><div id="dbody"></div></section>
+    <div id="legend"><div class="keys">
+      <svg width="16" height="16"><circle cx="8" cy="8" r="5" fill="currentColor" stroke="var(--panel)" stroke-width="1.5"/></svg><span>Entrance to a place</span>
+      <svg width="16" height="16"><rect x="4" y="4" width="8" height="8" transform="rotate(45 8 8)" fill="currentColor"/></svg><span>Guild</span>
+      <svg width="16" height="16"><rect x="3" y="3" width="10" height="10" rx="2" fill="currentColor"/></svg><span>Landmark</span>
+      <svg width="16" height="16"><circle cx="8" cy="8" r="3.4" fill="var(--mob)"/><circle cx="8" cy="8" r="6" fill="none" stroke="var(--mob)" stroke-width="1"/></svg><span>Mob</span>
+      <svg width="16" height="16"><g fill="currentColor"><rect x="2.5" y="8" width="11" height="5"/><rect x="2" y="5" width="4" height="8"/><rect x="10" y="5" width="4" height="8"/><rect x="5.8" y="3" width="4.4" height="10"/><path d="M5.4 3 L8 0.2 L10.6 3Z"/></g></svg><span>Town or city</span>
+      <svg width="16" height="16"><path d="M2 8 H14" stroke="var(--street-edge)" stroke-width="4"/><path d="M2 8 H14" stroke="var(--lane)" stroke-width="2.4"/></svg><span>Footpath</span>
+      <svg width="16" height="16"><path d="M1.5 8 H14.5" stroke="var(--road-ground)" stroke-width="15" stroke-linecap="round" opacity=".6"/><path d="M1.5 8 H14.5" stroke="var(--road-edge)" stroke-width="8.4" stroke-linecap="round"/><path d="M1.5 8 H14.5" stroke="var(--road)" stroke-width="6.6" stroke-linecap="round"/><path d="M1.5 8 H14.5" stroke="var(--road-hi)" stroke-width="4.8" stroke-dasharray="1 2" stroke-linecap="round" opacity=".85"/></svg><span>Road (Trade Routes)</span>
+      <svg width="16" height="16"><circle cx="8" cy="8" r="6.6" fill="var(--road-edge)"/><circle cx="8" cy="8" r="5.5" fill="var(--road)"/><circle cx="8" cy="8" r="2.2" fill="var(--road-hi)" stroke="var(--road-edge)" stroke-width=".8"/></svg><span>Off-ramp: the road joins a path in the Woods or the Grove</span>
+      <svg width="16" height="16"><path d="M2 8 H14" stroke="var(--pick)" stroke-width="3" stroke-linecap="round"/></svg><span>Selected route</span>
+      <svg width="16" height="16"><rect x="3" y="3" width="10" height="10" rx="2" fill="var(--wall)"/></svg><span>Town gate</span>
+    </div></div>
+  </main>
+</div>
+<script>
+const DATA=__DATA__;
+(function(){
+const T=DATA.town, P=[...DATA.places,...((DATA.wild&&DATA.wild.places)||[])];
+const svg=document.getElementById('map'), world=document.getElementById('world');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DIRV={n:[0,-1],s:[0,1],e:[1,0],w:[-1,0],ne:[.7,-.7],nw:[-.7,-.7],se:[.7,.7],sw:[-.7,.7],u:[0,0],d:[0,0],here:[0,0]};
+/* ---------- wild lands ---------- */
+function DIRT(d,w,edge='var(--dirt-edge)',main='var(--dirt)',hi='var(--dirt-hi)',op=1){
+  return `<path d="${d}" fill="none" stroke="${edge}" stroke-width="${(w+.16).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round" opacity="${(.32*op).toFixed(2)}"/>`+
+         `<path d="${d}" fill="none" stroke="${main}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" opacity="${(.85*op).toFixed(2)}"/>`+
+         `<path d="${d}" fill="none" stroke="${hi}" stroke-width="${(w*.32).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round" opacity="${(.45*op).toFixed(2)}"/>`;}
+
+const WD=DATA.wild, GEO=WD.geo;
+function ring(p){let s='';const n=p.length;for(let i=0;i<n;i++){const a=p[i],b=p[(i+1)%n],m=[(a[0]+b[0])/2,(a[1]+b[1])/2];if(i===0){const z=p[n-1];s+=`M${((z[0]+a[0])/2).toFixed(2)} ${((z[1]+a[1])/2).toFixed(2)}`}s+=`Q${a[0]} ${a[1]} ${m[0].toFixed(2)} ${m[1].toFixed(2)}`}return s+'Z'}
+function blobs(list){return (list||[]).map(ring).join('')}
+function curve(p){if(p.length<3)return 'M'+p.map(q=>q.join(' ')).join('L');let s=`M${p[0][0]} ${p[0][1]}`;for(let i=1;i<p.length-1;i++){const m=[(p[i][0]+p[i+1][0])/2,(p[i][1]+p[i+1][1])/2];s+=`Q${p[i][0]} ${p[i][1]} ${m[0].toFixed(2)} ${m[1].toFixed(2)}`}const l=p[p.length-1];return s+`L${l[0]} ${l[1]}`}
+let WILD=`<defs>
+<radialGradient id="mistG"><stop offset="0" stop-color="rgba(var(--mist),.55)"/><stop offset="1" stop-color="rgba(var(--mist),0)"/></radialGradient>
+<g id="tc0"><ellipse cx=".05" cy=".12" rx=".34" ry=".14" fill="var(--t-shade)"/><path d="M0 -.62 L.3 -.05 L.12 -.08 L.36 .28 L-.36 .28 L-.12 -.08 L-.3 -.05Z" fill="var(--t-dark)"/></g>
+<g id="tc1"><ellipse cx=".05" cy=".12" rx=".3" ry=".12" fill="var(--t-shade)"/><path d="M0 -.55 L.26 -.02 L.1 -.04 L.3 .26 L-.3 .26 L-.1 -.04 L-.26 -.02Z" fill="var(--t-mid)"/></g>
+<g id="tc2"><ellipse cx=".05" cy=".12" rx=".3" ry=".12" fill="var(--t-shade)"/><path d="M0 -.5 L.24 0 L-.24 0Z M0 -.25 L.3 .24 L-.3 .24Z" fill="var(--t-dark)"/></g>
+<radialGradient id="darkG"><stop offset="0" stop-color="rgba(var(--darkfog),.6)"/><stop offset="1" stop-color="rgba(var(--darkfog),0)"/></radialGradient>
+<g id="tx0"><path d="M0 -.66 L.3 -.06 L.13 -.09 L.37 .28 L-.37 .28 L-.13 -.09 L-.3 -.06Z" fill="var(--t-darkest)"/></g><g id="ta0"><ellipse cx=".05" cy=".17" rx=".25" ry=".09" fill="var(--t-shade)"/><path d="M0 .17 L0 -.5 M0 -.02 L-.21 -.3 M0 -.14 L.19 -.38 M-.08 -.2 L-.26 -.22 M.07 -.25 L.25 -.2 M0 -.4 L-.08 -.55 M0 -.4 L.09 -.56" stroke="var(--ash-tree)" stroke-width=".07" stroke-linecap="round" fill="none"/></g><g id="ta1"><ellipse cx=".05" cy=".17" rx=".22" ry=".08" fill="var(--t-shade)"/><path d="M0 .17 L.02 -.46 M.01 -.06 L-.2 -.26 M.01 -.18 L.22 -.3 M-.09 -.16 L-.24 -.08 M.02 -.36 L-.1 -.5 M.02 -.34 L.12 -.52" stroke="var(--ash-tree)" stroke-width=".065" stroke-linecap="round" fill="none"/></g><g id="ta2"><ellipse cx=".05" cy=".17" rx=".24" ry=".09" fill="var(--t-shade)"/><path d="M0 .17 L-.02 -.44 M-.01 -.04 L.2 -.24 M-.01 -.16 L-.22 -.32 M.08 -.14 L.26 -.1 M-.02 -.32 L.08 -.5 M-.02 -.3 L-.13 -.45" stroke="var(--ash-tree)" stroke-width=".068" stroke-linecap="round" fill="none"/></g>
+<g id="tx1"><path d="M0 -.58 L.27 -.03 L.11 -.05 L.32 .27 L-.32 .27 L-.11 -.05 L-.27 -.03Z" fill="var(--t-darkest)"/></g>
+<g id="tx2"><path d="M0 -.52 L.25 0 L-.25 0Z M0 -.27 L.31 .25 L-.31 .25Z" fill="var(--t-darkest)"/></g>
+<g id="tk0"><path d="M0 -.62 L.07 -.42 L.22 -.44 L.1 -.26 L.3 -.18 L.12 -.08 L.32 .2 L.04 .12 L0 .3 L-.04 .12 L-.32 .2 L-.12 -.08 L-.3 -.18 L-.1 -.26 L-.22 -.44 L-.07 -.42Z" fill="var(--t-black)"/></g>
+<g id="tk1"><path d="M0 -.55 L.24 -.05 L.08 -.07 L.28 .24 L-.28 .24 L-.08 -.07 L-.24 -.05Z" fill="var(--t-black)"/><line x1="0" y1=".24" x2="0" y2=".34" stroke="var(--t-black)" stroke-width=".05"/></g>
+<g id="tk2"><path d="M0 -.5 L.05 -.2 L.22 -.3 L.08 -.08 L.26 .02 L.06 .06 L.2 .26 L0 .14 L-.2 .26 L-.06 .06 L-.26 .02 L-.08 -.08 L-.22 -.3 L-.05 -.2Z" fill="var(--t-black2)"/></g>
+<g id="th"><path d="M-.18 .06 L-.06 -.08 L0 .08 L.08 -.1 L.18 .06 M-.12 -.02 L-.2 -.1 M.1 -.04 L.2 -.14" stroke="var(--thorn)" stroke-width=".04" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+<linearGradient id="midFade" gradientUnits="userSpaceOnUse" x1="0" y1="15.6" x2="0" y2="16.8"><stop offset="0" stop-color="var(--dirt)" stop-opacity="1"/><stop offset="1" stop-color="var(--dirt)" stop-opacity="0"/></linearGradient>
+<linearGradient id="midFadeH" gradientUnits="userSpaceOnUse" x1="0" y1="15.6" x2="0" y2="16.8"><stop offset="0" stop-color="var(--dirt-hi)" stop-opacity="1"/><stop offset="1" stop-color="var(--dirt-hi)" stop-opacity="0"/></linearGradient>
+<linearGradient id="midFadeE" gradientUnits="userSpaceOnUse" x1="0" y1="15.6" x2="0" y2="16.8"><stop offset="0" stop-color="var(--dirt-edge)" stop-opacity="1"/><stop offset="1" stop-color="var(--dirt-edge)" stop-opacity="0"/></linearGradient>
+<radialGradient id="doomGlow"><stop offset="0" stop-color="rgba(200,70,40,.7)"/><stop offset="1" stop-color="rgba(200,70,40,0)"/></radialGradient>
+<g id="hl"><path d="M-.42 .1 Q -.2 -.32 .02 .1 Z" fill="var(--hill)" /><path d="M-.12 .1 Q .14 -.42 .42 .1 Z" fill="var(--hill)"/><path d="M-.42 .1 Q -.2 -.32 .02 .1 M-.12 .1 Q .14 -.42 .42 .1" fill="none" stroke="var(--hill-line)" stroke-width=".045" stroke-linecap="round"/><path d="M.14 -.26 Q .26 -.1 .34 .06" fill="none" stroke="var(--hill-line)" stroke-width=".03" opacity=".6"/></g>
+<g id="bd"><path d="M-.34 .14 Q-.38 -.1 -.14 -.22 Q.1 -.31 .27 -.13 Q.39 .03 .31 .14Z" fill="var(--boulder)" stroke="rgba(0,0,0,.5)" stroke-width=".035" stroke-linejoin="round"/><path d="M.04 .14 Q.22 .03 .27 -.13 Q.39 .03 .31 .14Z" fill="var(--boulder-shade)"/></g><g id="pk"><path d="M-.5 .2 L-.12 -.42 L.06 -.16 L.18 -.3 L.52 .2Z" fill="var(--peak)" stroke="var(--peak-line)" stroke-width=".04" stroke-linejoin="round"/><path d="M-.12 -.42 L-.02 .2 L.52 .2 L.18 -.3 L.06 -.16Z" fill="var(--peak-shade)"/><path d="M-.18 -.32 L-.12 -.42 L-.04 -.3" fill="none" stroke="var(--peak-snow)" stroke-width=".06" stroke-linecap="round"/></g>
+<g id="tw0"><ellipse cx=".06" cy=".16" rx=".34" ry=".13" fill="var(--t-shade)"/><path d="M-.3 .05 C-.42 -.2 -.18 -.42 0 -.36 C.12 -.5 .4 -.38 .34 -.16 C.46 -.02 .3 .16 .14 .1 C.04 .2 -.22 .2 -.3 .05Z" fill="var(--t-light)"/></g>
+<g id="tw1"><ellipse cx=".06" cy=".16" rx=".3" ry=".12" fill="var(--t-shade)"/><path d="M-.26 .06 C-.36 -.16 -.14 -.36 .02 -.3 C.2 -.4 .38 -.2 .28 -.04 C.32 .12 .1 .16 0 .1 C-.12 .18 -.24 .16 -.26 .06Z" fill="var(--t-mid)"/></g>
+<g id="tw2"><ellipse cx=".06" cy=".16" rx=".3" ry=".12" fill="var(--t-shade)"/><path d="M-.22 .08 C-.34 -.1 -.2 -.32 0 -.28 C.18 -.36 .34 -.16 .24 0 C.28 .14 .06 .18 -.02 .12 C-.1 .18 -.2 .16 -.22 .08Z" fill="var(--t-light)"/></g>
+<linearGradient id="roadFadeB" gradientUnits="userSpaceOnUse" x1="-44.6" y1="0" x2="-48.4" y2="0"><stop offset="0" stop-color="var(--dirt)" stop-opacity="1"/><stop offset="1" stop-color="var(--dirt)" stop-opacity="0"/></linearGradient>
+<linearGradient id="roadFadeH" gradientUnits="userSpaceOnUse" x1="-44.6" y1="0" x2="-48.4" y2="0"><stop offset="0" stop-color="var(--dirt-hi)" stop-opacity="1"/><stop offset="1" stop-color="var(--dirt-hi)" stop-opacity="0"/></linearGradient>
+<linearGradient id="roadFadeR" gradientUnits="userSpaceOnUse" x1="-44.6" y1="0" x2="-48.4" y2="0"><stop offset="0" stop-color="var(--dirt-edge)" stop-opacity="1"/><stop offset="1" stop-color="var(--dirt-edge)" stop-opacity="0"/></linearGradient>
+<g id="wt"><path d="M-.11 .07 Q-.13 -.05 -.17 -.13 M0 .07 L0 -.17 M.1 .07 Q.12 -.04 .16 -.12" stroke="var(--wheat-tuft)" stroke-width=".03" stroke-linecap="round" fill="none"/><circle cx="0" cy="-.18" r=".028" fill="var(--wheat-tuft)"/></g><g id="bs"><path d="M-.24 .08 Q-.3 -.06 -.17 -.12 Q-.12 -.23 0 -.2 Q.12 -.25 .18 -.12 Q.3 -.06 .24 .08Z" fill="var(--brush)" stroke="rgba(0,0,0,.45)" stroke-width=".03" stroke-linejoin="round"/><path d="M-.12 -.1 Q-.06 -.17 .02 -.14 M.06 -.06 Q.12 -.12 .17 -.07" stroke="var(--brush-hi)" stroke-width=".03" stroke-linecap="round" fill="none"/></g>
+<g id="bs2"><path d="M-.24 .08 Q-.3 -.06 -.17 -.12 Q-.12 -.23 0 -.2 Q.12 -.25 .18 -.12 Q.3 -.06 .24 .08Z" fill="var(--thbrush)" stroke="rgba(0,0,0,.5)" stroke-width=".03" stroke-linejoin="round"/><path d="M-.12 -.1 Q-.06 -.17 .02 -.14 M.06 -.06 Q.12 -.12 .17 -.07" stroke="var(--thbrush-hi)" stroke-width=".03" stroke-linecap="round" fill="none"/></g><g id="cg0"><path d="M-.42 .16 L-.3 -.12 L-.12 -.2 L-.02 -.42 L.14 -.28 L.3 -.3 L.44 .16Z" fill="var(--crag-rock)" stroke="var(--crag-line)" stroke-width=".035" stroke-linejoin="round"/><path d="M-.02 -.42 L.06 -.05 L-.1 .16 L.44 .16 L.3 -.3 L.14 -.28Z" fill="#000" opacity=".3"/><path d="M-.3 -.12 L-.12 -.2 L-.02 -.42" fill="none" stroke="var(--crag-hi)" stroke-width=".03"/></g><g id="cg1"><path d="M-.38 .16 L-.28 -.3 L-.08 -.36 L.06 -.1 L.2 -.22 L.38 .16Z" fill="var(--crag-rock)" stroke="var(--crag-line)" stroke-width=".035" stroke-linejoin="round"/><path d="M-.08 -.36 L-.02 .0 L-.12 .16 L.38 .16 L.2 -.22 L.06 -.1Z" fill="#000" opacity=".3"/><path d="M-.28 -.3 L-.08 -.36" fill="none" stroke="var(--crag-hi)" stroke-width=".03"/></g><g id="cg2"><path d="M-.46 .16 L-.36 -.06 L-.22 -.04 L-.14 -.32 L.04 -.22 L.12 -.38 L.26 -.12 L.46 .16Z" fill="var(--crag-rock)" stroke="var(--crag-line)" stroke-width=".035" stroke-linejoin="round"/><path d="M.12 -.38 L.1 .0 L-.04 .16 L.46 .16 L.26 -.12Z" fill="#000" opacity=".3"/><path d="M-.36 -.06 L-.22 -.04 L-.14 -.32" fill="none" stroke="var(--crag-hi)" stroke-width=".03"/></g><g id="dn0"><path d="M-.5 .05 Q-.2 -.18 .1 -.02 M-.25 .2 Q.05 .02 .4 .14" fill="none" stroke="var(--dune-line)" stroke-width=".04" stroke-linecap="round" opacity=".8"/></g><g id="dn1"><path d="M-.45 .1 Q-.1 -.12 .45 .02" fill="none" stroke="var(--dune-line)" stroke-width=".045" stroke-linecap="round" opacity=".8"/><path d="M-.45 .1 Q-.1 -.12 .45 .02" fill="none" stroke="#000" stroke-width=".04" stroke-linecap="round" opacity=".18" transform="translate(.03 .06)"/></g><g id="dn2"><path d="M-.4 -.05 Q-.1 -.2 .2 -.08 M-.35 .14 Q-.05 -.02 .3 .1 M-.1 .3 Q.15 .18 .42 .26" fill="none" stroke="var(--dune-line)" stroke-width=".035" stroke-linecap="round" opacity=".7"/></g>
+<g id="td0"><use href="#ta0" style="--ash-tree:var(--th-tree)"/></g><g id="td1"><use href="#ta1" style="--ash-tree:var(--th-tree)"/></g><g id="td2"><use href="#ta2" style="--ash-tree:var(--th-tree)"/></g><g id="wt2"><use href="#wt" style="--wheat-tuft:var(--th-grass)"/></g>
+<g id="gt"><path d="M-.1 .06 L-.14 -.08 M0 .06 L0 -.12 M.1 .06 L.14 -.07" stroke="var(--tuft)" stroke-width=".035" stroke-linecap="round" fill="none"/></g>
+<linearGradient id="linkFade" gradientUnits="userSpaceOnUse" x1="-10.2" y1="0" x2="-11.9" y2="0"><stop offset="0" stop-color="var(--dirt)" stop-opacity="1"/><stop offset="1" stop-color="var(--dirt)" stop-opacity="0"/></linearGradient>
+<linearGradient id="linkFadeH" gradientUnits="userSpaceOnUse" x1="-10.2" y1="0" x2="-11.9" y2="0"><stop offset="0" stop-color="var(--dirt-hi)" stop-opacity="1"/><stop offset="1" stop-color="var(--dirt-hi)" stop-opacity="0"/></linearGradient>
+<linearGradient id="linkFadeE" gradientUnits="userSpaceOnUse" x1="-10.2" y1="0" x2="-11.9" y2="0"><stop offset="0" stop-color="var(--dirt-edge)" stop-opacity="1"/><stop offset="1" stop-color="var(--dirt-edge)" stop-opacity="0"/></linearGradient>
+<g id="rd"><path d="M-.12 .1 L-.16 -.18 M0 .1 L0 -.26 M.12 .1 L.17 -.16" stroke="var(--reed)" stroke-width=".045" stroke-linecap="round" fill="none"/></g>
+</defs>`;
+WILD+=`<path d="${blobs(GEO.land)}" fill="var(--w-land)" fill-rule="evenodd" stroke="var(--w-edge)" stroke-width=".18" stroke-linejoin="round"/>`;
+WILD+=`<path d="${blobs(GEO.sg)}" fill="var(--shadow-grass)" fill-rule="evenodd" opacity=".8"/><path d="${blobs(GEO.sg2)}" fill="var(--shadow-grass2)" fill-rule="evenodd" opacity=".55"/>`;
+for(const k of ['meadow1','meadow2','meadow3'])WILD+=`<path d="${blobs(GEO[k])}" fill="var(--w-meadow)" fill-rule="evenodd" opacity=".42"/>`;
+WILD+=(WD.tufts||[]).map(r=>`<use href="#gt" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
+WILD+=`<path d="${blobs(GEO.fill)}" fill="var(--w-wood)" fill-rule="evenodd" opacity=".55"/><path d="${blobs(GEO.fill2)}" fill="var(--w-wood)" fill-rule="evenodd" opacity=".6"/>`;
+WILD+=`<path d="${blobs(GEO.sparse)}" fill="var(--w-sparse)" fill-rule="evenodd" opacity=".9"/>`;
+WILD+=`<path d="${blobs(GEO.deep)}" fill="var(--w-deep)" fill-rule="evenodd" opacity=".75"/>`;
+WILD+=`<path d="${blobs(GEO.bog)}" fill="var(--w-bog)" fill-rule="evenodd" opacity=".85"/>`;
+for(const rb of (WD.ribbons||[])){const rd=curve(rb);WILD+=`<path d="${rd}" fill="none" stroke="var(--w-path)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" opacity=".45"/><path d="${rd}" fill="none" stroke="var(--w-path)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>`;}
+for(const p of (WD.swtracks||[])){const rd=curve(p);
+  WILD+=DIRT(rd,.28);}
+if(WD.road){const rd=curve(WD.road);
+  WILD+=DIRT(rd,.38);}
+WILD+=`<path d="${blobs(GEO.ash||[])}" fill="var(--w-ash)" fill-rule="evenodd" opacity=".62"/>`;
+WILD+=`<path d="${blobs(GEO.dread||[])}" fill="var(--dread)" fill-rule="evenodd" opacity=".15"/><path d="${blobs(GEO.dread2||[])}" fill="var(--dread)" fill-rule="evenodd" opacity=".17"/>`;
+WILD+=`<path d="${blobs(GEO.barren||[])}" fill="var(--barren)" fill-rule="evenodd" opacity=".8"/><path d="${blobs(GEO.barren2||[])}" fill="var(--barren2)" fill-rule="evenodd" opacity=".55"/>`;
+WILD+=`<path d="${blobs(GEO.wheat||[])}" fill="var(--wheat)" fill-rule="evenodd" opacity=".85"/><path d="${blobs(GEO.wheat2||[])}" fill="var(--wheat2)" fill-rule="evenodd" opacity=".5"/><path d="${blobs(GEO.wheat3||[])}" fill="var(--wheat3)" fill-rule="evenodd" opacity=".55"/><path d="${blobs(GEO.thicket||[])}" fill="var(--thicket)" fill-rule="evenodd" opacity=".85"/><path d="${blobs(GEO.crags||[])}" fill="var(--crag)" fill-rule="evenodd" opacity=".88"/><path d="${blobs(GEO.dunes||[])}" fill="var(--dune)" fill-rule="evenodd" opacity=".8"/>`;
+WILD+=(WD.ripples||[]).map(r=>`<use href="#dn${r[3]}" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
+WILD+=(WD.crags||[]).map(r=>`<use href="#cg${r[3]}" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
+WILD+=(WD.wheattufts||[]).map(r=>`<use href="#wt${r[3]?2:''}" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
+WILD+=(WD.brush||[]).map(r=>`<use href="#bs${r[3]?2:''}" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
+WILD+=`<path d="${blobs(GEO.fwwood)}" fill="var(--w-wood)" fill-rule="evenodd" opacity=".55"/><path d="${blobs(GEO.fwplain)}" fill="var(--w-sparse)" fill-rule="evenodd" opacity=".7"/>`;
+WILD+=`<path d="${blobs(GEO.shallows||[])}" fill="var(--w-water)" fill-rule="evenodd" opacity=".4"/>`;
+WILD+=`<path d="${blobs(GEO.sand)}" fill="var(--sand)" fill-rule="evenodd" opacity=".9"/><path d="${blobs(GEO.blight)}" fill="var(--blight)" fill-rule="evenodd" opacity=".75"/>`;
+WILD+=`<path d="${blobs(GEO.bramble)}" fill="var(--bramble)" fill-rule="evenodd" opacity=".9"/><path d="${blobs(GEO.black)}" fill="var(--black-wood)" fill-rule="evenodd" opacity=".9"/><path d="${blobs(GEO.blackheart)}" fill="var(--black-heart)" fill-rule="evenodd" opacity=".85"/><path d="${blobs(GEO.doom)}" fill="var(--doom)" fill-rule="evenodd" opacity=".85"/>`;
+WILD+=(WD.peaks||[]).slice().sort((a,b)=>a[1]-b[1]).map(r=>`<use href="#pk" transform="translate(${r[0]},${r[1]}) scale(${(r[2]*1.15).toFixed(2)})"/>`).join('');
+WILD+=(WD.boulders||[]).map(r=>`<use href="#bd" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
+WILD+=(WD.hills||[]).slice().sort((a,b)=>a[1]-b[1]).map(r=>`<use href="#hl" transform="translate(${r[0]},${r[1]}) scale(${(r[2]*1.1).toFixed(2)})"/>`).join('');
+WILD+=(WD.thorns||[]).map(r=>`<use href="#th" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
+WILD+=`<path d="${blobs(GEO.cliff)}" fill="var(--w-cliff)" fill-rule="evenodd" opacity=".8"/>`;
+WILD+=`<path d="${blobs(GEO.water)}" fill="var(--w-water)" fill-rule="evenodd" stroke="var(--w-shore)" stroke-width=".07"/>`;
+WILD+=`<g stroke="var(--w-hach)" stroke-width=".06" stroke-linecap="round" opacity=".8">`+WD.hach.map(l=>`<line x1="${l[0]}" y1="${l[1]}" x2="${l[2]}" y2="${l[3]}"/>`).join('')+`</g>`;
+WILD+=WD.reeds.map(r=>`<use href="#rd" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
+WILD+=WD.trees.slice().sort((a,b)=>a[1]-b[1]).map(t=>`<use href="#${t[3]==='d'?'tc':t[3]==='x'?'tx':t[3]==='k'?'tk':t[3]==='a'?'ta':t[3]==='h'?'td':'tw'}${t[4]}" transform="translate(${t[0]},${t[1]}) scale(${t[2]*(t[3]==='d'?1:1.05)})"/>`).join('');
+for(const b of (WD.buildings||[])){const w=b.w,hh=b.h,x0=b.x-w/2,y0=b.y-hh/2,rh=hh*.55;
+  WILD+=`<g><ellipse cx="${b.x+.08}" cy="${b.y+hh/2+.02}" rx="${w*.62}" ry=".13" fill="var(--t-shade)"/>`+
+  `<rect x="${x0}" y="${y0+rh*.55}" width="${w}" height="${hh-rh*.55}" fill="var(--wood)" stroke="var(--wood-line)" stroke-width=".04"/>`+
+  [1,2,3].map(k=>`<line x1="${x0}" y1="${y0+rh*.55+(hh-rh*.55)*k/4}" x2="${x0+w}" y2="${y0+rh*.55+(hh-rh*.55)*k/4}" stroke="var(--wood-line)" stroke-width=".02" opacity=".6"/>`).join('')+
+  `<path d="M${x0-.08} ${y0+rh*.6} L${b.x} ${y0-rh*.35} L${x0+w+.08} ${y0+rh*.6}Z" fill="var(--wood-roof)" stroke="var(--wood-line)" stroke-width=".04" stroke-linejoin="round"/>`+
+  `<rect x="${b.x-.09}" y="${y0+hh-.26}" width=".18" height=".26" fill="var(--wood-line)"/>`+
+  (w>1?`<rect x="${x0+.15}" y="${y0+rh*.75}" width=".17" height=".14" fill="var(--wood-win)"/><rect x="${x0+w-.32}" y="${y0+rh*.75}" width=".17" height=".14" fill="var(--wood-win)"/>`:'')+`</g>`;
+  if(b.name&&!/Tavern/.test(b.name))WILD+=`<text x="${b.x+w/2+.2}" y="${b.y+.12}" font-size=".38" font-style="italic" fill="var(--soft)" style="paint-order:stroke;stroke:var(--halo);stroke-width:.1px;stroke-linejoin:round">${b.name}</text>`;}
+if(WD.bigtree){const [x,y]=WD.bigtree;
+  WILD+=`<ellipse cx="${x+.15}" cy="${y+.55}" rx="1.1" ry=".35" fill="var(--t-shade)"/><rect x="${x-.12}" y="${y-.1}" width=".24" height=".7" fill="var(--wood-line)"/>`+
+  `<circle cx="${x-.45}" cy="${y-.35}" r=".55" fill="var(--t-mid)"/><circle cx="${x+.45}" cy="${y-.3}" r=".55" fill="var(--t-mid)"/><circle cx="${x}" cy="${y-.75}" r=".65" fill="var(--t-light)"/><circle cx="${x+.15}" cy="${y-.15}" r=".45" fill="var(--t-light)"/>`;}
+if(WD.mountain){const m=WD.mountain,x=m.x,y=m.y,w=m.w,hh=m.h;
+  WILD+=`<path d="M${x-w/2} ${y+hh*.35} L${x-w*.3} ${y-hh*.05} L${x-w*.18} ${y+.05} L${x-w*.05} ${y-hh*.5} L${x+w*.08} ${y-hh*.2} L${x+w*.2} ${y-hh*.32} L${x+w/2} ${y+hh*.35} Z" fill="var(--doom)" stroke="var(--doom-dark)" stroke-width=".07" stroke-linejoin="round"/>`;
+  WILD+=`<path d="M${x-w*.05} ${y-hh*.5} L${x+w*.08} ${y-hh*.2} L${x+w*.2} ${y-hh*.32} L${x+w/2} ${y+hh*.35} L${x+w*.02} ${y+hh*.35} Z" fill="var(--doom-dark)" opacity=".55"/>`;
+  for(let k=0;k<7;k++){const sx=x-w*.4+k*w*.12;WILD+=`<line x1="${sx}" y1="${y+hh*.3}" x2="${sx+.18}" y2="${y+hh*.05-(k%3)*.25}" stroke="var(--doom-dark)" stroke-width=".05" opacity=".7"/>`}
+  WILD+=`<ellipse cx="${x-w*.05}" cy="${y-hh*.5}" rx=".9" ry=".55" fill="url(#doomGlow)"/>`;
+  const c=m.cave;WILD+=`<path d="M${c[0]-.32} ${c[1]+.2} v-.18 a.32 .32 0 0 1 .64 0 v.18Z" fill="var(--doom-dark)"/>`;}
+if(WD.midlink){for(const L of WD.midlink){const fade=L[1][1]>16;const d=`M${L[0][0]} ${L[0][1]} L${L[1][0]} ${L[1][1]}`;
+  WILD+=fade?DIRT(d,.32,'url(#midFadeE)','url(#midFade)','url(#midFadeH)'):DIRT(d,.32);}}
+let BRIDGEH='';if(WD.bridge){const b=WD.bridge,x=b[0][0],y0=b[0][1],y1=b[1][1];
+  BRIDGEH+=`<rect x="${x-.26}" y="${y0}" width=".52" height="${y1-y0}" fill="var(--wood)" stroke="var(--wood-line)" stroke-width=".03"/>`;
+  for(let y=y0+.1;y<y1;y+=.16)BRIDGEH+=`<line x1="${x-.26}" y1="${y}" x2="${x+.26}" y2="${y}" stroke="var(--wood-line)" stroke-width=".02" opacity=".6"/>`;
+  BRIDGEH+=`<line x1="${x-.3}" y1="${y0-.05}" x2="${x-.3}" y2="${y1+.05}" stroke="var(--rust)" stroke-width=".07"/><line x1="${x+.3}" y1="${y0-.05}" x2="${x+.3}" y2="${y1+.05}" stroke="var(--rust)" stroke-width=".07"/>`;}
+if(WD.fwlabel){const L=WD.fwlabel,mx=(L.x0+L.x1)/2;WILD+=`<path id="fwArc" d="M${L.x0-16} ${L.y+1.0} Q ${mx} ${L.y-2.4} ${L.x1+16} ${L.y+1.0}" fill="none"/><text font-size="2.4" font-style="italic" font-weight="600" letter-spacing=".55" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.5px;stroke-linejoin:round"><textPath href="#fwArc" startOffset="50%" text-anchor="middle">The Forgotten Woods</textPath></text>`;}
+if(WD.sglabel){const L=WD.sglabel,mx=(L.x0+L.x1)/2;WILD+=`<path id="sgArc" d="M${L.x0} ${L.y+0.4} Q ${mx} ${L.y-0.9} ${L.x1} ${L.y+0.4}" fill="none"/><text font-size="1.0" font-style="italic" font-weight="600" letter-spacing=".3" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.3px;stroke-linejoin:round"><textPath href="#sgArc" startOffset="50%" text-anchor="middle">Shadow Grove</textPath></text>`;}
+if(WD.midlabel){const L=WD.midlabel,mx=(L.x0+L.x1)/2;WILD+=`<path id="midArc" d="M${L.x0} ${L.y+0.5} Q ${mx} ${L.y-1.0} ${L.x1} ${L.y+0.5}" fill="none"/><text font-size="1.05" font-style="italic" font-weight="600" letter-spacing=".3" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.3px;stroke-linejoin:round"><textPath href="#midArc" startOffset="50%" text-anchor="middle">Miden'nir</textPath></text>`;}
+let FWPATHS='';for(const p of (WD.fwtracks||[])){const rd=p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L');
+  FWPATHS+=DIRT(rd,.3);}
+/* the roads are drawn as ONE shape: each layer (verge, shadow, curbs, surface, stones) across every stretch of road before the next layer goes on, so where two stretches meet there is no seam */
+const ROADLAYERS=(ds,wd)=>{const L=(sw,col,extra,op)=>`<g opacity="${op}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" ${extra||''}>`+ds.map(d=>`<path d="${d}"/>`).join('')+`</g>`;
+  return L(wd+1.25,"var(--road-ground)","",.62)                                  /* the cleared verge either side */
+   +L(wd+.42,"var(--road-edge)","",.22)                                         /* its shadow */
+   +L(wd+.22,"var(--road-edge)","",1)                                           /* stone curbs */
+   +L(wd,"var(--road)","",1)                                                    /* the paved surface */
+   +L(wd*.8,"var(--road-hi)",'stroke-dasharray=".06 .2"',.85)                   /* paving stones */
+   +L(wd*.5,"var(--road-edge)",'stroke-dasharray=".035 .265" stroke-dashoffset=".13"',.38)
+   +L(.05,"var(--road-edge)",'stroke-dasharray=".42 .34"',.55)};                /* a worn line down the middle */
+/* the wide dirt road along the Barren Peaks (Northern Plains): drawn layer by layer across all its stretches */
+{const DS=(WD.dirtroads||[]).map(p=>p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L'));if(DS.length){const L=(sw,col,extra,op)=>`<g opacity="${op}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" ${extra||''}>`+DS.map(d=>`<path d="${d}"/>`).join('')+`</g>`;
+  FWPATHS+=L(1.05,'var(--dirt-edge)','',.35)+L(.86,'var(--dirt)','',.9)+L(.56,'var(--dirt-hi)','',.28)+L(.06,'var(--dirt-edge)','stroke-dasharray=".5 .25" transform="translate(0 -.2)"',.35)+L(.06,'var(--dirt-edge)','stroke-dasharray=".45 .3" transform="translate(0 .2)"',.35);}}
+const RDS=[];for(const p of (WD.etrtracks||[])){RDS.push(p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L'));}
+if(RDS.length)FWPATHS+=ROADLAYERS(RDS,.86);
+for(const j of (WD.ntrjoins||[]))FWPATHS+=`<g transform="translate(${j[0]},${j[1]})"><circle r=".74" fill="var(--road-edge)"/><circle r=".62" fill="var(--road)"/><circle r=".25" fill="var(--road-hi)" stroke="var(--road-edge)" stroke-width=".07"/></g>`;        /* an off-ramp: the road joins a path in the Forgotten Woods or the Shadow Grove */
+for(const p of (WD.ashtracks||[])){const rd=p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L');FWPATHS+=DIRT(rd,.16,'var(--dirt-edge)','var(--dirt)','var(--dirt-hi)',.85);}
+WILD+=`<defs><pattern id="dmazePat" width="1.4" height="1.4" patternUnits="userSpaceOnUse"><path d="M.1 .15 L.45 .5 L.3 .75 L.6 1.1 M.75 .1 L.95 .4 L1.3 .3 M.9 .75 L1.2 .95 L1.05 1.3" fill="none" stroke="var(--dmaze-line)" stroke-width=".07" stroke-linecap="round" stroke-linejoin="round"/><circle cx=".95" cy=".55" r=".06" fill="var(--dmaze-eye)"/><circle cx="1.08" cy=".57" r=".05" fill="var(--dmaze-eye)"/></pattern><pattern id="mazePat" width="1.2" height="1.2" patternUnits="userSpaceOnUse"><path d="M.1 .1 H1.1 M.1 .1 V.7 M.4 .4 H.9 V1.1 M.4 .4 V.9 H.7 M1.1 .4 V.8" fill="none" stroke="var(--maze-line)" stroke-width=".06" stroke-linecap="round"/></pattern></defs>`;
+for(const m of (WD.fwmazes||[])){const d=ring(m.poly);
+  if(m.style==='dark')continue;                                  // dark mazes are drawn over the paths (below)
+  WILD+=`<path d="${d}" fill="var(--maze-fill)" opacity=".8"/><path d="${d}" fill="url(#mazePat)" opacity=".75"/><path d="${d}" fill="none" stroke="var(--maze-line)" stroke-width=".09" stroke-dasharray=".35 .2"/>`;
+}
+WILD+=FWPATHS;
+for(const m of (WD.fwmazes||[])){if(m.style!=='dark')continue;const d=ring(m.poly);WILD+=`<path d="${d}" fill="var(--dmaze-fill)"/><path d="${d}" fill="url(#dmazePat)" opacity=".8"/><path d="${d}" fill="none" stroke="var(--dmaze-line)" stroke-width=".09" stroke-dasharray=".35 .2"/>`;}           // dark mazes hide the paths under them; their names go on top
+for(const m of (WD.fwmazes||[])){WILD+=`<text x="${m.lx??m.cx}" y="${(m.ly??m.cy)+.2}" text-anchor="middle" font-size="${m.fs||.7}" font-style="italic" font-weight="600" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.24px;stroke-linejoin:round">${String(m.name).replace(/&/g,'&amp;')}</text>`;}                    // the maze names go on top of the roads
+for(const g of (WD.tags||[])){WILD+=`<text x="${g[0]}" y="${g[1]+.2}" text-anchor="middle" font-size="${g[3]||.55}" font-style="italic" font-weight="600" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.24px;stroke-linejoin:round">${String(g[2]).replace(/&/g,'&amp;')}</text>`;}
+WILD+=(WD.darkfog||[]).map(m=>`<ellipse cx="${m[0]}" cy="${m[1]}" rx="${m[2]*1.5}" ry="${m[2]*.55}" fill="url(#darkG)"/>`).join('');
+WILD+=WD.mist.map(m=>`<ellipse cx="${m[0]}" cy="${m[1]}" rx="${m[2]*1.6}" ry="${m[2]*.7}" fill="url(#mistG)"/>`).join('');
+if(WD.ashlabel){const L=WD.ashlabel;WILD+=L.lines.map((s,k)=>{const y=L.y+k*L.lh,dp=L.sag||1.0;return `<path id="ashArc${k}" d="M${L.x-8} ${y+dp} Q ${L.x} ${y-dp} ${L.x+8} ${y+dp}" fill="none"/><text class="arealbl" font-size="2.4" font-style="italic" font-weight="600" letter-spacing=".55" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.5px;stroke-linejoin:round"><textPath href="#ashArc${k}" startOffset="50%" text-anchor="middle">${s}</textPath></text>`}).join('')}   /* "Ashen" over "Forest", each line on a gentle arc like The Forgotten Woods */
+for(const [n,L] of (WD.arealabels||[]).entries()){const hw=L.hw||8;WILD+=L.lines.map((s,k)=>{const y=L.y+k*L.lh,dp=L.sag||1.0;return `<path id="areaArc${n}_${k}" d="M${L.x-hw} ${y+dp} Q ${L.x} ${y-dp} ${L.x+hw} ${y+dp}" fill="none"/><text class="arealbl" font-size="2.4" font-style="italic" font-weight="600" letter-spacing=".55" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.5px;stroke-linejoin:round"><textPath href="#areaArc${n}_${k}" startOffset="50%" text-anchor="middle">${s}</textPath></text>`}).join('')}   /* more area names, drawn like the Ashen Forest's */
+{const L=WD.label,mx=(L.x0+L.x1)/2;WILD+=`<path id="fotArc" d="M${L.x0} ${L.y+0.8} Q ${mx} ${L.y-1.6} ${L.x1} ${L.y+0.8}" fill="none"/><text font-size="2.4" font-style="italic" font-weight="600" letter-spacing=".55" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.5px;stroke-linejoin:round"><textPath href="#fotArc" startOffset="50%" text-anchor="middle">Forest of Tears</textPath></text>`;}
+/* ---------- town drawing (world units = rooms), hand-drawn style ---------- */
+function RINGDRAW(){
+  const chains=WD.ring.map(c=>{let all=[];for(let i=0;i<c.length-1;i++){const s=wobPts(c[i],c[i+1],.07,.4);if(i)s.shift();all=all.concat(s)}return curve(all)});
+  for(const d of chains)h+=DIRT(d,.32);
+  const L=WD.link;let all=wobPts(L[0],L[L.length-1],.16,.5);
+  const d=curve(all);
+  h+=DIRT(d,.32,'url(#linkFadeE)','url(#linkFade)','url(#linkFadeH)');
+}
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const R0=rng(7);
+function wobPts(a,b,amp,step=.45){const dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy)||1,n=Math.max(2,Math.round(L/step)),nx=-dy/L,ny=dx/L;const p1=R0()*6.28,p2=R0()*6.28,f1=.9+R0()*.8,f2=2.3+R0();const out=[];for(let i=0;i<=n;i++){const t=i/n,w=(i===0||i===n)?0:amp*(Math.sin(t*L*f1+p1)*.6+Math.sin(t*L*f2+p2)*.4);out.push([+(a[0]+dx*t+nx*w).toFixed(3),+(a[1]+dy*t+ny*w).toFixed(3)])}return out}
+function wobLine(a,b,amp){return curve(wobPts(a,b,amp))}
+function wobRing(c,amp){let all=[];for(let i=0;i<c.length;i++){const s=wobPts(c[i],c[(i+1)%c.length],amp);s.pop();all=all.concat(s)}return ring(all)}
+function wobRect(x0,y0,x1,y1,amp){return wobRing([[x0,y0],[x1,y0],[x1,y1],[x0,y1]],amp)}
+let h='';
+h+=`<rect x="-400" y="-400" width="800" height="800" fill="var(--paper)"/>`;
+h+=WILD;
+RINGDRAW();
+// river: wobbly band with ripples
+{const rp=[[-12,14.05],[-8,13.95],[-4,14.0],[-1,14.2],[3,14.05],[6,14.3],[9,14.5],[12,14.1]];let d=curve(rp);
+ h+=`<path d="${d}" stroke="var(--w-shore)" stroke-width="1.28" fill="none" stroke-linecap="round" opacity=".55"/><path d="${d}" stroke="var(--water)" stroke-width="1.12" fill="none" stroke-linecap="round"/>`;
+ for(let i=0;i<22;i++){const x=-11+i*1.05+R0()*.4,y=13.85+Math.sin(x*.5)*.15+R0()*.35;h+=`<path d="M${x.toFixed(2)} ${y.toFixed(2)} q .18 -.1 .36 0" stroke="var(--w-shore)" stroke-width=".04" fill="none" opacity=".7"/>`}}
+h+=BRIDGEH;
+if(WD.southpath){const sp=curve(WD.southpath);
+  h+=DIRT(sp,.28);}
+if(WD.crumbling){const [x,y0,y1]=WD.crumbling;
+  h+=`<path d="M${x-.32} ${y0} L${x-.32} ${y1} M${x+.32} ${y0} L${x+.32} ${y0+.55} M${x+.32} ${y0+.95} L${x+.32} ${y1}" stroke="var(--stone)" stroke-width=".16" stroke-linecap="round" fill="none"/>`;
+  h+=`<rect x="${x-.26}" y="${y0}" width=".52" height="${y1-y0}" fill="var(--stone-top)" opacity=".9"/>`;
+  for(let y=y0+.12;y<y1;y+=.2)h+=`<line x1="${x-.26}" y1="${y}" x2="${x+.26}" y2="${y+.03}" stroke="var(--stone)" stroke-width=".02" opacity=".7"/>`;
+}
+if(WD.ruins){const [x,y]=WD.ruins;
+  h+=`<ellipse cx="${x+.08}" cy="${y+.25}" rx=".58" ry=".14" fill="var(--t-shade)"/>`;
+  for(const [dx,hh] of [[-.32,.45],[-.08,.25],[.18,.5],[.4,.18]])h+=`<rect x="${x+dx-.06}" y="${y+.2-hh}" width=".12" height="${hh}" fill="var(--stone-top)" stroke="var(--stone)" stroke-width=".03"/>`;
+  h+=`<rect x="${x-.45}" y="${y+.18}" width=".95" height=".08" fill="var(--stone)"/>`;}
+if(WD.elm){const [x,y]=WD.elm;
+  h+=`<rect x="${x-.08}" y="${y}" width=".16" height=".55" fill="var(--wood-line)"/>`+
+  `<circle cx="${x-.35}" cy="${y-.2}" r=".42" fill="var(--t-mid)"/><circle cx="${x+.35}" cy="${y-.15}" r=".42" fill="var(--t-mid)"/><circle cx="${x}" cy="${y-.5}" r=".5" fill="var(--t-light)"/>`;}
+if(WD.marina){const m=WD.marina,[px,p0,p1]=m.pier;
+  h+=`<rect x="${px-.12}" y="${p0}" width=".24" height="${p1-p0}" fill="var(--wood)" stroke="var(--wood-line)" stroke-width=".03"/>`;
+  for(let y=p0+.1;y<p1;y+=.14)h+=`<line x1="${px-.12}" y1="${y}" x2="${px+.12}" y2="${y}" stroke="var(--wood-line)" stroke-width=".015" opacity=".6"/>`;
+  for(const [bx,by] of m.boats)h+=`<path d="M${bx-.32} ${by} q .32 .22 .64 0 l -.08 -.08 h -.48Z" fill="var(--wood-roof)" stroke="var(--wood-line)" stroke-width=".02"/><line x1="${bx}" y1="${by-.06}" x2="${bx}" y2="${by-.42}" stroke="var(--wood-line)" stroke-width=".025"/><path d="M${bx+.02} ${by-.4} l .2 .26 h -.2Z" fill="var(--sail)"/>`;
+  const w=.95,hh=.62,x0=m.x-w/2,y0=m.y-hh/2;
+  h+=`<ellipse cx="${m.x+.06}" cy="${m.y+hh/2}" rx=".6" ry=".1" fill="var(--t-shade)"/><rect x="${x0}" y="${y0+.12}" width="${w}" height="${hh-.12}" fill="var(--wood)" stroke="var(--wood-line)" stroke-width=".035"/><path d="M${x0-.07} ${y0+.17} L${m.x} ${y0-.22} L${x0+w+.07} ${y0+.17}Z" fill="var(--wood-roof)" stroke="var(--wood-line)" stroke-width=".035" stroke-linejoin="round"/><rect x="${m.x-.12}" y="${y0+hh-.22}" width=".24" height=".22" fill="var(--wood-line)"/>`;}
+if(WD.precarious){const [x,y]=WD.precarious;
+  h+=`<rect x="${x-.2}" y="${y-.45}" width=".4" height=".9" fill="var(--wood)" stroke="var(--wood-line)" stroke-width=".03" transform="rotate(4 ${x} ${y})"/>`+[0,1,2,3,4].map(k=>`<line x1="${x-.2}" y1="${y-.35+k*.18}" x2="${x+.2}" y2="${y-.33+k*.18}" stroke="var(--wood-line)" stroke-width=".02" opacity=".6"/>`).join('');}
+// town ground inside the walls
+h+=`<path d="${wobRect(-7.15,-9.15,7.15,9.15,.08)}" fill="var(--city)"/>`;
+// texture: faint hatching of yards
+for(let i=0;i<70;i++){const x=-6.6+R0()*13.2,y=-8.6+R0()*17.2;h+=`<path d="M${x.toFixed(2)} ${y.toFixed(2)} l .22 -.08" stroke="var(--street-edge)" stroke-width=".03" opacity=".35"/>`}
+const LM={'Castle Darkhawk':1,'Temple of Thoric':1};
+const inWalls=b=>!(b.y1>8.5||b.y0<-8.5||b.x1>6.5||b.x0<-6.5);
+// groves
+for(const b of T.blocks){if(!inWalls(b)||b.kind!=='grove')continue;
+  h+=`<path d="${wobRect(b.x0-.42,b.y0-.42,b.x1+.42,b.y1+.42,.1)}" fill="var(--grove)"/>`;
+  const n=Math.max(2,Math.round((b.x1-b.x0+.84)*(b.y1-b.y0+.84)*2.2));
+  const ts=[];for(let i=0;i<n;i++)ts.push([b.x0-.3+R0()*(b.x1-b.x0+.6),b.y0-.3+R0()*(b.y1-b.y0+.6)]);
+  ts.sort((a,c)=>a[1]-c[1]).forEach(t=>h+=`<use href="#tw${Math.floor(R0()*3)}" transform="translate(${t[0].toFixed(2)},${t[1].toFixed(2)}) scale(${(.55+R0()*.2).toFixed(2)})"/>`);}
+// ordinary buildings: little roofs packed into each block
+function house(x,y,w,hh,rot){const c=['var(--roof1)','var(--roof2)','var(--roof3)'][Math.floor(R0()*3)];
+  return `<g transform="translate(${x.toFixed(2)},${y.toFixed(2)}) rotate(${rot.toFixed(1)})"><rect x="${(-w/2+.03).toFixed(2)}" y="${(-hh/2+.04).toFixed(2)}" width="${w.toFixed(2)}" height="${hh.toFixed(2)}" fill="var(--t-shade)"/><rect x="${(-w/2).toFixed(2)}" y="${(-hh/2).toFixed(2)}" width="${w.toFixed(2)}" height="${hh.toFixed(2)}" fill="${c}" stroke="var(--roof-line)" stroke-width=".025"/><rect x="${(-w/2).toFixed(2)}" y="0" width="${w.toFixed(2)}" height="${(hh/2).toFixed(2)}" fill="var(--roof-shade)"/><line x1="${(-w/2).toFixed(2)}" y1="0" x2="${(w/2).toFixed(2)}" y2="0" stroke="var(--roof-line)" stroke-width=".03"/></g>`}
+// Castle Darkhawk: a single small keep just north of the castle doors
+{const p=P.find(q=>q.name==='Castle Darkhawk');if(p){const cx=p.path[p.path.length-1][0],top=-6.75,bot=-5.45,w=.84,x0=cx-w/2;
+  h+=`<ellipse cx="${cx+.08}" cy="${bot+.04}" rx="${w*.62}" ry=".12" fill="var(--t-shade)"/>`;
+  h+=`<rect x="${x0}" y="${top}" width="${w}" height="${bot-top}" fill="var(--roof3)" stroke="var(--wall)" stroke-width=".06"/>`;
+  h+=`<rect x="${cx}" y="${top}" width="${w/2}" height="${bot-top}" fill="var(--roof-shade)"/>`;
+  for(let i=0;i<4;i++){if(i%2)continue;}
+  for(const k of [0,1,2])h+=`<rect x="${x0+k*(w-.2)/2}" y="${top-.2}" width=".2" height=".2" fill="var(--roof3)" stroke="var(--wall)" stroke-width=".05"/>`;
+  h+=`<path d="M${cx-.13} ${bot} v -.26 a .13 .13 0 0 1 .26 0 v .26Z" fill="var(--wall)"/>`;
+  h+=`<rect x="${cx-.06}" y="${top+.3}" width=".12" height=".18" rx=".05" fill="var(--wall)"/>`;
+  h+=`<line x1="${cx}" y1="${top-.2}" x2="${cx}" y2="${top-.62}" stroke="var(--wall)" stroke-width=".04"/><path d="M${cx} ${top-.62} l .28 .08 l -.28 .08Z" fill="var(--mob)"/>`;}}
+// Notre Dame de Sioux: cruciform cathedral with apse and spire
+{const b=T.blocks.find(q=>q.name==='Temple of Thoric'&&q.main);if(b){const x0=b.x0-.4,x1=b.x1+.4,y0=b.y0-.4,y1=b.y1+.4,cx=(x0+x1)/2;
+  h+=`<path d="${wobRect(x0,y0,x1,y1,.05)}" fill="var(--landmark)" opacity=".7"/>`;
+  const nw=.9,ny0=y0+.55,ny1=y1-.25;
+  h+=`<path d="M${cx-nw/2+.04} ${ny0+.04} h ${nw} v ${ny1-ny0} h ${-nw}Z" fill="var(--t-shade)"/>`;
+  h+=`<rect x="${cx-nw/2}" y="${ny0}" width="${nw}" height="${ny1-ny0}" fill="var(--roof3)" stroke="var(--roof-line)" stroke-width=".04"/><rect x="${cx}" y="${ny0}" width="${nw/2}" height="${ny1-ny0}" fill="var(--roof-shade)"/>`;
+  const ty=ny0+.9;h+=`<rect x="${x0+.25}" y="${ty}" width="${x1-x0-.5}" height=".7" fill="var(--roof3)" stroke="var(--roof-line)" stroke-width=".04"/><rect x="${x0+.25}" y="${ty+.35}" width="${x1-x0-.5}" height=".35" fill="var(--roof-shade)"/>`;
+  h+=`<path d="M${cx-nw/2} ${ny0} a ${nw/2} ${nw/2} 0 0 1 ${nw} 0Z" fill="var(--roof3)" stroke="var(--roof-line)" stroke-width=".04"/>`;
+  h+=`<circle cx="${cx}" cy="${ny1-.15}" r=".32" fill="var(--wall)"/><path d="M${cx} ${ny1-.62} l .22 .42 h -.44Z" fill="var(--roof1)"/>`;}}
+// streets: wobbly cobbled lanes
+const segs=[];
+for(const [n,ps] of Object.entries(T.streets)){
+  const xs=ps.map(p=>p[0]),ys=ps.map(p=>p[1]);
+  const horiz=(Math.max(...xs)-Math.min(...xs))>=(Math.max(...ys)-Math.min(...ys));
+  let a,b;
+  if(horiz){const y=Math.round(ys.reduce((s,v)=>s+v,0)/ys.length);a=[Math.min(...xs),y];b=[Math.max(...xs),y]}
+  else{const x=Math.round(xs.reduce((s,v)=>s+v,0)/xs.length);a=[x,Math.min(...ys)];b=[x,Math.max(...ys)]}
+  if(n==='Horizon Road'){a[0]=-7;b[0]=7} if(n==='Vertic Avenue'){a[1]=-9;b[1]=9}
+  if(n==='Thieves Alley'){a=[-6,6];b=[0,6]} if(n==='Park Avenue'){a=[0,6];b=[6,6]}
+  segs.push({n,a,b,horiz,d:wobLine(a,b,.05)});
+}
+const major=n=>n==='Horizon Road'||n==='Vertic Avenue';
+for(const s of segs)h+=`<path d="${s.d}" stroke="var(--street-edge)" stroke-width="${major(s.n)?.6:.48}" fill="none" stroke-linecap="round"/>`;
+for(const s of segs)h+=`<path d="${s.d}" stroke="var(--street)" stroke-width="${major(s.n)?.48:.36}" fill="none" stroke-linecap="round"/>`;
+for(const s of segs)h+=`<path d="${s.d}" stroke="var(--street-edge)" stroke-width="${major(s.n)?.3:.2}" fill="none" stroke-dasharray=".03 .16" stroke-linecap="round" opacity=".55"/>`;
+for(const s of segs){
+  let lx=(s.a[0]+s.b[0])/2,ly=(s.a[1]+s.b[1])/2;
+  if(s.n==='Horizon Road')lx=-3.6; if(s.n==='Thieves Alley')lx=-3; if(s.n==='Park Avenue')lx=3; if(s.n==='Vertic Avenue'||s.n==='Falcon Road')ly=2.4; if(s.n==='Hawk Street')ly=-2.0;
+  if(s.horiz)h+=`<text class="st" x="${lx}" y="${ly+0.12}" text-anchor="middle">${s.n}</text>`;
+  else h+=`<text class="st" transform="translate(${lx+0.12},${ly}) rotate(-90)" text-anchor="middle">${s.n}</text>`;
+}
+// walls: rough stone circuit
+{const wd=wobRect(-7,-9,7,9,.06);
+ h+=`<path d="${wd}" fill="none" stroke="var(--wall)" stroke-width=".34" stroke-linejoin="round"/><path d="${wd}" fill="none" stroke="var(--stone-hi)" stroke-width=".14" stroke-dasharray=".26 .09" stroke-linejoin="round"/>`;}
+for(const [x,y] of [[-7,-9],[7,-9],[-7,9],[7,9]])h+=`<circle cx="${x}" cy="${y}" r=".5" fill="var(--wall)"/><circle cx="${x}" cy="${y}" r=".36" fill="var(--roof3)"/><circle cx="${x}" cy="${y}" r=".5" fill="none" stroke="var(--stone-hi)" stroke-width=".07" stroke-dasharray=".12 .08"/>`;
+for(const g of T.gates){
+  const hz=g.side==='Northern'||g.side==='Southern',ox=hz?.42:0,oy=hz?0:.42;
+  h+=`<rect x="${g.x-.34}" y="${g.y-.34}" width=".68" height=".68" fill="var(--street)"/>`;
+  for(const s of [-1,1])h+=`<circle cx="${g.x+ox*s}" cy="${g.y+oy*s}" r=".27" fill="var(--wall)"/><circle cx="${g.x+ox*s}" cy="${g.y+oy*s}" r=".17" fill="var(--roof1)"/>`;
+  const o={Northern:[1.45,-.95],Southern:[0,1.2],Eastern:[1.35,-.45],Western:[-1.35,-.45]}[g.side];
+  h+=`<text class="lbl" x="${g.x+o[0]}" y="${g.y+o[1]}" text-anchor="middle" font-size=".48" font-weight="600" font-style="italic" style="stroke-width:.12px">${g.name}</text>`;
+}
+h+=`<g id="lanes"></g>`;
+// square: paved plaza with a well
+h+=`<path d="${wobRing(Array.from({length:12},(_,i)=>[Math.cos(i*Math.PI/6)*.72,Math.sin(i*Math.PI/6)*.72]),.03)}" fill="var(--street)" stroke="var(--street-edge)" stroke-width=".06"/>`;
+h+=`<circle r=".5" fill="none" stroke="var(--street-edge)" stroke-width=".03" stroke-dasharray=".05 .07"/>`;
+h+=`<path d="${Array.from({length:10},(_,i)=>{const a=i*Math.PI/5-Math.PI/2,r=i%2?.15:.38;return (i?'L':'M')+(Math.cos(a)*r).toFixed(3)+' '+(Math.sin(a)*r).toFixed(3)}).join(' ')}Z" fill="var(--ink)"/>`;
+h+=`<text class="lbl" x="-.8" y="-.6" text-anchor="end" font-size=".52" font-weight="700" font-style="italic" style="stroke-width:.13px">Darkhaven Square</text>`;
+
+// route layer + pins
+h+=`<g id="gfx" pointer-events="none"></g><g id="routeLayer"></g><g id="pins"></g>`;
+world.innerHTML=h;
+/* ---------- pins ---------- */
+const groupHalls=['Isle of the Monkeys','A Moment in Nature'];
+P.forEach((p,i)=>{
+  const end=p.path[p.path.length-1],v=DIRV[p.dir];
+  let x=end[0]+v[0]*.62,y=end[1]+v[1]*.62;
+  if(p.dir==='d'){x=end[0]+.62;y=end[1]+.05}
+  if(p.dir==='here'){x=end[0];y=end[1]}
+  const gi=groupHalls.indexOf(p.name);
+  if(gi>=0){x=end[0]+.62+ (gi===0?-.32:.32);y=end[1]+.95}
+  const NUDGE={"Intrigues of the Miden'nir":[-.3,.45],'Southern Plains':[0,.8],'Florebit in Immortalis Iuvenis':[.4,-.35],'Haven of Everlasting Light':[-.6,-.9],'Old Thalos':[-.6,0],"V'laresch":[.15,.55],'Tullfuhrzky Manor':[-.6,0],'Ofcol':[-.85,0]};
+  {const nk=p.key||p.name;if(NUDGE[nk]){x+=NUDGE[nk][0];y+=NUDGE[nk][1]}}
+  if(p.name==="Lake of Tich'Pyga"&&DATA.wild&&DATA.wild.lakelabel){const L=DATA.wild.lakelabel,ca=Math.cos(L.a*Math.PI/180),sa=Math.sin(L.a*Math.PI/180);if(L.drop!=null){x=L.x-sa*L.drop;y=L.y+ca*L.drop}else{x=L.x-ca*(L.half||3.3);y=L.y-sa*(L.half||3.3)}p.lake=L;}
+  p.mx=x;p.my=y;p.i=i;
+});
+let pins='';
+for(const p of P){
+  const sub=groupHalls.includes(p.name);
+  if(sub){const hl=P.find(q=>q.name==='Halls of Knowledge');pins+=`<line x1="${hl.mx}" y1="${hl.my}" x2="${p.mx}" y2="${p.my}" stroke="var(--soft)" stroke-width=".05" stroke-dasharray=".1 .1"/>`}
+}
+for(const p of P){
+  const sub=groupHalls.includes(p.name);
+  const r=sub?.2:p.group?.36:.26;
+  const S_=p.group?.34:.24;const shape=p.kind==='structure'?`<rect class="dot" x="${-S_}" y="${-S_}" width="${2*S_}" height="${2*S_}" rx=".06" fill="var(--pin)" stroke="var(--panel)" stroke-width=".07"/>`:p.kind==='town'?`<g transform="translate(0 .35) scale(2.125)" stroke="var(--panel)" stroke-width=".03" stroke-linejoin="round"><rect class="dot" x="-.5" y="-.02" width="1" height=".42" fill="var(--pin)"/><rect class="dot" x="-.58" y="-.38" width=".34" height=".78" fill="var(--pin)"/><rect class="dot" x=".24" y="-.38" width=".34" height=".78" fill="var(--pin)"/><rect class="dot" x="-.18" y="-.58" width=".36" height=".98" fill="var(--pin)"/><path class="dot" d="M-.23 -.58 L0 -.9 L.23 -.58Z" fill="var(--pin)"/><g class="dot" fill="var(--pin)"><rect x="-.58" y="-.49" width=".1" height=".11"/><rect x="-.46" y="-.49" width=".1" height=".11"/><rect x="-.34" y="-.49" width=".1" height=".11"/><rect x=".24" y="-.49" width=".1" height=".11"/><rect x=".36" y="-.49" width=".1" height=".11"/><rect x=".48" y="-.49" width=".1" height=".11"/></g><path d="M-.1 .4 V.18 a.1 .1 0 0 1 .2 0 V.4Z" fill="var(--panel)" stroke="none"/></g>`:p.kind==='mob'?`<circle class="dot" r="${p.group?.3:.2}" fill="var(--mob)" stroke="var(--panel)" stroke-width=".07"/><circle r="${p.group?.5:.34}" fill="none" stroke="var(--mob)" stroke-width=".07"/>`:p.kind==='guild'?`<rect class="dot" x="-.21" y="-.21" width=".42" height=".42" transform="rotate(45)" fill="var(--pin)" stroke="var(--panel)" stroke-width=".07"/>`:`<circle class="dot" r="${r}" fill="var(--pin)" stroke="var(--panel)" stroke-width=".07"/>`;
+  pins+=`<g class="pin" data-i="${p.i}" transform="translate(${p.mx},${p.my})"><circle r=".55" fill="transparent"/>${shape}${p.dir==='d'&&!sub?`<path d="M-.14 .36 L0 .52 L.14 .36" fill="none" stroke="var(--pin)" stroke-width=".06"/>`:''}</g>`;
+}
+// labels
+const LBL={'Darkhaven Art Gallery':[-0.15,-.5,'end'],'Dragon Cult':[.38,.02,'start'],'Warehouse':[-.38,.0,'end'],'Halls of Knowledge':[.4,.02,'start'],'Isle of the Monkeys':[-.3,.12,'end'],'A Moment in Nature':[.3,.12,'start'],'Guild of Origin':[-.1,-.5,'end'],'Guild of Spirit':[.35,-.2,'start'],'Guild of Nature':[.38,.05,'start'],'Castle Darkhawk':[.4,.0,'start'],'Notre Dame de Sioux':[.4,.0,'start'],'Sonoria':[.45,.0,'start'],"V'laresch":[.55,.2,'start'],'Old Thalos':[-.55,.2,'end'],'Haven of Everlasting Light':[-.55,.06,'end'],"Intrigues of the Miden'nir":[-.55,.1,'end'],'Southern Plains':[-.55,.06,'end'],'Shattered Refuge':[-.55,.1,'end'],'Ofcol':[-1.5,-.15,'end'],'Keep of Lomar':[-.55,.06,'end'],'Mountain of Lost Souls':[-.55,.06,'end'],'Revelation City':[-.55,.06,'end'],"Ezard's Fields":[-.55,.06,'end'],'Northern Trade Route':[0,-.62,'middle'],'Darkhaven Marina':[.4,.05,'start'],"Falcon's Nest Tavern":[-.5,.08,'end']};
+Object.assign(LBL,{'Keep of Belial':[-.55,.05,'end'],"The Wolf's Den":[-.55,.05,'end'],'Eastern Trade Route':[.5,.95,'start'],"King's Castle":[.55,.05,'start'],"Glimwinkle's Windmill":[.55,.06,'start'],'Ocean Keep':[.55,.05,'start'],'Troll Den':[0,-1.95,'middle'],'White Pine Camp':[.95,-.45,'start'],'Fire Station':[.55,.22,'start'],'Moria':[.4,1.33,'start'],'Land of the Fire Newts':[.55,-.1,'start'],'Machine Dreams':[.55,1.1,'start']});const PINNED=new Set(['Mountain of Lost Souls','Keep of Belial',"The Wolf's Den",'Eastern Trade Route',"King's Castle","Glimwinkle's Windmill",'Ocean Keep','Troll Den','White Pine Camp','Fire Station','Moria','Land of the Fire Newts','Machine Dreams']);
+for(const p of P){if(p.lake){const L=p.lake,ca=Math.cos(L.a*Math.PI/180),sa=Math.sin(L.a*Math.PI/180),tx=L.drop!=null?L.x:p.mx+ca*(L.half?1.1:.55),ty=L.drop!=null?L.y:p.my+sa*(L.half?1.1:.55);
+  pins+=`<text class="plabel" data-i="${p.i}" x="${tx}" y="${ty}" transform="rotate(${L.a} ${tx} ${ty})" text-anchor="${L.drop!=null?'middle':'start'}" dominant-baseline="middle" font-size="${L.size||.66}" font-style="italic" letter-spacing="${L.ls||.14}" fill="var(--lake-label)" style="cursor:pointer;paint-order:stroke;stroke:var(--water);stroke-width:${((L.size||.66)*.24).toFixed(3)}px;stroke-linejoin:round">${esc(p.name)}</text>`;continue}
+ const o=LBL[p.key||p.name]||(p.group?[.55,.06,'start']:[.35,0,'start']);pins+=`<text class="lbl plabel" data-i="${p.i}" x="${p.mx+o[0]}" y="${p.my+o[1]+.15}" text-anchor="${o[2]}" font-size="${groupHalls.includes(p.name)?.36:p.group?.96:.44}" font-style="italic" style="stroke-width:${p.group?.16:.11}px;cursor:pointer">${esc(p.name)}</text>`}
+document.getElementById('pins').innerHTML=pins;
+const LCACHE={};function laneD(pts,k){if(LCACHE[k])return LCACHE[k];let all=[];for(let i=0;i<pts.length-1;i++){const s=wobPts(pts[i],pts[i+1],.06,.35);if(i)s.shift();all=all.concat(s)}return LCACHE[k]=curve(all)}
+const LANES=['Guild of Spirit','Guild of Origin','Castle Darkhawk','Notre Dame de Sioux','Sonoria'];
+let ln='';
+for(const p of P){if(!LANES.includes(p.name))continue;const pts=[...p.path];if(p.dir!=='here')pts.push([p.mx,p.my]);const d=laneD(pts,p.name);
+  ln+=`<path d="${d}" fill="none" stroke="var(--street-edge)" stroke-width=".3" stroke-linecap="round" stroke-linejoin="round"/>`;}
+for(const p of P){if(!LANES.includes(p.name))continue;const pts=[...p.path];if(p.dir!=='here')pts.push([p.mx,p.my]);const d=laneD(pts,p.name);
+  ln+=`<path d="${d}" fill="none" stroke="var(--lane)" stroke-width=".2" stroke-linecap="round" stroke-linejoin="round"/>`;}
+document.getElementById('lanes').innerHTML=ln;
+/* ---------- marker names outside the town: measured as drawn, then placed clear of each other, markers, titles and trails ---------- */
+(function placeLabels(){
+  const K=40,sr=svg.getBoundingClientRect(),saved=world.getAttribute('transform');
+  world.setAttribute('transform',`scale(${K})`);
+  const rect=e=>{const r=e.getBoundingClientRect();return {x0:(r.left-sr.left)/K,y0:(r.top-sr.top)/K,x1:(r.right-sr.left)/K,y1:(r.bottom-sr.top)/K}};
+  const ov=(a,b)=>a.x0<b.x1&&a.x1>b.x0&&a.y0<b.y1&&a.y1>b.y0;
+  const labs=[...svg.querySelectorAll('.plabel.lbl')].filter(t=>P[+t.dataset.i].group);
+  const wildSet=new Set(labs);
+  const texts=[...svg.querySelectorAll('#world text')].filter(t=>!wildSet.has(t)).map(rect).filter(r=>r.x1-r.x0>0);   // titles, the lake's name, the town's own names ...
+  const pinR={};svg.querySelectorAll('.pin').forEach(g=>{pinR[+g.dataset.i]=rect(g)});
+  const pins=Object.values(pinR);
+  texts.push({x0:-7.8,y0:-9.8,x1:7.8,y1:9.8});                                  // the town walls
+  const W=DATA.wild,lines=[...(W.fwtracks||[]),...(W.ashtracks||[]),...(W.etrtracks||[]),...(W.swtracks||[]),W.road,W.southpath,W.link,...(W.ring||[]),...(W.ribbons||[])].filter(Boolean);
+  const grid=new Map();const put=(x,y)=>{const k=Math.floor(x)+','+Math.floor(y);(grid.get(k)||grid.set(k,[]).get(k)).push([x,y])};
+  for(const ln of lines)for(let i=0;i<ln.length-1;i++){const a=ln[i],b=ln[i+1],n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/.3));for(let s=0;s<=n;s++)put(a[0]+(b[0]-a[0])*s/n,a[1]+(b[1]-a[1])*s/n)}
+  const nearPath=r=>{let c=0;for(let gx=Math.floor(r.x0-.1);gx<=Math.floor(r.x1+.1);gx++)for(let gy=Math.floor(r.y0-.1);gy<=Math.floor(r.y1+.1);gy++){for(const q of grid.get(gx+','+gy)||[])if(q[0]>=r.x0-.1&&q[0]<=r.x1+.1&&q[1]>=r.y0-.1&&q[1]<=r.y1+.1)c++}return c};
+  const info=labs.map(t=>{const bb=t.getBBox(),x=+t.getAttribute('x'),y=+t.getAttribute('y'),i=+t.dataset.i;return {t,i,w:bb.width,h:bb.height,ty:bb.y-y,x,y,anchor:t.getAttribute('text-anchor'),def:{x,y,anchor:t.getAttribute('text-anchor')}}});
+  const rectOf=(L,c)=>{const x0=c.anchor==='end'?c.x-L.w:c.anchor==='middle'?c.x-L.w/2:c.x;return {x0:x0-.05,x1:x0+L.w+.05,y0:c.y+L.ty-.03,y1:c.y+L.ty+L.h+.03}};
+  const cands=L=>{const p=pinR[L.i],cx=(p.x0+p.x1)/2,cy=(p.y0+p.y1)/2,rx=(p.x1-p.x0)/2+.22,ry=(p.y1-p.y0)/2+.22,h=L.h,ty=L.ty;
+    const mid=cy-(ty+h/2),out=[L.def];
+    for(const g of [0,.8,1.7]){          // each direction at a few distances from the marker
+      for(const dy of [0,-.75,.75,-1.5,1.5])out.push({x:cx+rx+g,y:mid+dy,anchor:'start'},{x:cx-rx-g,y:mid+dy,anchor:'end'});
+      for(const dx of [0,-1,1,-2.2,2.2])out.push({x:cx+dx,y:cy-ry-g-ty-h,anchor:'middle'},{x:cx+dx,y:cy+ry+g-ty,anchor:'middle'});
+      out.push({x:cx+rx*.75+g,y:cy-ry*.6-g-ty-h,anchor:'start'},{x:cx-rx*.75-g,y:cy-ry*.6-g-ty-h,anchor:'end'},
+               {x:cx+rx*.75+g,y:cy+ry*.6+g-ty,anchor:'start'},{x:cx-rx*.75-g,y:cy+ry*.6+g-ty,anchor:'end'})}
+    return out};
+  const cur=new Map(info.map(L=>[L,rectOf(L,L)]));
+  const score=(L,c,k)=>{const r=rectOf(L,c);let s=k*.12;
+    for(const o of texts)if(ov(r,o))s+=900;
+    for(const [i,pr] of Object.entries(pinR))if(ov(r,pr))s+=(+i===L.i?900:700);
+    for(const [M,mr] of cur)if(M!==L&&ov(r,mr))s+=1000;
+    s+=Math.min(nearPath(r),24)*30;return s};
+  const crowd=L=>{const p=pinR[L.i];let n=0;for(const q of pins){if(Math.abs((q.x0+q.x1)/2-(p.x0+p.x1)/2)<7&&Math.abs((q.y0+q.y1)/2-(p.y0+p.y1)/2)<7)n++}return n};
+  info.sort((a,b)=>crowd(b)-crowd(a));
+  for(let pass=0;pass<3;pass++){let moved=0;
+    for(const L of info){if(PINNED.has(P[L.i].name))continue;const cs=cands(L);let best=0,bs=Infinity;cs.forEach((c,k)=>{const s=score(L,c,k);if(s<bs){bs=s;best=k}});
+      const c=cs[best];if(c.x!==L.x||c.y!==L.y||c.anchor!==L.anchor){L.x=c.x;L.y=c.y;L.anchor=c.anchor;cur.set(L,rectOf(L,L));moved++}}
+    if(!moved)break}
+  for(const L of info){L.t.setAttribute('x',L.x.toFixed(3));L.t.setAttribute('y',L.y.toFixed(3));L.t.setAttribute('text-anchor',L.anchor)}
+  world.setAttribute('transform',saved||'');
+  window.__labelReport=info.map(L=>({name:P[L.i].name,score:Math.round(score(L,L,0))}));
+})();
+
+/* ---------- small drawings beside certain names and markers ---------- */
+(function drawGfx(){
+  const G=(DATA.wild.gfx||[]);const layer=document.getElementById('gfx');if(!G.length||!layer)return;
+  const L='stroke="var(--g-line)" stroke-width=".07" stroke-linejoin="round"';
+  const batt=(x0,x1,y,n)=>{let s='';const w=(x1-x0)/(2*n-1);for(let i=0;i<n;i++)s+=`<rect x="${x0+2*i*w}" y="${y-.16}" width="${w}" height=".18" fill="var(--g-stone)" ${L}/>`;return s};
+  const SPRITE={
+    castle:()=>`<ellipse cx="0" cy="1.42" rx="2.15" ry=".2" fill="#000" opacity=".2"/>
+      <rect x="-1.95" y=".15" width="3.9" height="1.25" fill="var(--g-stone)" ${L}/>${batt(-1.95,1.95,.15,9)}
+      <rect x="-2.1" y="-.55" width=".95" height="1.95" fill="var(--g-stone)" ${L}/><path d="M-2.2 -.55 L-1.625 -1.5 L-1.05 -.55Z" fill="var(--g-roof)" ${L}/>
+      <rect x="1.15" y="-.55" width=".95" height="1.95" fill="var(--g-stone)" ${L}/><path d="M1.05 -.55 L1.625 -1.5 L2.2 -.55Z" fill="var(--g-roof)" ${L}/>
+      <rect x="-.78" y="-.95" width="1.56" height="2.35" fill="var(--g-stone)" ${L}/>${batt(-.78,.78,-.95,4)}
+      <line x1="0" y1="-1.1" x2="0" y2="-1.8" stroke="var(--g-line)" stroke-width=".07"/><path d="M0 -1.8 L.6 -1.62 L0 -1.44Z" fill="var(--g-flag)" ${L}/>
+      <path d="M-.3 1.4 V.78 A.3 .3 0 0 1 .3 .78 V1.4Z" fill="var(--g-dark)"/>
+      <rect x="-1.7" y="-.2" width=".12" height=".32" fill="var(--g-dark)"/><rect x="1.58" y="-.2" width=".12" height=".32" fill="var(--g-dark)"/><rect x="-.07" y="-.5" width=".14" height=".34" fill="var(--g-dark)"/>`,
+    windmill:()=>`<ellipse cx="0" cy="1.5" rx="1.0" ry=".16" fill="#000" opacity=".2"/>
+      <path d="M-.58 1.5 L-.4 -.3 L.4 -.3 L.58 1.5Z" fill="var(--g-wall)" ${L}/>
+      <path d="M-.14 1.5 V1.15 A.14 .14 0 0 1 .14 1.15 V1.5Z" fill="var(--g-dark)"/><rect x="-.07" y=".2" width=".14" height=".22" fill="var(--g-dark)"/>
+      <path d="M-.52 -.3 Q0 -1.0 .52 -.3Z" fill="var(--g-roof)" ${L}/>
+      <g transform="translate(0,-.45) rotate(18)">${[0,90,180,270].map(a=>`<g transform="rotate(${a})"><rect x=".08" y="-.05" width="1.25" height=".1" fill="var(--g-wood)" ${L}/><rect x=".3" y="-.36" width=".95" height=".31" fill="var(--g-cloth)" ${L}/><line x1=".55" y1="-.36" x2=".55" y2="-.05" stroke="var(--g-line)" stroke-width=".03"/><line x1=".8" y1="-.36" x2=".8" y2="-.05" stroke="var(--g-line)" stroke-width=".03"/><line x1="1.02" y1="-.36" x2="1.02" y2="-.05" stroke="var(--g-line)" stroke-width=".03"/></g>`).join('')}<circle r=".12" fill="var(--g-wood)" ${L}/></g>`,
+    keep:()=>`<ellipse cx="0" cy="1.7" rx="1.45" ry=".16" fill="#000" opacity=".22"/>
+      <rect x="-1.25" y="1.0" width="2.5" height=".72" fill="var(--g-stone)" ${L}/>${batt(-1.25,1.25,1.0,6)}
+      <rect x="-.85" y="-1.25" width="1.7" height="2.95" fill="var(--g-stone)" ${L}/>
+      <rect x="-1.02" y="-1.52" width="2.04" height=".34" fill="var(--g-stone)" ${L}/>${batt(-1.02,1.02,-1.52,5)}
+      <line x1="0" y1="-1.7" x2="0" y2="-2.55" stroke="var(--g-line)" stroke-width=".07"/><path d="M0 -2.55 L.65 -2.36 L0 -2.17Z" fill="var(--g-flag)" ${L}/>
+      <path d="M-.28 1.7 V1.12 A.28 .28 0 0 1 .28 1.12 V1.7Z" fill="var(--g-dark)"/>
+      <rect x="-.07" y="-.7" width=".14" height=".42" fill="var(--g-dark)"/><rect x="-.07" y=".1" width=".14" height=".42" fill="var(--g-dark)"/><rect x="-.52" y="-.2" width=".12" height=".34" fill="var(--g-dark)"/><rect x=".4" y="-.2" width=".12" height=".34" fill="var(--g-dark)"/>`,
+    darkpeak:()=>`<ellipse cx="0" cy="1.25" rx="2.0" ry=".2" fill="#000" opacity=".3"/>
+      <path d="M-2.0 1.25 L-1.1 .1 L-.75 .35 L-.15 -1.25 L.2 -.85 L.45 -1.05 L1.15 .05 L1.45 -.15 L2.0 1.25Z" fill="#232024" stroke="#0E0C0F" stroke-width=".07" stroke-linejoin="round"/>
+      <path d="M-.15 -1.25 L.05 -.2 L-.35 .5 L.1 1.25 L2.0 1.25 L1.45 -.15 L1.15 .05 L.45 -1.05 L.2 -.85Z" fill="#000" opacity=".35"/>
+      <path d="M-.15 -1.25 L-.42 -.6 L-.25 -.68 L-.12 -.5 L.02 -.75 L.2 -.85Z" fill="#4A4248"/>
+      <path d="M-1.1 .1 L-1.0 .5 M.45 -1.05 L.6 -.4 L.5 .2 M-.75 .35 L-.55 .9" fill="none" stroke="#0E0C0F" stroke-width=".05"/>
+      <circle cx="-.08" cy=".3" r=".06" fill="#8A2E2E"/><circle cx=".1" cy=".32" r=".05" fill="#8A2E2E"/>
+      <path d="M-2.3 -.2 Q-1.6 -.45 -.9 -.25 M1.0 -.6 Q1.7 -.85 2.3 -.6" fill="none" stroke="rgba(60,58,64,.7)" stroke-width=".12" stroke-linecap="round"/>`,
+    barrow:()=>`<ellipse cx="0" cy=".95" rx="2.25" ry=".2" fill="#000" opacity=".28"/>
+      <path d="M-2.2 .95 Q-1.9 -.15 -.6 -.55 Q.2 -.75 1.1 -.45 Q2.0 -.05 2.25 .95Z" fill="#4D4A33" stroke="#1E1C14" stroke-width=".06" stroke-linejoin="round"/>
+      <path d="M-.6 -.55 Q.2 -.75 1.1 -.45 Q2.0 -.05 2.25 .95 L.9 .95 Q.9 -.1 -.6 -.55Z" fill="#000" opacity=".22"/>
+      <path d="M-1.6 .3 Q-1.2 -.15 -.6 -.32 M.2 -.5 Q.8 -.45 1.3 -.2" fill="none" stroke="#66623F" stroke-width=".05" stroke-linecap="round"/>
+      <path d="M-.62 .95 V.12 H.62 V.95" fill="none" stroke="var(--g-stone)" stroke-width=".22"/><rect x="-.82" y="-.12" width="1.64" height=".26" rx=".05" fill="var(--g-stone)" ${L}/>
+      <path d="M-.48 .95 V.3 H.48 V.95Z" fill="var(--g-dark)"/>
+      <path d="M-1.95 .95 V.45 L-1.8 .4 L-1.75 .95Z M1.75 .95 V.38 L1.92 .44 L1.95 .95Z M-2.25 .95 V.62 L-2.12 .6 L-2.1 .95Z" fill="var(--g-stone)" ${L}/>`,
+    grove:(g)=>{let s='';for(const q of (g.t||[])){const [x,y,r,tall]=q,h=tall?r*1.5:r*1.05;
+        s+=`<ellipse cx="${(x+r*.15).toFixed(2)}" cy="${(y+.05).toFixed(2)}" rx="${(r*.95).toFixed(2)}" ry="${(r*.32).toFixed(2)}" fill="#000" opacity=".28"/>`
+         +`<rect x="${(x-r*.09).toFixed(2)}" y="${(y-h*.55).toFixed(2)}" width="${(r*.18).toFixed(2)}" height="${(h*.6).toFixed(2)}" fill="#3A2C1E"/>`
+         +`<ellipse cx="${x.toFixed(2)}" cy="${(y-h*.75).toFixed(2)}" rx="${(r*.78).toFixed(2)}" ry="${(r*(tall?.95:.72)).toFixed(2)}" fill="${tall?'#2B4129':'#34492E'}" stroke="rgba(0,0,0,.55)" stroke-width=".05"/>`
+         +`<ellipse cx="${(x-r*.2).toFixed(2)}" cy="${(y-h*.75-r*.22).toFixed(2)}" rx="${(r*.42).toFixed(2)}" ry="${(r*.36).toFixed(2)}" fill="${tall?'#3B5636':'#46603C'}" opacity=".85"/>`;}
+      return s},
+    palisade:()=>`<ellipse cx="0" cy="1.0" rx="1.6" ry=".16" fill="#000" opacity=".22"/>
+      <path d="M-1.05 .1 L-.6 -.85 L-.15 .1Z" fill="var(--g-roof)" ${L}/><path d="M-.25 .05 L.25 -1.05 L.75 .05Z" fill="var(--g-roof)" ${L}/><path d="M.55 .15 L.95 -.6 L1.35 .15Z" fill="var(--g-roof)" ${L}/>
+      <line x1=".2" y1="-1.05" x2=".12" y2="-1.3" stroke="var(--g-line)" stroke-width=".06"/><line x1=".3" y1="-1.05" x2=".38" y2="-1.3" stroke="var(--g-line)" stroke-width=".06"/>
+      ${Array.from({length:17},(_,i)=>{const x=-1.5+i*.185,h=(i%3===1?.12:0)+(i%2?.05:0);return `<path d="M${x.toFixed(3)} 1.0 V${(.0-h).toFixed(3)} L${(x+.08).toFixed(3)} ${(-.24-h).toFixed(3)} L${(x+.16).toFixed(3)} ${(.0-h).toFixed(3)} V1.0Z" fill="var(--g-wood)" ${L}/>`}).join('')}
+      <rect x="-1.52" y=".42" width="3.15" height=".09" fill="var(--g-dark)" opacity=".7"/>
+      <path d="M-.17 1.0 V.55 L.0 .42 L.17 .55 V1.0Z" fill="var(--g-dark)"/>`,
+    stonecity:()=>`<ellipse cx="0" cy="1.2" rx="1.8" ry=".16" fill="#000" opacity=".22"/>
+      <rect x="-1.25" y="-.35" width=".8" height="1.15" fill="var(--g-stone)" ${L}/><rect x=".45" y="-.5" width=".85" height="1.3" fill="var(--g-stone)" ${L}/>
+      <rect x="-.45" y="-.95" width=".9" height="1.75" fill="var(--g-stone)" ${L}/><path d="M-.45 -.95 Q0 -1.5 .45 -.95Z" fill="var(--g-stone)" ${L}/>
+      <line x1="0" y1="-1.22" x2="0" y2="-1.55" stroke="var(--g-line)" stroke-width=".06"/>
+      <rect x="-1.62" y=".55" width="3.24" height=".65" fill="var(--g-stone)" ${L}/>${batt(-1.62,1.62,.55,9)}
+      <path d="M-.2 1.2 V.85 A.2 .2 0 0 1 .2 .85 V1.2Z" fill="var(--g-dark)"/>
+      <rect x="-.98" y="-.1" width=".12" height=".26" fill="var(--g-dark)"/><rect x="-.72" y="-.1" width=".12" height=".26" fill="var(--g-dark)"/>
+      <rect x="-.06" y="-.6" width=".12" height=".3" fill="var(--g-dark)"/><rect x="-.06" y="0" width=".12" height=".3" fill="var(--g-dark)"/>
+      <rect x=".7" y="-.25" width=".12" height=".26" fill="var(--g-dark)"/><rect x=".98" y="-.25" width=".12" height=".26" fill="var(--g-dark)"/>`,
+    ruin:()=>`<ellipse cx="0" cy=".95" rx="1.45" ry=".15" fill="#000" opacity=".22"/>
+      <path d="M-1.1 .95 V-.55 L-.85 -.75 L-.7 -.5 L-.45 -.9 L-.25 -.4 L-.05 -.55 V.2 L.3 .05 L.45 .3 V-.2 L.62 -.05 L.8 -.45 L1.05 -.3 V.95Z" fill="var(--g-stone)" ${L}/>
+      <path d="M-.62 .95 V.4 A.22 .22 0 0 1 -.18 .4 V.95Z" fill="var(--g-dark)"/><rect x=".52" y=".25" width=".18" height=".26" fill="var(--g-dark)"/>
+      <path d="M-.9 -.2 L-.75 .1 L-.82 .3 M.75 .45 L.9 .7" fill="none" stroke="var(--g-line)" stroke-width=".05"/>
+      <rect x="1.1" y=".68" width=".3" height=".22" fill="var(--g-stone)" ${L} transform="rotate(-12 1.25 .79)"/><rect x="-1.45" y=".72" width=".24" height=".18" fill="var(--g-stone)" ${L}/>
+      <rect x=".1" y=".75" width=".2" height=".15" fill="var(--g-stone)" ${L} transform="rotate(20 .2 .82)"/>`,
+    inn:()=>`<ellipse cx="0" cy="1.22" rx="1.85" ry=".18" fill="#000" opacity=".2"/>
+      <rect x="-1.25" y="-.1" width="2.5" height="1.32" fill="var(--g-wall)" ${L}/>
+      <path d="M-1.45 -.1 L0 -1.05 L1.45 -.1Z" fill="var(--g-roof)" ${L}/>
+      <rect x=".72" y="-1.0" width=".3" height=".62" fill="var(--g-stone)" ${L}/>
+      <path d="M-.62 1.22 V.62 A.3 .3 0 0 1 -.02 .62 V1.22Z" fill="var(--g-dark)"/>
+      <rect x=".25" y=".28" width=".32" height=".34" fill="var(--g-lit)" ${L}/><rect x=".75" y=".28" width=".32" height=".34" fill="var(--g-lit)" ${L}/><rect x="-1.0" y=".28" width=".26" height=".3" fill="var(--g-lit)" ${L}/>
+      <rect x="-.1" y="-.62" width=".3" height=".28" fill="var(--g-lit)" ${L}/>
+      <line x1="1.55" y1="1.22" x2="1.55" y2=".1" stroke="var(--g-line)" stroke-width=".07"/><line x1="1.55" y1=".18" x2="1.22" y2=".18" stroke="var(--g-line)" stroke-width=".06"/><rect x="1.0" y=".2" width=".42" height=".34" fill="var(--g-wood)" ${L}/>
+      <circle cx="1.21" cy=".37" r=".07" fill="var(--g-cloth)"/>`,
+    town:()=>`<ellipse cx="0" cy="1.22" rx="2.2" ry=".2" fill="#000" opacity=".2"/>
+      <rect x="-1.95" y=".15" width="1.1" height="1.07" fill="var(--g-wall)" ${L}/><path d="M-2.05 .15 L-1.4 -.5 L-.75 .15Z" fill="var(--g-roof)" ${L}/>
+      <rect x="-.55" y="-.2" width="1.35" height="1.42" fill="var(--g-wall)" ${L}/><path d="M-.67 -.2 L.12 -.92 L.92 -.2Z" fill="var(--g-roof)" ${L}/><path d="M-.1 1.22 V.8 A.22 .22 0 0 1 .34 .8 V1.22Z" fill="var(--g-dark)"/>
+      <rect x="1.0" y="-.55" width=".62" height="1.77" fill="var(--g-stone)" ${L}/><path d="M.92 -.55 L1.31 -1.3 L1.7 -.55Z" fill="var(--g-roof)" ${L}/><rect x="1.24" y="-.28" width=".14" height=".26" fill="var(--g-dark)"/>
+      <rect x="1.72" y=".3" width=".5" height=".92" fill="var(--g-wall)" ${L}/><path d="M1.64 .3 L1.97 -.2 L2.3 .3Z" fill="var(--g-roof)" ${L}/>
+      <rect x="-1.62" y=".45" width=".2" height=".22" fill="var(--g-dark)"/><rect x="-1.22" y=".45" width=".2" height=".22" fill="var(--g-dark)"/><rect x="-.35" y=".1" width=".2" height=".24" fill="var(--g-dark)"/><rect x=".5" y=".1" width=".2" height=".24" fill="var(--g-dark)"/>`};
+  let out='';
+  for(const g of G){
+    let cx,cy,p=null;if(g.at!=='xy'){p=P.find(q=>q.name===g.label);if(!p)continue}
+    if(g.at==='xy'){cx=g.x;cy=g.y}
+    else if(g.at==='above-pin'){cx=p.mx+(g.dx||0);cy=p.my-.5-g.h/2+(g.dy||0)}
+    else{const t=[...svg.querySelectorAll('.plabel.lbl')].find(e=>P[+e.dataset.i]===p);if(!t)continue;const bb=t.getBBox();cx=bb.x+bb.width/2+(g.dx||0);cy=(g.at==='above-text'?bb.y-g.h/2-.12:bb.y+bb.height+g.h/2+.08)+(g.dy||0)}  // at: 'above-text' or 'below-text'
+    if(g.k==='text'){out+=`<text x="${g.x}" y="${g.y}" text-anchor="middle" font-size=".38" font-style="italic" fill="var(--soft)" style="paint-order:stroke;stroke:var(--halo);stroke-width:.1px;stroke-linejoin:round">${g.text}</text>`;continue}
+    const dx={castle:4,windmill:2.4,town:4.4,inn:3,keep:2.6,palisade:3.3,stonecity:3.5,ruin:3.0,darkpeak:4.4,barrow:4.6,grove:1}[g.k],dy={castle:3.3,windmill:3.2,town:2.6,inn:2.4,keep:5.3,palisade:2.5,stonecity:2.9,ruin:2.1,darkpeak:2.9,barrow:2.3,grove:1}[g.k];
+    out+=`<g class="gfx-${g.k}" transform="translate(${cx.toFixed(3)},${cy.toFixed(3)}) scale(${(g.w/dx).toFixed(4)},${(g.h/dy).toFixed(4)})">${SPRITE[g.k](g)}</g>`;
+  }
+  layer.innerHTML=out;
+})();
+
+/* ---------- camera ---------- */
+let cam={x:0,y:1,k:30},VW=0,VH=0;
+function apply(){world.setAttribute('transform',`translate(${VW/2-cam.x*cam.k},${VH/2-cam.y*cam.k}) scale(${cam.k})`)}
+function fitB(x0,y0,x1,y1,pad=40){const det=document.getElementById('detail').classList.contains('open')&&VW>760?380:0;const bp=VW<=760?64:0;const k=Math.min((VW-2*pad-det)/(x1-x0),(VH-2*pad-bp)/(y1-y0));return{x:(x0+x1)/2+det/2/k,y:(y0+y1)/2+bp/2/k,k:Math.max(3,Math.min(200,k))}}
+const fitAll=()=>fitB(WD.bounds[0],WD.bounds[1],WD.bounds[2],WD.bounds[3],24);
+let anim=null;
+function flyTo(t){if(reduce){cam=t;apply();return}const s={...cam},t0=performance.now();cancelAnimationFrame(anim);const step=n=>{let u=Math.min(1,(n-t0)/480);u=1-Math.pow(1-u,3);cam={x:s.x+(t.x-s.x)*u,y:s.y+(t.y-s.y)*u,k:Math.exp(Math.log(s.k)+(Math.log(t.k)-Math.log(s.k))*u)};apply();if(u<1)anim=requestAnimationFrame(step)};anim=requestAnimationFrame(step)}
+function resize(){const r=svg.getBoundingClientRect();VW=r.width;VH=r.height;apply()}
+window.addEventListener('resize',resize);
+/* pan / zoom */
+const pts=new Map();let drag=null,moved=false,pinch=null;
+const wx=X=>(X-VW/2)/cam.k+cam.x, wy=Y=>(Y-VH/2)/cam.k+cam.y;
+svg.addEventListener('pointerdown',e=>{if(e.target.closest('.pin,.plabel'))return;svg.setPointerCapture(e.pointerId);const r=svg.getBoundingClientRect();pts.set(e.pointerId,{x:e.clientX-r.left,y:e.clientY-r.top});moved=false;cancelAnimationFrame(anim);
+  if(pts.size===2){const [a,b]=[...pts.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),k:cam.k,wx:wx((a.x+b.x)/2),wy:wy((a.y+b.y)/2)};drag=null}else drag={x:e.clientX,y:e.clientY,cx:cam.x,cy:cam.y}});
+svg.addEventListener('pointermove',e=>{const r=svg.getBoundingClientRect();if(pts.has(e.pointerId))pts.set(e.pointerId,{x:e.clientX-r.left,y:e.clientY-r.top});
+  if(pinch&&pts.size===2){const [a,b]=[...pts.values()];cam.k=Math.max(3,Math.min(200,pinch.k*Math.hypot(a.x-b.x,a.y-b.y)/pinch.d));const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;cam.x=pinch.wx-(mx-VW/2)/cam.k;cam.y=pinch.wy-(my-VH/2)/cam.k;apply();return}
+  if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>3){moved=true;svg.classList.add('dragging')}if(moved){cam.x=drag.cx-dx/cam.k;cam.y=drag.cy-dy/cam.k;apply()}}});
+const end=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=null;drag=null;svg.classList.remove('dragging')};
+svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
+svg.addEventListener('wheel',e=>{e.preventDefault();cancelAnimationFrame(anim);const r=svg.getBoundingClientRect(),X=e.clientX-r.left,Y=e.clientY-r.top;const mx=wx(X),my=wy(Y);cam.k=Math.max(3,Math.min(200,cam.k*Math.exp(-e.deltaY*.0015)));cam.x=mx-(X-VW/2)/cam.k;cam.y=my-(Y-VH/2)/cam.k;apply()},{passive:false});
+document.getElementById('zin').onclick=()=>flyTo({...cam,k:Math.min(200,cam.k*1.6)});
+document.getElementById('zout').onclick=()=>flyTo({...cam,k:Math.max(3,cam.k/1.6)});
+document.getElementById('zfit').onclick=()=>flyTo(fitAll());
+/* ---------- selection ---------- */
+const tip=document.getElementById('tip'),stage=document.getElementById('stage');
+let sel=null;
+function drawRoute(p){
+  const L=document.getElementById('routeLayer');
+  if(!p){L.innerHTML='';return}
+  if(p.noroute){L.innerHTML='';return}
+  const sg=p.segs||[[...p.path,[p.mx,p.my]]];
+  const d=sg.map(s=>s.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' ')).join(' ');
+  L.innerHTML=`<path d="${d}" fill="none" stroke="var(--glow)" stroke-width=".42" stroke-linecap="round" stroke-linejoin="round"/><path id="rl" d="${d}" fill="none" stroke="var(--pick)" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round"/>`;
+  if(!reduce){const rl=document.getElementById('rl'),len=rl.getTotalLength();rl.style.strokeDasharray=len;rl.style.strokeDashoffset=len;rl.getBoundingClientRect();rl.style.transition='stroke-dashoffset .8s ease';rl.style.strokeDashoffset=0}
+}
+function select(p){
+  sel=p;document.querySelectorAll('.pin').forEach(g=>g.classList.toggle('sel',p&&+g.dataset.i===p.i));
+  document.querySelectorAll('#list button').forEach(b=>b.setAttribute('aria-current',p&&+b.dataset.i===p.i?'true':'false'));
+  const det=document.getElementById('detail');
+  if(!p){det.classList.remove('open');drawRoute(null);return}
+  const steps=p.path.length-1;
+  let html=`<h2>${esc(p.name)}</h2><p class="kind">${({guild:'Guild',structure:'Landmark',mob:'Mob',town:'Town'})[p.kind]||'Area'} ${p.group==='fot'?'in the Forest of Tears':p.group==='wtr'?'on the Western Trade Route':p.group==='mid'?'off Miden\'nir':p.group==='sg'?'off the Shadow Grove':p.group==='af'?(p.where||'off the Ashen Forest'):p.group==='fw'?(p.kind?'in the Forgotten Woods':'off the Forgotten Woods'):'in New Darkhaven'} · ${p.kind==='mob'?'found at':p.dir==='here'?'reached at':'entrance at'} ${esc(p.room)}</p>`;
+  if(p.note)html+=`<p class="note">${esc(p.note)}</p>`;
+  html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>Full directions from Darkhaven Square:</p><code>${esc(p.route)}</code>`;
+  if(p.alt&&p.alt.length)html+=`<p>Another way:</p>`+p.alt.map(a=>`<code>${esc(a)}</code>`).join('');
+  document.getElementById('dbody').innerHTML=html;det.classList.add('open');
+  drawRoute(p);
+  const allp=p.segs?p.segs.flat():p.path;const xs=[...allp.map(q=>q[0]),p.mx],ys=[...allp.map(q=>q[1]),p.my];
+  let x0=Math.min(...xs)-2.5,x1=Math.max(...xs)+2.5,y0=Math.min(...ys)-2.5,y1=Math.max(...ys)+2.5;
+  const cx=(x0+x1)/2,cy=(y0+y1)/2,hw=Math.max(6,(x1-x0)/2),hh=Math.max(6,(y1-y0)/2);
+  flyTo(fitB(cx-hw,cy-hh,cx+hw,cy+hh,40));
+}
+document.getElementById('close').onclick=()=>select(null);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')select(null)});
+svg.querySelectorAll('.pin,.plabel').forEach(g=>{const p=P[+g.dataset.i];
+  g.addEventListener('click',()=>select(p));
+  g.addEventListener('mousemove',e=>{const r=stage.getBoundingClientRect();tip.style.display='block';tip.textContent=p.name;tip.style.left=(e.clientX-r.left+14)+'px';tip.style.top=(e.clientY-r.top+12)+'px'});
+  g.addEventListener('mouseleave',()=>tip.style.display='none')});
+const li=p=>`<li><button data-i="${p.i}" aria-current="false"><span>${esc(p.name)}</span><span class="meta">${groupHalls.includes(p.name)?'in the Halls':''}</span></button></li>`;
+const sec=(t,k)=>`<li class="gh" style="padding:14px 10px 4px">${t}</li>`+P.filter(p=>(p.kind||'area')===k).map(li).join('');
+const byName=(a,b)=>a.name.replace(/^(The|A) /,'').localeCompare(b.name.replace(/^(The|A) /,''));
+const secG=(t,k)=>`<li class="gh" style="padding:14px 10px 4px">${t}</li>`+P.filter(p=>(p.kind||'area')===k&&!p.group).map(li).join('');
+document.getElementById('list').innerHTML=`<li class="gh" style="padding:14px 10px 4px">Areas</li>`+P.filter(p=>p.kind!=='mob').sort(byName).map(li).join('')+`<li class="gh" style="padding:18px 10px 4px">Mobs</li>`+P.filter(p=>p.kind==='mob').sort(byName).map(li).join('');
+document.querySelectorAll('#list button').forEach(b=>b.onclick=()=>{select(P[+b.dataset.i]);if(innerWidth<=760)side.classList.remove('open')});
+/* ---------- search: filters the list as you type ---------- */
+(function(){
+  const q=document.getElementById('q'),count=document.getElementById('qCount'),list=document.getElementById('list');
+  const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'');           // so "ezards" finds Ezard's, "tich" finds Tich'Pyga
+  const rows=[...list.querySelectorAll('li')].map(li=>{const b=li.querySelector('button');return {li,b,head:li.classList.contains('gh'),name:b?b.querySelector('span').textContent:'',key:b?norm(b.querySelector('span').textContent):''}});
+  const none=document.createElement('li');none.className='none';list.appendChild(none);none.hidden=true;
+  const esc2=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function mark(r,term){const span=r.b.querySelector('span');const t=r.name;                                    // highlight what matched
+    if(!term){span.textContent=t;return}
+    const raw=term.trim().toLowerCase();let idx=t.toLowerCase().indexOf(raw);
+    span.innerHTML=idx>=0?esc2(t.slice(0,idx))+'<mark>'+esc2(t.slice(idx,idx+raw.length))+'</mark>'+esc2(t.slice(idx+raw.length)):esc2(t)}
+  function run(){
+    const term=q.value,words=norm(term).split(/\s+/).filter(Boolean);let shown=0,heading=null,headShown=0,firstBtn=null;
+    for(const r of rows){
+      if(r.head){if(heading)heading.li.hidden=headShown===0;heading=r;headShown=0;r.li.hidden=false;continue}
+      const ok=words.every(w=>r.key.includes(w));r.li.hidden=!ok;if(ok){shown++;headShown++;if(!firstBtn)firstBtn=r.b}mark(r,ok&&words.length===1?term:'')}
+    if(heading)heading.li.hidden=headShown===0;
+    none.hidden=!(words.length&&shown===0);none.textContent=words.length&&shown===0?`Nothing matches "${term.trim()}".`:'';
+    count.textContent=words.length?`${shown} match${shown===1?'':'es'}`:'';
+    list.scrollTop=0;return firstBtn}
+  q.addEventListener('input',run);
+  q.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){const b=run();if(b){e.preventDefault();b.click()}}                                       // Enter opens the first match
+    else if(e.key==='Escape'){q.value='';run()}
+    else if(e.key==='ArrowDown'){const b=list.querySelector('li:not([hidden]) button');if(b){e.preventDefault();b.focus()}}});
+})();
+const side=document.getElementById('side');
+document.getElementById('sideHead').addEventListener('click',()=>{if(innerWidth<=760)side.classList.toggle('open')});
+resize();cam=fitAll();apply();
+})();
+</script>
+</body>
+</html>
