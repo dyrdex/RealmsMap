@@ -1,7 +1,6 @@
-[README.md](https://github.com/user-attachments/files/33338754/README.md)
-# Realm Map, version 9
+# Realm Map
 
-Open `realm_map.html` in any web browser. It is self-contained and works offline.
+The live map is built and published to GitHub Pages automatically on every push (see `.github/workflows/pages.yml`). `realm_map.html` is the full map as one self-contained page; it is also the source the tiles are rendered from.
 
 ## Rebuilding from source
 The `src` folder holds everything used to make the map. To rebuild, run `python3 build.py` inside `src` (Python 3 with numpy, scipy, scikit-image, Pillow and matplotlib). It reruns the whole pipeline from your TinTin++ map file and rewrites `realm_map.html` next to this file. The painting uses fixed random seeds, so every rebuild comes out the same (the v9 bundle was rebuilt from these files and matched the published map exactly).
@@ -24,11 +23,11 @@ The `src` folder holds everything used to make the map. To rebuild, run `python3
 - `template.html` is the map page; `build.py` fills it with the data. `VERSION` is the label in the footer.
 
 ### The tiled map (after version 9)
-The map is dark mode only: one dark palette, no light theme and no theme switch. `build.py` now ends by running `site_build.py`, which bakes the terrain into image tiles and writes the fast tiled page to `site/` (open it through a web server, e.g. `python3 -m http.server` inside `site`) and the same page as one file, `realm_map_preview.html`, which opens anywhere. `site_template.html` is that page (sidebar, search, cards, routes, legend over a Leaflet map); `vendor/` holds Leaflet 1.9.4 and `fonts/` the Alegreya fonts used for the bake. This step needs Playwright with Chromium (`pip install playwright`, `playwright install chromium`); set `NO_TILES=1` to skip it. `tiles_poc/measure.py` compares the old page with the tiled one.
+The map is dark mode only: one dark palette, no light theme and no theme switch. `build.py` now ends by running `site_build.py`, which bakes the terrain into image tiles and writes the fast tiled page to `site/` (open it through a web server, e.g. `python3 -m http.server` inside `site`) and the same page as one file, `realm_map_preview.html`, which opens anywhere. `site_template.html` is that page (sidebar, search, cards, routes, legend over a Leaflet map); `vendor/` holds Leaflet 1.9.4 and `fonts/` the Alegreya fonts used for the bake. This step needs Playwright with Chromium (`pip install playwright`, `playwright install chromium`); set `NO_TILES=1` to skip it. `docs/tiles_poc/measure.py` compares the old page with the tiled one.
 
 To re-merge after changing a layout in an editor: replace `ashen_layout_final.json` or `ntr_layout_final.json` with the new save (and, if rooms or exits changed, rebuild the matching `*_edges.json` with the editor's build script), then run `python3 build.py`.
 
-To continue in a new conversation, upload this zip (or just `realm_map.html`) and say which version you're resuming from.
+To continue in a new conversation, open this repository in Claude Code; `CLAUDE.md` holds the working notes and `docs/REGION_NOTES.md` the detailed history of each region. Install the packages with `pip install -r requirements.txt`. The tiled site, the preview page, `nd2.json` and `fot.json` are build outputs and are not kept in the repository.
 
 ## Tools
 - `tools/forgotten_woods_editor.html` is the drag-to-arrange layout editor for the Forgotten Woods, with `forgotten_woods_layout_final_save.json`, the layout you saved from it, and `map_arrangement_1_as_saved.json`, the arrangement as the arranger saved it.
@@ -39,3 +38,4 @@ To continue in a new conversation, upload this zip (or just `realm_map.html`) an
 - `src/bp_markers.py` adds the markers for the areas that open off the Barren Peaks, using `src/bp_marker_routes.json`, which the one-time script `src/bp_marker_routes.py` writes by following your directions through your TinTin map.
 - `tools/northern_plains_editor/` holds the layout editor for the Northern Plains (`northern_plains_editor.html`, `build_np_editor.py`, `np_editor_template.html` and `make_np_template.py`, which makes that template from the Barren Peaks editor's). Every room already on the map, including the Barren Peaks as you arranged them, is a fixed dot; the Plains and the Northern Trade Route past the long bridge are movable. To rebuild it, copy `build_np_editor.py` and `np_editor_template.html` into `src`, run `FINAL_DUMP=/tmp/w_final.json NO_TILES=1 python3 build.py`, then `python3 build_np_editor.py /tmp/w_final.json northern_plains_editor.html` (it also writes `src/np_editor_edges.json`, the editor's rooms and exits).
 - `src/np_merge.py` puts the Northern Plains on the map from `src/np_layout_final.json` and `src/np_editor_edges.json`: wheat-coloured ground with tufts and brush, and paths only for the links to the Barren Peaks and the paths listed in it (the Northern Trade Route itself is drawn by the Barren Peaks merge, with its Plains rooms where the Plains layout put them). It runs after every other change to the land.
+- `src/np_markers.py` adds the markers for the areas that open off the Northern Plains, using `src/np_marker_routes.json`, which the one-time script `src/np_marker_routes.py` writes by following your directions through your TinTin map.

@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+# build outputs (made by src/build.py; the site is built and deployed by GitHub Actions)
+/site/
+/realm_map_preview.html
+/src/nd2.json
+/src/fot.json

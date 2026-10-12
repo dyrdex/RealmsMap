@@ -1,0 +1,8 @@
+# Pinned so rebuilds stay deterministic. playwright 1.56.0 uses Chromium build 1194,
+# the same build that is pre-installed in Claude Code cloud sessions (/opt/pw-browsers).
+numpy==2.5.3
+scipy==1.18.1
+scikit-image==0.26.0
+Pillow==12.3.0
+matplotlib==3.11.2
+playwright==1.56.0
