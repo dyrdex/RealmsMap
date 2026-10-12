@@ -6,6 +6,7 @@
 # Movable rooms (area 'AZ'), found from the TinTin map:
 #   - Northern Plains: 4317 'Rocky Coastline' (spacers 14314, 22557 lead to Plains room 4316)
 #   - the coast north from the cliffs to 4317 (owner, Oct 12): the shortest walk 14282/14283 -> 14287, 14286, 14323, 14322, 14321, 14319, 14318, 14313, spacer 14315 -> 4317; plus 14284, 14285 (14283 -> 14284 -> 14285 -> 14286, owner asked)
+#   - the path from 4317 north to the Village of Edo (owner, Oct 12): 5749, 5966, 5967, 5968, spacer 15604, 5969, 5970, 7746 (nw -> Edo 7747 'Bridging the Maelstrom')
 #   - Barren Peaks: 14271, 14272, 14278, 14279, 14282, 14283 (each has an up exit to a Peaks room) and the cliff-foot rooms between them (14273-14277, 14280, 14281)
 #   - Forgotten Woods: no Azure Sea room has an exit to a Woods room. The 'Forgotten Woods Coastline' rooms (14262-14269) are the shore walk that joins
 #     the Peaks cliffs (14270 -> 14271) to Azure room 14254, already on the map by the Ashen beach: 14257, spacer 14293, 14259, spacer 14295, 14261..14270.
@@ -38,11 +39,12 @@ PLAINS = [4317]
 NORTH = [14287, 14284, 14285, 14286, 14323, 14322, 14321, 14319, 14318, 14313, 14315]   # from the cliffs (14282/14283) north to 4317
 PEAKS = list(range(14271, 14284))
 COAST = [14257, 14293, 14259, 14295, 14261] + list(range(14262, 14271))
-S = set(PLAINS + NORTH + PEAKS + COAST)
+EDO = [5749, 5966, 5967, 5968, 15604, 5969, 5970, 7746]   # from 4317 north to the Village of Edo
+S = set(PLAINS + NORTH + PEAKS + COAST + EDO)
 assert not S & set(CTX)
 assert all(rooms[v]['area'] == A or isspacer(v) for v in S)
 SP = {v for v in S if isspacer(v)}
-GROUP = {**{v: 'np' for v in PLAINS + NORTH}, **{v: 'pk' for v in PEAKS}, **{v: 'cw' for v in COAST}}
+GROUP = {**{v: 'ed' for v in EDO}, **{v: 'np' for v in PLAINS + NORTH}, **{v: 'pk' for v in PEAKS}, **{v: 'cw' for v in COAST}}
 
 rev = defaultdict(list)
 for v, l in exits.items():
@@ -88,6 +90,7 @@ for a, b in zip(ai, ai[1:]):
         f = (i - a) / (b - a); xy[WALK[i]] = [xy[WALK[a]][0] + f * (xy[WALK[b]][0] - xy[WALK[a]][0]) + 0.6, xy[WALK[a]][1] + f * (xy[WALK[b]][1] - xy[WALK[a]][1])]
 for i, v in enumerate(NORTH, 1):
     f = i / (len(NORTH) + 1); xy[v] = [xy[14282][0] + f * (xy[4317][0] - xy[14282][0]) + 0.6, xy[14282][1] + f * (xy[4317][1] - xy[14282][1])]
+for v in EDO: xy[v] = [xy[4317][0] + fpos[v][0] - fpos[4317][0], xy[4317][1] + fpos[v][1] - fpos[4317][1]]   # north of 4317 as TinTin's exits lay them out
 xy[14280] = [(xy[14278][0] + xy[14281][0]) / 2 + 0.8, (xy[14278][1] + xy[14281][1]) / 2]
 assert set(xy) == S
 for P in (xy, raw):
@@ -123,7 +126,7 @@ for v in V:
 EDG = [[a, b, 'two' if (f and r and flat) else ('one' if flat else 'ud')] for (a, b), (f, r, flat) in sorted(pair.items())]
 lk = sorted(k for k in pair if (k[0] in S) != (k[1] in S))
 cnt = Counter(CTX.values())
-audit = dict(plains=len(PLAINS + NORTH), peaks=len(PEAKS), coast=len(COAST), spacers=len(SP), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk),
+audit = dict(edo=len(EDO), plains=len(PLAINS + NORTH), peaks=len(PEAKS), coast=len(COAST), spacers=len(SP), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk),
              linked=', '.join(f'{a}→{b}' if a in S else f'{b}→{a}' for a, b in lk), pieces=len(pieces),
              dh=cnt['DH'], grove=cnt['Grove'], fw=cnt['FW'], ntr=cnt['NTR'], bp=cnt['BP'], np=cnt['NP'], af=cnt['AF'])
 rd = lambda poly: [[round(x, 2), round(y, 2)] for x, y in poly]
