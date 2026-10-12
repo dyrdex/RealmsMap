@@ -29,8 +29,7 @@ def walk(route):
                 if not c: break
                 v = c[0]; trail.append(v); k += 1
     return trail, None
-# (name on the map, the area in your TinTin map, the name in your list or None). Not included, waiting on the owner:
-# Asgard Nexus (on the Peaks it was renamed Z'hyal) and World Housing (removed from the Peaks on request).
+# (name on the map, the area in your TinTin map, the name in your list or None). Left off on request (Oct 12): Asgard Nexus, World Housing.
 AREAS = [("Azure Sea", "Azure Sea", "Azure Sea"), ("Crystalmir Lake", "Crystalmir Lake", "Crystalmir Lake"),
          ("From the Stars", "From the Stars", "From The Stars"), ("Opallinoc", "Opallinoc", "Opallinoc (Half-Ogre)"),
          ("Temple of the Moon", "Temple of the Moon", "Temple of the Moon"), ("The Blood Sea", "The Blood Sea", None),
