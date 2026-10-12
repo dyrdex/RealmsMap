@@ -132,6 +132,8 @@ Treetops and Canopy|#9 w;nw;nw;#18 w;u
 Troll Den|#6 n;#6 e;se;e;#2 ne;#2 e;ne;e;s;w;sw
 Tullfuhrzky Manor|nw;w;w;#4 n;w;look painting
 Underworld|#26 w;#7 s;e;s;e;s;d;s;give 50000 coins Wicorith
+The City of Iniquity|nw;#2 w;#4 n;e;look painting;open n;n;#28 w;#2 s;#4 e;d
+The Island of Irrybis|nw;#2 w;#4 n;e;look painting;open n;n;#62 w;nw;#2 ne;nw;ne;#2 n;nw;n;d
 Unholy Grounds|nw;#2 w;#4 n;e;look painting
 Valley of Crucifixion|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s;sw;w;sw;d;nw;s;#2 e;#2 se;w;nw;sw;w;s;e
 Valley of Mysts|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#4 e;n;nw;#2 n;sw

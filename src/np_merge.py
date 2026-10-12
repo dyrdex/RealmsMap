@@ -264,6 +264,12 @@ def merge_np(w, layout, edges, seed=37):
             x, y = c[1] / R8 + X0, c[0] / R8 + Y0; near_ = lp[np.abs(lp[:, 0] - x) < 4]
             return len(near_) and y > near_[:, 1].mean()
         thick = np.isin(lab, [i + 1 for i, s in enumerate(sz) if s >= 1.0 and not (s < 15 and beyond(cm[i]))])
+    # no island of thicket north of where the eastern path (from 4562) meets the field (owner, Oct 12): drop any piece lying wholly north of
+    # that path's top (the row of rooms there is cut off from the field by the path, so the thicket filled the gap north of it), within 8 rooms
+    lab, n = ndi.label(thick); dropped_ = []
+    for i in range(1, n + 1):
+        yy2, xx2 = np.nonzero(lab == i); bx_, by_ = (xx2 + .5) / R8 + X0, (yy2 + .5) / R8 + Y0
+        if by_.max() < pos[4562][1] + 0.5 and abs(bx_.mean() - pos[4562][0]) < 8: thick[lab == i] = False; dropped_.append(round(float(len(xx2)) / R8 / R8, 1))
     w['geo']['thicket'] = AA._contours(thick, X0, Y0, sigma=1.5)
     inth = lambda x, y: thick[int((y - Y0) * R8), int((x - X0) * R8)]
     tufts = [q for q in tufts if not inth(q[0], q[1])]; brush = [q for q in brush if not inth(q[0], q[1])]
@@ -283,7 +289,7 @@ def merge_np(w, layout, edges, seed=37):
         grass.append([round(x, 3), round(y, 3), round(rng.uniform(1.2, 1.7), 2), 1])       # darker, dry grass
     w['trees'] = list(w['trees']) + trees; w['boulders'] = sorted(list(w.get('boulders', [])) + rocks, key=lambda b: b[1])
     brush += shrubs; tufts += grass
-    thicket = dict(sq=round(tsq, 1), trees=len(trees), rocks=len(rocks), brush=len(shrubs), grass=len(grass), x=[round(sx0, 1), round(sx1, 1)])
+    thicket = dict(island_dropped_sq=dropped_, sq=round(tsq, 1), trees=len(trees), rocks=len(rocks), brush=len(shrubs), grass=len(grass), x=[round(sx0, 1), round(sx1, 1)])
 
     # ---- the sea (owner, Oct 12): beyond the north-west path (the Grey Beach / Grey Dunes / Dark Cliffs path from 4389 round to 4330) the
     #      ground is sea, out to the edge of the map, with a strip of beach along the path. Bounded: only within 9 rooms of the path (less near

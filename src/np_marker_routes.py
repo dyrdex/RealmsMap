@@ -33,8 +33,8 @@ def walk(route):
 AREAS = [("Azure Sea", "Azure Sea", "Azure Sea"), ("Crystalmir Lake", "Crystalmir Lake", "Crystalmir Lake"),
          ("From the Stars", "From the Stars", "From The Stars"), ("Opallinoc", "Opallinoc", "Opallinoc (Half-Ogre)"),
          ("Temple of the Moon", "Temple of the Moon", "Temple of the Moon"), ("The Blood Sea", "The Blood Sea", None),
-         ("The City of Iniquity", "The City of Iniquity", None), ("The Dunhill Demesnes", "The Dunhill Demesnes", "The Dunhill Demesnes"),
-         ("The Island of Irrybis", "The Island of Irrybis", None), ("Town of Solace", "Town of Solace", "Town of Solace"),
+         ("The City of Iniquity", "The City of Iniquity", "The City of Iniquity"), ("The Dunhill Demesnes", "The Dunhill Demesnes", "The Dunhill Demesnes"),
+         ("The Island of Irrybis", "The Island of Irrybis", "The Island of Irrybis"), ("Town of Solace", "Town of Solace", "Town of Solace"),
          ("Unholy Grounds", "Unholy Grounds", "Unholy Grounds"), ("Valley of the Elves", "Valley of the Elves", "Valley of the Elves")]
 def doors(area):                                            # Plains rooms that open into the area (directly, or through a string of spacer rooms)
     out = set()
