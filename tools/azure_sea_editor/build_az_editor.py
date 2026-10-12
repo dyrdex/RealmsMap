@@ -5,7 +5,7 @@
 #   Plains, road) and the Ashen Forest save (forest, Eastern Trade Route, Ocean Keep / Azure beach rooms).
 # Movable rooms (area 'AZ'), found from the TinTin map:
 #   - Northern Plains: 4317 'Rocky Coastline' (spacers 14314, 22557 lead to Plains room 4316)
-#   - the coast north from the cliffs to 4317 (owner, Oct 12): the shortest walk 14282/14283 -> 14287, 14286, 14323, 14322, 14321, 14319, 14318, 14313, spacer 14315 -> 4317
+#   - the coast north from the cliffs to 4317 (owner, Oct 12): the shortest walk 14282/14283 -> 14287, 14286, 14323, 14322, 14321, 14319, 14318, 14313, spacer 14315 -> 4317; plus 14284, 14285 (14283 -> 14284 -> 14285 -> 14286, owner asked)
 #   - Barren Peaks: 14271, 14272, 14278, 14279, 14282, 14283 (each has an up exit to a Peaks room) and the cliff-foot rooms between them (14273-14277, 14280, 14281)
 #   - Forgotten Woods: no Azure Sea room has an exit to a Woods room. The 'Forgotten Woods Coastline' rooms (14262-14269) are the shore walk that joins
 #     the Peaks cliffs (14270 -> 14271) to Azure room 14254, already on the map by the Ashen beach: 14257, spacer 14293, 14259, spacer 14295, 14261..14270.
@@ -35,7 +35,7 @@ for v, x, y in zip(AL['ids'], AL['xs'], AL['ys']):
 
 # ---- movable Azure Sea rooms ----
 PLAINS = [4317]
-NORTH = [14287, 14286, 14323, 14322, 14321, 14319, 14318, 14313, 14315]   # from the cliffs (14282/14283) north to 4317
+NORTH = [14287, 14284, 14285, 14286, 14323, 14322, 14321, 14319, 14318, 14313, 14315]   # from the cliffs (14282/14283) north to 4317
 PEAKS = list(range(14271, 14284))
 COAST = [14257, 14293, 14259, 14295, 14261] + list(range(14262, 14271))
 S = set(PLAINS + NORTH + PEAKS + COAST)

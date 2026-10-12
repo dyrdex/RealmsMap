@@ -20,7 +20,7 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 ## State (Oct 12, 2026)
 - Mapped through the Northern Plains, incl. its sub-area markers, area name and the NW sea (Oct 12 batch). Last snapshot: v11 (git tag `v11`, Oct 12).
 - Open question to owner: which regions to freeze. (Asgard Nexus and World Housing stay off the map: owner, Oct 12.)
-- Azure Sea (limited, owner Oct 12): editor published (37 rooms; see REGION_NOTES), waiting for the owner's save in `azlayout/current`; then write the merge.
+- Azure Sea (limited, owner Oct 12): editor published (39 rooms; see REGION_NOTES), waiting for the owner's save in `azlayout/current`; then write the merge.
 - Not done (not asked): routes through the Plains on Peaks cards.
 - Agreed plan (Oct 12): repo cleanup + Pages done. Next, when the owner picks the regions: freeze finished regions into baked data with final positions (markers, drawings, names incl. the solver's) so no correction tables remain, and re-render only changed tiles. Verify with a pixel-identical rebuild. (The separate tweaks file was dropped.)
 
