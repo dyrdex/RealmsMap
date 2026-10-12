@@ -6,6 +6,8 @@ import math
 NO_ROUTE = "There are no directions for this area in your list yet; the marker shows the Plains room it opens from."
 OTHER_WAY = "Your directions reach this area another way, not across the Northern Plains; the marker shows the Plains room it opens from."
 DROP = {'The Blood Sea'}                                                   # removed on request (Oct 12)
+PORTAL = {4222}             # 'Before the Graveyard', where the painting in Alms for the Poor (783) sets you down, one step from the Plains' first room
+                            # (4221): the traced line jumps there, which is not a gap in the map (owner, Oct 12)
 GAP_NOTE = "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."
 
 
@@ -25,14 +27,16 @@ def add_np_subareas(w, np_layout, routes):
         if name in DROP: continue
         if r['route']:
             site = site_of(r['door'])
-            segs = []; cur = []
+            segs = []; cur = []; gaps = 0
             for v, area in r['trail']:
                 p = at(v)
                 if p: cur.append([round(p[0], 3), round(p[1], 3)])
-                elif cur: segs.append(cur); cur = []
+                elif cur:
+                    segs.append(cur); cur = []
+                    if v not in PORTAL: gaps += 1
             cur.append([round(site[0], 3), round(site[1], 3)]); segs.append(cur)
             pl = dict(name=name, route=r['route'], room='the Northern Plains', dir='here', path=[q for s in segs for q in s], segs=segs,
-                      group='af', where='off the Northern Plains', note=None if len(segs) == 1 else GAP_NOTE)
+                      group='af', where='off the Northern Plains', note=GAP_NOTE if gaps else None)
         else:
             ds = [v for v in r['doors'] if v in pos and v not in hidden] or r['doors']
             cx = sum(site_of(v)[0] for v in ds) / len(ds); cy = sum(site_of(v)[1] for v in ds) / len(ds)

@@ -58,6 +58,8 @@ for name, area, listed in AREAS:
         last = trail[np_in[-1]] if np_in else None
         print(f"{name}: route {'ok' if not fail else 'FAILED at ' + str(fail)} | ends in '{ends}' | last Plains room {last} (doors {d})")
         if np_in: rec.update(route=route, trail=[[v, rooms[v]['area']] for v in trail[:np_in[-1] + 1]], door=last, ok=not fail and ends == area)
+        elif d and any(e['to'] in d for e in exits.get(trail[-1], [])):   # the directions end right beside the Plains room it opens from
+            rec.update(route=route, trail=[[v, rooms[v]['area']] for v in trail], door=next(e['to'] for e in exits[trail[-1]] if e['to'] in d), ok=not fail and ends == area)
         else: rec.update(other_way=route)               # the directions reach the area without crossing the Plains
     else:
         print(f"{name}: no directions in your list | doors {d}")
