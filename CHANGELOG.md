@@ -1,6 +1,15 @@
 # Realm Map changelog
 
-## Version 11 · The Northern Plains and the areas that open off it · October 12, 2026
+## In progress (after version 11)
+- New layout editor for the Azure Sea rooms that join the map (`tools/azure_sea_editor`, October 12): 49 rooms in the end (under the Barren Peaks cliffs, the shore walk to the Ashen beach, the coast north to the Plains, the path to the Village of Edo, and spacers 14314 and 22557).
+- The Azure Sea Coast is on the map (October 12), from the layout saved in the editor: a dark blue water route along the foot of the cliffs, from room 14265 north round the Plains to 7746.
+- At its south end, 14257 to 14265 is a small stream winding over the land, a little wider than a path; the land there is unchanged.
+- Open sea east of the mainland, from the coast out past the route (about 8 rooms beyond it), 3,320 sq rooms; only 14 sq of land cut back where the route lay on it (no new land).
+- A cliff edge (dark band and hachures) all along the coast that faces the new sea.
+- The links of the five hidden rooms (14273, 14275, 14278, 14279, 14287) are small dashed lines (15); the shown rooms' links to the mainland are ordinary trails (6, two of them 42-43 rooms long, from 14271 and 14272 to the Peaks).
+- A Village of Edo marker at 7746, with your directions traced on its card (the line joins straight across 5965, which is not in the editor).
+
+ and the areas that open off it · October 12, 2026
 - New layout editor for the Northern Plains (`tools/northern_plains_editor`, October 10): 474 Plains rooms and 134 spacer rooms, movable in 13 pieces (595, 2, 1, 1 and 9 rooms with no exits), starting where TinTin's exits put them, north of and over the top of the Barren Peaks; the 75 rooms of the Northern Trade Route past the long bridge are movable too and start where they are on the map; everything else on the map, including the Barren Peaks as arranged, is shown as fixed dots. The map itself is unchanged until the layout is merged.
 - Spacer rooms 4216, 4219 and 4382 (between road rooms 4213 and 4214) can now be moved in the Northern Plains editor, with the road; 78 movable road rooms.
 - In the Northern Plains editor, the Northern Trade Route inside the Barren Peaks (4136–4155) is fixed again; only its 58 rooms in the Plains (from 4156) move, drawn on top of the Plains rooms so they can be grabbed. Spacer rooms 4216, 4219 and 4382 can now actually be picked up one at a time (bigger grab area; 4219 was under a Plains room).

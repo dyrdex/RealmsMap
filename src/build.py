@@ -120,6 +120,9 @@ print('Northern Plains merged:',_np)
 from np_markers import add_np_subareas
 w,_nsa=add_np_subareas(w,_NPL,_json.load(open(os.path.join(_here,'np_marker_routes.json'))))
 print('Northern Plains sub-areas:',_nsa)
+from az_merge import merge_az                                    # the Azure Sea Coast: now the LAST land change
+w,_az=merge_az(w,_json.load(open(os.path.join(_here,'az_layout_final.json'))),_json.load(open(os.path.join(_here,'az_editor_edges.json'))),_NPL)
+print('Azure Sea Coast merged:',_az)
 for _p in w['places']:                                          # owner's renames: the place keeps its old name as its key for the label tweaks
     if _p['name']=='Ofcol': _p['key']='Ofcol'; _p['name']='New Ofcol'
 w['places']=[_p for _p in w['places'] if not (_p['name']=='New Ofcol' and _p.get('key')!='Ofcol')]   # the Woods' own New Ofcol marker removed (owner, Oct 10)

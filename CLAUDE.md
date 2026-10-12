@@ -13,14 +13,14 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 
 ## Where things are
 - `src/build.py`: stage order. `src/template.html`: draws the terrain for the bake. `src/site_template.html`: the live page (sidebar, cards, legend). `src/data.py`: owner's areas + directions. `src/VERSION`: footer label.
-- Per-region merge modules and their editor saves: Ashen (`ashen_*`), NTR (`ntr_*`), Barren Peaks (`bp_*`), Northern Plains (`np_*`), Azure Sea Coast (`az_*`, layout saved, no merge yet). Editors in `tools/`. `*_marker_routes.py` are one-time scripts that write `*_marker_routes.json`.
+- Per-region merge modules and their editor saves: Ashen (`ashen_*`), NTR (`ntr_*`), Barren Peaks (`bp_*`), Northern Plains (`np_*`), Azure Sea Coast (`az_*`). Editors in `tools/`. `*_marker_routes.py` are one-time scripts that write `*_marker_routes.json`.
 - `docs/REGION_NOTES.md`: detailed per-region history and decisions. Read only the section for the region being changed.
 - `CHANGELOG.md`: owner-facing history. `README.md`: file-by-file description.
 
 ## State (Oct 12, 2026)
 - Mapped through the Northern Plains, incl. its sub-area markers, area name and the NW sea (Oct 12 batch). Last snapshot: v11 (git tag `v11`, Oct 12).
 - Open question to owner: which regions to freeze. (Asgard Nexus and World Housing stay off the map: owner, Oct 12.)
-- "Azure Sea Coast" = the owner's name (Oct 12) for the 49-room Azure Sea pathway in the Azure editor (see REGION_NOTES). Layout saved: `src/az_layout_final.json`. Merge not written: asked the owner how to draw it.
+- "Azure Sea Coast" = the owner's name (Oct 12) for the 49-room Azure Sea pathway (see REGION_NOTES). On the map (Oct 12, `az_merge.py`): blue water route, stream 14257-14265, east sea, cliff edge, dashed hidden links, Village of Edo marker. Not snapshotted yet.
 - Not done (not asked): routes through the Plains on Peaks cards.
 - Agreed plan (Oct 12): repo cleanup + Pages done. Next, when the owner picks the regions: freeze finished regions into baked data with final positions (markers, drawings, names incl. the solver's) so no correction tables remain, and re-render only changed tiles. Verify with a pixel-identical rebuild. (The separate tweaks file was dropped.)
 
@@ -42,7 +42,7 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 5. Lists like `w['gfx']` are appended to, never replaced.
 6. Check placements numerically (distance to road/water, overlaps with names) before any screenshot. The site's label positions can differ from `realm_map.html`'s; check overlaps against `site/data/places.json`.
 7. Label solver flags 11 hand-placed names as "touching": expected baseline.
-8. `bp_merge` and `np_merge` use their own taller grids; `np_merge` must stay the LAST land change. Don't extend `gap_fill`'s grid (float rounding moves things elsewhere).
+8. `bp_merge` and `np_merge` use their own taller grids; `az_merge` (Azure Sea Coast, np_merge's grid) must stay the LAST land change, right after np_merge/np_markers. Don't extend `gap_fill`'s grid (float rounding moves things elsewhere).
 9. Fonts are embedded from `src/fonts/` for the bake; screenshots without them show different label placement.
 10. Leaflet snaps to whole zoom levels (zoomSnap 1) to avoid tile seams.
 11. Preview artifact limit is 16 MB (preview is ~14 MB): another reason the site now lives on Pages.
