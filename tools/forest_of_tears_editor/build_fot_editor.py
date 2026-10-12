@@ -1,7 +1,7 @@
 # The layout editor for the Forest of Tears and the Lake of Tich'Pyga (owner, Oct 12: configure both areas together; the whole section is redrawn afterwards).
 #   python3 build_fot_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with fot_editor_template.html beside it)
-# Fixed rooms (cannot move): every Darkhaven, Shadow Grove and Forgotten Woods room (w['track'] 'cx<id>', source in w['ctxsrc']) and the Western Trade Route's
-#   drawn road (w['track'] 'wt<id>', fot_extract.py's _WTCHAIN), each exactly where it is on the finished map.
+# Fixed rooms (cannot move): every Darkhaven, Shadow Grove and Forgotten Woods room (w['track'] 'cx<id>', source in w['ctxsrc']), exactly where it is on the finished map.
+# Movable too (grp 'wt', unlocked on request Oct 12): the Western Trade Route's drawn road (w['track'] 'wt<id>', fot_extract.py's _WTCHAIN), starting where it is on the map.
 # Movable rooms (area 'FT'):
 #   - every Forest of Tears room (683), starting where the finished map has it (w['track'] 'ft<id>'; levels other than ground are shifted by LV, as in the Ashen editor)
 #   - every Lake of Tich'Pyga room (276), laid out fresh from TinTin's exits (it is a single drawn lake on the map today, with no rooms), then stretched
@@ -27,11 +27,12 @@ CTX = {}; cpos = {}
 for k, src in w['ctxsrc'].items(): CTX[int(k)] = src; cpos[int(k)] = tuple(tr['cx' + k])
 FOT = {v for v, r in rooms.items() if r['area'] == FA}
 LAKE = {v for v, r in rooms.items() if r['area'] == LA}
+WT = set()                                                   # the Western Trade Route's drawn road: movable (owner, Oct 12), starting where it is on the finished map
 for k in tr:
     if k.startswith('wt'):
         v = int(k[2:])
-        if v not in CTX and v not in FOT: CTX[v] = 'WTR'; cpos[v] = tuple(tr[k])
-assert not (FOT | LAKE) & set(CTX)
+        if v not in CTX and v not in FOT: WT.add(v)
+assert not (FOT | LAKE | WT) & set(CTX)
 
 # ---- the spacer rooms that join the two areas to each other and to fixed rooms ----
 rev = defaultdict(list)
@@ -40,12 +41,12 @@ for v, l in exits.items():
 raw_nb = defaultdict(set)
 for v, l in exits.items():
     for e in l: raw_nb[v].add(e['to']); raw_nb[e['to']].add(v)
-core = FOT | LAKE
+core = FOT | LAKE | WT
 cand = set(); q = deque(core)
 while q:
     v = q.popleft()
     for t in raw_nb[v]:
-        if t not in cand and t not in CTX and isspacer(t): cand.add(t); q.append(t)
+        if t not in cand and t not in CTX and t not in core and isspacer(t): cand.add(t); q.append(t)
 scope = core | set(CTX)
 keep = set(); stubs = set(); seen = set()
 for s in sorted(cand):
@@ -84,6 +85,7 @@ start = {}; lvl = {}
 for v in S:
     if f'ft{v}' in tr:
         z = zf.get(v, 0); lvl[v] = z; start[v] = [tr[f'ft{v}'][0] + LV * z, tr[f'ft{v}'][1] - LV * z]
+    elif v in WT: lvl[v] = 0; start[v] = list(tr[f'wt{v}'])
 known = dict(cpos)
 for v, p in start.items(): known[v] = tuple(p)
 # the rest (the lake, and any Forest of Tears room the map does not hold) in pieces by TinTin's own exits, with levels
@@ -159,10 +161,10 @@ def exlist(v):
         if not r: continue
         res.append(f"{DN.get(e['dir'], '?')} → {r['name'] or 'spacer room'}" + (f" ({r['area']})" if r['area'] and r['area'] not in (FA, LA) else ''))
     return res
-GROUP = {v: ('lk' if v in LAKE else 'ft') for v in S}
+GROUP = {v: ('lk' if v in LAKE else 'wt' if v in WT else 'ft') for v in S}
 for v in sorted(SP):                                                       # a spacer room takes the group of the real room it hangs off
-    nb = [u for u in raw_nb[v] if u in core]
-    if nb: GROUP[v] = 'lk' if nb[0] in LAKE and not any(u in FOT for u in nb) else 'ft'
+    nb = [u for u in raw_nb[v] if u in FOT | LAKE]
+    if nb and v not in WT: GROUP[v] = 'lk' if nb[0] in LAKE and not any(u in FOT for u in nb) else 'ft'
 R = []
 for v in sorted(CTX):
     r = rooms[v]
@@ -184,7 +186,7 @@ lk = sorted(k for k in pair if (k[0] in S) != (k[1] in S))
 cnt = Counter(CTX.values()); tz = Counter(lvl.get(v, 0) for v in S)
 audit = dict(fot=len(FOT), lake=len(LAKE), spacers=len(SP), fot_sp=sum(1 for v in SP if GROUP[v] == 'ft'), lake_sp=sum(1 for v in SP if GROUP[v] == 'lk'), stubs=len(stubs),
              exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), pieces=len(pieces),
-             dh=cnt['DH'], grove=cnt['Grove'], fw=cnt['FW'], wtr=cnt['WTR'], levels=', '.join(f'{z:+d}: {n}' for z, n in sorted(tz.items())),
+             dh=cnt['DH'], grove=cnt['Grove'], fw=cnt['FW'], wtr=len(WT), levels=', '.join(f'{z:+d}: {n}' for z, n in sorted(tz.items())),
              parked=len(PARKED) if orph else 0, lake_in_map=sum(1 for v in LAKE if f'ft{v}' in tr), fot_untracked=sum(1 for v in FOT if f'ft{v}' not in tr))
 rd = lambda poly: [[round(x, 2), round(y, 2)] for x, y in poly]
 trk = list(w['fwtracks']) + list(w['swtracks']) + [w['road'], w['southpath'], w['link']] + list(w['ring']) + [t for t in w.get('etrtracks', []) if len(t) > 1] \

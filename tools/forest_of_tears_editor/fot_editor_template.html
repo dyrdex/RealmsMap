@@ -62,13 +62,14 @@ svg.names-on .nd .lbl,svg.names-zoom.zoomed .nd .lbl{display:block}
 .nd.rd rect,.nd.rd circle.shape{stroke:#D4B44A}
 .nd.ft rect,.nd.ft circle.shape{stroke:#8DBA4E}
 .nd.lk rect,.nd.lk circle.shape{stroke:#4FB3D9}
+.nd.wt rect,.nd.wt circle.shape{stroke:#E0B04A}
 
 
 .nd .hx{display:none}.nd.hid .hx{display:block}.nd.hid{opacity:.32}.nd.hid .shape,.nd.hid rect{stroke-dasharray:.16 .12}
 svg line.eh{opacity:.1!important}svg.only .nd.hid,svg.only line.eh{display:none!important}
 .nd.fx{cursor:not-allowed}.nd.fx .lbl{display:none}
 svg line.cxe{pointer-events:none}
-:root{--cx-DH:#6F86A2;--cx-Grove:#9080AE;--cx-WTR:#C9A86A;--cx-FW:#6E9A6C;--cx-edge:#7E8B7E}
+:root{--cx-DH:#6F86A2;--cx-Grove:#9080AE;--cx-FW:#6E9A6C;--cx-edge:#7E8B7E}
 </style>
 </head>
 <body>
@@ -82,8 +83,8 @@ svg line.cxe{pointer-events:none}
     <li><b>Scroll</b> to zoom, drag empty space to pan.</li>
   </ul>
   <p id="audit" class="stat" style="color:var(--ink)"></p>
-  <p id="ntrNote" style="margin:4px 0 8px">Every room of the <b>Forest of Tears</b> (<b style="color:#8DBA4E">green outline</b>) and of the <b>Lake of Tich'Pyga</b> (<b style="color:#4FB3D9">blue outline</b>) is here, plus the spacer rooms that join them to each other or to the map. The forest starts exactly where the finished map has it. The lake has no rooms on the map today (it is one drawn lake), so it starts as TinTin's own layout of it, stretched so that the rooms that touch the forest, the Forgotten Woods and Darkhaven land by the rooms they link to; expect it to sit on top of some forest rooms until you move it. A column of rooms with no exit to anything here (lake rooms with no exits, and Forest of Tears room 357, whose only exit is to the Southern Mountain Range) is parked just east of the lake. Hide any room you don't want on the map. <b>Select the whole piece</b> grabs every room in the same piece as the rooms you have selected; the two Select buttons grab each area; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms to where TinTin's exits alone would put them.</p>
-  <p><b>The fixed rooms</b> (small round dots, grey-blue for Darkhaven, violet for the Shadow Grove, green for the Forgotten Woods, sand for the Western Trade Route's drawn road) are the rooms already on the finished map, exactly where they are. They can't be moved. Hover one to see its name. The faint lines between them are the exits between those rooms. The finished map (land, lake, trails) is faintly behind; the forest and lake are going to be redrawn from your layout.</p>
+  <p id="ntrNote" style="margin:4px 0 8px">Every room of the <b>Forest of Tears</b> (<b style="color:#8DBA4E">green outline</b>) and of the <b>Lake of Tich'Pyga</b> (<b style="color:#4FB3D9">blue outline</b>), and the <b>Western Trade Route</b>'s drawn road (<b style="color:#E0B04A">gold outline</b>, unlocked: it starts where the map has it), is here, plus the spacer rooms that join them to each other or to the map. The forest starts exactly where the finished map has it. The lake has no rooms on the map today (it is one drawn lake), so it starts as TinTin's own layout of it, stretched so that the rooms that touch the forest, the Forgotten Woods and Darkhaven land by the rooms they link to; expect it to sit on top of some forest rooms until you move it. A column of rooms with no exit to anything here (lake rooms with no exits, and Forest of Tears room 357, whose only exit is to the Southern Mountain Range) is parked just east of the lake. Hide any room you don't want on the map. <b>Select the whole piece</b> grabs every room in the same piece as the rooms you have selected; the three Select buttons grab each area; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms to where TinTin's exits alone would put them.</p>
+  <p><b>The fixed rooms</b> (small round dots, grey-blue for Darkhaven, violet for the Shadow Grove, green for the Forgotten Woods) are the rooms already on the finished map, exactly where they are. They can't be moved. Hover one to see its name. The faint lines between them are the exits between those rooms. The finished map (land, lake, trails) is faintly behind; the forest and lake are going to be redrawn from your layout.</p>
   <p style="color:var(--soft)">North is up. Rooms that TinTin puts on a level above or below the entrance (the Treetops, the cliffs, the lake bed) have a dashed outline and start a little to the side of the ground room they sit over. Up and down exits are dashed purple lines.</p>
 
   <h2>Edit</h2>
@@ -104,7 +105,7 @@ svg line.cxe{pointer-events:none}
   <label class="l"><input type="checkbox" id="snap"> Snap to grid</label>
   <div class="row"><select id="snapStep"><option value=".25">¼ room</option><option value=".5" selected>½ room</option><option value="1">1 room</option></select></div>
   <div class="row">
-    <button id="selPiece">Select the whole piece</button><button id="selNtr">Select the Forest of Tears</button><button id="selRoad">Select the Lake of Tich'Pyga</button>
+    <button id="selPiece">Select the whole piece</button><button id="selNtr">Select the Forest of Tears</button><button id="selRoad">Select the Lake of Tich'Pyga</button><button id="selWt">Select the Western Trade Route</button>
   </div>
   <div class="row">
     <button id="rawSel">Selected → where TinTin's exits suggest</button>
@@ -127,11 +128,11 @@ svg line.cxe{pointer-events:none}
   <div class="legend">
     <i style="background:var(--t-Forest);border:2px solid #8DBA4E"></i><span>Forest of Tears room (movable)</span>
     <i style="background:var(--t-Water);border:2px solid #4FB3D9"></i><span>Lake of Tich'Pyga room (movable)</span>
+    <i style="background:var(--t-Forest);border:2px solid #E0B04A"></i><span>Western Trade Route room (movable)</span>
     <i style="background:var(--t-other);border-radius:50%;width:8px;height:8px;border:1px solid #B3541E"></i><span>Spacer room (invisible in the game, free to move)</span>
     <i style="background:var(--cx-DH);border-radius:50%"></i><span>Fixed room in Darkhaven</span>
     <i style="background:var(--cx-Grove);border-radius:50%"></i><span>Fixed room in the Shadow Grove</span>
     <i style="background:var(--cx-FW);border-radius:50%"></i><span>Fixed room in the Forgotten Woods</span>
-    <i style="background:var(--cx-WTR);border-radius:50%"></i><span>Fixed room on the Western Trade Route</span>
     <i style="border:2px dashed var(--ud);background:none"></i><span>On a level above or below ground</span>
     <i style="background:var(--ctx-land)"></i><span>Land on the finished map</span><i style="background:var(--ctx-water)"></i><span>The lake</span>
   </div>
@@ -231,7 +232,7 @@ function placeEntrance(){}
   for(const t of C.tracks)el('path',{d:'M'+t.map(q=>q[0]+' '+q[1]).join('L'),fill:'none',stroke:'var(--dirt)','stroke-width':.26,opacity:.8,'stroke-linecap':'round','stroke-linejoin':'round'},gCtx);
   el('rect',{x:C.town[0],y:C.town[1],width:C.town[2]-C.town[0],height:C.town[3]-C.town[1],fill:'var(--panel)',stroke:'var(--ink)','stroke-width':.12,opacity:.92,rx:.4},gCtx);
   (C.labels||[]).forEach(l=>{const t=el('text',{x:l[0],y:l[1],'text-anchor':'middle','font-size':l[3]||1.5,'font-style':'italic',fill:'var(--soft)',style:'font-family:var(--serif);paint-order:stroke;stroke:var(--paper);stroke-width:.3px'},gCtx);t.textContent=l[2]})})();
-(function(){const a=D.audit;if(!a)return;$('audit').innerHTML=`<b>Import check against your TinTin map:</b><br>Forest of Tears rooms: ${a.fot} (${a.fot_untracked} the finished map doesn't hold: parked)<br>Lake of Tich'Pyga rooms: ${a.lake} (${a.lake_in_map} on the finished map)<br>Spacer rooms joining them: ${a.spacers} (${a.fot_sp} by the forest, ${a.lake_sp} by the lake); ${a.stubs} dead-end spacer stubs left off<br>Parked, no exit to anything here: ${a.parked}<br>Levels (TinTin, rooms): ${a.levels}<br>Pieces: ${a.pieces}<br>Exits between these rooms: ${a.exits}<br>Exits to rooms on the map: ${a.links}<br><br><b>Fixed rooms already on the finished map:</b><br>Darkhaven ${a.dh} · Shadow Grove ${a.grove} · Forgotten Woods ${a.fw} · Western Trade Route ${a.wtr}<br><br>Not included: the Forest of Tears' sub-areas (Bartok Grove, Major Oak ...), the Mire, the Southern Mountain Range and the rest of what its exits lead to`})();
+(function(){const a=D.audit;if(!a)return;$('audit').innerHTML=`<b>Import check against your TinTin map:</b><br>Forest of Tears rooms: ${a.fot} (${a.fot_untracked} the finished map doesn't hold: parked)<br>Lake of Tich'Pyga rooms: ${a.lake} (${a.lake_in_map} on the finished map)<br>Spacer rooms joining them: ${a.spacers} (${a.fot_sp} by the forest, ${a.lake_sp} by the lake); ${a.stubs} dead-end spacer stubs left off<br>Parked, no exit to anything here: ${a.parked}<br>Levels (TinTin, rooms): ${a.levels}<br>Pieces: ${a.pieces}<br>Exits between these rooms: ${a.exits}<br>Exits to rooms on the map: ${a.links}<br><br><b>Fixed rooms already on the finished map:</b><br>Darkhaven ${a.dh} · Shadow Grove ${a.grove} · Forgotten Woods ${a.fw}<br>Western Trade Route rooms (movable): ${a.wtr}<br><br>Not included: the Forest of Tears' sub-areas (Bartok Grove, Major Oak ...), the Mire, the Southern Mountain Range and the rest of what its exits lead to`})();
 
 /* ---------- moving things ---------- */
 function setNode(id,x,y){
@@ -360,7 +361,7 @@ $('zin').onclick=()=>{cam.k=Math.min(140,cam.k*1.5);applyCam()};$('zout').onclic
 function hover(e){const nd=e.target.closest&&e.target.closest('.nd');
   if(!nd){tip.style.display='none';return}
   const r=byId.get(+nd.dataset.id),p=pos.get(r.id),s=stage.getBoundingClientRect();
-  tip.innerHTML=`<b>${esc(r.name||'(spacer room)')}</b><br>Room ${r.id} · ${esc(r.terrain||'-')}${r.area==='FT'?' · '+({ft:'Forest of Tears',lk:"Lake of Tich'Pyga"})[r.grp]+(r.void?' (spacer room)':''):(r.src?' · '+({DH:'Darkhaven',Grove:'Shadow Grove',FW:'Forgotten Woods',WTR:'Western Trade Route'})[r.src]+' (fixed)':'')}${r.piece!=null?' · piece '+(r.piece+1):''}${r.lvl?` · level ${r.lvl>0?'+':''}${r.lvl} in TinTin`:''}${locked.has(r.id)?' · locked':''}${hidden.has(r.id)?' · <b style="color:#C23B22">hidden on the map</b>':''}<br>at ${p[0].toFixed(2)}, ${p[1].toFixed(2)}<br>${(r.ex||[]).map(esc).join('<br>')}`;
+  tip.innerHTML=`<b>${esc(r.name||'(spacer room)')}</b><br>Room ${r.id} · ${esc(r.terrain||'-')}${r.area==='FT'?' · '+({ft:'Forest of Tears',lk:"Lake of Tich'Pyga",wt:'Western Trade Route'})[r.grp]+(r.void?' (spacer room)':''):(r.src?' · '+({DH:'Darkhaven',Grove:'Shadow Grove',FW:'Forgotten Woods'})[r.src]+' (fixed)':'')}${r.piece!=null?' · piece '+(r.piece+1):''}${r.lvl?` · level ${r.lvl>0?'+':''}${r.lvl} in TinTin`:''}${locked.has(r.id)?' · locked':''}${hidden.has(r.id)?' · <b style="color:#C23B22">hidden on the map</b>':''}<br>at ${p[0].toFixed(2)}, ${p[1].toFixed(2)}<br>${(r.ex||[]).map(esc).join('<br>')}`;
   tip.style.display='block';let x=e.clientX-s.left+14,y=e.clientY-s.top+12;if(x>s.width-350)x-=360;if(y>s.height-160)y-=150;tip.style.left=x+'px';tip.style.top=y+'px'}
 window.addEventListener('keydown',e=>{
   if(['INPUT','TEXTAREA','SELECT'].includes((e.target.tagName||''))&&e.target.id!=='snap')return;
@@ -381,6 +382,7 @@ $('selnone').onclick=()=>{sel.clear();refreshSel()};
 $('baseSel').onclick=()=>setTo([...sel],base);$('rawSel').onclick=()=>setTo([...sel],raw);
 $('selNtr').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='ft')sel.add(r.id)});refreshSel()};
 $('selRoad').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='lk')sel.add(r.id)});refreshSel()};
+$('selWt').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='wt')sel.add(r.id)});refreshSel()};
 $('selPiece').onclick=()=>{const ps=new Set([...sel].map(id=>byId.get(id).piece).filter(p=>p!=null));if(!ps.size){toast('Select a room of the piece first');return}rooms.forEach(r=>{if(ps.has(r.piece))sel.add(r.id)});refreshSel()};
 let armed=null;$('baseAll').onclick=function(){if(!armed){this.textContent='Click again to confirm';armed=setTimeout(()=>{armed=null;this.textContent='Undo all my changes…'},4000);return}
   clearTimeout(armed);armed=null;this.textContent='Undo all my changes…';setTo([...pos.keys()],base);toast('Back to the starting layout')};
