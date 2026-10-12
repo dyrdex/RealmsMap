@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false   # queue, never cancel: a cancelled run shows as a red failure and the site keeps the old version
 
 jobs:
   build:
