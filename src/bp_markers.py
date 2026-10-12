@@ -14,7 +14,7 @@ GFX = [dict(k='keep', label="Barrik's Keep", at='above-pin', w=1.9, h=2.9, dx=-1
        dict(k='stonecity', label='Drow City', at='above-pin', w=2.6, h=2.15),                          # north of the pin
        dict(k='stonecity', label='Revelation City', at='above-text', w=2.6, h=2.15, dy=0.4),   # sits close above its name
        dict(k='ruin', at='xy', x=-32.0, y=-110.87, w=2.0, h=1.4),          # owner's spot, bumped east off the marker
-       dict(k='darkpeak', at='xy', x=-30.42, y=-130.49, w=3.6, h=2.4)]                   # a big dark scary mountain                    # south of the pin: a dilapidated stone building
+       dict(k='darkpeak', at='xy', x=-39.16, y=-131.36, w=3.6, h=2.4)]                   # a big dark scary mountain, 2.6 rooms east of the Mountain of Lost Souls marker (owner, Oct 12; was at -30.42,-130.49)                    # south of the pin: a dilapidated stone building
 NO_ROUTE = "There are no directions for this area in your list yet; the marker shows the Peaks room it opens from."
 
 

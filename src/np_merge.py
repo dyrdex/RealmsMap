@@ -45,6 +45,26 @@ def _components(G):
     return out
 
 
+def dirt_road(layout, edges):
+    """The wide dirt road along the Barren Peaks (owner, Oct 11): the Plains rooms joined to the Peaks form a single string from 4742 (west)
+    to 4791 (east), crossing the rope bridge 4780-4782. Returns (the Peaks rooms joined to it, its lines). Used by the Barren Peaks merge
+    too, which lets this road stand for the little trails of the Peaks rooms beside it (owner, Oct 12)."""
+    pos = dict(zip(layout['ids'], zip(layout['xs'], layout['ys'])))
+    hidden = set(layout.get('hidden', []))
+    info = {r['id']: r for r in edges['rooms']}
+    shown = lambda v: v in pos and v not in hidden
+    plains = {v for v, r in info.items() if r.get('area') == 'NP' and shown(v)}
+    peaks = {v for v, r in info.items() if (r.get('src') == 'BP' or r.get('area') == 'PK') and shown(v)}
+    G = defaultdict(set)
+    for a, b, k in edges['edges']:
+        if k != 'ud' and shown(a) and shown(b): G[a].add(b); G[b].add(a)
+    plinks = sorted((a, b) for a in plains for b in G[a] if b in peaks)
+    fh = {a for a, b in plinks}
+    rs_ = set(fh) | {v for v in plains if sum(1 for u in G[v] if u in fh) >= 2} | set(BRIDGE)
+    GR = {v: {u for u in G[v] if u in rs_} for v in rs_ if shown(v)}
+    return {b for a, b in plinks}, _chains(GR, pos, set(), 0.8), rs_, plinks
+
+
 def merge_np(w, layout, edges, seed=37):
     import ashen_forest as AF
     _rooms = AF._world()[0]; rooms_name = lambda v: _rooms[v]['name'] if v in _rooms else ''
@@ -87,8 +107,8 @@ def merge_np(w, layout, edges, seed=37):
             for a, b in zip(path, path[1:]): add(a, b)
             report.append((start, d, len(path)))
         pins.add(start)
-    # every exit between a Plains room and a Barren Peaks room on the map
-    plinks = sorted((a, b) for a in plains for b in G[a] if b in peaks)
+    # ---- the wide dirt road along the Barren Peaks (see dirt_road). It stands for every link between the Plains and the Peaks: the Peaks
+    #      rooms beside it get no spurs of their own (owner, Oct 12; the Barren Peaks merge runs their other trails on to the road) ----
     pruned = set()
     while True:                                         # dead-end spacer stubs are left off
         sp = [v for v in GT if len(GT[v]) <= 1 and void(v) and v not in pins]
@@ -97,17 +117,8 @@ def merge_np(w, layout, edges, seed=37):
             for u in list(GT[v]): GT[u].discard(v)
             del GT[v]; pruned.add(v)
     trails = _chains(GT, pos, pins, 0.6)
-    # ---- the rooms along the Barren Peaks (owner, Oct 11): one wide dirt road instead of a tangle of links. The Plains rooms joined to the
-    #      Peaks form a single string from 4742 (west) to 4791 (east), crossing the rope bridge 4780-4782; each Peaks room joined to it
-    #      gets one short spur to the road ----
-    fh = {a for a, b in plinks}
-    rs_ = set(fh) | {v for v in plains if sum(1 for u in G[v] if u in fh) >= 2} | set(BRIDGE)
-    GR = {v: {u for u in G[v] if u in rs_} for v in rs_ if shown(v)}
-    droad = _chains(GR, pos, set(), 0.8)
+    _K, droad, rs_, plinks = dirt_road(layout, edges)
     conn = []
-    for b in sorted({b for a, b in plinks}):
-        q = _nearest_on(droad, pos[b])
-        if math.dist(q, pos[b]) > 0.45: conn.append([[round(pos[b][0], 2), round(pos[b][1], 2)], [round(q[0], 2), round(q[1], 2)]])
     # ---- off-ramps: wherever the Trade Route has an exit into a Plains room ----
     roads = list(w.get('etrtracks', [])); joins = []; ramp_conn = []
     for r_ in sorted(proad):
@@ -166,6 +177,7 @@ def merge_np(w, layout, edges, seed=37):
     nz2 = ndi.gaussian_filter(nrng.normal(size=(H, W))[sub], 2.2 * R8); nz2 = (nz2 - nz2.min()) / (nz2.max() - nz2.min())
     light = np.zeros((H, W), bool); light[sub] = nz > 0.6                 # paler, riper stretches
     grass = np.zeros((H, W), bool); grass[sub] = nz2 > 0.62               # greener, grassier stretches
+    grass_m = grass                                                        # (kept: 'grass' is reused below)
     w['geo']['wheat2'] = AA._contours(ndi.binary_erosion(wheat & light, iterations=R8 // 2), X0, Y0, sigma=2.5)
     w['geo']['wheat3'] = AA._contours(ndi.binary_erosion(wheat & grass & ~light, iterations=R8 // 2), X0, Y0, sigma=2.5)
     # the Peaks' tints stop where the wheat begins (gotcha 3)
@@ -214,14 +226,22 @@ def merge_np(w, layout, edges, seed=37):
     south = [v for v in drawn if v in plains]
     sx0 = min(pos[v][0] for v in south) - 2; sx1 = max(pos[v][0] for v in south) + 2
     rows = np.arange(H)[:, None]; cols = (np.arange(W) + .5) / R8 + X0
-    edge = np.where(fimg.any(0), H - 1 - np.argmax(fimg[::-1], 0), H)     # the lowest field pixel in each column
+    # the field's south edge: in each column, the lowest field room within 2.5 rooms either side (owner, Oct 12: the thicket reaches north
+    # until it is about one room from the real rooms, rather than stopping at the outline of the field)
+    ey = np.full(W, -np.inf)
+    for v in field:
+        c0_, c1_ = int((pos[v][0] - 2.5 - X0) * R8), int((pos[v][0] + 2.5 - X0) * R8) + 1
+        ey[max(c0_, 0):c1_] = np.maximum(ey[max(c0_, 0):c1_], pos[v][1])
+    ok_ = np.isfinite(ey); ey = np.interp(np.arange(W), np.nonzero(ok_)[0], ey[ok_])
+    edge = ((ey - Y0) * R8).astype(int)
     strip = (rows > edge[None, :]) & ((cols >= sx0) & (cols <= sx1))[None, :] & wheat
     rsm = _samples(droad, 0.1); rcol = np.full(W, -1)                       # and above the wide dirt road
     for x, y in rsm:
         c_ = int((x - X0) * R8); rcol[c_] = max(rcol[c_], int((y - Y0) * R8))
     rcol = ndi.maximum_filter1d(rcol, 5)
     strip &= ~((rcol[None, :] >= 0) & (rows > rcol[None, :]))
-    clr_pts = np.r_[_samples(lines_all + list(w.get('etrtracks', []))), np.array([p for v, p in pos.items() if shown(v) and (not void(v) or v in drawn)], float)]   # spacer rooms off the drawn paths are not walkable ground
+    joins_ = [[list(pos[a]), list(pos[b])] for a in sorted(GT) if a in plains for b in sorted(G[a]) if b in field]   # where a path meets the field: kept clear too (owner, Oct 12)
+    clr_pts = np.r_[_samples(lines_all + joins_ + list(w.get('etrtracks', []))), np.array([p for v, p in pos.items() if shown(v) and (not void(v) or v in drawn)], float)]   # spacer rooms off the drawn paths are not walkable ground
     ys_, xs_ = np.nonzero(strip)
     dd = cKDTree(clr_pts).query(np.c_[(xs_ + .5) / R8 + X0, (ys_ + .5) / R8 + Y0])[0]
     thick = np.zeros((H, W), bool); thick[ys_[dd > 1.0], xs_[dd > 1.0]] = True
@@ -256,10 +276,46 @@ def merge_np(w, layout, edges, seed=37):
     brush += shrubs; tufts += grass
     thicket = dict(sq=round(tsq, 1), trees=len(trees), rocks=len(rocks), brush=len(shrubs), grass=len(grass), x=[round(sx0, 1), round(sx1, 1)])
 
+    # ---- the sea (owner, Oct 12): beyond the north-west path (the Grey Beach / Grey Dunes / Dark Cliffs path from 4389 round to 4330) the
+    #      ground is sea, out to the edge of the map, with a strip of beach along the path. Bounded: only within 9 rooms of the path (less near
+    #      its two ends), on the far side of the path from the field (gotcha 1) ----
+    wset = westnet | {4389, 4330, 4364}
+    wedges = [(pos[a], pos[b]) for a in sorted(wset) for b in sorted(GT[a]) if b in wset and a < b]
+    ws = _samples(wedges, 0.1); wt = cKDTree(ws)
+    bx0 = max(0, int((ws[:, 0].min() - 12 - X0) * R8)); bx1 = int((ws[:, 0].max() + 3 - X0) * R8); by1 = int((ws[:, 1].max() + 3 - Y0) * R8)
+    yy_, xx_ = np.mgrid[0:by1, bx0:bx1]; PB = np.c_[(xx_.ravel() + .5) / R8 + X0, (yy_.ravel() + .5) / R8 + Y0]
+    d_path, i_path = wt.query(PB); d_path = d_path.reshape(yy_.shape)
+    d_room = cKDTree(np.array([p for v, p in pos.items() if shown(v)], float)).query(PB)[0].reshape(yy_.shape)
+    ends_ = np.array([pos[4389], pos[4330]]); e_ = np.min(np.linalg.norm(ws[i_path][:, None, :] - ends_[None], axis=2), 1).reshape(yy_.shape)
+    barrier = (d_path <= 0.9) | (d_room <= 1.0) | fimg[:by1, bx0:bx1] | ndi.binary_dilation(thick, iterations=R8)[:by1, bx0:bx1]
+    south_ = PB[:, 1].reshape(yy_.shape) > ws[:, 1].max() + 1.5           # not past the south end of the path
+    lab, n = ndi.label(~barrier); outside = lab == lab[0, 0]
+    reach = np.minimum(9.0, 1.5 + 0.8 * e_)
+    sea_b = outside & (d_path <= reach) & ~south_
+    srng = np.random.default_rng(seed + 1)
+    wob = ndi.gaussian_filter(srng.normal(size=sea_b.shape), 1.5 * R8); wob = (wob - wob.min()) / (wob.max() - wob.min())
+    sea_b = (ndi.gaussian_filter(sea_b.astype(float), 0.8 * R8) > 0.4 + 0.2 * wob) & outside & ~south_ & (d_path > 0.8) & (d_room > 1.0)
+    lab, n = ndi.label(sea_b)
+    if n: sz = ndi.sum(sea_b, lab, range(1, n + 1)); sea_b = lab == (int(np.argmax(sz)) + 1)          # one body of water, no puddles
+    sea = np.zeros((H, W), bool); sea[:by1, bx0:bx1] = sea_b
+    beach = ndi.binary_dilation(sea, iterations=int(0.7 * R8)) & ~sea & new_land
+    w['geo']['water'] = list(w['geo']['water']) + AA._contours(sea, X0, Y0, sigma=1.5)
+    w['geo']['sand'] = list(w['geo'].get('sand', [])) + AA._contours(beach, X0, Y0, sigma=1.0)
+    w['geo']['wheat'] = AA._contours(wheat & ~sea, X0, Y0, sigma=2.0)
+    w['geo']['wheat2'] = AA._contours(ndi.binary_erosion(wheat & light, iterations=R8 // 2) & ~sea, X0, Y0, sigma=2.5)
+    w['geo']['wheat3'] = AA._contours(ndi.binary_erosion(wheat & grass_m & ~light, iterations=R8 // 2) & ~sea, X0, Y0, sigma=2.5)
+    assert not (thick & sea).any(), 'the sea reached the thicket'
+    wet = sea | beach
+    inwet = lambda x, y: 0 <= int((y - Y0) * R8) < H and 0 <= int((x - X0) * R8) < W and wet[int((y - Y0) * R8), int((x - X0) * R8)]
+    for key in ('trees', 'tufts', 'hills', 'thorns', 'peaks', 'boulders'):
+        w[key] = [q for q in w.get(key, []) if not inwet(q[0], q[1])]
+    tufts = [q for q in tufts if not inwet(q[0], q[1])]; brush = [q for q in brush if not inwet(q[0], q[1])]
+    seainfo = dict(sea_sq=round(float(sea.sum()) / R8 / R8, 1), beach_sq=round(float(beach.sum()) / R8 / R8, 1), sea_on_old_land_sq=round(float((sea & new_land).sum()) / R8 / R8, 1))
+
     # ---- the north-west (owner, Oct 11): the ground between the Dark Cliffs / Grey Dunes path and the field is impassable: rocky crags by the
     #      Dark Cliffs, grey dunes by the Grey Dunes and Beach; about one room kept clear beside the path and every room ----
     nwq = np.zeros((H, W), bool); r0 = int((-172 - Y0) * R8); c0 = int((0 - X0) * R8); nwq[:r0, :c0] = True
-    zone = new_land & nwq & ~fimg & ~thick
+    zone = new_land & nwq & ~fimg & ~thick & ~wet
     ys_, xs_ = np.nonzero(zone)
     PZ = np.c_[(xs_ + .5) / R8 + X0, (ys_ + .5) / R8 + Y0]
     dd = cKDTree(clr_pts).query(PZ)[0]; keep = dd > 1.0
@@ -317,9 +373,11 @@ def merge_np(w, layout, edges, seed=37):
     drawings = dict(barrow=[round(bx, 2), round(by, 2)], groves=[[round(g['x'], 2), round(g['y'], 2), len(g['t'])] for g in gfx[1:]])
     w['wheattufts'] = sorted(tufts, key=lambda b: b[1]); w['brush'] = sorted(brush, key=lambda b: b[1])
 
+    # the area's name (owner, Oct 12): where there is most room: the open field at (-31.5,-164.0), 9 rooms from any path or road and 10 from any marker
+    w['arealabels'] = list(w.get('arealabels', [])) + [dict(x=-31.5, y=-164.0, lh=2.6, sag=1.0, hw=12, lines=['Northern Plains'])]
     pts_ = np.array([q for poly in w['geo']['land'] for q in poly])
     w['bounds'] = [int(pts_[:, 0].min()) - 3, int(pts_[:, 1].min()) - 3, int(pts_[:, 0].max()) + 3, int(pts_[:, 1].max()) + 3]
     return w, dict(paths=report, peaks_links=len(plinks), dirt_road=[len(droad), len(rs_)], spurs=len(conn), off_ramps=joins, ramp_paths=len(ramp_conn), path_rooms=len(GT), trail_lines=len(trails), spacer_stubs_left_off=sorted(pruned),
                    new_land_sq=round(float(grown.sum()) / R8 / R8, 1), wheat_sq=round(float(wheat.sum()) / R8 / R8, 1), peaks_tint_clipped_sq=clipped,
-                   sprites_cleared=cleared, tufts=len(tufts), brush=len(brush), thicket=thicket, northwest=nw, drawings=drawings, bounds=w['bounds'],
+                   sprites_cleared=cleared, tufts=len(tufts), brush=len(brush), thicket=thicket, sea=seainfo, northwest=nw, drawings=drawings, bounds=w['bounds'],
                    rooms_off_land=sum(1 for v in real if not new_land[int((pos[v][1] - Y0) * R8), int((pos[v][0] - X0) * R8)]))

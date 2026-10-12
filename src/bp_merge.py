@@ -42,7 +42,7 @@ def _components(G, nodes):
     return out
 
 
-def merge_bp(w, layout, edges, seed=29, plains_road=()):
+def merge_bp(w, layout, edges, seed=29, plains_road=(), absorb=None):
     """plains_road: road rooms that now lie in the Northern Plains (moved in the Plains editor); the Plains merge grows their land, so the Peaks' land is not grown around them."""
     plains_road = dict(plains_road) if isinstance(plains_road, dict) else {v: None for v in plains_road}   # {room: its position in the Peaks save}
     rng = random.Random(seed)
@@ -91,6 +91,18 @@ def merge_bp(w, layout, edges, seed=29, plains_road=()):
             p, o = (a, b) if ia else (b, a)
             if o in road_used or o in fixed: LINKS.append((p, o))
     linked = {p for p, o in LINKS}
+    # the Peaks rooms joined to the Plains' wide dirt road (owner, Oct 12): the road stands for all their little trails, so the trails
+    # between two of them are left off and every other trail from one of them runs on to the road (absorb = (rooms, the road's lines))
+    dpos = dict(pos); absorbed = 0
+    if absorb:
+        K, droad = absorb
+        for v in K:
+            if v in pos: q = _nearest_on(droad, pos[v]); dpos[v] = (q[0], q[1])
+        for v in [v for v in GT if v in K]:
+            for u in [u for u in GT[v] if u in K]: GT[v].discard(u); GT[u].discard(v); absorbed += 1
+        for u in [u for u in GT if u not in K and len(GT[u]) == 1 and next(iter(GT[u])) in K]:   # one-room stubs off the road go too
+            v = next(iter(GT[u])); GT[v].discard(u); GT[u].discard(v); absorbed += 1
+        for v in [v for v in GT if not GT[v]]: del GT[v]
     pruned = set()
     while True:                                                           # dead-end spacer stubs are left off
         sp = [v for v in GT if len(GT[v]) <= 1 and void(v) and v not in linked]
@@ -98,17 +110,17 @@ def merge_bp(w, layout, edges, seed=29, plains_road=()):
         for v in sp:
             for u in list(GT[v]): GT[u].discard(v)
             del GT[v]; pruned.add(v)
-    trails = _chains(GT, pos, linked, 0.6)
+    trails = _chains(GT, dpos, linked | set(absorb[0] if absorb else ()), 0.6)
     for a, b in EXTRA_TRAILS:
         if shown(a) and shown(b): trails.append([[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]])
     conn = []; joins = []
     for p, o in LINKS:
         if void(p) and p not in GT: continue
         if o in road_used:
-            q = _nearest_on(road_lines, pos[p]); conn.append([[round(pos[p][0], 2), round(pos[p][1], 2)], [round(q[0], 2), round(q[1], 2)]])
+            q = _nearest_on(road_lines, pos[p]); conn.append([[round(dpos[p][0], 2), round(dpos[p][1], 2)], [round(q[0], 2), round(q[1], 2)]])
             joins.append([round(q[0], 2), round(q[1], 2)])
         else:
-            conn.append([[round(pos[p][0], 2), round(pos[p][1], 2)], [round(pos[o][0], 2), round(pos[o][1], 2)]])
+            conn.append([[round(dpos[p][0], 2), round(dpos[p][1], 2)], [round(pos[o][0], 2), round(pos[o][1], 2)]])
     w['etrtracks'] = list(w.get('etrtracks', [])) + road_lines
     w['ntrjoins'] = list(w.get('ntrjoins', [])) + joins
     w['fwtracks'] = list(w['fwtracks']) + trails + conn
@@ -204,6 +216,6 @@ def merge_bp(w, layout, edges, seed=29, plains_road=()):
     pts_ = np.array([q for poly in w['geo']['land'] for q in poly])
     w['bounds'] = [int(pts_[:, 0].min()) - 3, int(pts_[:, 1].min()) - 3, int(pts_[:, 0].max()) + 3, int(pts_[:, 1].max()) + 3]
     return w, dict(road_rooms=len(road_nodes), road_lines=len(road_lines), road_spacers=sum(1 for c in comps for v in c if void(v)), loose_road_rooms=loose_road, road_spurs_left_off=len(pruned_road),
-                   peak_rooms_on_trails=len(GT), trail_lines=len(trails), connectors=len(conn), off_ramps=len(joins),
+                   peak_rooms_on_trails=len(GT), trails_absorbed_by_dirt_road=absorbed, trail_lines=len(trails), connectors=len(conn), off_ramps=len(joins),
                    spacer_stubs_left_off=len(pruned), hidden_trails_skipped=skipped, sprites_cleared=cleared,
                    new_land_sq=round(float(grown.sum()) / R8 / R8, 1), sea_pockets_filled=filled, shown_rooms_in_sea=sum(1 for v in peaks | road_used if not new_land[int((pos[v][1] - Y0) * R8), int((pos[v][0] - X0) * R8)]), glyphs_added=dict(added), bounds=w['bounds'])

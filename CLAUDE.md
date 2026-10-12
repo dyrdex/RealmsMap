@@ -13,15 +13,15 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 
 ## Where things are
 - `src/build.py`: stage order. `src/template.html`: draws the terrain for the bake. `src/site_template.html`: the live page (sidebar, cards, legend). `src/data.py`: owner's areas + directions. `src/VERSION`: footer label.
-- Per-region merge modules and their editor saves: Ashen (`ashen_*`), NTR (`ntr_*`), Barren Peaks (`bp_*`), Northern Plains (`np_*`). Editors in `tools/`.
+- Per-region merge modules and their editor saves: Ashen (`ashen_*`), NTR (`ntr_*`), Barren Peaks (`bp_*`), Northern Plains (`np_*`). Editors in `tools/`. `*_marker_routes.py` are one-time scripts that write `*_marker_routes.json`.
 - `docs/REGION_NOTES.md`: detailed per-region history and decisions. Read only the section for the region being changed.
 - `CHANGELOG.md`: owner-facing history. `README.md`: file-by-file description.
 
 ## State (Oct 12, 2026)
-- Mapped through the Northern Plains (merged from the owner's v4 save, Oct 11). Last snapshot: v10.
-- Open question to owner: Mountain of Lost Souls marker moved with its room to (-41.7,-130.6); its `darkpeak` drawing is still at (-30.42,-130.49).
-- Not done (not asked): Plains area name, markers for areas off the Plains, routes through the Plains on Peaks cards.
-- Agreed plan (Oct 12): (1) done: repo cleanup + Pages; (2) tweaks data file (label/marker/gfx positions) so nudges are data edits; (3) freeze finished regions into baked data so new regions build on a frozen base, plus re-rendering only changed tiles. Verify each step with a byte-identical rebuild.
+- Mapped through the Northern Plains, incl. its sub-area markers, area name and the NW sea (Oct 12 batch). Last snapshot: v10.
+- Open questions to owner: markers for Asgard Nexus and World Housing off the Plains? Which regions to freeze.
+- Not done (not asked): routes through the Plains on Peaks cards.
+- Agreed plan (Oct 12): repo cleanup + Pages done. Next, when the owner picks the regions: freeze finished regions into baked data with final positions (markers, drawings, names incl. the solver's) so no correction tables remain, and re-render only changed tiles. Verify with a pixel-identical rebuild. (The separate tweaks file was dropped.)
 
 ## Conventions (owner preferences)
 - Dark mode only: no light palette, no `prefers-color-scheme`, no theme toggle.

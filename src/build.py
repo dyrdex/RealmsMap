@@ -106,14 +106,20 @@ def _bp_layout():                                               # the Barren Pea
     return B,old
 from bp_merge import merge_bp
 _B,_plains_road=_bp_layout()
-w,_bp=merge_bp(w,_B,_json.load(open(os.path.join(_here,'bp_editor_edges.json'))),plains_road=_plains_road)
+from np_merge import dirt_road
+_NPL=_json.load(open(os.path.join(_here,'np_layout_final.json'))); _NPE=_json.load(open(os.path.join(_here,'np_editor_edges.json')))
+_dr=dirt_road(_NPL,_NPE)                                        # the Plains' wide dirt road stands for the trails of the Peaks rooms beside it
+w,_bp=merge_bp(w,_B,_json.load(open(os.path.join(_here,'bp_editor_edges.json'))),plains_road=_plains_road,absorb=(_dr[0],_dr[1]))
 print('Barren Peaks merged:',_bp)
 from bp_markers import add_bp_subareas
 w,_bsa=add_bp_subareas(w,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'bp_marker_routes.json'))))
 print('Barren Peaks sub-areas:',_bsa)
 from np_merge import merge_np
-w,_np=merge_np(w,_json.load(open(os.path.join(_here,'np_layout_final.json'))),_json.load(open(os.path.join(_here,'np_editor_edges.json'))))
+w,_np=merge_np(w,_NPL,_NPE)
 print('Northern Plains merged:',_np)
+from np_markers import add_np_subareas
+w,_nsa=add_np_subareas(w,_NPL,_json.load(open(os.path.join(_here,'np_marker_routes.json'))))
+print('Northern Plains sub-areas:',_nsa)
 for _p in w['places']:                                          # owner's renames: the place keeps its old name as its key for the label tweaks
     if _p['name']=='Ofcol': _p['key']='Ofcol'; _p['name']='New Ofcol'
 w['places']=[_p for _p in w['places'] if not (_p['name']=='New Ofcol' and _p.get('key')!='Ofcol')]   # the Woods' own New Ofcol marker removed (owner, Oct 10)
