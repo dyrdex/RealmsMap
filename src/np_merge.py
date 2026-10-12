@@ -137,13 +137,12 @@ def merge_np(w, layout, edges, seed=37):
 
     # ---- the Plains' ground ----
     real = [v for v in plains if not void(v)]
-    # a city drawing just north of the Town of Solace marker (room 4309) (owner, Oct 12); the land grows round it like round a room
+    # a city drawing just north of the Town of Solace marker (room 4309) (owner, Oct 12)
     cw, ch = 2.6, 2.15; cx_, cy_ = pos[4309][0], pos[4309][1] - 0.5 - ch / 2 - 0.1
-    city = [(cx_ + a * cw / 2, cy_ + b * ch / 2) for a in (-1, 0, 1) for b in (-1, 0, 1)]
     # a few small gravestones just south of the Unholy Grounds marker (room 4221) (owner, Oct 12); the land grows round them too
     gx_, gy_ = pos[4221][0] - 0.3, pos[4221][1] + 2.4
     GRAVES = [(-1.0, -0.25, 0, 1.0), (-0.35, 0.05, 1, 1.05), (0.3, -0.3, 0, 0.9), (0.95, 0.0, 0, 1.0), (-0.7, 0.55, 0, 0.85), (0.1, 0.5, 1, 0.9), (0.75, 0.6, 0, 0.8)]   # (dx, dy, cross?, size)
-    pts = np.array([pos[v] for v in real] + [pos[v] for v in proad] + [pos[v] for v in drawn if v in plains] + city + [(gx_ + a, gy_ + b) for a, b, k, r in GRAVES], float)
+    pts = np.array([pos[v] for v in real] + [pos[v] for v in proad] + [pos[v] for v in drawn if v in plains] + [(gx_ + a, gy_ + b) for a, b, k, r in GRAVES], float)   # (the city adds no land: owner, Oct 12, the coast hugs it; nothing lies north of the town)
     lo, hi = pts.min(0) - 9, pts.max(0) + 9
     assert lo[1] > Y0 and hi[0] < X1 and lo[0] > X0, 'the Plains reach past the edge of the grid'
     ix0, ix1 = int((lo[0] - X0) * R8), int((hi[0] - X0) * R8); iy0, iy1 = int((lo[1] - Y0) * R8), int((hi[1] - Y0) * R8)
@@ -163,6 +162,10 @@ def merge_np(w, layout, edges, seed=37):
     noise = ndi.gaussian_filter(nrng.normal(size=m.shape), 2.4 * R8); n01 = (noise - noise.min()) / (noise.max() - noise.min())
     soft = ndi.gaussian_filter(m.astype(float), 1.3 * R8)
     area = np.zeros((H, W), bool); area[sub] = soft > (0.5 + 0.22 * (n01 - 0.5) * 2)
+    # the north coast hugs the Town of Solace: about half a room of shore above the drawing, easing back to the natural coast about 3 rooms either side
+    top_ = cy_ - ch / 2 - 0.5; xs_c = (np.arange(ix0, ix1) + .5) / R8 + X0; ys_c = (np.arange(iy0, iy1) + .5) / R8 + Y0
+    lim = top_ - np.clip(np.abs(xs_c - cx_) - cw / 2 - 0.5, 0, None) ** 2 * 1.2    # the northmost land allowed in each column (back to normal within ~3 rooms, clear of the Azure Sea path)
+    area[sub] &= ys_c[:, None] >= lim[None, :]
     land = AA._raster(w['geo']['land'], X0, Y0, W, H); water = AA._raster(w['geo']['water'], X0, Y0, W, H)
     area &= ~water
     new_land = land | area
