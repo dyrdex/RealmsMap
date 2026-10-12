@@ -112,7 +112,7 @@ _dr=dirt_road(_NPL,_NPE)                                        # the Plains' wi
 w,_bp=merge_bp(w,_B,_json.load(open(os.path.join(_here,'bp_editor_edges.json'))),plains_road=_plains_road,absorb=(_dr[0],_dr[1]))
 print('Barren Peaks merged:',_bp)
 from bp_markers import add_bp_subareas
-w,_bsa=add_bp_subareas(w,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'bp_marker_routes.json'))))
+w,_bsa=add_bp_subareas(w,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'bp_marker_routes.json'))),np_layout=_NPL)
 print('Barren Peaks sub-areas:',_bsa)
 from np_merge import merge_np
 w,_np=merge_np(w,_NPL,_NPE)

@@ -18,14 +18,19 @@ GFX = [dict(k='keep', label="Barrik's Keep", at='above-pin', w=1.9, h=2.9, dx=-1
 NO_ROUTE = "There are no directions for this area in your list yet; the marker shows the Peaks room it opens from."
 
 
-def add_bp_subareas(w, bp_layout, ntr_layout, routes):
+PORTAL = {4222}             # 'Before the Graveyard', where the painting in Alms for the Poor (783) sets you down, next to the Plains
+
+
+def add_bp_subareas(w, bp_layout, ntr_layout, routes, np_layout=None):
     hidden = set(bp_layout['hidden'])
     pos = dict(zip(bp_layout['ids'], zip(bp_layout['xs'], bp_layout['ys'])))
     for v, x, y in zip(ntr_layout['ids'], ntr_layout['xs'], ntr_layout['ys']): pos.setdefault(v, (x, y))
     track = w.get('track') or {}
     shown = [v for v in pos if v not in hidden and v in set(bp_layout['ids'])]
+    npos = {v: (x, y) for v, x, y in zip(np_layout['ids'], np_layout['xs'], np_layout['ys']) if v not in set(np_layout['hidden'])} if np_layout else {}
     def at(v):
         if v in pos: return pos[v]
+        if v in npos: return npos[v]                                     # routes across the Northern Plains (owner, Oct 12)
         t = track.get('cx' + str(v)); return tuple(t[:2]) if t else None
     placed = []
     for r in routes:
@@ -43,6 +48,7 @@ def add_bp_subareas(w, bp_layout, ntr_layout, routes):
         for v, area in trail:
             p = at(v)
             if p: cur.append([round(p[0], 3), round(p[1], 3)])
+            elif v in PORTAL: continue                                   # the painting: the line runs straight on to the Plains (owner, Oct 12)
             elif cur: segs.append(cur); cur = []
         cur.append([round(site[0], 3), round(site[1], 3)]); segs.append(cur)
         woods = r['name'] in WOODS

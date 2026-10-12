@@ -9,6 +9,11 @@
 - The links of the five hidden rooms (14273, 14275, 14278, 14279, 14287) are small dashed lines (15); the shown rooms' links to the mainland are ordinary trails (6, two of them 42-43 rooms long, from 14271 and 14272 to the Peaks).
 - A Village of Edo marker at 7746, with your directions traced on its card (the line joins straight across 5965, which is not in the editor).
 - The Azure Sea Coast's links to the mainland are now all small dashed lines (8, including those from the hidden rooms 14278 and 14279); no solid trails, and the hidden rooms' other links are no longer drawn.
+- Every destination whose directions go through the painting (13: the Plains areas, the Village of Edo, and Village of Tar'pa Cithm, Mountain of Lost Souls and Morgul Vale in the Peaks) now shows one unbroken route line from Alms for the Poor to the Northern Plains; the three Peaks routes are now traced across the Plains too, and lose their "areas that aren't drawn yet" note.
+- The sea now runs along the whole north coast of the Northern Plains, joining the north-west sea to the Azure Sea (452 sq rooms added).
+- The small bay just north of Ocean Keep is now part of the Azure Sea (35 sq rooms).
+- The name "Azure Sea Coastal Path" on the water beside the route's long north-east stretch, north-east of the City of Iniquity (map only: no card or sidebar entry).
+- A small island (about 8.6 sq rooms) just north of the Village of Edo marker.
 - Fixed: zoomed in, the map could show old pictures from before the latest change (the new coast vanished on zooming in); each build's pictures now have their own address.
 
  and the areas that open off it · October 12, 2026
