@@ -134,6 +134,7 @@ w,_ll=place_lake_label(w)
 print('lake name placed:',_ll)
 if os.environ.get('FINAL_DUMP'):                                 # (used to build the layout editors)
     json.dump(w, open(os.environ['FINAL_DUMP'], 'w'))
+w['track']={k:v for k,v in w['track'].items() if not k.startswith(('ft','wt'))}    # (the Forest of Tears editor's room positions: in the FINAL_DUMP only, so realm_map.html stays as it was)
 nd['wild']=w
 open('../realm_map.html','w').write(h.replace('__DATA__',json.dumps(nd,separators=(',',':'))).replace('__VERSION__',label))
 
