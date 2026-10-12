@@ -13,13 +13,14 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 
 ## Where things are
 - `src/build.py`: stage order. `src/template.html`: draws the terrain for the bake. `src/site_template.html`: the live page (sidebar, cards, legend). `src/data.py`: owner's areas + directions. `src/VERSION`: footer label.
-- Per-region merge modules and their editor saves: Ashen (`ashen_*`), NTR (`ntr_*`), Barren Peaks (`bp_*`), Northern Plains (`np_*`). Editors in `tools/`. `*_marker_routes.py` are one-time scripts that write `*_marker_routes.json`.
+- Per-region merge modules and their editor saves: Ashen (`ashen_*`), NTR (`ntr_*`), Barren Peaks (`bp_*`), Northern Plains (`np_*`), Azure Sea (`az_*`, editor only so far). Editors in `tools/`. `*_marker_routes.py` are one-time scripts that write `*_marker_routes.json`.
 - `docs/REGION_NOTES.md`: detailed per-region history and decisions. Read only the section for the region being changed.
 - `CHANGELOG.md`: owner-facing history. `README.md`: file-by-file description.
 
 ## State (Oct 12, 2026)
 - Mapped through the Northern Plains, incl. its sub-area markers, area name and the NW sea (Oct 12 batch). Last snapshot: v11 (git tag `v11`, Oct 12).
 - Open question to owner: which regions to freeze. (Asgard Nexus and World Housing stay off the map: owner, Oct 12.)
+- Azure Sea (limited, owner Oct 12): editor published (28 rooms; see REGION_NOTES), waiting for the owner's save in `azlayout/current`; then write the merge.
 - Not done (not asked): routes through the Plains on Peaks cards.
 - Agreed plan (Oct 12): repo cleanup + Pages done. Next, when the owner picks the regions: freeze finished regions into baked data with final positions (markers, drawings, names incl. the solver's) so no correction tables remain, and re-render only changed tiles. Verify with a pixel-identical rebuild. (The separate tweaks file was dropped.)
 

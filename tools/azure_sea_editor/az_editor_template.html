@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Layout editor · Azure Sea</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;1,400&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;
+  --paper:#1B2220;--ink:#DCE3D7;--soft:#9AA79E;--panel:#232B28;--edge:#39443F;--pick:#F0A04B;--ok:#7FC9A2;
+  --dirt:#6A5A42;--dirt-edge:#B79F78;--one:#9C8A74;--ud:#ABA2E8;--over:#FF7A63;
+  --maze-fill:#36402F;--maze-line:#A9B79C;--grid:rgba(220,227,215,.06);--grid2:rgba(220,227,215,.12);
+  --t-Forest:#4C6B45;--t-Field:#8C8B5A;--t-Mountains:#7D756A;--t-Hills:#8A7752;--t-Swamp:#5E6A4E;--t-Desert:#9A8A58;--t-DT:#B04A4A;--t-other:#6E6E6E;
+  --serif:"Alegreya",Georgia,serif;--sans:"Alegreya Sans","Segoe UI",Arial,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden;display:flex}
+aside{width:330px;flex:0 0 330px;background:var(--panel);border-right:1px solid var(--edge);overflow:auto;padding:14px 16px 20px;min-height:0}
+h1{font-family:var(--serif);font-size:1.45rem;line-height:1.1;margin:0 0 6px}
+h2{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin:16px 0 6px}
+p,li{font-size:.86rem;line-height:1.42;margin:0 0 6px}
+ul.how{padding-left:18px;margin:6px 0}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:5px 0}
+button,.btn{font:inherit;font-size:.86rem;padding:6px 10px;border-radius:7px;border:1px solid var(--edge);background:var(--paper);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--pick)}button:disabled{opacity:.45;cursor:default}
+button.primary{background:var(--pick);border-color:var(--pick);color:#fff;font-weight:700;padding:8px 14px}
+button.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+button.warn{border-color:var(--over);color:var(--over)}
+label.l{display:flex;gap:7px;align-items:center;font-size:.86rem;margin:3px 0;cursor:pointer}
+select,input[type=search]{font:inherit;font-size:.86rem;padding:5px 8px;border:1px solid var(--edge);border-radius:6px;background:var(--paper);color:var(--ink)}
+input[type=search]{width:100%}
+.stat{font-size:.82rem;color:var(--soft);margin:4px 0}
+.ok{color:var(--ok);font-weight:700}
+.legend{display:grid;grid-template-columns:18px 1fr;gap:3px 7px;align-items:center;font-size:.8rem;color:var(--soft);margin-top:6px}
+.legend i{display:block;width:14px;height:10px;border-radius:2px}
+#stage{position:relative;flex:1;min-width:0}
+svg{width:100%;height:100%;display:block;touch-action:none;user-select:none}
+#tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--edge);border-radius:7px;padding:7px 10px;font-size:.8rem;display:none;max-width:340px;box-shadow:0 3px 14px rgba(0,0,0,.18);line-height:1.38;z-index:4}
+#tip b{font-family:var(--serif);font-size:1rem}
+#hud{position:absolute;left:12px;bottom:12px;background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:5px 10px;font-size:.8rem;color:var(--soft);z-index:3}
+#zoom{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:6px;z-index:3}
+#zoom button{width:34px;height:34px;font-size:1.1rem;padding:0}
+#toast{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:7px 14px;border-radius:8px;font-size:.86rem;display:none;z-index:6}
+#modal{position:absolute;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:8}
+#modal .box{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;width:min(640px,92%);max-height:88%;display:flex;flex-direction:column;gap:8px}
+#modal textarea{width:100%;height:240px;font:12px ui-monospace,Menlo,Consolas,monospace;background:var(--paper);color:var(--ink);border:1px solid var(--edge);border-radius:7px;padding:8px;resize:vertical}
+.nd .lbl{display:none;font-family:var(--serif);font-size:var(--ls,.5px);fill:var(--ink);paint-order:stroke;stroke:var(--paper);stroke-width:var(--lw,.14px);stroke-linejoin:round;pointer-events:none}
+svg.names-on .nd .lbl,svg.names-zoom.zoomed .nd .lbl{display:block}
+.nd{cursor:grab}.nd.drag{cursor:grabbing}
+.nd rect,.nd circle.shape{stroke:var(--ink);stroke-width:.05}
+.nd.sel rect,.nd.sel circle.shape{stroke:var(--pick);stroke-width:.17}
+.nd.lk rect,.nd.lk circle.shape{stroke-width:.13}
+.nd.up rect{stroke:var(--ud);stroke-dasharray:.12 .08;stroke-width:.09}
+.nd.hit rect,.nd.hit circle.shape{stroke:#fff;stroke-width:.2}
+.grp{cursor:grab}
+@media (max-width:820px){body{flex-direction:column-reverse}aside{width:100%;flex:0 0 42%;border-right:0;border-top:1px solid var(--edge)}}
+
+:root{--ctx-land:#28332A;--ctx-water:#3C5A6A;--t-Inside:#9C7248;--t-Underground:#8A735F;--t-Water:#5C8DA3;--t-Swimming:#4F8FAE}
+:root{--t-City:#8E78A8}
+.nd.ntr rect,.nd.ntr circle.shape{stroke:#B3541E;stroke-width:.17}
+.nd.rd rect,.nd.rd circle.shape{stroke:#D4B44A}
+.nd.np rect,.nd.np circle.shape{stroke:#8DBA4E}
+.nd.pk rect,.nd.pk circle.shape{stroke:#E08A4A}
+.nd.cw rect,.nd.cw circle.shape{stroke:#E3D27A}
+
+
+.nd .hx{display:none}.nd.hid .hx{display:block}.nd.hid{opacity:.32}.nd.hid .shape,.nd.hid rect{stroke-dasharray:.16 .12}
+svg line.eh{opacity:.1!important}svg.only .nd.hid,svg.only line.eh{display:none!important}
+.nd.fx{cursor:not-allowed}.nd.fx .lbl{display:none}
+svg line.cxe{pointer-events:none}
+:root{--cx-DH:#6F86A2;--cx-Grove:#9080AE;--cx-NTR:#A8875C;--cx-BP:#A86E52;--cx-NP:#B5A16A;--cx-AF:#8E8E8E;--cx-FW:#6E9A6C;--cx-edge:#7E8B7E}
+</style>
+</head>
+<body>
+<aside>
+  <h1>Layout editor<br><span style="font-size:.62em;font-weight:500;color:var(--soft)">The Azure Sea (rooms that join the map)</span></h1>
+  <p>Arrange the rooms exactly how you want them. Paths are drawn from the real exits between rooms, so they follow wherever you put the rooms.</p>
+  <ul class="how">
+    <li><b>Drag a room</b> to move it. Its paths follow.</li>
+    <li><b>Shift-drag empty space</b> (or use Box select) to grab many rooms. <b>Shift-click</b> adds or removes one.</li>
+    <li><b>Arrow keys</b> nudge the selection (Shift = bigger, Alt = finer). <b>Ctrl+Z</b> undoes, <b>Ctrl+Y</b> redoes.</li>
+    <li><b>Scroll</b> to zoom, drag empty space to pan.</li>
+  </ul>
+  <p id="audit" class="stat" style="color:var(--ink)"></p>
+  <p id="ntrNote" style="margin:4px 0 8px">Only the <b>Azure Sea</b> rooms that link to rooms already on the map, and the rooms that join those to each other, are here. Each room that links to the map starts one room from the room it links to; the rooms between them are spread evenly along the shore between. <b style="color:#E08A4A">Orange outline</b>: the cliff-foot rooms under the Barren Peaks (6 have an up exit to a Peaks room, 7 lie between them). <b style="color:#E3D27A">Yellow outline</b>: the shore walk, the 'Forgotten Woods Coastline' rooms, which join the Peaks cliffs to the Azure beach room already on the map by the Ashen Forest (14254 'The Crest of the Hill'); none of them has an exit into a Forgotten Woods room. <b style="color:#8DBA4E">Green outline</b>: 4317 'Rocky Coastline', which joins the north of the Plains (4316) through two spacer rooms. Hide any room you don't want on the map. <b>Select the whole piece</b> grabs every room in the same piece as the rooms you have selected; the three Select buttons grab each group; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms to where TinTin's exits alone would put them.</p>
+  <p><b>The fixed rooms</b> (small round dots, grey-blue for Darkhaven, violet for the Shadow Grove, green for the Forgotten Woods, brown for the Northern Trade Route, rust for the Barren Peaks, wheat for the Northern Plains, grey for the Ashen Forest and its beach) are the rooms already on the finished map, exactly where they are. They can't be moved. Hover one to see its name. The faint lines between them are the exits between those rooms. The finished map (land, lake, the Woods' trails) is faintly behind.</p>
+  <p style="color:var(--soft)">North is up. Rooms that TinTin puts on a level above or below the entrance have a dashed outline. Up and down exits are dashed purple lines; these rooms are all on one level (their links to the Peaks are up exits).</p>
+
+  <h2>Edit</h2>
+  <div class="row">
+    <button id="undo">↶ Undo</button><button id="redo">↷ Redo</button>
+    <button id="tPan" class="on">Pan</button><button id="tBox">Box select</button>
+  </div>
+  <div class="row">
+    <button id="lock">🔒 Lock selected</button><button id="unlock">Unlock selected</button><button id="selnone">Select none</button>
+  </div>
+  <div class="gh">On the final map</div>
+  <p style="margin:2px 0 6px;font-size:.88rem">Flag the rooms whose paths you <b>don't</b> want drawn on the map. A trail is drawn only when <b>both</b> of its rooms are shown. Hidden rooms fade out with a red ✕. (<b>H</b> hides the selection, <b>Shift+H</b> shows it.)</p>
+  <div class="row"><button id="hide">✕ Hide selected</button><button id="unhide">Show selected</button></div>
+  <div class="row"><button id="hideOthers">Hide all except selected</button><button id="showAll">Show all</button></div>
+  <div class="row"><button id="selHidden">Select the hidden</button><button id="selShown">Select the shown</button></div>
+  <label class="l"><input type="checkbox" id="vOnly"> Preview: draw only what the map will show</label>
+  <p id="hideStat" class="stat"></p>
+  <label class="l"><input type="checkbox" id="snap"> Snap to grid</label>
+  <div class="row"><select id="snapStep"><option value=".25">¼ room</option><option value=".5" selected>½ room</option><option value="1">1 room</option></select></div>
+  <div class="row">
+    <button id="selPiece">Select the whole piece</button><button id="selNtr">Select the cliffs</button><button id="selRoad">Select the shore walk</button><button id="selNp">Select 4317</button>
+  </div>
+  <div class="row">
+    <button id="rawSel">Selected → where TinTin's exits suggest</button>
+    <button id="baseSel">Selected → starting spot</button>
+  </div>
+  <div class="row"><button id="baseAll" class="warn">Undo all my changes…</button></div>
+
+  <h2>Find</h2>
+  <input type="search" id="q" placeholder="Room name or number" aria-label="Find a room">
+
+  <h2>Show</h2>
+  <label class="l"><input type="checkbox" id="vDirt" checked> Paths as dirt trails</label>
+  <label class="l"><input type="checkbox" id="vThin" checked> Thin centre lines (exact exit lines)</label>
+  <label class="l"><input type="checkbox" id="vOne" checked> One-way and up/down exits (dashed)</label>
+  <label class="l"><input type="checkbox" id="vCtx" checked> The finished map behind (land, lake, the Woods' trails)</label>
+  <label class="l"><input type="checkbox" id="vGrid" checked> Grid</label>
+  <label class="l"><input type="checkbox" id="ov" checked> Warn when rooms overlap (red rings)</label>
+  <div class="row" style="align-items:center"><span style="font-size:.86rem">Room names:</span>
+    <select id="names"><option value="zoom" selected>when zoomed in</option><option value="on">always</option><option value="off">never</option></select></div>
+  <div class="legend">
+    <i style="background:var(--t-Forest);border:2px solid #E08A4A"></i><span>Azure Sea room under the Peaks cliffs (movable)</span>
+    <i style="background:var(--t-Forest);border:2px solid #E3D27A"></i><span>Azure Sea shore walk (movable)</span>
+    <i style="background:var(--t-Forest);border:2px solid #8DBA4E"></i><span>Azure Sea room by the Plains (movable)</span>
+    <i style="background:var(--t-other);border-radius:50%;width:8px;height:8px;border:1px solid #B3541E"></i><span>Spacer room (invisible in the game, free to move)</span>
+    <i style="background:var(--cx-DH);border-radius:50%"></i><span>Fixed room in Darkhaven</span>
+    <i style="background:var(--cx-Grove);border-radius:50%"></i><span>Fixed room in the Shadow Grove</span>
+    <i style="background:var(--cx-FW);border-radius:50%"></i><span>Fixed room in the Forgotten Woods</span>
+    <i style="background:var(--cx-NTR);border-radius:50%"></i><span>Fixed room on the Northern Trade Route</span>
+    <i style="background:var(--cx-BP);border-radius:50%"></i><span>Fixed room in the Barren Peaks</span>
+    <i style="background:var(--cx-NP);border-radius:50%"></i><span>Fixed room in the Northern Plains</span>
+    <i style="background:var(--cx-AF);border-radius:50%"></i><span>Fixed room in the Ashen Forest, the Eastern Trade Route and its beach</span>
+    <i style="border:2px dashed var(--ud);background:none"></i><span>On a level above or below ground</span>
+    <i style="background:var(--ctx-land)"></i><span>Land on the finished map</span><i style="background:var(--ctx-water)"></i><span>The lake</span>
+  </div>
+
+  <h2>Send your layout to Claude</h2>
+  <div class="row"><button id="saveDb" class="primary">Save for Claude</button></div>
+  <p class="stat" id="dbStat">Not saved yet.</p>
+  <p style="font-size:.82rem;color:var(--soft)">After you press it, just tell me <b>"saved"</b> in the chat and I'll read your layout directly. If that button isn't available, use one of these instead:</p>
+  <div class="row"><button id="dl">Download file</button><button id="txt">Copy / paste text…</button></div>
+  <p class="stat" id="localStat"></p>
+  <p class="stat" id="info"></p>
+</aside>
+
+<main id="stage">
+  <svg id="svg" class="names-zoom"><defs>
+    <pattern id="g5" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0H0V5" fill="none" stroke="var(--grid2)" stroke-width=".04"/></pattern>
+    <pattern id="g1" width="1" height="1" patternUnits="userSpaceOnUse"><path d="M1 0H0V1" fill="none" stroke="var(--grid)" stroke-width=".02"/></pattern>
+    <pattern id="mazePat" width="1.2" height="1.2" patternUnits="userSpaceOnUse"><path d="M.1 .1 H1.1 M.1 .1 V.7 M.4 .4 H.9 V1.1 M.4 .4 V.9 H.7 M1.1 .4 V.8" fill="none" stroke="var(--maze-line)" stroke-width=".06" stroke-linecap="round"/></pattern>
+  </defs><g id="world"></g></svg>
+  <div id="tip"></div>
+  <div id="hud">—</div>
+  <div id="zoom"><button id="zin">+</button><button id="zout">−</button><button id="zfit" title="Show everything">⤢</button></div>
+  <div id="toast"></div>
+  <div id="modal"><div class="box">
+    <b style="font-family:var(--serif);font-size:1.1rem">Layout text</b>
+    <p>This is your current layout. To send it to me, copy it and paste it into the chat. To load a layout, paste it here and press <b>Load text into map</b>.</p>
+    <textarea id="lt" spellcheck="false"></textarea>
+    <div class="row"><button id="mCopy" class="primary">Copy</button><button id="mSel">Select all</button><button id="mLoad">Load text into map</button><button id="mClose">Close</button></div>
+  </div></div>
+</main>
+
+<script>
+const D=__DATA__;
+(function(){
+const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id);
+const svg=$('svg'),world=$('world'),tip=$('tip'),stage=$('stage');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+
+/* ---------- data ---------- */
+const rooms=D.rooms,byId=new Map(rooms.map(r=>[r.id,r]));
+const pos=new Map(),base=new Map(),raw=new Map();
+rooms.forEach(r=>{pos.set(r.id,[r.x,r.y]);base.set(r.id,[r.x,r.y]);raw.set(r.id,[r.x0,r.y0])});
+const hidden=new Set();const locked=new Set(),sel=new Set();rooms.forEach(r=>{if(r.fixed)locked.add(r.id)});
+const groups=D.groups.map(g=>({...g,set:new Set(g.rooms)}));
+const groupOf=new Map();groups.forEach(g=>g.rooms.forEach(v=>groupOf.set(v,g)));
+const adj=new Map();const addAdj=(a,b)=>{(adj.get(a)||adj.set(a,new Set()).get(a)).add(b)};
+D.edges.forEach(e=>{addAdj(e[0],e[1]);addAdj(e[1],e[0])});
+
+/* ---------- drawing ---------- */
+const xs=rooms.map(r=>r.x),ys=rooms.map(r=>r.y);
+const B=[Math.min(...xs)-8,Math.min(...ys)-8,Math.max(...xs)+8,Math.max(...ys)+10];
+const bg=el('rect',{x:B[0]-200,y:B[1]-200,width:B[2]-B[0]+400,height:B[3]-B[1]+400,fill:'var(--paper)'},world);
+const gridA=el('rect',{x:B[0]-200,y:B[1]-200,width:B[2]-B[0]+400,height:B[3]-B[1]+400,fill:'url(#g1)'},world);
+const gridB=el('rect',{x:B[0]-200,y:B[1]-200,width:B[2]-B[0]+400,height:B[3]-B[1]+400,fill:'url(#g5)'},world);
+const gCtx=el('g',{'pointer-events':'none'},world);
+const gGroups=el('g',{},world),gWide=el('g',{},world),gThin=el('g',{},world),gNodes=el('g',{},world),gOv=el('g',{},world),gHl=el('g',{},world),gMq=el('g',{},world);
+const colT=t=>`var(--t-${['Forest','Field','Mountains','Hills','Swamp','Desert','DT','Inside','Underground','Water','Swimming','City'].includes(t)?t:'other'})`;
+const nodeEl=new Map(),edges=[],nodeEdges=new Map();
+function ringPath(p){let s='';const n=p.length;for(let i=0;i<n;i++){const a=p[i],b=p[(i+1)%n],m=[(a[0]+b[0])/2,(a[1]+b[1])/2];if(i===0){const z=p[n-1];s+=`M${((z[0]+a[0])/2).toFixed(2)} ${((z[1]+a[1])/2).toFixed(2)}`}s+=`Q${a[0].toFixed(2)} ${a[1].toFixed(2)} ${m[0].toFixed(2)} ${m[1].toFixed(2)}`}return s+'Z'}
+function hull(P){P=P.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);if(P.length<3)return P;const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);const lo=[],up=[];for(const p of P){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}for(const p of P.slice().reverse()){while(up.length>=2&&cr(up[up.length-2],up[up.length-1],p)<=0)up.pop();up.push(p)}return lo.slice(0,-1).concat(up.slice(0,-1))}
+groups.forEach((g,i)=>{
+  g.path=el('path',{class:'grp','data-g':i,fill:'var(--maze-fill)','fill-opacity':.85,stroke:'var(--maze-line)','stroke-width':.1,'stroke-dasharray':'.35 .2'},gGroups);
+  g.pat=el('path',{fill:'url(#mazePat)','fill-opacity':.7,'pointer-events':'none'},gGroups);
+  g.txt=el('text',{'text-anchor':'middle','font-size':.62,'font-style':'italic','font-weight':700,fill:'var(--ink)','pointer-events':'none',style:'font-family:var(--serif);paint-order:stroke;stroke:var(--maze-fill);stroke-width:.2px'},gGroups);
+  g.txt.textContent=g.name+' · maze';
+});
+function updGroup(g){const P=[];for(const v of g.rooms){const p=pos.get(v);if(!p)continue;for(let a=0;a<12;a++)P.push([p[0]+.85*Math.cos(a*Math.PI/6),p[1]+.85*Math.sin(a*Math.PI/6)])}
+  const H=hull(P);const d=ringPath(H);g.path.setAttribute('d',d);g.pat.setAttribute('d',d);
+  let cx=0,cy=0;for(const v of g.rooms){const p=pos.get(v);cx+=p[0];cy+=p[1]}g.txt.setAttribute('x',cx/g.rooms.length);g.txt.setAttribute('y',cy/g.rooms.length+.2)}
+D.edges.forEach((e,i)=>{
+  const [a,b,kind]=e,pa=pos.get(a),pb=pos.get(b);const ga=groupOf.get(a),gb=groupOf.get(b);const inside=ga&&ga===gb;
+  const mk=(parent,cls,attrs)=>el('line',{class:cls,x1:pa[0],y1:pa[1],x2:pb[0],y2:pb[1],'stroke-linecap':'round',...attrs},parent);
+  const o={a,b,kind,inside,els:[]};
+  const cxEdge=byId.get(a).fixed&&byId.get(b).fixed;
+  if(cxEdge){o.els.push(mk(gThin,'cxe'+(kind==='ud'?' ud':''),{stroke:kind==='ud'?'var(--ud)':'var(--cx-edge)','stroke-width':.05,opacity:.55}))}
+  else if(kind==='two'){o.els.push(mk(gWide,'w'+(inside?' mz':''),{stroke:'var(--dirt)','stroke-width':.34,opacity:.8}));
+                   o.els.push(mk(gThin,'t'+(inside?' mz':''),{stroke:'var(--dirt-edge)','stroke-width':.06,opacity:.9}))}
+  else o.els.push(mk(gThin,(kind==='ud'?'ud':'one')+(inside?' mz':''),{stroke:kind==='ud'?'var(--ud)':'var(--one)','stroke-width':.07,'stroke-dasharray':'.22 .16',opacity:.9}));
+  edges.push(o);(nodeEdges.get(a)||nodeEdges.set(a,[]).get(a)).push(o);(nodeEdges.get(b)||nodeEdges.set(b,[]).get(b)).push(o);
+});
+rooms.forEach(r=>{
+  const p=pos.get(r.id),g=el('g',{class:'nd'+(r.lvl?' up':'')+(r.fixed?' fx':'')+(r.area==='AZ'?' ntr '+r.grp:''),'data-id':r.id,transform:`translate(${p[0]},${p[1]})`},gNodes);
+  if(r.fixed){el('circle',{class:'shape cxs',r:r.void?.12:.27,fill:'var(--cx-'+r.src+')',stroke:'var(--paper)','stroke-width':.05,opacity:.95},g);el('circle',{r:.42,fill:'transparent'},g)}
+  else if(r.void){el('circle',{class:'shape',r:.17,fill:'var(--t-other)',opacity:.85},g);el('circle',{r:.36,fill:'transparent'},g)}
+  else el('rect',{x:-.34,y:-.34,width:.68,height:.68,rx:.12,fill:colT(r.terrain),opacity:r.lvl?.78:.95},g);
+  el('path',{class:'hx',d:'M-.36 -.36L.36 .36M.36 -.36L-.36 .36',stroke:'#C23B22','stroke-width':.11,'stroke-linecap':'round',fill:'none'},g);
+  const t=el('text',{class:'lbl',x:r.fixed?.7:.5,y:.1},g);t.textContent=(r.src?r.src+' · ':'')+(r.name||'');
+  nodeEl.set(r.id,g);
+});
+function placeEntrance(){}
+(function(){const C=D.ctx;if(!C)return;
+  const poly=ps=>ps.map(p=>'M'+p.map(q=>q[0]+' '+q[1]).join('L')+'Z').join('');
+  el('path',{d:poly(C.land),'fill-rule':'evenodd',fill:'var(--ctx-land)',opacity:.8},gCtx);
+  el('path',{d:poly(C.water),'fill-rule':'evenodd',fill:'var(--ctx-water)',opacity:.85},gCtx);
+  (C.mazes||[]).forEach(m=>el('path',{d:poly([m.poly]),fill:'var(--maze-fill)',opacity:.7},gCtx));
+  for(const t of C.tracks)el('path',{d:'M'+t.map(q=>q[0]+' '+q[1]).join('L'),fill:'none',stroke:'var(--dirt)','stroke-width':.26,opacity:.8,'stroke-linecap':'round','stroke-linejoin':'round'},gCtx);
+  el('rect',{x:C.town[0],y:C.town[1],width:C.town[2]-C.town[0],height:C.town[3]-C.town[1],fill:'var(--panel)',stroke:'var(--ink)','stroke-width':.12,opacity:.92,rx:.4},gCtx);
+  (C.labels||[]).forEach(l=>{const t=el('text',{x:l[0],y:l[1],'text-anchor':'middle','font-size':l[3]||1.5,'font-style':'italic',fill:'var(--soft)',style:'font-family:var(--serif);paint-order:stroke;stroke:var(--paper);stroke-width:.3px'},gCtx);t.textContent=l[2]})})();
+(function(){const a=D.audit;if(!a)return;$('audit').innerHTML=`<b>Import check against your TinTin map:</b><br>Azure Sea rooms under the Peaks cliffs: ${a.peaks}<br>Shore walk: ${a.coast} (${a.spacers} of them spacer rooms)<br>By the Plains: ${a.plains}<br>Pieces: ${a.pieces}<br>Exits between these rooms: ${a.exits}<br>Links to rooms on the map: ${a.links} (${a.linked})<br><br><b>Fixed rooms already on the finished map:</b><br>Darkhaven ${a.dh} · Shadow Grove ${a.grove} · Forgotten Woods ${a.fw} · Northern Trade Route ${a.ntr} · Barren Peaks ${a.bp} · Northern Plains ${a.np} · Ashen Forest, Eastern Trade Route and beach ${a.af}<br><br>Not included: the rest of the Azure Sea (open water and its other shores)`})();
+
+/* ---------- moving things ---------- */
+function setNode(id,x,y){
+  pos.set(id,[x,y]);const g=nodeEl.get(id);g.setAttribute('transform',`translate(${x},${y})`);
+  for(const e of nodeEdges.get(id)||[]){const pa=pos.get(e.a),pb=pos.get(e.b);for(const l of e.els){l.setAttribute('x1',pa[0]);l.setAttribute('y1',pa[1]);l.setAttribute('x2',pb[0]);l.setAttribute('y2',pb[1])}}
+  if(id===D.entry||id===D.linkFrom)placeEntrance();
+}
+function applyPositions(list){ // list of [id,[x,y]]
+  const dirty=new Set();
+  for(const [id,p] of list){setNode(id,p[0],p[1]);const g=groupOf.get(id);if(g)dirty.add(g)}
+  dirty.forEach(updGroup);
+}
+function movedCount(){let n=0;for(const [id,p] of pos){if(byId.get(id).fixed)continue;const b=base.get(id);if(Math.abs(p[0]-b[0])>.004||Math.abs(p[1]-b[1])>.004)n++}return n}
+
+/* ---------- selection & locks ---------- */
+function refreshSel(){nodeEl.forEach((g,id)=>{g.classList.toggle('sel',sel.has(id));g.classList.toggle('lk',locked.has(id))});
+  $('info').textContent=sel.size?`${sel.size} room${sel.size>1?'s':''} selected`:'';}
+function refreshLocks(){nodeEl.forEach((g,id)=>g.classList.toggle('lk',locked.has(id)))}
+
+/* ---------- history ---------- */
+let undoS=[],redoS=[];
+function commit(changes){const ch=changes.filter(c=>Math.abs(c[1][0]-c[2][0])>1e-6||Math.abs(c[1][1]-c[2][1])>1e-6);if(!ch.length)return;undoS.push(ch);if(undoS.length>300)undoS.shift();redoS=[];afterChange()}
+function undo(){const ch=undoS.pop();if(!ch)return;if(ch.hide){ch.hide.forEach(([id,was])=>was?hidden.add(id):hidden.delete(id));refreshHidden();redoS.push(ch);afterChange(true);return}applyPositions(ch.map(c=>[c[0],c[1]]));redoS.push(ch);afterChange(true)}
+function redo(){const ch=redoS.pop();if(!ch)return;if(ch.hide){ch.hide.forEach(([id,was,now])=>now?hidden.add(id):hidden.delete(id));refreshHidden();undoS.push(ch);afterChange(true);return}applyPositions(ch.map(c=>[c[0],c[2]]));undoS.push(ch);afterChange(true)}
+function afterChange(){$('undo').disabled=!undoS.length;$('redo').disabled=!redoS.length;computeOverlaps();scheduleAutosave();updateStats()}
+function moveSel(dx,dy){const ch=[];for(const id of sel){if(locked.has(id))continue;const o=pos.get(id).slice();ch.push([id,o,[+(o[0]+dx).toFixed(2),+(o[1]+dy).toFixed(2)]])}applyPositions(ch.map(c=>[c[0],c[2]]));commit(ch)}
+function setTo(ids,src){const ch=[];for(const id of ids){if(locked.has(id))continue;const s=src.get(id);if(!s)continue;ch.push([id,pos.get(id).slice(),s.slice()])}applyPositions(ch.map(c=>[c[0],c[2]]));commit(ch)}
+
+/* ---------- rooms to hide from the final map ---------- */
+function refreshHidden(){
+  nodeEl.forEach((g,id)=>g.classList.toggle('hid',hidden.has(id)));
+  svg.classList.toggle('only',$('vOnly').checked);
+  let drawn=0;
+  for(const e of edges){const h=hidden.has(e.a)||hidden.has(e.b);if(!h)drawn++;for(const l of e.els)l.classList.toggle('eh',h)}
+  const real=rooms.filter(r=>!r.void),spc=rooms.filter(r=>r.void);
+  const hr=real.filter(r=>hidden.has(r.id)).length,hs=spc.filter(r=>hidden.has(r.id)).length;
+  $('hideStat').innerHTML=hidden.size?`<b>${real.length-hr}</b> rooms shown · <b>${hr}</b> hidden<br>(spacer rooms: ${spc.length-hs} shown · ${hs} hidden)<br>Trails drawn on the map: <b>${drawn}</b> of ${edges.length}`:`All ${real.length} rooms are shown. Trails drawn on the map: ${drawn} of ${edges.length}.`}
+function commitHide(ids,to){const ch=[];for(const id of ids){if(!byId.has(id))continue;const was=hidden.has(id);if(was!==to)ch.push([id,was,to])}
+  if(!ch.length){toast(to?'Those rooms are already hidden':'Those rooms are already shown');return}
+  ch.forEach(([id,,now])=>now?hidden.add(id):hidden.delete(id));undoS.push({hide:ch});if(undoS.length>300)undoS.shift();redoS=[];refreshHidden();afterChange();
+  toast(to?`${ch.length} room${ch.length>1?'s':''} hidden from the map`:`${ch.length} room${ch.length>1?'s':''} shown on the map`)}
+$('hide').onclick=()=>{if(!sel.size){toast('Select some rooms first');return}commitHide([...sel],true)};
+$('unhide').onclick=()=>{if(!sel.size){toast('Select some rooms first');return}commitHide([...sel],false)};
+$('hideOthers').onclick=()=>{if(!sel.size){toast('Select the rooms you want to keep first');return}
+  const ch=[];for(const r of rooms){const want=!sel.has(r.id)&&!r.fixed;if(hidden.has(r.id)!==want)ch.push([r.id,hidden.has(r.id),want])}   // the fixed rooms on the finished map stay shown
+  if(!ch.length){toast('Nothing to change');return}ch.forEach(([id,,now])=>now?hidden.add(id):hidden.delete(id));undoS.push({hide:ch});redoS=[];refreshHidden();afterChange();toast(`Only the ${sel.size} selected rooms (and the fixed rooms) are shown now`)};
+$('showAll').onclick=()=>{if(!hidden.size){toast('Everything is already shown');return}commitHide([...hidden],false)};
+$('selHidden').onclick=()=>{sel.clear();hidden.forEach(id=>sel.add(id));refreshSel()};
+$('selShown').onclick=()=>{sel.clear();rooms.forEach(r=>{if(!hidden.has(r.id))sel.add(r.id)});refreshSel()};
+$('vOnly').addEventListener('change',refreshHidden);
+window.addEventListener('keydown',e=>{if(['INPUT','TEXTAREA','SELECT'].includes((e.target.tagName||''))||e.ctrlKey||e.metaKey||e.altKey)return;
+  if(e.key==='h'&&sel.size){e.preventDefault();commitHide([...sel],true)}else if(e.key==='H'&&sel.size){e.preventDefault();commitHide([...sel],false)}});
+
+/* ---------- overlaps ---------- */
+const flagged=new Set();let overlapPairs=0;
+function computeOverlaps(){
+  flagged.clear();overlapPairs=0;gOv.textContent='';
+  if(!$('ov').checked){updateStats();return}
+  const R2=.8,cell=new Map();
+  for(const [id,p] of pos){const k=Math.floor(p[0]/R2)+','+Math.floor(p[1]/R2);(cell.get(k)||cell.set(k,[]).get(k)).push(id)}
+  for(const [id,p] of pos){if(byId.get(id).void)continue;const cx=Math.floor(p[0]/R2),cy=Math.floor(p[1]/R2);
+    for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++){const arr=cell.get((cx+i)+','+(cy+j));if(!arr)continue;
+      for(const o of arr){if(o<=id||byId.get(o).void||(byId.get(id).fixed&&byId.get(o).fixed))continue;if(adj.get(id)&&adj.get(id).has(o))continue;const ga=groupOf.get(id);if(ga&&ga===groupOf.get(o))continue;
+        const q=pos.get(o);if(Math.hypot(p[0]-q[0],p[1]-q[1])<R2){flagged.add(id);flagged.add(o);overlapPairs++}}}}
+  flagged.forEach(id=>{const p=pos.get(id);el('circle',{cx:p[0],cy:p[1],r:.58,fill:'none',stroke:'var(--over)','stroke-width':.1,'stroke-dasharray':'.2 .12'},gOv)});
+  updateStats();
+}
+function updateStats(){$('hud').dataset.moved=movedCount();renderHud()}
+
+/* ---------- camera ---------- */
+let cam={x:(B[0]+B[2])/2,y:(B[1]+B[3])/2,k:10},VW=0,VH=0,mouseW=[0,0];
+function applyCam(){world.setAttribute('transform',`translate(${VW/2-cam.x*cam.k},${VH/2-cam.y*cam.k}) scale(${cam.k})`);
+  svg.classList.toggle('zoomed',cam.k>=24);svg.style.setProperty('--ls',(11/cam.k).toFixed(4)+'px');svg.style.setProperty('--lw',(3/cam.k).toFixed(4)+'px');gridA.style.display=(cam.k>=14&&$('vGrid').checked)?'':'none';gridB.style.display=$('vGrid').checked?'':'none'}
+function fit(){const r=svg.getBoundingClientRect();VW=r.width;VH=r.height;const k=Math.min(VW/(B[2]-B[0]),VH/(B[3]-B[1]));cam={x:(B[0]+B[2])/2,y:(B[1]+B[3])/2,k};applyCam()}
+const toWorld=e=>{const r=svg.getBoundingClientRect();return [(e.clientX-r.left-VW/2)/cam.k+cam.x,(e.clientY-r.top-VH/2)/cam.k+cam.y]};
+window.addEventListener('resize',()=>{const r=svg.getBoundingClientRect();VW=r.width;VH=r.height;applyCam()});
+function renderHud(){const m=$('hud').dataset.moved||0;$('hud').textContent=`x ${mouseW[0].toFixed(1)}, y ${mouseW[1].toFixed(1)}  ·  ${m} room${m==1?'':'s'} moved  ·  ${overlapPairs} overlap${overlapPairs==1?'':'s'}`}
+
+/* ---------- interaction ---------- */
+let tool='pan',drag=null;
+$('tPan').onclick=()=>{tool='pan';$('tPan').classList.add('on');$('tBox').classList.remove('on')};
+$('tBox').onclick=()=>{tool='box';$('tBox').classList.add('on');$('tPan').classList.remove('on')};
+const snapOn=()=>$('snap').checked,snapV=v=>{const s=parseFloat($('snapStep').value);return Math.round(v/s)*s};
+svg.addEventListener('pointerdown',e=>{
+  if(e.button>1)return;tip.style.display='none';
+  const w=toWorld(e),nd=e.target.closest&&e.target.closest('.nd'),gp=e.target.closest&&e.target.closest('.grp');
+  svg.setPointerCapture(e.pointerId);
+  if(e.button===1){drag={type:'pan',sx:e.clientX,sy:e.clientY,cx:cam.x,cy:cam.y,started:true};return}
+  if(nd){const id=+nd.dataset.id;
+    if(e.shiftKey){if(sel.has(id))sel.delete(id);else sel.add(id);refreshSel();if(!sel.has(id)){drag=null;return}}
+    else if(!sel.has(id)){sel.clear();sel.add(id);refreshSel()}
+    startNodes(e,w);return}
+  if(gp){const g=groups[+gp.dataset.g];if(!e.shiftKey)sel.clear();g.rooms.forEach(v=>sel.add(v));refreshSel();startNodes(e,w);return}
+  if(e.shiftKey||tool==='box'){drag={type:'box',w0:w,sx:e.clientX,sy:e.clientY,started:false,rect:el('rect',{fill:'var(--pick)','fill-opacity':.12,stroke:'var(--pick)','stroke-width':.08,'stroke-dasharray':'.3 .2'},gMq),add:e.shiftKey};return}
+  drag={type:'pan',sx:e.clientX,sy:e.clientY,cx:cam.x,cy:cam.y,started:false,bgclick:true};
+});
+function startNodes(e,w){const items=[...sel].filter(id=>!locked.has(id)).map(id=>[id,pos.get(id).slice()]);
+  if(!items.length){drag=null;return}drag={type:'nodes',w0:w,items,sx:e.clientX,sy:e.clientY,started:false};
+  items.forEach(([id])=>nodeEl.get(id).classList.add('drag'))}
+svg.addEventListener('pointermove',e=>{
+  mouseW=toWorld(e);renderHud();
+  if(!drag){hover(e);return}
+  const dpx=Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy);
+  if(!drag.started){if(dpx<3)return;drag.started=true}
+  if(drag.type==='pan'){cam.x=drag.cx-(e.clientX-drag.sx)/cam.k;cam.y=drag.cy-(e.clientY-drag.sy)/cam.k;applyCam();return}
+  const w=toWorld(e);
+  if(drag.type==='box'){const x=Math.min(drag.w0[0],w[0]),y=Math.min(drag.w0[1],w[1]);drag.rect.setAttribute('x',x);drag.rect.setAttribute('y',y);drag.rect.setAttribute('width',Math.abs(w[0]-drag.w0[0]));drag.rect.setAttribute('height',Math.abs(w[1]-drag.w0[1]));return}
+  let dx=w[0]-drag.w0[0],dy=w[1]-drag.w0[1];
+  if(snapOn()){const f=drag.items[0][1];dx=snapV(f[0]+dx)-f[0];dy=snapV(f[1]+dy)-f[1]}
+  applyPositions(drag.items.map(([id,o])=>[id,[+(o[0]+dx).toFixed(2),+(o[1]+dy).toFixed(2)]]));
+});
+function endDrag(e){
+  if(!drag)return;const d=drag;drag=null;
+  if(d.type==='nodes'){d.items.forEach(([id])=>nodeEl.get(id).classList.remove('drag'));
+    if(d.started)commit(d.items.map(([id,o])=>[id,o,pos.get(id).slice()]))}
+  else if(d.type==='box'){const w=toWorld(e);
+    if(d.started){const x0=Math.min(d.w0[0],w[0]),x1=Math.max(d.w0[0],w[0]),y0=Math.min(d.w0[1],w[1]),y1=Math.max(d.w0[1],w[1]);
+      if(!d.add)sel.clear();for(const [id,p] of pos)if(p[0]>=x0&&p[0]<=x1&&p[1]>=y0&&p[1]<=y1)sel.add(id);refreshSel()}
+    else if(!d.add){sel.clear();refreshSel()}
+    d.rect.remove()}
+  else if(d.type==='pan'&&d.bgclick&&!d.started){sel.clear();refreshSel()}
+}
+svg.addEventListener('pointerup',endDrag);svg.addEventListener('pointercancel',endDrag);
+svg.addEventListener('wheel',e=>{e.preventDefault();const r=svg.getBoundingClientRect(),X=e.clientX-r.left,Y=e.clientY-r.top;const wx=(X-VW/2)/cam.k+cam.x,wy=(Y-VH/2)/cam.k+cam.y;cam.k=Math.max(3,Math.min(140,cam.k*Math.exp(-e.deltaY*.0016)));cam.x=wx-(X-VW/2)/cam.k;cam.y=wy-(Y-VH/2)/cam.k;applyCam()},{passive:false});
+$('zin').onclick=()=>{cam.k=Math.min(140,cam.k*1.5);applyCam()};$('zout').onclick=()=>{cam.k=Math.max(3,cam.k/1.5);applyCam()};$('zfit').onclick=fit;
+function hover(e){const nd=e.target.closest&&e.target.closest('.nd');
+  if(!nd){tip.style.display='none';return}
+  const r=byId.get(+nd.dataset.id),p=pos.get(r.id),s=stage.getBoundingClientRect();
+  tip.innerHTML=`<b>${esc(r.name||'(spacer room)')}</b><br>Room ${r.id} · ${esc(r.terrain||'-')}${r.area==='AZ'?' · Azure Sea'+({pk:' (under the Peaks cliffs)',cw:' (shore walk)',np:' (by the Plains)'})[r.grp]:(r.src?' · '+({DH:'Darkhaven',Grove:'Shadow Grove',FW:'Forgotten Woods',NTR:'Northern Trade Route',BP:'Barren Peaks',NP:'Northern Plains',AF:'Ashen Forest'})[r.src]+' (fixed)':'')}${r.piece!=null?' · piece '+(r.piece+1):''}${r.lvl?` · level ${r.lvl>0?'+':''}${r.lvl} in TinTin`:''}${locked.has(r.id)?' · locked':''}${hidden.has(r.id)?' · <b style="color:#C23B22">hidden on the map</b>':''}<br>at ${p[0].toFixed(2)}, ${p[1].toFixed(2)}<br>${(r.ex||[]).map(esc).join('<br>')}`;
+  tip.style.display='block';let x=e.clientX-s.left+14,y=e.clientY-s.top+12;if(x>s.width-350)x-=360;if(y>s.height-160)y-=150;tip.style.left=x+'px';tip.style.top=y+'px'}
+window.addEventListener('keydown',e=>{
+  if(['INPUT','TEXTAREA','SELECT'].includes((e.target.tagName||''))&&e.target.id!=='snap')return;
+  const k=e.key.toLowerCase();
+  if((e.ctrlKey||e.metaKey)&&k==='z'){e.preventDefault();e.shiftKey?redo():undo();return}
+  if((e.ctrlKey||e.metaKey)&&k==='y'){e.preventDefault();redo();return}
+  if(k==='escape'){sel.clear();refreshSel();return}
+  const st=e.shiftKey?2:(e.altKey?.1:.5);
+  const mv={arrowleft:[-st,0],arrowright:[st,0],arrowup:[0,-st],arrowdown:[0,st]}[k];
+  if(mv&&sel.size){e.preventDefault();moveSel(mv[0],mv[1])}
+});
+
+/* ---------- buttons ---------- */
+$('undo').onclick=undo;$('redo').onclick=redo;
+$('lock').onclick=()=>{sel.forEach(id=>locked.add(id));refreshLocks();scheduleAutosave();toast(`${sel.size} locked`)};
+$('unlock').onclick=()=>{sel.forEach(id=>{if(!byId.get(id).fixed)locked.delete(id)});refreshLocks();scheduleAutosave()};
+$('selnone').onclick=()=>{sel.clear();refreshSel()};
+$('baseSel').onclick=()=>setTo([...sel],base);$('rawSel').onclick=()=>setTo([...sel],raw);
+$('selNtr').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='pk')sel.add(r.id)});refreshSel()};
+$('selRoad').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='cw')sel.add(r.id)});refreshSel()};
+$('selNp').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='np')sel.add(r.id)});refreshSel()};
+$('selPiece').onclick=()=>{const ps=new Set([...sel].map(id=>byId.get(id).piece).filter(p=>p!=null));if(!ps.size){toast('Select a room of the piece first');return}rooms.forEach(r=>{if(ps.has(r.piece))sel.add(r.id)});refreshSel()};
+let armed=null;$('baseAll').onclick=function(){if(!armed){this.textContent='Click again to confirm';armed=setTimeout(()=>{armed=null;this.textContent='Undo all my changes…'},4000);return}
+  clearTimeout(armed);armed=null;this.textContent='Undo all my changes…';setTo([...pos.keys()],base);toast('Back to the starting layout')};
+['vDirt','vThin','vOne','vCtx','vGrid','names'].forEach(id=>$(id).addEventListener('change',applyViews));
+$('ov').addEventListener('change',computeOverlaps);
+function applyViews(){
+  gWide.style.display=$('vDirt').checked?'':'none';
+  gThin.querySelectorAll('.t').forEach(l=>l.style.display=$('vThin').checked?'':'none');
+  gThin.querySelectorAll('.one,.ud').forEach(l=>l.style.display=$('vOne').checked?'':'none');
+  gCtx.style.display=$('vCtx').checked?'':'none';
+  const n=$('names').value;svg.classList.toggle('names-on',n==='on');svg.classList.toggle('names-zoom',n==='zoom');applyCam()}
+$('q').addEventListener('input',e=>{const s=e.target.value.trim().toLowerCase();gHl.textContent='';nodeEl.forEach(g=>g.classList.remove('hit'));if(!s)return;
+  const hits=rooms.filter(r=>String(r.id)===s||(s.length>2&&(r.name||'').toLowerCase().includes(s)));
+  hits.forEach(r=>{nodeEl.get(r.id).classList.add('hit');const p=pos.get(r.id);el('circle',{cx:p[0],cy:p[1],r:.75,fill:'none',stroke:'var(--pick)','stroke-width':.16},gHl)});
+  $('info').textContent=hits.length?`${hits.length} match${hits.length>1?'es':''}`:'No match';
+  if(hits.length){const p=pos.get(hits[0].id);cam.x=p[0];cam.y=p[1];cam.k=Math.max(cam.k,24);applyCam()}});
+
+/* ---------- saving and loading ---------- */
+const FORMAT='az-layout-1';
+function layoutObject(){const ids=[],xsv=[],ysv=[];for(const [id,p] of pos){ids.push(id);xsv.push(+p[0].toFixed(2));ysv.push(+p[1].toFixed(2))}
+  return {format:FORMAT,v:1,savedAt:new Date().toISOString(),moved:movedCount(),ids,xs:xsv,ys:ysv,locked:[...locked],hidden:[...hidden]}}
+function loadLayout(o,note){
+  if(!o||o.format!==FORMAT||!o.ids||!o.xs||!o.ys)throw new Error('That is not a layout from this editor.');
+  const list=[];for(let i=0;i<o.ids.length;i++){const id=o.ids[i];if(pos.has(id)&&!byId.get(id).fixed)list.push([id,[o.xs[i],o.ys[i]]])}
+  const ch=list.map(([id,p])=>[id,pos.get(id).slice(),p]);applyPositions(list);
+  (o.locked||[]).forEach(id=>{if(pos.has(id))locked.add(id)});refreshLocks();
+  if(o.hidden){hidden.clear();o.hidden.forEach(id=>{if(pos.has(id))hidden.add(id)});refreshHidden()}
+  commit(ch);afterChange();
+  if(note)toast(note)}
+let asT=null;function scheduleAutosave(){clearTimeout(asT);asT=setTimeout(()=>{try{localStorage.setItem('azlayout:v1',JSON.stringify(layoutObject()));$('localStat').textContent='Autosaved in this browser at '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+'.'}catch(e){}},500)}
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2600)}
+async function dbHandle(){try{return (window.claude&&claude.use)?await claude.use('db'):null}catch(e){return null}}
+$('saveDb').onclick=async()=>{
+  const db=await dbHandle();
+  if(!db){$('dbStat').textContent='Saving for Claude is not available in this view. Please use Download file or Copy / paste text instead.';return}
+  const o=layoutObject();$('saveDb').disabled=true;$('dbStat').textContent='Saving…';
+  try{const stamp=o.savedAt.replace(/[^0-9]/g,'').slice(0,14);
+    await db.doc('azlayout/current').set(o);await db.doc('azlayout/b'+stamp).set(o);
+    $('dbStat').innerHTML=`<span class="ok">Saved ✓</span> at ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · ${o.moved} room${o.moved==1?'':'s'} moved. Now tell me “saved” in the chat.`;
+  }catch(err){$('dbStat').textContent='Could not save ('+((err&&err.code)||'error')+'). Please use Download file or Copy / paste text instead.'}
+  $('saveDb').disabled=false};
+$('dl').onclick=async()=>{
+  let d=null;try{d=(window.claude&&claude.use)?await claude.use('downloads'):null}catch(e){}
+  if(!d){openModal();toast('Download is not available here — copy the text instead');return}
+  try{await d.save({filename:'azure_sea_layout.json',data:JSON.stringify(layoutObject())});toast('Saved — now upload that file in the chat')}
+  catch(err){if(!err||err.code!=='declined')toast('Download did not go through — try Copy / paste text')}};
+function openModal(){$('lt').value=JSON.stringify(layoutObject());$('modal').style.display='flex';$('lt').focus();$('lt').select()}
+$('txt').onclick=openModal;$('mClose').onclick=()=>$('modal').style.display='none';$('mSel').onclick=()=>{$('lt').focus();$('lt').select()};
+$('mCopy').onclick=async()=>{$('lt').focus();$('lt').select();let ok=false;try{await navigator.clipboard.writeText($('lt').value);ok=true}catch(e){try{ok=document.execCommand('copy')}catch(e2){}}toast(ok?'Copied — paste it into the chat':'Press Ctrl+C (or Cmd+C) to copy the selected text')};
+$('mLoad').onclick=()=>{try{loadLayout(JSON.parse($('lt').value),'Layout loaded');$('modal').style.display='none'}catch(e){toast(e.message||'Could not read that text')}};
+
+/* ---------- start ---------- */
+refreshSel();placeEntrance();groups.forEach(updGroup);applyViews();(D.hidden0||[]).forEach(id=>{if(byId.has(id))hidden.add(id)});refreshHidden();
+const r0=svg.getBoundingClientRect();VW=r0.width;VH=r0.height;fit();computeOverlaps();$('undo').disabled=true;$('redo').disabled=true;
+(async function restore(){
+  let local=null;try{local=JSON.parse(localStorage.getItem('azlayout:v1')||'null')}catch(e){}
+  let remote=null;
+  try{const db=await dbHandle();if(db){const s=await db.doc('azlayout/current').get();if(s&&s.exists)remote=s.data()}}catch(e){}
+  const pick=[local,remote].filter(x=>x&&x.format===FORMAT).sort((a,b)=>(b.savedAt||'').localeCompare(a.savedAt||''))[0];
+  if(pick){try{loadLayout(pick,'Restored your latest layout');undoS=[];redoS=[];afterChange()}catch(e){}}
+})();
+})();
+</script>
+</body>
+</html>
