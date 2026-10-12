@@ -140,7 +140,10 @@ def merge_np(w, layout, edges, seed=37):
     # a city drawing just north of the Town of Solace marker (room 4309) (owner, Oct 12); the land grows round it like round a room
     cw, ch = 2.6, 2.15; cx_, cy_ = pos[4309][0], pos[4309][1] - 0.5 - ch / 2 - 0.1
     city = [(cx_ + a * cw / 2, cy_ + b * ch / 2) for a in (-1, 0, 1) for b in (-1, 0, 1)]
-    pts = np.array([pos[v] for v in real] + [pos[v] for v in proad] + [pos[v] for v in drawn if v in plains] + city, float)
+    # a few small gravestones just south of the Unholy Grounds marker (room 4221) (owner, Oct 12); the land grows round them too
+    gx_, gy_ = pos[4221][0] - 0.3, pos[4221][1] + 2.4
+    GRAVES = [(-1.0, -0.25, 0, 1.0), (-0.35, 0.05, 1, 1.05), (0.3, -0.3, 0, 0.9), (0.95, 0.0, 0, 1.0), (-0.7, 0.55, 0, 0.85), (0.1, 0.5, 1, 0.9), (0.75, 0.6, 0, 0.8)]   # (dx, dy, cross?, size)
+    pts = np.array([pos[v] for v in real] + [pos[v] for v in proad] + [pos[v] for v in drawn if v in plains] + city + [(gx_ + a, gy_ + b) for a, b, k, r in GRAVES], float)
     lo, hi = pts.min(0) - 9, pts.max(0) + 9
     assert lo[1] > Y0 and hi[0] < X1 and lo[0] > X0, 'the Plains reach past the edge of the grid'
     ix0, ix1 = int((lo[0] - X0) * R8), int((hi[0] - X0) * R8); iy0, iy1 = int((lo[1] - Y0) * R8), int((hi[1] - Y0) * R8)
@@ -289,11 +292,12 @@ def merge_np(w, layout, edges, seed=37):
     yy_, xx_ = np.mgrid[0:by1, bx0:bx1]; PB = np.c_[(xx_.ravel() + .5) / R8 + X0, (yy_.ravel() + .5) / R8 + Y0]
     d_path, i_path = wt.query(PB); d_path = d_path.reshape(yy_.shape)
     d_room = cKDTree(np.array([p for v, p in pos.items() if shown(v)], float)).query(PB)[0].reshape(yy_.shape)
-    ends_ = np.array([pos[4389], pos[4330]]); e_ = np.min(np.linalg.norm(ws[i_path][:, None, :] - ends_[None], axis=2), 1).reshape(yy_.shape)
+    e_s = np.linalg.norm(ws[i_path] - np.array(pos[4389]), axis=1).reshape(yy_.shape); e_e = np.linalg.norm(ws[i_path] - np.array(pos[4330]), axis=1).reshape(yy_.shape)
     barrier = (d_path <= 0.9) | (d_room <= 1.0) | fimg[:by1, bx0:bx1] | ndi.binary_dilation(thick, iterations=R8)[:by1, bx0:bx1]
     south_ = PB[:, 1].reshape(yy_.shape) > ws[:, 1].max() + 1.5           # not past the south end of the path
+    south_ |= ((PB[:, 0] > -6) & (PB[:, 1] > -191.8)).reshape(yy_.shape)   # nor into the bay east of From the Stars (owner, Oct 12): the coast runs on smoothly
     lab, n = ndi.label(~barrier); outside = lab == lab[0, 0]
-    reach = np.minimum(9.0, 1.5 + 0.8 * e_)
+    reach = np.minimum(np.minimum(9.0, 1.5 + 0.8 * e_s), 1.0 + 0.45 * e_e)   # narrows to a point toward From the Stars (owner, Oct 12: no bay, a smooth coast)
     sea_b = outside & (d_path <= reach) & ~south_
     srng = np.random.default_rng(seed + 1)
     wob = ndi.gaussian_filter(srng.normal(size=sea_b.shape), 1.5 * R8); wob = (wob - wob.min()) / (wob.max() - wob.min())
@@ -327,6 +331,11 @@ def merge_np(w, layout, edges, seed=37):
     lab, n = ndi.label(zone)
     if n:
         sz = ndi.sum(zone, lab, range(1, n + 1)) / R8 / R8; zone = np.isin(lab, [i + 1 for i, s in enumerate(sz) if s >= 1.0])
+    # no way west from Opallinoc (4387) to the coastal path (4393) (owner, Oct 12): dunes fill the gap between them, half a room off each
+    ox0, ox1 = pos[4393][0] + 0.55, pos[4387][0] - 0.55; oy = pos[4387][1]
+    gap = np.zeros((H, W), bool); gap[int((oy - 2.0 - Y0) * R8):int((oy + 2.0 - Y0) * R8), int((ox0 - X0) * R8):int((ox1 - X0) * R8)] = True
+    zone |= gap & new_land & ~wet
+    zone[:, int((pos[4330][0] - X0) * R8):] = False                         # none east of From the Stars (4330): the old bay there is plain ground
     wn = sorted(v for v in westnet if not void(v)); CL = set()           # owner, Oct 12: all of it grey dunes now (was crags by 'Dark Cliffs', 'The Valley Floor')
     iscl = np.array([rooms_name(v) in CL for v in wn])
     ys_, xs_ = np.nonzero(zone); near_ = cKDTree([pos[v] for v in wn]).query(np.c_[(xs_ + .5) / R8 + X0, (ys_ + .5) / R8 + Y0])[1]
@@ -355,6 +364,11 @@ def merge_np(w, layout, edges, seed=37):
     bx, by = sum(pos[v][0] for v in bv) / len(bv), sum(pos[v][1] for v in bv) / len(bv) - 0.15
     gfx = [dict(k='barrow', at='xy', x=round(bx, 2), y=round(by, 2), w=4.6, h=2.3)]
     citygfx = dict(k='stonecity', at='xy', x=round(cx_, 2), y=round(cy_, 2), w=cw, h=ch)
+    # a watery path out to sea from the most north-westerly room, 4405 (owner, Oct 12: 4407 preferred, but it is hidden), named Otherland
+    ox_, oy_ = pos[4405]; OL = 3.4
+    extra = [citygfx, dict(k='waterway', at='xy', x=round(ox_, 2), y=round(oy_, 2), w=1, h=1, len=OL),
+
+             dict(k='graves', at='xy', x=round(gx_, 2), y=round(gy_, 2), w=1, h=1, t=[[a, b, k, r] for a, b, k, r in GRAVES])]
     # ---- groves where the rooms are named 'The Fringe of Trees' and 'Tall Trees': a few big trees per room, one drawing per group ----
     TREE = ('The Fringe of Trees', 'Tall Trees')
     tv = sorted((v for v in real if rooms_name(v) in TREE), key=lambda v: pos[v][1]); groups = []
@@ -369,13 +383,15 @@ def merge_np(w, layout, edges, seed=37):
                 tr.append([round(pos[v][0] - cx + rng.uniform(-.35, .35) + (k_ * .55 - .27 if tall else 0), 2), round(pos[v][1] - cy + rng.uniform(-.3, .25), 2), round(rng.uniform(.62, .78) if tall else rng.uniform(.45, .58), 2), 1 if tall else 0])
         tr.sort(key=lambda q: q[1])
         gfx.append(dict(k='grove', at='xy', x=round(cx, 2), y=round(cy, 2), w=1, h=1, t=tr))
-    w['gfx'] = list(w.get('gfx', [])) + gfx + [citygfx]                   # (appended, gotcha 6)
+    w['gfx'] = list(w.get('gfx', [])) + gfx + extra                       # (appended, gotcha 6)
+    w['tags'] = list(w.get('tags', [])) + [[round(ox_ + 2.1, 2), round(oy_ - OL + 0.35, 2), 'Otherland', 0.55]]   # map-only name beside the end of the watery path
     def under(x, y):
         if abs(x - bx) < 2.6 and abs(y - by) < 1.4: return True
         if abs(x - cx_) < cw / 2 + .2 and abs(y - cy_) < ch / 2 + .2: return True
+        if -1.6 < x - gx_ < 1.55 and -1.1 < y - gy_ < 1.0: return True
         return any(abs(x - g['x'] - q[0]) < q[2] + .25 and -q[2] * 1.6 < y - g['y'] - q[1] < q[2] * .6 for g in gfx[1:] for q in g['t'])
     tufts = [q for q in tufts if not under(q[0], q[1])]; brush = [q for q in brush if not under(q[0], q[1])]
-    drawings = dict(barrow=[round(bx, 2), round(by, 2)], solace_city=[round(cx_, 2), round(cy_, 2)], groves=[[round(g['x'], 2), round(g['y'], 2), len(g['t'])] for g in gfx[1:]])
+    drawings = dict(barrow=[round(bx, 2), round(by, 2)], solace_city=[round(cx_, 2), round(cy_, 2)], otherland=[round(ox_, 2), round(oy_, 2)], graves=[round(gx_, 2), round(gy_, 2)], groves=[[round(g['x'], 2), round(g['y'], 2), len(g['t'])] for g in gfx[1:]])
     w['wheattufts'] = sorted(tufts, key=lambda b: b[1]); w['brush'] = sorted(brush, key=lambda b: b[1])
 
     # the area's name (owner, Oct 12): in the open field, centred between the Trade Route (x -6.4) and the west coast (x -46.6) at y -164

@@ -493,6 +493,15 @@ document.getElementById('lanes').innerHTML=ln;
       <path d="M-.62 .95 V.12 H.62 V.95" fill="none" stroke="var(--g-stone)" stroke-width=".22"/><rect x="-.82" y="-.12" width="1.64" height=".26" rx=".05" fill="var(--g-stone)" ${L}/>
       <path d="M-.48 .95 V.3 H.48 V.95Z" fill="var(--g-dark)"/>
       <path d="M-1.95 .95 V.45 L-1.8 .4 L-1.75 .95Z M1.75 .95 V.38 L1.92 .44 L1.95 .95Z M-2.25 .95 V.62 L-2.12 .6 L-2.1 .95Z" fill="var(--g-stone)" ${L}/>`,
+    waterway:(g)=>{const L=g.len||3;  // a watery path from the room (0,0) out to sea, north, L rooms (owner, Oct 12: 'Otherland')
+      const d=`M0 0 C .32 ${-L*.25} -.32 ${-L*.5} 0 ${-L*.72} S .1 ${-L*.95} 0 ${-L}`;
+      return `<path d="${d}" fill="none" stroke="var(--w-shore)" stroke-width=".42" stroke-linecap="round" opacity=".55"/><path d="${d}" fill="none" stroke="var(--lake-label)" stroke-width=".1" stroke-linecap="round" stroke-dasharray=".22 .18" opacity=".85"/>`+
+        `<path d="M-.42 ${-L-.12} q .21 -.14 .42 0 q .21 .14 .42 0" fill="none" stroke="var(--lake-label)" stroke-width=".06" opacity=".7"/><path d="M-.3 ${-L-.42} q .15 -.1 .3 0 q .15 .1 .3 0" fill="none" stroke="var(--lake-label)" stroke-width=".05" opacity=".5"/>`},
+    graves:(g)=>{let s='';for(const [x,y,k,r] of (g.t||[])){  // small gravestones: k 0 = rounded headstone, 1 = cross; (x,y) = foot of the stone
+      s+=`<ellipse cx="${x}" cy="${y}" rx="${.2*r}" ry="${.06*r}" fill="#000" opacity=".3"/>`;
+      if(k)s+=`<path d="M${x-.04*r} ${y} V${y-.3*r} H${x-.12*r} V${y-.38*r} H${x-.04*r} V${y-.47*r} H${x+.04*r} V${y-.38*r} H${x+.12*r} V${y-.3*r} H${x+.04*r} V${y}Z" fill="var(--g-stone)" stroke="var(--g-line)" stroke-width=".025"/>`;
+      else s+=`<path d="M${x-.12*r} ${y} V${y-.27*r} A${.12*r} ${.12*r} 0 0 1 ${x+.12*r} ${y-.27*r} V${y}Z" fill="var(--g-stone)" stroke="var(--g-line)" stroke-width=".025"/><line x1="${x-.06*r}" y1="${y-.22*r}" x2="${x+.06*r}" y2="${y-.22*r}" stroke="var(--g-line)" stroke-width=".02" opacity=".7"/>`}
+      return s},
     grove:(g)=>{let s='';for(const q of (g.t||[])){const [x,y,r,tall]=q,h=tall?r*1.5:r*1.05;
         s+=`<ellipse cx="${(x+r*.15).toFixed(2)}" cy="${(y+.05).toFixed(2)}" rx="${(r*.95).toFixed(2)}" ry="${(r*.32).toFixed(2)}" fill="#000" opacity=".28"/>`
          +`<rect x="${(x-r*.09).toFixed(2)}" y="${(y-h*.55).toFixed(2)}" width="${(r*.18).toFixed(2)}" height="${(h*.6).toFixed(2)}" fill="#3A2C1E"/>`
@@ -542,7 +551,7 @@ document.getElementById('lanes').innerHTML=ln;
     else if(g.at==='above-pin'){cx=p.mx+(g.dx||0);cy=p.my-.5-g.h/2+(g.dy||0)}
     else{const t=[...svg.querySelectorAll('.plabel.lbl')].find(e=>P[+e.dataset.i]===p);if(!t)continue;const bb=t.getBBox();cx=bb.x+bb.width/2+(g.dx||0);cy=(g.at==='above-text'?bb.y-g.h/2-.12:bb.y+bb.height+g.h/2+.08)+(g.dy||0)}  // at: 'above-text' or 'below-text'
     if(g.k==='text'){out+=`<text x="${g.x}" y="${g.y}" text-anchor="middle" font-size=".38" font-style="italic" fill="var(--soft)" style="paint-order:stroke;stroke:var(--halo);stroke-width:.1px;stroke-linejoin:round">${g.text}</text>`;continue}
-    const dx={castle:4,windmill:2.4,town:4.4,inn:3,keep:2.6,palisade:3.3,stonecity:3.5,ruin:3.0,darkpeak:4.4,barrow:4.6,grove:1}[g.k],dy={castle:3.3,windmill:3.2,town:2.6,inn:2.4,keep:5.3,palisade:2.5,stonecity:2.9,ruin:2.1,darkpeak:2.9,barrow:2.3,grove:1}[g.k];
+    const dx={castle:4,windmill:2.4,town:4.4,inn:3,keep:2.6,palisade:3.3,stonecity:3.5,ruin:3.0,darkpeak:4.4,barrow:4.6,grove:1,waterway:1,graves:1}[g.k],dy={castle:3.3,windmill:3.2,town:2.6,inn:2.4,keep:5.3,palisade:2.5,stonecity:2.9,ruin:2.1,darkpeak:2.9,barrow:2.3,grove:1,waterway:1,graves:1}[g.k];
     out+=`<g class="gfx-${g.k}" transform="translate(${cx.toFixed(3)},${cy.toFixed(3)}) scale(${(g.w/dx).toFixed(4)},${(g.h/dy).toFixed(4)})">${SPRITE[g.k](g)}</g>`;
   }
   layer.innerHTML=out;
