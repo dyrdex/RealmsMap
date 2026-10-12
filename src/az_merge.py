@@ -6,7 +6,8 @@ arranged in the Azure Sea editor. Owner's instructions (Oct 12):
   and hachures along the new coast). Water is drawn east from the mainland far enough to take in the route and some open sea beyond it.
 - Exception: 14257 to 14265 (the south end, by the Ashen beach) is a small stream winding over the land, a little wider than a path; the land
   there is not changed. From 14265 on it is the water route.
-- Links to the mainland from rooms that are shown: ordinary trails. Every link of a hidden room: small dashed lines.
+- Links between the coast and the mainland (from shown and hidden rooms alike): small dashed lines, and nothing else is dashed; other links
+  of hidden rooms are not drawn (owner, Oct 12, revised).
 - A marker for the Village of Edo at 7746 (where the route leaves for Edo), with the owner's directions traced on the card.
 Runs after the Northern Plains merge and markers: it is now the LAST land change. Same raster grid as np_merge.
 """
@@ -56,11 +57,10 @@ def merge_az(w, layout, edges, np_layout, seed=91):
     GS = defaultdict(set); GW = defaultdict(set); trails = []; dashed = []; links = []
     for a, b, k in edges['edges']:
         if a not in az and b not in az: continue
-        if a in hidden or b in hidden:
-            dashed.append([[round(pos[a][0], 3), round(pos[a][1], 3)], [round(pos[b][0], 3), round(pos[b][1], 3)]]); continue
-        if a in fixed or b in fixed:                                       # a link to a room already on the map: an ordinary trail
-            trails.append([[round(pos[a][0], 3), round(pos[a][1], 3)], [round(pos[b][0], 3), round(pos[b][1], 3)]])
+        if a in fixed or b in fixed:                                       # a link to the mainland (shown or hidden room): a small dashed line (owner, Oct 12)
+            dashed.append([[round(pos[a][0], 3), round(pos[a][1], 3)], [round(pos[b][0], 3), round(pos[b][1], 3)]])
             links.append((a, b, round(math.dist(pos[a], pos[b]), 1))); continue
+        if a in hidden or b in hidden: continue                            # any other link of a hidden room: not drawn (owner, Oct 12)
         (GS if (min(a, b), max(a, b)) in stream_e else GW)[a].add(b); (GS if (min(a, b), max(a, b)) in stream_e else GW)[b].add(a)
     assert set(GS) == set(STREAM), sorted(set(GS) ^ set(STREAM))
     stream = _chains(GS, pos, {STREAM[0], STREAM[-1]}, 0.7)
@@ -174,7 +174,7 @@ def merge_az(w, layout, edges, np_layout, seed=91):
     w['bounds'] = [min(w['bounds'][0], int(pts_[:, 0].min()) - 2), max(int(Y0), min(w['bounds'][1], int(pts_[:, 1].min()) - 2)),
                    max(w['bounds'][2], int(pts_[:, 0].max()) + 2), max(w['bounds'][3], int(pts_[:, 1].max()) + 2)]
     shown_az = [v for v in az if v not in hidden]
-    return w, dict(seaway_lines=len(seaways), seaway_rooms=len(GW), stream_rooms=len(GS), mainland_trails=links, dashed=len(dashed),
+    return w, dict(seaway_lines=len(seaways), seaway_rooms=len(GW), stream_rooms=len(GS), mainland_links=links, dashed=len(dashed),
                    land_cut_sq=round(float(gone.sum()) / R8 / R8, 1), scraps_sq=round(float(scraps.sum()) / R8 / R8, 1),
                    sea_sq=round(float(sea.sum()) / R8 / R8, 1), sea_on_old_land_sq=round(float((sea & land).sum()) / R8 / R8, 1),
                    clipped=clipped, sprites_cleared=cleared, cliff_sq=round(float(band.sum()) / R8 / R8, 1), hachures=len(hach),

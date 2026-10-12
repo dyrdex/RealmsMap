@@ -8,6 +8,7 @@
 - A cliff edge (dark band and hachures) all along the coast that faces the new sea.
 - The links of the five hidden rooms (14273, 14275, 14278, 14279, 14287) are small dashed lines (15); the shown rooms' links to the mainland are ordinary trails (6, two of them 42-43 rooms long, from 14271 and 14272 to the Peaks).
 - A Village of Edo marker at 7746, with your directions traced on its card (the line joins straight across 5965, which is not in the editor).
+- The Azure Sea Coast's links to the mainland are now all small dashed lines (8, including those from the hidden rooms 14278 and 14279); no solid trails, and the hidden rooms' other links are no longer drawn.
 - Fixed: zoomed in, the map could show old pictures from before the latest change (the new coast vanished on zooming in); each build's pictures now have their own address.
 
  and the areas that open off it · October 12, 2026
