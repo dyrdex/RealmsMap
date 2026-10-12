@@ -137,7 +137,10 @@ def merge_np(w, layout, edges, seed=37):
 
     # ---- the Plains' ground ----
     real = [v for v in plains if not void(v)]
-    pts = np.array([pos[v] for v in real] + [pos[v] for v in proad] + [pos[v] for v in drawn if v in plains], float)
+    # a city drawing just north of the Town of Solace marker (room 4309) (owner, Oct 12); the land grows round it like round a room
+    cw, ch = 2.6, 2.15; cx_, cy_ = pos[4309][0], pos[4309][1] - 0.5 - ch / 2 - 0.1
+    city = [(cx_ + a * cw / 2, cy_ + b * ch / 2) for a in (-1, 0, 1) for b in (-1, 0, 1)]
+    pts = np.array([pos[v] for v in real] + [pos[v] for v in proad] + [pos[v] for v in drawn if v in plains] + city, float)
     lo, hi = pts.min(0) - 9, pts.max(0) + 9
     assert lo[1] > Y0 and hi[0] < X1 and lo[0] > X0, 'the Plains reach past the edge of the grid'
     ix0, ix1 = int((lo[0] - X0) * R8), int((hi[0] - X0) * R8); iy0, iy1 = int((lo[1] - Y0) * R8), int((hi[1] - Y0) * R8)
@@ -324,7 +327,7 @@ def merge_np(w, layout, edges, seed=37):
     lab, n = ndi.label(zone)
     if n:
         sz = ndi.sum(zone, lab, range(1, n + 1)) / R8 / R8; zone = np.isin(lab, [i + 1 for i, s in enumerate(sz) if s >= 1.0])
-    wn = sorted(v for v in westnet if not void(v)); CL = {'Dark Cliffs', 'The Valley Floor'}
+    wn = sorted(v for v in westnet if not void(v)); CL = set()           # owner, Oct 12: all of it grey dunes now (was crags by 'Dark Cliffs', 'The Valley Floor')
     iscl = np.array([rooms_name(v) in CL for v in wn])
     ys_, xs_ = np.nonzero(zone); near_ = cKDTree([pos[v] for v in wn]).query(np.c_[(xs_ + .5) / R8 + X0, (ys_ + .5) / R8 + Y0])[1]
     crag = np.zeros((H, W), bool); dune = np.zeros((H, W), bool)
@@ -351,6 +354,7 @@ def merge_np(w, layout, edges, seed=37):
     bv = [v for v in (4374, 4375, 4376, 4377, 4378, 4379) if shown(v)]
     bx, by = sum(pos[v][0] for v in bv) / len(bv), sum(pos[v][1] for v in bv) / len(bv) - 0.15
     gfx = [dict(k='barrow', at='xy', x=round(bx, 2), y=round(by, 2), w=4.6, h=2.3)]
+    citygfx = dict(k='stonecity', at='xy', x=round(cx_, 2), y=round(cy_, 2), w=cw, h=ch)
     # ---- groves where the rooms are named 'The Fringe of Trees' and 'Tall Trees': a few big trees per room, one drawing per group ----
     TREE = ('The Fringe of Trees', 'Tall Trees')
     tv = sorted((v for v in real if rooms_name(v) in TREE), key=lambda v: pos[v][1]); groups = []
@@ -365,16 +369,17 @@ def merge_np(w, layout, edges, seed=37):
                 tr.append([round(pos[v][0] - cx + rng.uniform(-.35, .35) + (k_ * .55 - .27 if tall else 0), 2), round(pos[v][1] - cy + rng.uniform(-.3, .25), 2), round(rng.uniform(.62, .78) if tall else rng.uniform(.45, .58), 2), 1 if tall else 0])
         tr.sort(key=lambda q: q[1])
         gfx.append(dict(k='grove', at='xy', x=round(cx, 2), y=round(cy, 2), w=1, h=1, t=tr))
-    w['gfx'] = list(w.get('gfx', [])) + gfx                               # (appended, gotcha 6)
+    w['gfx'] = list(w.get('gfx', [])) + gfx + [citygfx]                   # (appended, gotcha 6)
     def under(x, y):
         if abs(x - bx) < 2.6 and abs(y - by) < 1.4: return True
+        if abs(x - cx_) < cw / 2 + .2 and abs(y - cy_) < ch / 2 + .2: return True
         return any(abs(x - g['x'] - q[0]) < q[2] + .25 and -q[2] * 1.6 < y - g['y'] - q[1] < q[2] * .6 for g in gfx[1:] for q in g['t'])
     tufts = [q for q in tufts if not under(q[0], q[1])]; brush = [q for q in brush if not under(q[0], q[1])]
-    drawings = dict(barrow=[round(bx, 2), round(by, 2)], groves=[[round(g['x'], 2), round(g['y'], 2), len(g['t'])] for g in gfx[1:]])
+    drawings = dict(barrow=[round(bx, 2), round(by, 2)], solace_city=[round(cx_, 2), round(cy_, 2)], groves=[[round(g['x'], 2), round(g['y'], 2), len(g['t'])] for g in gfx[1:]])
     w['wheattufts'] = sorted(tufts, key=lambda b: b[1]); w['brush'] = sorted(brush, key=lambda b: b[1])
 
-    # the area's name (owner, Oct 12): where there is most room: the open field at (-31.5,-164.0), 9 rooms from any path or road and 10 from any marker
-    w['arealabels'] = list(w.get('arealabels', [])) + [dict(x=-31.5, y=-164.0, lh=2.6, sag=1.0, hw=12, lines=['Northern Plains'])]
+    # the area's name (owner, Oct 12): in the open field, centred between the Trade Route (x -6.4) and the west coast (x -46.6) at y -164
+    w['arealabels'] = list(w.get('arealabels', [])) + [dict(x=-26.5, y=-164.0, lh=2.6, sag=1.0, hw=12, lines=['Northern Plains'])]
     pts_ = np.array([q for poly in w['geo']['land'] for q in poly])
     w['bounds'] = [int(pts_[:, 0].min()) - 3, int(pts_[:, 1].min()) - 3, int(pts_[:, 0].max()) + 3, int(pts_[:, 1].max()) + 3]
     return w, dict(paths=report, peaks_links=len(plinks), dirt_road=[len(droad), len(rs_)], spurs=len(conn), off_ramps=joins, ramp_paths=len(ramp_conn), path_rooms=len(GT), trail_lines=len(trails), spacer_stubs_left_off=sorted(pruned),

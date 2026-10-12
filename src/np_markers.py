@@ -5,6 +5,7 @@ several such rooms, the one nearest the middle of them; a room you hid in the ed
 import math
 NO_ROUTE = "There are no directions for this area in your list yet; the marker shows the Plains room it opens from."
 OTHER_WAY = "Your directions reach this area another way, not across the Northern Plains; the marker shows the Plains room it opens from."
+DROP = {'The Blood Sea'}                                                   # removed on request (Oct 12)
 GAP_NOTE = "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."
 
 
@@ -21,6 +22,7 @@ def add_np_subareas(w, np_layout, routes):
     placed = []
     for r in routes:
         name = r['name']
+        if name in DROP: continue
         if r['route']:
             site = site_of(r['door'])
             segs = []; cur = []
