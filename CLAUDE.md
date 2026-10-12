@@ -20,7 +20,7 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 ## State (Oct 12, 2026)
 - Mapped through the Northern Plains, incl. its sub-area markers, area name and the NW sea (Oct 12 batch). Last snapshot: v11 (git tag `v11`, Oct 12).
 - Open question to owner: which regions to freeze. (Asgard Nexus and World Housing stay off the map: owner, Oct 12.)
-- "Azure Sea Coast" = the owner's name (Oct 12) for the 49-room Azure Sea pathway (see REGION_NOTES). On the map (Oct 12, `az_merge.py`): blue water route, stream 14257-14265, east sea, cliff edge, dashed coast-to-mainland links only, Village of Edo marker, island, 'Azure Sea Coastal Path' water label (`w.seatags`), sea along the whole north coast and in the Ocean Keep bay; all painting routes unbroken. Not snapshotted yet.
+- "Azure Sea Coast" = the owner's name (Oct 12) for the 49-room Azure Sea pathway (see REGION_NOTES). On the map (Oct 12, `az_merge.py`): blue water route, stream 14257-14265, east sea, cliff edge, dashed coast-to-mainland links only, Village of Edo marker, island, 'Azure Sea Coastal Path' water label (`w.seatags`), sea along the whole north coast, in the Ocean Keep bay and down the Ashen east coast (old shallows tint removed); all painting routes unbroken. Not snapshotted yet.
 - Agreed plan (Oct 12): repo cleanup + Pages done. Next, when the owner picks the regions: freeze finished regions into baked data with final positions (markers, drawings, names incl. the solver's) so no correction tables remain, and re-render only changed tiles. Verify with a pixel-identical rebuild. (The separate tweaks file was dropped.)
 
 ## Snapshots

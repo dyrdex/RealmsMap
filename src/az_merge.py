@@ -34,6 +34,7 @@ LAYERS_KEEP = {'land', 'water'}     # every other geo layer is clipped off the n
 GAP_NOTE = "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."
 PORTAL = {4222}
 NORTH_X, NORTH_Y, NORTH_TOP, NORTH_W = (-30.0, 24.0), -185.0, -215.0, 11.0   # the band (NORTH_W rooms wide, off the coast) north of the Plains that joins the two seas
+EAST_X, EAST_Y, EAST_W, EAST_END = (45.0, 80.0), (-50.0, 26.0), 9.0, 18.0   # the band of sea down the Ashen Forest's east coast, fading out by y EAST_END
 ISLAND = (2.0, 1.4)                 # half-widths of the island north of the Village of Edo marker
 LABEL_Y, LABEL_OFF, LABEL_SIZE = -143.0, 2.4, 1.0   # the route's name: beside the stretch 14285 -> 14286 at this y, this far toward the mainland
 
@@ -120,6 +121,14 @@ def merge_az(w, layout, edges, np_layout, seed=91):
     nwob = ndi.gaussian_filter(np.random.default_rng(seed + 2).normal(size=d_cn.shape), 1.6 * R8); nwob = (nwob - nwob.min()) / (nwob.max() - nwob.min())
     north = np.zeros((H, W), bool); north[nr0:nr1, nc0:nc1] = ~newland[nr0:nr1, nc0:nc1] & (d_fn > 1.0) & (d_cn <= NORTH_W * (0.85 + 0.3 * nwob))
     north = ndi.binary_opening(north, iterations=R8 // 2)
+    er0, er1 = int((EAST_Y[0] - Y0) * R8), min(H, int((EAST_Y[1] - Y0) * R8)); ec0, ec1 = int((EAST_X[0] - X0) * R8), min(W, int((EAST_X[1] - X0) * R8))
+    d_ce = ndi.distance_transform_edt(~newland[er0:er1, ec0:ec1]) / R8
+    gy_, gx_ = np.mgrid[er0:er1, ec0:ec1]; ey_ = (gy_ + .5) / R8 + Y0
+    d_fe = cKDTree(onmap).query(np.c_[(gx_.ravel() + .5) / R8 + X0, ey_.ravel()])[0].reshape(gx_.shape)
+    ewob = ndi.gaussian_filter(np.random.default_rng(seed + 3).normal(size=d_ce.shape), 1.6 * R8); ewob = (ewob - ewob.min()) / (ewob.max() - ewob.min())
+    fade = np.clip((EAST_END - ey_) / 8.0, 0, 1)
+    east = np.zeros((H, W), bool); east[er0:er1, ec0:ec1] = ~newland[er0:er1, ec0:ec1] & (d_ce <= EAST_W * (0.85 + 0.3 * ewob) * fade)
+    east = ndi.binary_opening(east, iterations=R8 // 2)
     keep_w, old_n = [], np.zeros((H, W), bool)                          # the north-west sea's water (np_merge) is redrawn as one body with this one
     for poly in w['geo']['water']:                                      #   (water is drawn even-odd: overlapping pieces would cancel)
         if max(q[1] for q in poly) < -150: old_n ^= AA._raster([poly], X0, Y0, W, H)
@@ -129,17 +138,21 @@ def merge_az(w, layout, edges, np_layout, seed=91):
     ixx, iyy = (ix_ + .5) / R8 + X0, (iy_ + .5) / R8 + Y0
     wob = 1 + 0.08 * np.sin(2.3 * ixx + 1.1) + 0.07 * np.sin(2.9 * iyy + 0.3)
     island = np.zeros((H, W), bool); island[iy_, ix_] = ((ixx - ex) / (ISLAND[0] * wob)) ** 2 + ((iyy - ey) / (ISLAND[1] * wob)) ** 2 < 1
-    allsea = (sea | baysea | north | old_n) & ~island
+    old_sh = AA._raster(w['geo'].get('shallows', []), X0, Y0, W, H) & ~newland   # (all of the old shallows' water is sea now too)
+    sand_ = AA._raster(w['geo'].get('sand', []), X0, Y0, W, H)         # the beach stays (owner, Oct 12)
+    allsea = (sea | baysea | north | east | old_n | old_sh) & ~island & ~sand_
     lab, n = ndi.label(allsea)
     bodies = {int(i) for i in np.unique(lab[sea | old_n]) if i}
     allsea = np.isin(lab, list(bodies))
     newland |= island
     w['geo']['land'] = AA._contours(newland, X0, Y0)
     w['geo']['water'] = keep_w + AA._contours(allsea, X0, Y0, sigma=1.5)
-    extra = dict(bay_sq=round(float((allsea & baysea & ~sea).sum()) / R8 / R8, 1), north_gap_sq=round(float((allsea & north & ~sea & ~old_n).sum()) / R8 / R8, 1),
+    extra = dict(bay_sq=round(float((allsea & baysea & ~sea).sum()) / R8 / R8, 1), east_sq=round(float((allsea & (east | old_sh) & ~sea).sum()) / R8 / R8, 1), shallows_only_sq=round(float((old_sh & ~east & ~sea & ~baysea).sum()) / R8 / R8, 1), north_gap_sq=round(float((allsea & north & ~sea & ~old_n).sum()) / R8 / R8, 1),
                  island_sq=round(float(island.sum()) / R8 / R8, 1), bodies=len(bodies))
     sea = allsea & ~old_n                                               # (what is new water here: clipped below)
     clipped = {}
+    shallows_dropped = len(w['geo'].get('shallows', []))                # the old pale shallows tint along the Ashen coast: the sea replaces it, so the
+    w['geo']['shallows'] = []                                           #   sea looks the same everywhere (owner, Oct 12); the beach stays
     for key, polys in list(w['geo'].items()):                          # tints and ground layers stop at the new coast (gotcha 2)
         if key in LAYERS_KEEP or not polys: continue
         m = AA._raster(polys, X0, Y0, W, H); hit = m & (gone | sea)
@@ -228,4 +241,4 @@ def merge_az(w, layout, edges, np_layout, seed=91):
                    edo=dict(site=[round(site[0], 2), round(site[1], 2)], trace_failed=fail, segs=len(segs), gaps=gaps, joined_across=skipped),
                    rooms_in_sea=[v for v in shown_az if sea[int((pos[v][1] - Y0) * R8), int((pos[v][0] - X0) * R8)]].__len__(),
                    rooms_on_land=sorted(v for v in shown_az if newland[int((pos[v][1] - Y0) * R8), int((pos[v][0] - X0) * R8)]),
-                   label=w['seatags'][-1], **extra, bounds=w['bounds'])
+                   label=w['seatags'][-1], shallows_dropped=shallows_dropped, **extra, bounds=w['bounds'])
