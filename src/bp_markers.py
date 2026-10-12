@@ -7,7 +7,7 @@ GAP_NOTE = "Part of your directions passes through areas that aren't drawn yet, 
 SITE_ROOM = {'Drow City': 7015, 'Reign of Madness': 21610, 'The Slime Pit': 18139}      # owner's choices (Oct 10): the marker sits on this room
 SITE_XY = {'The Crimson Caverns': (-33.74, -94.82)}                                   # owner's choice (Oct 10): the marker sits here
 RENAME = {'Asgard Nexus': "Z'hyal"}
-DROP = {'World Housing'}
+DROP = {'World Housing', 'Asgard Nexus'}   # Asgard Nexus (shown as Z'hyal) removed on request (Oct 12)
 WOODS = {'Tower of Enlightenment': (5644, 1.2)}                                       # markers in the Forgotten Woods: just south of this room (rooms)
 GFX = [dict(k='keep', label="Barrik's Keep", at='above-pin', w=1.9, h=2.9, dx=-1.75, dy=1.85),          # just west of the pin
        dict(k='palisade', at='xy', x=-14.03, y=-135.38, w=2.2, h=1.65),          # owner asked for about (-16.63,-133.88); nudged 3 rooms NE (and drawn a little smaller) to clear the village's label, pins and paths              # barbarian village: palisade of sharpened poles

@@ -16,6 +16,10 @@
 - A small island (about 8.6 sq rooms) just north of the Village of Edo marker.
 - The sea continues south down the Ashen Forest's east coast (about 9 rooms out from the shore, 599 sq rooms), fading out round the south-east corner; it replaces the old pale shallows there, so the sea is one body and looks the same everywhere. The beach is unchanged.
 - The Azure Sea Coastal Path is now a dark navy line, darker than the sea (it was a bright blue that stood out too much).
+- The stream at the south end of the Azure Sea Coastal Path (by Ocean Keep) is now the same dark navy as the rest of the path.
+- The "Azure Sea Coastal Path" name is a little bigger (size 1.25, was 1.0).
+- The Z'hyal marker and its sidebar entry are removed.
+- Legend: "Entrance to a place" is now "Area", the off-ramp entry is now "Trade Route Entrance/Exit", and "Guild", "Landmark" and "Town gate" are removed.
 - Fixed: zoomed in, the map could show old pictures from before the latest change (the new coast vanished on zooming in); each build's pictures now have their own address.
 
  and the areas that open off it · October 12, 2026

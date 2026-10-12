@@ -36,7 +36,7 @@ PORTAL = {4222}
 NORTH_X, NORTH_Y, NORTH_TOP, NORTH_W = (-30.0, 24.0), -185.0, -215.0, 11.0   # the band (NORTH_W rooms wide, off the coast) north of the Plains that joins the two seas
 EAST_X, EAST_Y, EAST_W, EAST_END = (45.0, 80.0), (-50.0, 26.0), 9.0, 18.0   # the band of sea down the Ashen Forest's east coast, fading out by y EAST_END
 ISLAND = (2.0, 1.4)                 # half-widths of the island north of the Village of Edo marker
-LABEL_Y, LABEL_OFF, LABEL_SIZE = -143.0, 2.4, 1.0   # the route's name: beside the stretch 14285 -> 14286 at this y, this far toward the mainland
+LABEL_Y, LABEL_OFF, LABEL_SIZE = -143.0, 2.4, 1.25   # the route's name: beside the stretch 14285 -> 14286 at this y, this far toward the mainland
 
 
 def _trace(route):
