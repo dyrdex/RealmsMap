@@ -13,13 +13,13 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 
 ## Where things are
 - `src/build.py`: stage order. `src/template.html`: draws the terrain for the bake. `src/site_template.html`: the live page (sidebar, cards, legend). `src/data.py`: owner's areas + directions. `src/VERSION`: footer label.
-- Per-region merge modules and their editor saves: Ashen (`ashen_*`), NTR (`ntr_*`), Barren Peaks (`bp_*`), Northern Plains (`np_*`), Azure Sea Coast (`az_*`); Forest of Tears + Lake editor (`fot_editor_edges.json`, no merge yet). Editors in `tools/`. `*_marker_routes.py` are one-time scripts that write `*_marker_routes.json`.
+- Per-region merge modules and their editor saves: Ashen (`ashen_*`), NTR (`ntr_*`), Barren Peaks (`bp_*`), Northern Plains (`np_*`), Azure Sea Coast (`az_*`); Forest of Tears + Lake + Western Trade Route (`ft_*`: `ft_merge.py`, `ft_layout_final.json`, `fot_editor_edges.json`). Editors in `tools/`. `*_marker_routes.py` are one-time scripts that write `*_marker_routes.json`.
 - `docs/REGION_NOTES.md`: detailed per-region history and decisions. Read only the section for the region being changed.
 - `CHANGELOG.md`: owner-facing history. `README.md`: file-by-file description.
 
 ## State (Oct 12, 2026)
 - Mapped through the Northern Plains, incl. its sub-area markers, area name and the NW sea (Oct 12 batch). Last snapshot: v12 (git tag `v12`, Oct 12: the Azure Sea Coast).
-- Oct 12 (later): Forest of Tears + Lake of Tich'Pyga layout editor published, waiting for the owner's save (`ftlayout/current`; see REGION_NOTES). Redraw of that section follows.
+- Oct 13: Forest of Tears (field + dirt-trail threads + dense forest + Fog Cliffs terrain and sea), Lake of Tich'Pyga (ring path) and the Western Trade Route (formal road, 8 off-ramps) redrawn from the owner's save by `ft_merge.py`; sub-area markers re-traced. See REGION_NOTES. Awaiting the owner's review on Pages.
 - Open question to owner: which regions to freeze. (Asgard Nexus and World Housing stay off the map: owner, Oct 12.)
 - "Azure Sea Coast" = the owner's name (Oct 12) for the 49-room Azure Sea pathway (see REGION_NOTES). On the map (Oct 12, `az_merge.py`): blue water route, stream 14257-14265, east sea, cliff edge, dashed coast-to-mainland links only, Village of Edo marker, island, 'Azure Sea Coastal Path' water label (`w.seatags`), sea along the whole north coast, in the Ocean Keep bay and down the Ashen east coast (old shallows tint removed); all painting routes unbroken.
 - Agreed plan (Oct 12): repo cleanup + Pages done. Next, when the owner picks the regions: freeze finished regions into baked data with final positions (markers, drawings, names incl. the solver's) so no correction tables remain, and re-render only changed tiles. Verify with a pixel-identical rebuild. (The separate tweaks file was dropped.)
@@ -42,7 +42,7 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 5. Lists like `w['gfx']` are appended to, never replaced.
 6. Check placements numerically (distance to road/water, overlaps with names) before any screenshot. The site's label positions can differ from `realm_map.html`'s; check overlaps against `site/data/places.json`.
 7. Label solver flags 11 hand-placed names as "touching": expected baseline.
-8. `bp_merge` and `np_merge` use their own taller grids; `az_merge` (Azure Sea Coast, np_merge's grid) must stay the LAST land change, right after np_merge/np_markers. Don't extend `gap_fill`'s grid (float rounding moves things elsewhere).
+8. `bp_merge` and `np_merge` use their own taller grids; `az_merge` (Azure Sea Coast, np_merge's grid) must stay the last change to the north and east; `ft_merge` (Forest of Tears region only, x < -9.5) runs after it and edits land/ground layers on np's taller grid, tracing again only polygons that touch its box. Don't extend `gap_fill`'s grid (float rounding moves things elsewhere).
 9. Fonts are embedded from `src/fonts/` for the bake; screenshots without them show different label placement.
 10. Leaflet snaps to whole zoom levels (zoomSnap 1) to avoid tile seams.
 12. Tiles and data are served from `site/tiles/<stamp>/` and `site/data/<stamp>/` (stamp = hash of the build): a `?v=` query let old zoomed-in tiles show on Pages (Oct 12).

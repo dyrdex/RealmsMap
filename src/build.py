@@ -123,6 +123,11 @@ print('Northern Plains sub-areas:',_nsa)
 from az_merge import merge_az                                    # the Azure Sea Coast: now the LAST land change
 w,_az=merge_az(w,_json.load(open(os.path.join(_here,'az_layout_final.json'))),_json.load(open(os.path.join(_here,'az_editor_edges.json'))),_NPL)
 print('Azure Sea Coast merged:',_az)
+from ft_merge import merge_ft                                    # the Forest of Tears, Lake of Tich'Pyga and Western Trade Route from the owner's layout (Oct 13)
+import json as _jft
+_FTL=_jft.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'ft_layout_final.json'))); _FTE=_jft.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'fot_editor_edges.json')))
+w,_ft=merge_ft(w,_FTL,_FTE)
+print('Forest of Tears, Lake of Tich\'Pyga and Western Trade Route merged:',{k:v for k,v in _ft.items() if not k.startswith('_')})
 for _p in w['places']:                                          # owner's renames: the place keeps its old name as its key for the label tweaks
     if _p['name']=='Ofcol': _p['key']='Ofcol'; _p['name']='New Ofcol'
 w['places']=[_p for _p in w['places'] if not (_p['name']=='New Ofcol' and _p.get('key')!='Ofcol')]   # the Woods' own New Ofcol marker removed (owner, Oct 10)
