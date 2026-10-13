@@ -8,6 +8,8 @@
 - The Western Trade Route is one formal road from Darkhaven to the Thalos gate, with 8 off-ramp pads where it meets Forest of Tears rooms.
 - The sub-area markers inside the forest (Bartok Grove, Major Oak, The Shire, ...) and their routes follow your rooms; the Forgotten Woods trail through Widow's Peak (5634-5638) follows their new place.
 
+- The sea now runs along the whole west coast, from the south-west of the Forest of Tears up round the Forgotten Woods, the Barren Peaks and the Northern Plains to the sea in the north.
+- A small wooden shack with a dock reaching out to sea on the north-west coast at about (-94.3, -16.4).
 - The Falcon's Nest Tavern drawing moved to the west side of the road, across from its marker; the long Lost Between Woods path merges into the Forgotten Woods trail along its line, and the link to the lake path joins both paths cleanly.
 - A short path from the Fog Cliffs' north end (room 1661) into the field at 1648.
 - Third pass: room 1891 hidden; a short link from the Lost Between Woods thread to the lake's south shore (1124 to 839); the connector from the road to Darkhaven's gate is road; the Along the Forest Path trail now leaves the Darkhaven path at room 820; a new off-ramp pad at room 2319; the field is one terrain (the different strip between x -49 and -40 is gone).

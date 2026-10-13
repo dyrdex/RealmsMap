@@ -128,6 +128,9 @@ import json as _jft
 _FTL=_jft.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'ft_layout_final.json'))); _FTE=_jft.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'fot_editor_edges.json')))
 w,_ft=merge_ft(w,_FTL,_FTE)
 print('Forest of Tears, Lake of Tich\'Pyga and Western Trade Route merged:',{k:v for k,v in _ft.items() if not k.startswith('_')})
+from west_sea import add_west_sea                                # the sea along the whole west coast + the small marina on it (Oct 13)
+w,_wsea=add_west_sea(w)
+print('west sea and marina:',_wsea)
 for _p in w['places']:                                          # owner's renames: the place keeps its old name as its key for the label tweaks
     if _p['name']=='Ofcol': _p['key']='Ofcol'; _p['name']='New Ofcol'
 w['places']=[_p for _p in w['places'] if not (_p['name']=='New Ofcol' and _p.get('key')!='Ofcol')]   # the Woods' own New Ofcol marker removed (owner, Oct 10)
