@@ -19,6 +19,9 @@
 - Third pass: room 1891 hidden; a short link from the Lost Between Woods thread to the lake's south shore (1124 to 839); the connector from the road to Darkhaven's gate is road; the Along the Forest Path trail now leaves the Darkhaven path at room 820; a new off-ramp pad at room 2319; the field is one terrain (the different strip between x -49 and -40 is gone).
 - Second pass from your new save: the path west out of Darkhaven stops at room 822 where the field begins; short dirt links run from the Lost Between Woods path into the field at 1754 and 1736; the Western Trade Route near Darkhaven follows the rooms you moved.
 
+## In progress · Southern Mountain Range editor
+- New layout editor for the Southern Mountain Range (597 rooms + 99 spacers, anchored to the Forest of Tears); nothing drawn on the map yet.
+
 ## Earlier in progress · Forest of Tears + Lake of Tich'Pyga editor
 - New layout editor for the Forest of Tears (683 rooms) and the Lake of Tich'Pyga (276 rooms) together, with the spacer rooms that join them (`tools/forest_of_tears_editor`, October 12). Nothing on the map changes until you save an arrangement.
 - The 53 Western Trade Route rooms in that editor are unlocked (movable).
