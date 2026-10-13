@@ -162,7 +162,7 @@ def merge_ft(w, layout, edges, seed=53):
             fwl_lines.append([[round(a[0], 3), round(a[1], 3)]] + [[round(a[0] + (b[0] - a[0]) * t + nx_ * bow * math.sin(math.pi * t), 3), round(a[1] + (b[1] - a[1]) * t + ny_ * bow * math.sin(math.pi * t), 3)] for t in (0.25, 0.5, 0.75)] + [[round(b[0], 3), round(b[1], 3)]])
         else: fwl_lines.append([[round(a[0], 3), round(a[1], 3)], [round(b[0], 3), round(b[1], 3)]])
     dht = [[[round(cxp(u)[0], 3), round(cxp(u)[1], 3)], [round(pos[v][0], 3), round(pos[v][1], 3)]] for v in sorted(thread) for u in sorted(nbr[v]) if info.get(u, {}).get('src') == 'DH' and cxp(u)]
-    FIELD_LINKS = [(1755, 1754), (1782, 1736), (1124, 839)]                # owner (Oct 13): Lost Between Woods paths run into the field here; the last joins the thread to the lake's south shore
+    FIELD_LINKS = [(1755, 1754), (1782, 1736), (1124, 839), (1661, 1648)]                # owner (Oct 13): Lost Between Woods paths run into the field here; the last joins the thread to the lake's south shore
     fl_lines = [[[round(pos[a][0], 3), round(pos[a][1], 3)], [round(pos[b][0], 3), round(pos[b][1], 3)]] for a, b in FIELD_LINKS if a in pos and b in pos]
     report['darkhaven_path_links'] = len(dht); report['field_links'] = [(a, b, round(math.dist(pos[a], pos[b]), 1)) for a, b in FIELD_LINKS if a in pos and b in pos]
     report['thread_lines'] = len(trails); report['thread_rooms_drawn'] = len(GT); report['ring_lines'] = len(ring_lines); report['ring_rooms'] = len(ring)
