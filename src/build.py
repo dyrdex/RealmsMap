@@ -123,6 +123,17 @@ print('Northern Plains sub-areas:',_nsa)
 from az_merge import merge_az                                    # the Azure Sea Coast: now the LAST land change
 w,_az=merge_az(w,_json.load(open(os.path.join(_here,'az_layout_final.json'))),_json.load(open(os.path.join(_here,'az_editor_edges.json'))),_NPL)
 print('Azure Sea Coast merged:',_az)
+from ft_merge import merge_ft                                    # the Forest of Tears, Lake of Tich'Pyga and Western Trade Route from the owner's layout (Oct 13)
+import json as _jft
+_FTL=_jft.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'ft_layout_final.json'))); _FTE=_jft.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'fot_editor_edges.json')))
+w,_ft=merge_ft(w,_FTL,_FTE)
+print('Forest of Tears, Lake of Tich\'Pyga and Western Trade Route merged:',{k:v for k,v in _ft.items() if not k.startswith('_')})
+from west_sea import add_west_sea                                # the sea along the whole west coast + the small marina on it (Oct 13)
+w,_wsea=add_west_sea(w)
+print('west sea and marina:',_wsea)
+from route_fix import fix_routes                                 # routes along the trade routes drawn unbroken; the Ofcol Shortcut portal (owner, Oct 13)
+w,_rf=fix_routes(w,[_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_json.load(open(os.path.join(_here,'ashen_layout_final.json')))])
+print('routes traced again:',_rf)
 for _p in w['places']:                                          # owner's renames: the place keeps its old name as its key for the label tweaks
     if _p['name']=='Ofcol': _p['key']='Ofcol'; _p['name']='New Ofcol'
 w['places']=[_p for _p in w['places'] if not (_p['name']=='New Ofcol' and _p.get('key')!='Ofcol')]   # the Woods' own New Ofcol marker removed (owner, Oct 10)
@@ -134,6 +145,7 @@ w,_ll=place_lake_label(w)
 print('lake name placed:',_ll)
 if os.environ.get('FINAL_DUMP'):                                 # (used to build the layout editors)
     json.dump(w, open(os.environ['FINAL_DUMP'], 'w'))
+w['track']={k:v for k,v in w['track'].items() if not k.startswith(('ft','wt'))}    # (the Forest of Tears editor's room positions: in the FINAL_DUMP only, so realm_map.html stays as it was)
 nd['wild']=w
 open('../realm_map.html','w').write(h.replace('__DATA__',json.dumps(nd,separators=(',',':'))).replace('__VERSION__',label))
 

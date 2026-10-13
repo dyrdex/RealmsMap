@@ -32,7 +32,7 @@ Dragon Cult|#4 s;e;n;say idolizer of dragons
 Dragon Tower|#6 s;ne;s;s;se;e;e;s;sw;sw;s;#10 sw;w;u;s;e;e;se;se;s;s;sw;nw;nw;#3 w;sw;w;sw;se;sw
 Dragon's Pass|#6 s;ne;s;s;se;e;e;s;sw;sw;s;#5 sw;nw;#5 n;ne;n;e;se;se;
 Dragontail Glen|nw;#2 w;#4 n;e;look painting;open n;n;#28 w;#2 s;w;sw;#2 s;#4 w;#2 nw;#3 w;#5 sw;n;d;#2 w;#2 n;#3 w;#2 n
-Drow City|#6 n;#6 e;se;e;ne;ne;e;nw;n;n;ne;ne;w;nw;nw;#3 n;ne;n;nw;#3 n;ne;ne;n;nw;w;nw;nw;w;#3 nw;#3 w;nw;nw;#3 w;s;#3 w;#3 n;ne;open d;d
+Drow City|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;s;e;ne;n;#2 nw;#2 w;d
 The Dungeon|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se;sw;s;#2 sw;w;#2 sw;s;sw;s;#2 se;s;#5 e;#3 n;#2 w;n;d;pick e;open e;e;d
 The Dunhill Demesnes|nw;w;w;#4 n;e;look painting;open n;n;n;#57 w;ne;
 Dwarven Catacombs|#8 e;se;se;s;#3 se;e;ne;ne;n;ne;ne;n;nw;n;ne;w;push leaves;pull leaves;e;e;n;n;u;open u;u;open u;u;e;d;d;#4 n;open n;n;open n;n;d
@@ -96,11 +96,11 @@ Raven Tor|#6 n;#3 nw;w;n;#4 e;s;w;sw;nw;n;ne;u;#2 ne;u;ne;u;ne;nw;w;u;#2 ne;u;w;
 Realm of Worship|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;ne;n;ne;#5 n
 Redferne's Residence|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se;s;#3 sw;u;#3 w;s;sw;d;#3 w;#3 n;w;#2 s;#2 sw;#2 w;sw;#2 nw;sw;w;sw;#2 s;sw;tree;#2 e;#3 se;#4 s;#3 e;s;#2 w;open w;w
 Reign of Madness|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;s;e;#3 ne;se;#4 e;#2 se;#3 e;n;#5 ne;#4 nw;ne;e;#3 ne;#4 e;#4 n;#3 e;n;#2 nw;#2 w;#4 nw;scry/move to room with a down exit; d
-Revelation City|#6 n;#6 e;se;e;#2 ne;e;nw;#2 n;#2 ne;w;#2 nw;#3 n;ne;n;nw;#3 n;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;#5 nw;w;n
+Revelation City|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;#5 nw;w;#2 n
 Scourge of Time|#8 u;n;unlock n;open n;n;track Malsangre (say back in time)
 Sea of Sorrows|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s;sw;w;sw;d
 Sentinel|#9 w;nw;nw;n;w;nw;w;nw;w;s;s;
-Serpentine Coils|#6 n;#3 nw;#2 n;#2 nw;n;ne;n;ne;#2 n;#2 ne;#2 n;ne;n;#2 nw;#3 n;ne;n;nw;#3 n;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;s;e;#3 ne;se;#4 e;#2 se;#3 e;n;#5 ne;#4 nw;ne;e;d
+Serpentine Coils|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;s;e;#3 ne;se;#4 e;#2 se;#3 e;n;#5 ne;#4 nw;ne;e;d
 Sesuadra's Rift|#42 west;#7 n;enter;sw;enter;s;w;s;onslaught
 Seth's Fortress|#6 s;ne;s;s;se;e;e;s;sw;sw;u;nw;ne;w;w;sw;#3 s;se;se;ne;e;sw;s;#3 e;u;u
 Shadar Logoth|#13 e;#3 s;#3 e;ne;ne;#3 se;e;s;s;sw;s;se;s;se;e;e;ne;ne;e;sw;se;e;ne;ne;e;e;ne;n;n;n;n;sw;s;w;n;ne;n;n;w;w

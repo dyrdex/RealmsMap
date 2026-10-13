@@ -102,6 +102,7 @@ while _q:
 _chain=[];_x=2365
 while _x is not None: _chain.append(_x); _x=_prev[_x]
 _chain=_chain[::-1]
+_WTCHAIN=list(_chain)
 _pts=[]
 _north=False
 for v in _chain:
@@ -1251,5 +1252,8 @@ for _src,_dd in (('DH',ndpos),('Grove',sgp),('FW',fwp)):
     for _v,_p in _dd.items():
         if _v in _CTX or R(_v)['area']=='visual': continue                # (the "visual" rooms are decoration, not rooms)
         _CTX[_v]=_src; _TRACK[f"cx{_v}"]=[_p[0],_p[1]]
+# the Forest of Tears' own layout (rooms, other levels, the spacer rooms hanging off it) and the Western Trade Route's drawn road, tracked the same way (used by the Forest of Tears layout editor)
+for _v,_p in pos.items(): _TRACK[f"ft{_v}"]=[_p[0],_p[1]]
+for _v in _WTCHAIN: _TRACK[f"wt{_v}"]=[wpos[_v][0],wpos[_v][1]]
 d['ctxsrc']={str(k):v for k,v in _CTX.items()}
 d['track']=_TRACK; d['ashlinks']=_ASHLINKS; d['dhx']=_DHX; json.dump(d,open('fot.json','w'),separators=(',',':'))

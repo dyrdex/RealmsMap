@@ -1,5 +1,29 @@
 # Realm Map changelog
 
+## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
+
+- Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.
+- Directions for Serpentine Coils, Drow City and Revelation City replaced with your new lists (condensed with `#N dir`).
+- The Ofcol Shortcut is a portal: routes starting `#6 n;#3 nw;w;n;#4 e;s;w;sw` run to the Ofcol gate, then one long connective line to the Forgotten Woods room, and on. Their "aren't drawn yet" note is gone where no other gap remains (Valley of Mysts and The Tower of Zenothir still have a later, separate gap).
+- Redrawn from the layout you saved in the editor (`src/ft_layout_final.json`): the Forest of Tears is now a field of forest ground with no rooms or paths; the Lost Between Woods, Sparse Woodlands, Alongside a Swampland and Fog Cliffs paths are dirt trails round it, with impassable dense forest between them and the field and a short band of dense forest beyond them.
+- The north fills with dense forest out to a smooth coast that meets the Forgotten Woods' coast; the long Lost Between Woods path runs on to the Forgotten Woods.
+- The Fog Cliffs are their own terrain: dark rock, jagged peaks, crags, drifting mist and dark fog, with the sea to the west.
+- The Lake of Tich'Pyga is drawn inside the ring of its shore rooms (a dirt trail round it), with four small dirt paths to the Forgotten Woods; its name sits across it.
+- The Western Trade Route is one formal road from Darkhaven to the Thalos gate, with 8 off-ramp pads where it meets Forest of Tears rooms.
+- The sub-area markers inside the forest (Bartok Grove, Major Oak, The Shire, ...) and their routes follow your rooms; the Forgotten Woods trail through Widow's Peak (5634-5638) follows their new place.
+
+- The sea now runs along the whole west coast, from the south-west of the Forest of Tears up round the Forgotten Woods, the Barren Peaks and the Northern Plains to the sea in the north.
+- A small wooden shack with a dock reaching out to sea on the north-west coast at about (-94.3, -16.4).
+- The Falcon's Nest Tavern drawing moved to the west side of the road, across from its marker; the long Lost Between Woods path merges into the Forgotten Woods trail along its line, and the link to the lake path joins both paths cleanly.
+- A short path from the Fog Cliffs' north end (room 1661) into the field at 1648.
+- Third pass: room 1891 hidden; a short link from the Lost Between Woods thread to the lake's south shore (1124 to 839); the connector from the road to Darkhaven's gate is road; the Along the Forest Path trail now leaves the Darkhaven path at room 820; a new off-ramp pad at room 2319; the field is one terrain (the different strip between x -49 and -40 is gone).
+- Second pass from your new save: the path west out of Darkhaven stops at room 822 where the field begins; short dirt links run from the Lost Between Woods path into the field at 1754 and 1736; the Western Trade Route near Darkhaven follows the rooms you moved.
+
+## Earlier in progress · Forest of Tears + Lake of Tich'Pyga editor
+- New layout editor for the Forest of Tears (683 rooms) and the Lake of Tich'Pyga (276 rooms) together, with the spacer rooms that join them (`tools/forest_of_tears_editor`, October 12). Nothing on the map changes until you save an arrangement.
+- The 53 Western Trade Route rooms in that editor are unlocked (movable).
+- Forgotten Woods rooms 5634-5638 are unlocked in that editor too.
+
 ## Version 12 · The Azure Sea Coast and the Village of Edo · October 12, 2026
 - New layout editor for the Azure Sea rooms that join the map (`tools/azure_sea_editor`, October 12): 49 rooms in the end (under the Barren Peaks cliffs, the shore walk to the Ashen beach, the coast north to the Plains, the path to the Village of Edo, and spacers 14314 and 22557).
 - The Azure Sea Coast is on the map (October 12), from the layout saved in the editor: a dark blue water route along the foot of the cliffs, from room 14265 north round the Plains to 7746.
