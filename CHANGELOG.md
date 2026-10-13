@@ -1,6 +1,10 @@
 # Realm Map changelog
 
 ## In progress · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route redrawn (October 13, 2026)
+
+- Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.
+- Directions for Serpentine Coils, Drow City and Revelation City replaced with your new lists (condensed with `#N dir`).
+- The Ofcol Shortcut is a portal: routes starting `#6 n;#3 nw;w;n;#4 e;s;w;sw` run to the Ofcol gate, then one long connective line to the Forgotten Woods room, and on. Their "aren't drawn yet" note is gone where no other gap remains (Valley of Mysts and The Tower of Zenothir still have a later, separate gap).
 - Redrawn from the layout you saved in the editor (`src/ft_layout_final.json`): the Forest of Tears is now a field of forest ground with no rooms or paths; the Lost Between Woods, Sparse Woodlands, Alongside a Swampland and Fog Cliffs paths are dirt trails round it, with impassable dense forest between them and the field and a short band of dense forest beyond them.
 - The north fills with dense forest out to a smooth coast that meets the Forgotten Woods' coast; the long Lost Between Woods path runs on to the Forgotten Woods.
 - The Fog Cliffs are their own terrain: dark rock, jagged peaks, crags, drifting mist and dark fog, with the sea to the west.
