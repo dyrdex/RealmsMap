@@ -92,7 +92,8 @@ def merge_ft(w, layout, edges, seed=53):
     rooms, exits = AF._world()
     rng = random.Random(seed); nrng = np.random.default_rng(seed)
     pos = dict(zip(layout['ids'], zip(layout['xs'], layout['ys'])))
-    hidden = set(layout.get('hidden', []))
+    HIDE_EXTRA = [1891]                                                          # hidden on the owner's word (Oct 13), not in the editor save
+    hidden = set(layout.get('hidden', [])) | set(HIDE_EXTRA)
     info = {r['id']: r for r in edges['rooms']}
     track = w['track']
     shown = lambda v: v in pos and v not in hidden
@@ -161,7 +162,7 @@ def merge_ft(w, layout, edges, seed=53):
             fwl_lines.append([[round(a[0], 3), round(a[1], 3)]] + [[round(a[0] + (b[0] - a[0]) * t + nx_ * bow * math.sin(math.pi * t), 3), round(a[1] + (b[1] - a[1]) * t + ny_ * bow * math.sin(math.pi * t), 3)] for t in (0.25, 0.5, 0.75)] + [[round(b[0], 3), round(b[1], 3)]])
         else: fwl_lines.append([[round(a[0], 3), round(a[1], 3)], [round(b[0], 3), round(b[1], 3)]])
     dht = [[[round(cxp(u)[0], 3), round(cxp(u)[1], 3)], [round(pos[v][0], 3), round(pos[v][1], 3)]] for v in sorted(thread) for u in sorted(nbr[v]) if info.get(u, {}).get('src') == 'DH' and cxp(u)]
-    FIELD_LINKS = [(1755, 1754), (1782, 1736)]                            # owner (Oct 13): Lost Between Woods paths run into the field here
+    FIELD_LINKS = [(1755, 1754), (1782, 1736), (1124, 839)]                # owner (Oct 13): Lost Between Woods paths run into the field here; the last joins the thread to the lake's south shore
     fl_lines = [[[round(pos[a][0], 3), round(pos[a][1], 3)], [round(pos[b][0], 3), round(pos[b][1], 3)]] for a, b in FIELD_LINKS if a in pos and b in pos]
     report['darkhaven_path_links'] = len(dht); report['field_links'] = [(a, b, round(math.dist(pos[a], pos[b]), 1)) for a, b in FIELD_LINKS if a in pos and b in pos]
     report['thread_lines'] = len(trails); report['thread_rooms_drawn'] = len(GT); report['ring_lines'] = len(ring_lines); report['ring_rooms'] = len(ring)
@@ -186,8 +187,20 @@ def merge_ft(w, layout, edges, seed=53):
                 q = _nearest_on(road, pos[v])
                 if any(math.dist(q, j) < 1.2 for j in joins + list(w.get('ntrjoins', []))): continue
                 joins.append([round(q[0], 2), round(q[1], 2)]); joined_with.append((v, u))
+    EXTRA_PADS = [2319]                                                   # owner (Oct 13): an off-ramp pad on this road room
+    for v in EXTRA_PADS:
+        q = _nearest_on(road, pos[v])
+        if not any(math.dist(q, j) < 0.6 for j in joins): joins.append([round(q[0], 2), round(q[1], 2)]); joined_with.append((v, 'owner'))
     report['road_rooms'] = len(RD); report['off_ramps'] = joined_with; report['dh_links'] = dh_links
 
+    # ---------------------------------------------------------------- 'Along the Forest Path': off room 820, south-west and a little south, then on along the old trail
+    fp_old = next((t for t in w['swtracks'] if abs(t[0][0] + 13.183) < 0.01 and abs(t[0][1] - 5.633) < 0.01), None)
+    FP_HEAD = [[-21.0, 3.9], [-18.3, 5.5], [-15.9, 6.9]]
+    fp_new = []
+    if fp_old and all(v in pos for v in (820, 836, 834)):
+        fp_new = [[round(pos[v][0], 3), round(pos[v][1], 3)] for v in (820, 836, 834)] + FP_HEAD + [list(q) for q in fp_old[1:]]     # (the old trail's far end, on to (-9, 17), is where it was)
+        w['swtracks'] = [fp_new if t is fp_old else t for t in w['swtracks']]
+    report['forest_path'] = (len(fp_new), fp_new[:3])
     # ---------------------------------------------------------------- geometry on a sub-grid
     allpts = np.array([pos[v] for v in (FT | LK | RD)])
     lo, hi = allpts.min(0) - 16, allpts.max(0) + 16
@@ -202,7 +215,7 @@ def merge_ft(w, layout, edges, seed=53):
     # the field: the body of rooms, gaps between rows closed
     fm = _pts_mask([tuple(p) for p in fpts], 1.3, shape, org)
     fm = ndi.binary_fill_holes(close(fm, 3.2) | fm)
-    path_lines = trails + ring_lines + road + fwl_lines + dht + fl_lines
+    path_lines = trails + ring_lines + road + fwl_lines + dht + fl_lines + ([fp_new] if fp_new else [])
     pm = _lines_mask(path_lines, 1.6, shape, org)
     struct = fm | pm
     # the whole body inside the paths: the field, the paths and the impassable ground between
@@ -265,7 +278,7 @@ def merge_ft(w, layout, edges, seed=53):
     report['sea_sq'] = round(float(sea.sum()) / R8 / R8, 1)
     # the dense forest: everything left of the body (not field, lake, sea, cliffs), clear of the paths and the field rooms' own lines
     land_ft = new_in & ~lake & ~sea
-    wlines = trails + ring_lines + road + fwl_lines + dht + fl_lines
+    wlines = trails + ring_lines + road + fwl_lines + dht + fl_lines + dh_lines + ([fp_new] if fp_new else [])
     clr = _samples(wlines, 0.15)
     ctree = cKDTree(np.r_[clr, np.array([pos[v] for v in (thread | RD | LK)])])
     # cliff zone along the Fog Cliffs path (land side), its sea edge, then the rest of the dense forest
@@ -302,13 +315,10 @@ def merge_ft(w, layout, edges, seed=53):
     # the dense forest, and the field's ground: wood tint, paler patches, bog under 'Drowning in Sorrow'
     fz = ndi.binary_erosion(fieldf, iterations=int(0.4 * R8))
     nz1 = ndi.gaussian_filter(nrng.normal(size=(hh, ww)), 3.0 * R8); nz1 = (nz1 - nz1.min()) / (nz1.max() - nz1.min())
-    drown = np.array([pos[v] for v in field if 'Drowning' in rooms[v]['name']])
-    bogm = full(_pts_mask([tuple(p) for p in drown], 1.7, shape, org)) & fz
-    bogm = ndi.binary_opening(ndi.binary_closing(bogm, iterations=R8), iterations=R8 // 3)
+    bogm = np.zeros((H, W), bool)                                            # (no bog patch under 'Drowning in Sorrow': the field is one terrain, owner Oct 13)
     _edit_layer(w, 'deep', lambda r: r | E(ndi.binary_erosion(dense, iterations=int(0.3 * R8))), sigma=2.0)
     _edit_layer(w, 'fill', lambda r: r | E(fz), sigma=2.0)
     _edit_layer(w, 'fill2', lambda r: r | E(fz & full(nz1 > 0.55)), sigma=2.5)
-    _edit_layer(w, 'bog', lambda r: r | E(bogm), sigma=2.0)
     # the Fog Cliffs: rock tint, darker crag ground, a dark cast over it
     _edit_layer(w, 'cliff', lambda r: r | E(cliffz))
     crz = ndi.binary_erosion(cliffz, iterations=int(0.35 * R8))
@@ -393,8 +403,8 @@ def merge_ft(w, layout, edges, seed=53):
     def inz(pl): return all(inm(Ez, x, y) for x, y in pl)
     oldt = list(w['fwtracks']); w['fwtracks'] = [t for t in oldt if not (len(t) and inz(t))]
     report['old_trails_dropped'] = len(oldt) - len(w['fwtracks'])
-    w['fwtracks'] = list(w['fwtracks']) + trails + ring_lines + fwl_lines + dh_lines + dht + fl_lines
-    w['etrtracks'] = list(w.get('etrtracks', [])) + road
+    w['fwtracks'] = list(w['fwtracks']) + trails + ring_lines + fwl_lines + dht + fl_lines
+    w['etrtracks'] = list(w.get('etrtracks', [])) + road + dh_lines             # (the connector 831 -> Darkhaven's gate is road too: owner, Oct 13)
     w['ntrjoins'] = list(w.get('ntrjoins', [])) + joins
     # the Woods trail through Widow's Peak (5634-5638) follows the rooms to where they were put
     oldc = {v: tuple(track['cx%d' % v][:2]) for v in WIDOWS + [5632, 5639] if 'cx%d' % v in track}
@@ -445,6 +455,11 @@ def merge_ft(w, layout, edges, seed=53):
         p['segs'] = segs; p['path'] = [q for s_ in segs for q in s_]
         moved.append((p['name'], [round(old[0], 1), round(old[1], 1)], [round(end[0], 1), round(end[1], 1)], len(segs)))
     report['markers_moved'] = moved; report['markers_failed'] = failed
+    pfp = next((p for p in w['places'] if p['name'] == 'Along the Forest Path'), None)
+    if pfp and fp_new:
+        tr_, fl_ = walk(pfp['route']); upto = tr_[:tr_.index(834) + 1] if 834 in tr_ else []
+        pts = [[round(P(v)[0], 3), round(P(v)[1], 3)] for v in upto if P(v)] + FP_HEAD + [[-14.406, 8.063], [-13.783, 9.6], [-13.183, 11.267]]
+        pfp['segs'] = [pts]; pfp['path'] = pts; pfp['note'] = "Placed roughly: the path runs between the Forest of Tears and the Shattered Refuge."
     fnt = next((p for p in w['places'] if p['name'] == "Falcon's Nest Tavern"), None)
     for b in w['buildings']:
         if b['name'] == "Falcon's Nest Tavern" and fnt: b['x'], b['y'] = round(fnt['path'][-1][0], 3), round(fnt['path'][-1][1] - 1.05, 3)
