@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route redrawn (October 13, 2026)
+## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.
 - Directions for Serpentine Coils, Drow City and Revelation City replaced with your new lists (condensed with `#N dir`).

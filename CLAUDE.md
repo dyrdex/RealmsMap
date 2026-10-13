@@ -17,9 +17,9 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 - `docs/REGION_NOTES.md`: detailed per-region history and decisions. Read only the section for the region being changed.
 - `CHANGELOG.md`: owner-facing history. `README.md`: file-by-file description.
 
-## State (Oct 12, 2026)
-- Mapped through the Northern Plains, incl. its sub-area markers, area name and the NW sea (Oct 12 batch). Last snapshot: v12 (git tag `v12`, Oct 12: the Azure Sea Coast).
-- Oct 13: Forest of Tears (field + dirt-trail threads + dense forest + Fog Cliffs terrain and sea), Lake of Tich'Pyga (ring path) and the Western Trade Route (formal road, 8 off-ramps) redrawn from the owner's save by `ft_merge.py`; sub-area markers re-traced. See REGION_NOTES. Awaiting the owner's review on Pages.
+## State (Oct 13, 2026)
+- Mapped through the Northern Plains, incl. its sub-area markers, area name and the NW sea (Oct 12 batch). Last snapshot: v13 (git tag `v13`, Oct 13: Forest of Tears, Lake, Western Trade Route, west sea, route fix, Ofcol Shortcut; before it v12, the Azure Sea Coast).
+- Oct 13: Forest of Tears (field + dirt-trail threads + dense forest + Fog Cliffs terrain and sea), Lake of Tich'Pyga (ring path) and the Western Trade Route (formal road, 8 off-ramps) redrawn from the owner's save by `ft_merge.py`; sub-area markers re-traced. See REGION_NOTES.
 - Oct 13 (later): routes re-traced over the final layouts by `route_fix.py` (routes along trade routes draw unbroken); Ofcol Shortcut portal (`#6 n;#3 nw;w;n;#4 e;s;w;sw` joins the Ofcol gate to the Woods room, no gap note); new Serpentine Coils / Drow City / Revelation City directions. See REGION_NOTES.
 - Open question to owner: which regions to freeze. (Asgard Nexus and World Housing stay off the map: owner, Oct 12.)
 - "Azure Sea Coast" = the owner's name (Oct 12) for the 49-room Azure Sea pathway (see REGION_NOTES). On the map (Oct 12, `az_merge.py`): blue water route, stream 14257-14265, east sea, cliff edge, dashed coast-to-mainland links only, Village of Edo marker, island, 'Azure Sea Coastal Path' water label (`w.seatags`), sea along the whole north coast, in the Ocean Keep bay and down the Ashen east coast (old shallows tint removed); all painting routes unbroken.
