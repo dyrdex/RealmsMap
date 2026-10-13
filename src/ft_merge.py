@@ -153,17 +153,33 @@ def merge_ft(w, layout, edges, seed=53):
             t = e['to']
             if info.get(t, {}).get('src') == 'FW' and e['dir'] in (1, 2, 3, 4, 6, 8, 9, 12, 16, 32) and (v in LK or v in west):
                 fwlinks.append((v, t))
+    def snap(p, lines, maxd):                                              # a link ends ON the drawn path it joins (rooms sit a little off the smoothed lines)
+        if not lines: return list(p)
+        q = _nearest_on(lines, p); return list(q) if math.dist(p, q) <= maxd else list(p)
+    own_lines = trails + ring_lines
+    fwt0 = [t for t in w['fwtracks'] if len(t) > 1]                           # the Woods' trails as they are before ours are added
     fwl_lines = []
     for v, t in fwlinks:
-        a = pos[v]; b = cxp(t) if t not in pos else pos[t]
+        a = snap(pos[v], own_lines, 1.2); b = snap(cxp(t) if t not in pos else pos[t], fwt0, 3.0)
         L_ = math.dist(a, b)
-        if L_ > 10:                                                          # the long Lost Between Woods link bows gently (about 6%) rather than run dead straight
+        if L_ > 10:                                                          # the long Lost Between Woods link bows gently (about 6%) and arrives along the Woods trail it joins
             nx_, ny_ = -(b[1] - a[1]) / L_, (b[0] - a[0]) / L_; bow = 0.06 * L_ * (1 if nx_ < 0 else -1)
-            fwl_lines.append([[round(a[0], 3), round(a[1], 3)]] + [[round(a[0] + (b[0] - a[0]) * t + nx_ * bow * math.sin(math.pi * t), 3), round(a[1] + (b[1] - a[1]) * t + ny_ * bow * math.sin(math.pi * t), 3)] for t in (0.25, 0.5, 0.75)] + [[round(b[0], 3), round(b[1], 3)]])
+            best_ = None
+            for tr_ in fwt0:                                                  # the Woods trail's direction where the link meets it
+                for p_, q_ in zip(tr_[:-1], tr_[1:]):
+                    dx_, dy_ = q_[0] - p_[0], q_[1] - p_[1]; l2_ = dx_ * dx_ + dy_ * dy_
+                    if l2_ == 0: continue
+                    u_ = max(0, min(1, ((b[0] - p_[0]) * dx_ + (b[1] - p_[1]) * dy_) / l2_)); d_ = math.dist(b, (p_[0] + u_ * dx_, p_[1] + u_ * dy_))
+                    if best_ is None or d_ < best_[0]: best_ = (d_, dx_ / math.sqrt(l2_), dy_ / math.sqrt(l2_))
+            tx_, ty_ = best_[1], best_[2]
+            if tx_ * (b[0] - a[0]) + ty_ * (b[1] - a[1]) < 0: tx_, ty_ = -tx_, -ty_
+            bez = lambda t: [round(a[0] + (b[0] - a[0]) * t + nx_ * bow * math.sin(math.pi * t), 3), round(a[1] + (b[1] - a[1]) * t + ny_ * bow * math.sin(math.pi * t), 3)]
+            fwl_lines.append([[round(a[0], 3), round(a[1], 3)], bez(0.25), bez(0.5), bez(0.72), [round(b[0] - tx_ * 1.4, 3), round(b[1] - ty_ * 1.4, 3)], [round(b[0], 3), round(b[1], 3)]])
         else: fwl_lines.append([[round(a[0], 3), round(a[1], 3)], [round(b[0], 3), round(b[1], 3)]])
     dht = [[[round(cxp(u)[0], 3), round(cxp(u)[1], 3)], [round(pos[v][0], 3), round(pos[v][1], 3)]] for v in sorted(thread) for u in sorted(nbr[v]) if info.get(u, {}).get('src') == 'DH' and cxp(u)]
     FIELD_LINKS = [(1755, 1754), (1782, 1736), (1124, 839), (1661, 1648)]                # owner (Oct 13): Lost Between Woods paths run into the field here; the last joins the thread to the lake's south shore
-    fl_lines = [[[round(pos[a][0], 3), round(pos[a][1], 3)], [round(pos[b][0], 3), round(pos[b][1], 3)]] for a, b in FIELD_LINKS if a in pos and b in pos]
+    def end_of(r): return list(pos[r]) if r in field else snap(pos[r], own_lines, 2.0)       # (a field room is not drawn: the link runs into the field up to its room)
+    fl_lines = [[[round(end_of(a)[0], 3), round(end_of(a)[1], 3)], [round(end_of(b)[0], 3), round(end_of(b)[1], 3)]] for a, b in FIELD_LINKS if a in pos and b in pos]
     report['darkhaven_path_links'] = len(dht); report['field_links'] = [(a, b, round(math.dist(pos[a], pos[b]), 1)) for a, b in FIELD_LINKS if a in pos and b in pos]
     report['thread_lines'] = len(trails); report['thread_rooms_drawn'] = len(GT); report['ring_lines'] = len(ring_lines); report['ring_rooms'] = len(ring)
     report['woods_links'] = [(v, t, round(math.dist(pos[v], cxp(t) or pos[t]), 1)) for v, t in fwlinks]
@@ -461,8 +477,25 @@ def merge_ft(w, layout, edges, seed=53):
         pts = [[round(P(v)[0], 3), round(P(v)[1], 3)] for v in upto if P(v)] + FP_HEAD + [[-14.406, 8.063], [-13.783, 9.6], [-13.183, 11.267]]
         pfp['segs'] = [pts]; pfp['path'] = pts; pfp['note'] = "Placed roughly: the path runs between the Forest of Tears and the Shattered Refuge."
     fnt = next((p for p in w['places'] if p['name'] == "Falcon's Nest Tavern"), None)
-    for b in w['buildings']:
-        if b['name'] == "Falcon's Nest Tavern" and fnt: b['x'], b['y'] = round(fnt['path'][-1][0], 3), round(fnt['path'][-1][1] - 1.05, 3)
+    # the tavern graphic sits west of the road, across it from the marker dot (owner, Oct 13): the nearest clear spot to the marker whose way to the marker crosses the road
+    tav = None
+    if fnt:
+        mx_, my_ = fnt['path'][-1]; rs_ = _samples(road, 0.08); rt_ = cKDTree(rs_); best = None
+        for dx in np.arange(-4.5, -0.55, 0.1):
+            for dy in np.arange(-2.0, 3.0, 0.1):
+                x_, y_ = mx_ + dx, my_ + dy
+                if rt_.query([x_, y_])[0] < 1.25: continue                   # clear of the road: half the graphic (0.6) + half the road (0.55) + a gap
+                seg = np.c_[np.linspace(x_, mx_, 40), np.linspace(y_, my_, 40)]
+                if rt_.query(seg)[0].min() > 0.3: continue                   # the road runs between the graphic and the dot
+                d_ = math.hypot(dx, dy)
+                if best is None or d_ < best[0]: best = (d_, x_, y_)
+        if best: tav = (round(best[1], 3), round(best[2], 3))
+        else: tav = (round(mx_ - 2.0, 3), round(my_, 3))
+        for b in w['buildings']:
+            if b['name'] == "Falcon's Nest Tavern": b['x'], b['y'] = tav
+        for key in ('trees', 'tufts'):                                       # nothing grows under it
+            w[key] = [q for q in w[key] if not (abs(q[0] - tav[0]) < 0.95 and abs(q[1] - tav[1]) < 0.75)]
+    report['tavern'] = tav
 
     # ---- the lake's name: across the widest row of the new lake
     lyy, lxx = np.nonzero(lake); rows = Counter(lyy.tolist()); widest = [r for r, c in rows.items() if c >= 0.93 * max(rows.values())]
