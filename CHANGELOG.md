@@ -8,6 +8,8 @@
 - The Western Trade Route is one formal road from Darkhaven to the Thalos gate, with 8 off-ramp pads where it meets Forest of Tears rooms.
 - The sub-area markers inside the forest (Bartok Grove, Major Oak, The Shire, ...) and their routes follow your rooms; the Forgotten Woods trail through Widow's Peak (5634-5638) follows their new place.
 
+- Second pass from your new save: the path west out of Darkhaven stops at room 822 where the field begins; short dirt links run from the Lost Between Woods path into the field at 1754 and 1736; the Western Trade Route near Darkhaven follows the rooms you moved.
+
 ## Earlier in progress · Forest of Tears + Lake of Tich'Pyga editor
 - New layout editor for the Forest of Tears (683 rooms) and the Lake of Tich'Pyga (276 rooms) together, with the spacer rooms that join them (`tools/forest_of_tears_editor`, October 12). Nothing on the map changes until you save an arrangement.
 - The 53 Western Trade Route rooms in that editor are unlocked (movable).

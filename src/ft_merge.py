@@ -111,10 +111,14 @@ def merge_ft(w, layout, edges, seed=53):
     field = {v for v in FT if not void(v) and FIELD_RE.search(rooms[v]['name'])}
     rest = FT - field
     comps = _components(G, rest)
-    threads = [c for c in comps if len(c) >= 20]
+    nbr = defaultdict(set)
+    for v_, l_ in exits.items():
+        for e_ in l_: nbr[v_].add(e_['to']); nbr[e_['to']].add(v_)
+    touches_dh = lambda c: any(info.get(u, {}).get('src') == 'DH' for v in c for u in nbr[v])
+    threads = [c for c in comps if len(c) >= 20 or touches_dh(c)]       # (the path west out of Darkhaven is a thread however short)
     thread = set().union(*threads) if threads else set()
     fpts = np.array([pos[v] for v in field]); ftree = cKDTree(fpts)
-    small = set().union(*[c for c in comps if len(c) < 20]) if comps else set()
+    small = set().union(*[c for c in comps if c not in threads]) if comps else set()
     stray_field = {v for v in small if not void(v) and ftree.query(pos[v])[0] < 3.5}         # single rooms inside the field's body
     field |= stray_field
     ignored = sorted(small - stray_field)
@@ -156,6 +160,10 @@ def merge_ft(w, layout, edges, seed=53):
             nx_, ny_ = -(b[1] - a[1]) / L_, (b[0] - a[0]) / L_; bow = 0.06 * L_ * (1 if nx_ < 0 else -1)
             fwl_lines.append([[round(a[0], 3), round(a[1], 3)]] + [[round(a[0] + (b[0] - a[0]) * t + nx_ * bow * math.sin(math.pi * t), 3), round(a[1] + (b[1] - a[1]) * t + ny_ * bow * math.sin(math.pi * t), 3)] for t in (0.25, 0.5, 0.75)] + [[round(b[0], 3), round(b[1], 3)]])
         else: fwl_lines.append([[round(a[0], 3), round(a[1], 3)], [round(b[0], 3), round(b[1], 3)]])
+    dht = [[[round(cxp(u)[0], 3), round(cxp(u)[1], 3)], [round(pos[v][0], 3), round(pos[v][1], 3)]] for v in sorted(thread) for u in sorted(nbr[v]) if info.get(u, {}).get('src') == 'DH' and cxp(u)]
+    FIELD_LINKS = [(1755, 1754), (1782, 1736)]                            # owner (Oct 13): Lost Between Woods paths run into the field here
+    fl_lines = [[[round(pos[a][0], 3), round(pos[a][1], 3)], [round(pos[b][0], 3), round(pos[b][1], 3)]] for a, b in FIELD_LINKS if a in pos and b in pos]
+    report['darkhaven_path_links'] = len(dht); report['field_links'] = [(a, b, round(math.dist(pos[a], pos[b]), 1)) for a, b in FIELD_LINKS if a in pos and b in pos]
     report['thread_lines'] = len(trails); report['thread_rooms_drawn'] = len(GT); report['ring_lines'] = len(ring_lines); report['ring_rooms'] = len(ring)
     report['woods_links'] = [(v, t, round(math.dist(pos[v], cxp(t) or pos[t]), 1)) for v, t in fwlinks]
     report['stubs_left_off'] = sorted(pruned_t | pruned_l)
@@ -194,7 +202,7 @@ def merge_ft(w, layout, edges, seed=53):
     # the field: the body of rooms, gaps between rows closed
     fm = _pts_mask([tuple(p) for p in fpts], 1.3, shape, org)
     fm = ndi.binary_fill_holes(close(fm, 3.2) | fm)
-    path_lines = trails + ring_lines + road + fwl_lines
+    path_lines = trails + ring_lines + road + fwl_lines + dht + fl_lines
     pm = _lines_mask(path_lines, 1.6, shape, org)
     struct = fm | pm
     # the whole body inside the paths: the field, the paths and the impassable ground between
@@ -257,7 +265,7 @@ def merge_ft(w, layout, edges, seed=53):
     report['sea_sq'] = round(float(sea.sum()) / R8 / R8, 1)
     # the dense forest: everything left of the body (not field, lake, sea, cliffs), clear of the paths and the field rooms' own lines
     land_ft = new_in & ~lake & ~sea
-    wlines = trails + ring_lines + road + fwl_lines
+    wlines = trails + ring_lines + road + fwl_lines + dht + fl_lines
     clr = _samples(wlines, 0.15)
     ctree = cKDTree(np.r_[clr, np.array([pos[v] for v in (thread | RD | LK)])])
     # cliff zone along the Fog Cliffs path (land side), its sea edge, then the rest of the dense forest
@@ -385,7 +393,7 @@ def merge_ft(w, layout, edges, seed=53):
     def inz(pl): return all(inm(Ez, x, y) for x, y in pl)
     oldt = list(w['fwtracks']); w['fwtracks'] = [t for t in oldt if not (len(t) and inz(t))]
     report['old_trails_dropped'] = len(oldt) - len(w['fwtracks'])
-    w['fwtracks'] = list(w['fwtracks']) + trails + ring_lines + fwl_lines + dh_lines
+    w['fwtracks'] = list(w['fwtracks']) + trails + ring_lines + fwl_lines + dh_lines + dht + fl_lines
     w['etrtracks'] = list(w.get('etrtracks', [])) + road
     w['ntrjoins'] = list(w.get('ntrjoins', [])) + joins
     # the Woods trail through Widow's Peak (5634-5638) follows the rooms to where they were put
