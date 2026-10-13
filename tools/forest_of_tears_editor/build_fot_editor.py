@@ -32,6 +32,10 @@ for k in tr:
     if k.startswith('wt'):
         v = int(k[2:])
         if v not in CTX and v not in FOT: WT.add(v)
+UNLOCK_FW = [5634, 5635, 5636, 5637, 5638]                   # Forgotten Woods rooms unlocked on request (owner, Oct 13): movable, starting where the map has them
+assert all(CTX[v] == 'FW' for v in UNLOCK_FW)
+FWU = set(UNLOCK_FW)
+for v in UNLOCK_FW: CTX.pop(v)                               # (cpos keeps their map position: the starting spot)
 assert not (FOT | LAKE | WT) & set(CTX)
 
 # ---- the spacer rooms that join the two areas to each other and to fixed rooms ----
@@ -41,7 +45,7 @@ for v, l in exits.items():
 raw_nb = defaultdict(set)
 for v, l in exits.items():
     for e in l: raw_nb[v].add(e['to']); raw_nb[e['to']].add(v)
-core = FOT | LAKE | WT
+core = FOT | LAKE | WT | FWU
 cand = set(); q = deque(core)
 while q:
     v = q.popleft()
@@ -86,6 +90,7 @@ for v in S:
     if f'ft{v}' in tr:
         z = zf.get(v, 0); lvl[v] = z; start[v] = [tr[f'ft{v}'][0] + LV * z, tr[f'ft{v}'][1] - LV * z]
     elif v in WT: lvl[v] = 0; start[v] = list(tr[f'wt{v}'])
+    elif v in FWU: lvl[v] = 0; start[v] = list(cpos[v])
 known = dict(cpos)
 for v, p in start.items(): known[v] = tuple(p)
 # the rest (the lake, and any Forest of Tears room the map does not hold) in pieces by TinTin's own exits, with levels
@@ -161,10 +166,10 @@ def exlist(v):
         if not r: continue
         res.append(f"{DN.get(e['dir'], '?')} → {r['name'] or 'spacer room'}" + (f" ({r['area']})" if r['area'] and r['area'] not in (FA, LA) else ''))
     return res
-GROUP = {v: ('lk' if v in LAKE else 'wt' if v in WT else 'ft') for v in S}
+GROUP = {v: ('lk' if v in LAKE else 'wt' if v in WT else 'fw' if v in FWU else 'ft') for v in S}
 for v in sorted(SP):                                                       # a spacer room takes the group of the real room it hangs off
     nb = [u for u in raw_nb[v] if u in FOT | LAKE]
-    if nb and v not in WT: GROUP[v] = 'lk' if nb[0] in LAKE and not any(u in FOT for u in nb) else 'ft'
+    if nb and v not in WT and v not in FWU: GROUP[v] = 'lk' if nb[0] in LAKE and not any(u in FOT for u in nb) else 'ft'
 R = []
 for v in sorted(CTX):
     r = rooms[v]
@@ -186,7 +191,7 @@ lk = sorted(k for k in pair if (k[0] in S) != (k[1] in S))
 cnt = Counter(CTX.values()); tz = Counter(lvl.get(v, 0) for v in S)
 audit = dict(fot=len(FOT), lake=len(LAKE), spacers=len(SP), fot_sp=sum(1 for v in SP if GROUP[v] == 'ft'), lake_sp=sum(1 for v in SP if GROUP[v] == 'lk'), stubs=len(stubs),
              exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), pieces=len(pieces),
-             dh=cnt['DH'], grove=cnt['Grove'], fw=cnt['FW'], wtr=len(WT), levels=', '.join(f'{z:+d}: {n}' for z, n in sorted(tz.items())),
+             dh=cnt['DH'], grove=cnt['Grove'], fw=cnt['FW'], wtr=len(WT), fwu=len(FWU), levels=', '.join(f'{z:+d}: {n}' for z, n in sorted(tz.items())),
              parked=len(PARKED) if orph else 0, lake_in_map=sum(1 for v in LAKE if f'ft{v}' in tr), fot_untracked=sum(1 for v in FOT if f'ft{v}' not in tr))
 rd = lambda poly: [[round(x, 2), round(y, 2)] for x, y in poly]
 trk = list(w['fwtracks']) + list(w['swtracks']) + [w['road'], w['southpath'], w['link']] + list(w['ring']) + [t for t in w.get('etrtracks', []) if len(t) > 1] \
@@ -195,7 +200,7 @@ ctx = dict(land=[rd(p) for p in w['geo']['land']], water=[rd(p) for p in w['geo'
            tracks=[rd(t) for t in trk if len(t) > 1], mazes=[dict(poly=rd(m['poly'])) for m in w['fwmazes']], town=[-7.4, -9.4, 7.4, 9.4],
            labels=[[0, 0.4, 'Darkhaven', 2.4], [3, -14.2, 'Shadow Grove', 1.5], [1, -47.3, 'Forgotten Woods', 2.4]] +
                   [[(a['x0'] + a['x1']) / 2, a['y'], 'Forest of Tears', 2.4] for a in [w['label']]])
-D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=[])
+D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=sorted(WT | FWU))
 t = open(os.path.join(here, 'fot_editor_template.html'), encoding='utf-8').read()
 open(out, 'w', encoding='utf-8').write(t.replace('__DATA__', json.dumps(D, separators=(',', ':'))))
 json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed', 'src', 'area', 'grp', 'piece') if k in r} for r in R], edges=EDG),
