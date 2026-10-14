@@ -55,13 +55,17 @@ def merge_smr(w, layout, edges, seed=71):
     report = {}
 
     # ---------------------------------------------------------------- the graphs
-    GS = defaultdict(set); GT = defaultdict(set); links = []
+    GS = defaultdict(set); GT = defaultdict(set); links = []; uds = []
+    NO_UD = {frozenset((291, 292))}                                    # the one up/down exit that is not drawn (owner, Oct 14)
     for a, b, k in edges['edges']:
-        if k == 'ud' or a not in pos or b not in pos: continue
+        if a not in pos or b not in pos: continue
         if grp(a) == 'af' or grp(b) == 'af': continue                    # the visual-only link to the Ashen Forest (room 670): not drawn yet (owner, Oct 14)
         ina, inb = a in DOM, b in DOM
         if not (ina or inb): continue
         if (a in mov and a in hidden) or (b in mov and b in hidden): continue
+        if k == 'ud':                                                  # up/down exits (owner, Oct 14): small dirt lines; they join different levels, so they make no wide path or clearing
+            if frozenset((a, b)) not in NO_UD: uds.append((a, b))
+            continue
         if ina and inb:
             if (a in TRT) and (b in TRT): GT[a].add(b); GT[b].add(a)
             elif (a not in TRT) and (b not in TRT): GS[a].add(b); GS[b].add(a)
@@ -83,8 +87,12 @@ def merge_smr(w, layout, edges, seed=71):
     report['rooms_shown'] = {'range': len([v for v in DOM if v not in TRT]), 'route': len(TRT)}
     report['spacer_stubs_dropped'] = len(pruned)
     onmap = {v for G in (GS, GT) for v in G} | {v for a, b in links for v in (a, b) if v in DOM}
+    onmap |= {v for a, b in uds for v in (a, b) if v in DOM and not void(v)}                 # (a real room whose only exits are up/down ones is still on the map)
     LINKS = [(a, b) for a, b in links if (a in DOM) != (b in DOM) or (a in DOM and b in DOM)]
     LINKS = [(a, b) for a, b in LINKS if all((v not in DOM) or v in onmap for v in (a, b))]
+    UDL = [(a, b) for a, b in uds if all((v not in DOM) or v in onmap for v in (a, b))]       # (a spacer dropped as a stub takes its up/down exit with it)
+    UDL = [e for e in UDL if e not in LINKS and (e[1], e[0]) not in LINKS]
+    report['up_down_exits'] = {'with_a_range_end': len(uds), 'not_drawn_pruned': len(uds) - len(UDL), 'left_out': [291, 292]}
 
     # ---------------------------------------------------------------- the window (everything this module paints lies in it)
     allp = np.array([pos[v] for v in onmap]); pad = 12.0
@@ -147,7 +155,7 @@ def merge_smr(w, layout, edges, seed=71):
     road_lines = _chains(rT, pos, set(), 0.8) if rT else []
     # the links between the range, the route, the moved Sparse Woodlands trail and fixed rooms: small dirt lines
     link_lines = []; far = []
-    for a, b in LINKS:
+    for a, b in LINKS + UDL:
         d = math.dist(pos[a], pos[b])
         if d > 30: far.append((a, b, round(d, 1)))
         else: link_lines.append([[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]])
@@ -164,7 +172,8 @@ def merge_smr(w, layout, edges, seed=71):
     w['ntrjoins'] = list(w['ntrjoins']) + pads
     report['dirt'] = {'cells': len(dadj), 'patches': len(dpatch), 'patch_sq': round(float(dwide.sum()) / R8 / R8, 1), 'trail_lines': len(dirt_lines)}
     report['road'] = {'cells': len(radj), 'patches': len(rpatch), 'patch_sq': round(float(rwide.sum()) / R8 / R8, 1), 'road_lines': len(road_lines), 'pads': len(pads)}
-    report['links_drawn'] = len(link_lines); report['links_over_30'] = far
+    report['links_drawn'] = len(link_lines) - len([1 for a, b in UDL if math.dist(pos[a], pos[b]) <= 30]); report['links_over_30'] = far
+    report['up_down_exits']['drawn'] = len([1 for a, b in UDL if math.dist(pos[a], pos[b]) <= 30])
 
     # ---------------------------------------------------------------- the paths as a raster (land margin, sprite clearance)
     pim = Image.new('L', (ww, hw), 0); pd = ImageDraw.Draw(pim)
@@ -172,7 +181,7 @@ def merge_smr(w, layout, edges, seed=71):
         for a in G:
             for b in G[a]:
                 if a < b: pd.line([px(pos[a]), px(pos[b])], fill=255, width=2)
-    for a, b in LINKS: pd.line([px(pos[a]), px(pos[b])], fill=255, width=2)
+    for a, b in LINKS + UDL: pd.line([px(pos[a]), px(pos[b])], fill=255, width=2)
     for v in onmap:
         p = px(pos[v]); pd.ellipse([p[0] - 2, p[1] - 2, p[0] + 2, p[1] + 2], fill=255)
     skel = np.array(pim, bool)

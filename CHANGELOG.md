@@ -22,6 +22,7 @@
 ## In progress · Southern Mountain Range
 - Southern Mountain Range, its Southern Mountain Trade Route and the moved Sparse Woodlands trail are on the map from your saved layout: wide paths and clearings follow your rooms (neighbouring rooms widen the path; a clump of touching rooms is one open dirt patch), the Trade Route is a formal road with off-ramps, the Forest of Tears redrawn round the moved trail, sea along the range's west coast, the map now reaches y 113.
 - New layout editor for the Southern Mountain Range (597 rooms + 99 spacers, anchored to the Forest of Tears); nothing drawn on the map yet.
+- Up/down exits between shown rooms are drawn as small dirt lines (11), except 291 - 292.
 - Editor: a visual-only link 559 -> spacer -> Ashen Forest room 670 (unlocked); not on the map yet.
 - Editor: the Sparse Woodlands trail of the Forest of Tears (38 rooms incl. spacers) unlocked; the Southern Mountain Trade Route (126 rooms) added.
 
