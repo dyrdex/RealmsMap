@@ -48,6 +48,8 @@ for s in sorted(v for v in CTX if CTX[v] == 'FT' and isspacer(v)):              
             if CTX.get(t) == 'FT' and isspacer(t) and t not in comp: comp.add(t); st.append(t)
     _seen |= comp
     if len({u for x in comp for u in _nb[x] if u in set(TRAIL)}) >= 2: UNLOCK += sorted(comp)
+UNLOCK += [20036, 1980, 1985]                                                          # dead-end spacer stubs off the trail, unlocked on request (owner, Oct 14)
+assert all(CTX.get(v) == 'FT' for v in (20036, 1980, 1985))
 UL = set(UNLOCK)
 for v in UL: CTX.pop(v)                                      # (cpos keeps their map position: anchor and starting spot)
 
