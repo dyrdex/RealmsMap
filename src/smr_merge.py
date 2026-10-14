@@ -416,8 +416,8 @@ def merge_smr(w, layout, edges, seed=71):
             road2_d = [[round(r2[0], 2), round(r2[1], 2)], [bx_, round(y1_ - 0.6, 2)], [bx_, gs_['bridge']['y0'] + 0.1]]
             gate2_d = {'x': bx_, 'y': round(y1_ - 0.1, 2), 'w': 2.7}
             streets.append([[bx_, gate2_d['y']]] + road2_d[1:])
-            bg_ = gs_['bridge']; sm_ = gs_['stream']
-            w['smrbridge'] = list(w.get('smrbridge') or []) + [{'x': bx_, 'y0': bg_['y0'], 'y1': bg_['y1'], 'w': bg_['w'], 'stream': sm_}]
+            bg_ = gs_['bridge']; sm_ = {'x0': bx_ - 3.0, 'x1': bx_ + 3.0}
+            w['smrbridge'] = list(w.get('smrbridge') or []) + [{'x': bx_, 'y0': bg_['y0'], 'y1': bg_['y1'], 'w': bg_['w']}]
             for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):
                 w[k_] = [t for t in w[k_] if not (sm_['x0'] - 0.3 <= t[0] <= sm_['x1'] + 0.3 and bg_['y0'] - 0.3 <= t[1] <= bg_['y1'] + 0.3)]
         sst = _samples(streets, 0.1) if streets else np.zeros((0, 2))
@@ -672,11 +672,43 @@ def merge_smr(w, layout, edges, seed=71):
         ft['bend'] = {'x': round(float(pos[U['bend']][0]), 2), 'y': round(float(pos[U['bend']][1]), 2)}
         unders.append({'name': U['name'], 'band': band, 'river': riv, 'core': core, 'wall_l': wl, 'wall_r': wr, 'chev': chev, 'mouth': {'x': round(float(pos[pr[0]][0]), 2), 'y': round(float(pos[pr[0]][1]) + 0.55, 2)}, 'features': ft})
         report.setdefault('undergrounds', {})[U['name']] = {'length': round(float(seg[-1]), 1), 'points': len(dense), 'rooms_not_drawn_as_path': sorted(tun_rooms), 'features': sorted(ft)}
-        w['streams'] = list(w['streams']) + [[[round(float(far[0] - ud_[0] * 1.9), 2), round(float(far[1] - ud_[1] * 1.9), 2)], [round(float(far[0] - ud_[0] * 0.3), 2), round(float(far[1] - ud_[1] * 0.3), 2)]]]   # the river arriving at the falls, from the valley (surface)
         for k_ in ('trees', 'tufts'):                                            # nothing grows on the cave mouths / waterfall
             for ax, ay in ((pos[pr[0]][0], pos[pr[0]][1] + 0.5), (far[0], far[1])):
                 w[k_] = [t for t in w[k_] if not (abs(t[0] - ax) < 1.1 and abs(t[1] - ay) < 1.1)]
     w['smrunder'] = unders
+    # ---- the river beyond the falls (owner, Oct 14): a stream (a little wider than a path) from room 13 down past Edel; at room 120 a still pool, then flooded ground (125), then marsh (126)
+    R_ = CL.get('river')
+    if R_ and all(v in pos for v in R_['rooms'] + [R_['flood'], R_['marsh']]):
+        rr_ = random.Random(seed * 17 + 5)
+        keyp = [np.array(pos[v]) for v in R_['rooms'][:-1]]
+        dense = catmull(keyp, 10); seg = np.r_[0, np.cumsum(np.hypot(*np.diff(dense, axis=0).T))]
+        wbase = R_['width']
+        kk_ = [int(np.argmin(np.hypot(*(dense - np.array(pos[v])).T))) for v in (R_['widen_from'], R_['pool'], R_['flood'])]
+        sk_ = [seg[k] for k in kk_]
+        wd_ = wbase * (1 + 0.18 * np.sin(seg * 1.7)) * np.interp(seg, [0, 1.5, sk_[0] - 1.0, sk_[0], sk_[1], sk_[2]], [0.55, 1.0, 1.0, 1.0, 1.6, 3.4])   # a thread at the falls; wider from room 119 into the pool; spreading into the flood
+        px_, py_ = pos[R_['pool']]; fx_, fy_ = pos[R_['flood']]; mx_, my_ = pos[R_['marsh']]
+        def blob(cx, cy, rx, ry, amp, n=28, rot=0.0):
+            out = []; ph = [rr_.uniform(0, 6.28) for _ in range(3)]
+            for k in range(n):
+                a = 2 * math.pi * k / n; f = 1 + amp * (math.sin(2 * a + ph[0]) * 0.5 + math.sin(3 * a + ph[1]) * 0.3 + math.sin(5 * a + ph[2]) * 0.2)
+                x_, y_ = rx * f * math.cos(a), ry * f * math.sin(a)
+                out.append([round(cx + x_ * math.cos(rot) - y_ * math.sin(rot), 2), round(cy + x_ * math.sin(rot) + y_ * math.cos(rot), 2)])
+            return out
+        pool = blob(px_, py_, 1.25, 0.8, 0.12, 24)
+        flood = blob(fx_ - 0.6, fy_ - 0.3, 2.5, 1.5, 0.22, 32, -0.5)                  # the flooded ground: wide, shallow, ragged
+        marsh_g = blob(mx_ - 0.2, my_ + 0.1, 2.6, 1.7, 0.25, 32, -0.5)                 # the marsh the river is lost in
+        puddles = []
+        for _ in range(9):
+            a = rr_.uniform(0, 6.28); r_ = math.sqrt(rr_.random()) * 1.6; puddles.append([round(mx_ - 0.2 + math.cos(a) * r_ * 1.5, 2), round(my_ + 0.1 + math.sin(a) * r_ * 0.95, 2), round(rr_.uniform(0.18, 0.42), 2), round(rr_.uniform(0.1, 0.22), 2)])
+        reeds = []
+        for _ in range(26):
+            a = rr_.uniform(0, 6.28); r_ = math.sqrt(rr_.random()); reeds.append([round(mx_ - 0.2 + math.cos(a) * r_ * 2.4, 2), round(my_ + 0.1 + math.sin(a) * r_ * 1.5, 2)])
+        for _ in range(10):
+            a = rr_.uniform(0, 6.28); reeds.append([round(fx_ - 0.6 + math.cos(a) * 2.2, 2), round(fy_ - 0.3 + math.sin(a) * 1.3, 2)])
+        w['smrriver'] = {'pts': [[round(float(x), 2), round(float(y), 2), round(float(wv), 2)] for (x, y), wv in zip(dense, wd_)], 'pool': pool, 'flood': flood, 'marsh': marsh_g, 'puddles': puddles, 'reeds': reeds, 'ends': [round(px_, 2), round(py_, 2)]}
+        for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):
+            w[k_] = [t for t in w[k_] if not any(math.hypot(t[0] - gx, t[1] - gy) < gr for gx, gy, gr in ((px_, py_, 1.9), (fx_ - 0.6, fy_ - 0.3, 3.4), (mx_ - 0.2, my_ + 0.1, 3.6)))]
+        report['river'] = {'length': round(float(seg[-1]), 1), 'rooms': R_['rooms'] + [R_['flood'], R_['marsh']]}
     # ---- inns (owner, Oct 14): an inn graphic like the Ashen Forest Inn's, with a small label; its rooms are not drawn as road
     for inn in CL.get('inns', []):
         x, y = inn['x'], inn['y']

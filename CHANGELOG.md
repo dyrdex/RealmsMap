@@ -6,6 +6,8 @@
 
 - Edel's new south gate: a gatehouse with two round towers in the town's south wall, a paved road from the street to it, and a stone bridge (paved deck, parapets, corner posts) leading south over a short stream (the river rooms 119/124 run under it; the trail pieces under the bridge are not drawn). Rooms from your save of Oct 14 22:44Z (rooms 108 to 116, 14898, 14900, 19374, 124, 9282 moved; 108, 109, 110 unhidden).
 
+- The Darkhaven River continues beyond the waterfall (room 13) as a stream, a little wider than a path, through rooms 18, 16, 28, 27, 31, 44, 41, 124, 119 and the spacer rooms between them (14899, 14897, 14898, 14900, 123, 20697), down past Edel, under its bridge (the short stream drawn for the bridge is replaced by this). From 119 it widens into a still pool at 120, then spreads into a wide flooded area at 125 and is lost in a marsh (126: puddles, reeds, dark wet ground). Config: `river` in `src/smr_clearings.json`.
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.

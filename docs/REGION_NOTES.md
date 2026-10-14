@@ -183,3 +183,6 @@ Not yet built (backlog, in this order): an automatic QA report script; a "tweaks
 
 ### Edel south gate and bridge (Oct 14)
 `gate_s` in the Edel town entry of `smr_clearings.json` (gate at room 108, road from street room 106, bridge y 74.85-76.9, stream y 75.75). The stream/bridge are drawn after the fwtracks so they sit over the 119-124 trail; `owner_edits.BRIDGE_TRIM` removes the trail under the gate/bridge and the 109-119 up/down link.
+
+### Foothills river (Oct 14)
+`river` in `smr_clearings.json` (rooms incl. spacers, pool/flood/marsh rooms) -> `w['smrriver']` (Catmull-Rom centreline with widths, blobs for pool/flood/marsh, puddles, reeds); drawn in `template.html` after fwtracks, before the Edel bridge. Replaces the old short stream under the falls and the bridge's own stream. The Western Trade Route road is drawn over the flood and marsh (it crosses them in the owner's layout).
