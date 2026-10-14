@@ -7,6 +7,8 @@ DROP_LINES = {                                   # (layer, one end, the other en
     ('swtracks', (-9.0, 17.0), (-3.0, 21.0)),
     ('swtracks', (-3.0, 21.0), (-1.2, 20.6)),
 }
+DROP_LINES |= {('fwtracks', (-11.05, 76.59), (-12.62, 75.77))}   # the up/down link from the bridge to the river room below it (Edel bridge, owner, Oct 14): the stream is drawn instead
+BRIDGE_TRIM = ((-11.16, 74.16), 76.9, -11.0)       # the trail from Edel's south gate south: its stretch under the gate road and the stone bridge (to y 76.9) is not drawn as a trail
 DROP_PLACES = {'Southern Mountain Range'}        # the marker, its text and its sidebar entry (owner, Oct 14: "Southern Mountain Rage" is the owner's typo)
 
 
@@ -26,6 +28,10 @@ def apply_edits(w):
             if hit: report['lines_dropped'].append((layer, ln[0], ln[-1], len(ln)))
             else: keep.append(ln)
         w[layer] = keep
+    (sx_, sy_), ty_, tx_ = BRIDGE_TRIM
+    for ln in w.get('fwtracks', []):
+        if len(ln) > 3 and math.dist(ln[0], (sx_, sy_)) < 0.03:
+            rest = [p for p in ln if p[1] >= ty_]; ln[:] = [[tx_, ty_]] + rest; report['bridge_trim'] = len(rest)
     moved = []                                    # the cabins and the little path between them, slid east
     for b in w['buildings']:
         if not b.get('name') and CABIN_BOX[0] <= b['x'] <= CABIN_BOX[2] and CABIN_BOX[1] <= b['y'] <= CABIN_BOX[3]: b['x'] = round(b['x'] + SLIDE_EAST, 3); b['y'] = round(b['y'] + SLIDE_NORTH, 3); moved.append((b['x'], b['y']))

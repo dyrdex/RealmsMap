@@ -4,6 +4,8 @@
 
 - The Darkhaven River now ends at room 1 and turns south into a cave mouth. Its tunnel (rooms 1 to 13) is drawn as a faded, see-through ghost layer with dashed walls and flow arrows toward the mouth. Per room: a lake (5) with a grotto (6) joined to it and a dashed surface exit, rapids (3), a downpour (4), stalactites (11, 12), a bend (2), and a twin-fork waterfall with a tunnel mouth beyond room 13. The tunnel rooms are no longer drawn as dirt paths. Config: `undergrounds` in `src/smr_clearings.json`.
 
+- Edel's new south gate: a gatehouse with two round towers in the town's south wall, a paved road from the street to it, and a stone bridge (paved deck, parapets, corner posts) leading south over a short stream (the river rooms 119/124 run under it; the trail pieces under the bridge are not drawn). Rooms from your save of Oct 14 22:44Z (rooms 108 to 116, 14898, 14900, 19374, 124, 9282 moved; 108, 109, 110 unhidden).
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.

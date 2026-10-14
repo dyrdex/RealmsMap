@@ -221,7 +221,7 @@ const TOWN=L=>(L||[]).map(T=>{let s='';const g=T.ground;
   const sd=T.streets.map(p=>p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L'));
   const SL=(sw,col,extra,op)=>`<g fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" opacity="${op}" ${extra||''}>`+sd.map(d=>`<path d="${d}"/>`).join('')+`</g>`;
   s+=SL(.72,'#2B2418','',.4)+SL(.54,'var(--g-wall)','',.95)+SL(.2,'#B3A583','stroke-dasharray=".18 .15"',.5);   /* the main streets: cobbles with a worn line */
-  if(T.road&&T.road.length>1){const rd=T.road.length>2?curve(T.road):'M'+T.road.map(q=>q.join(' ')).join('L'),RW=T.road_w||.95;const RL=(sw,col,extra,op)=>`<path d="${rd}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" opacity="${op}" ${extra||''}/>`;
+  for(const RR of [T.road,T.road2])if(RR&&RR.length>1){const rd=RR.length>2?curve(RR):'M'+RR.map(q=>q.join(' ')).join('L'),RW=T.road_w||.95;const RL=(sw,col,extra,op)=>`<path d="${rd}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" opacity="${op}" ${extra||''}/>`;
     s+=RL((RW+.55).toFixed(2),'#2B2418','',.38)+RL((RW+.24).toFixed(2),'var(--g-wall)','',1)+RL(RW,'#B3A583','',1)+RL((RW*.78).toFixed(2),'var(--g-stone)','',.45)+RL('.06','#2B2418','stroke-dasharray=".5 .3"',.45)}   /* the grand road into the town: kerb stones, paving */
   if(T.plaza){const[px_,py_,pr]=T.plaza;s+=`<circle cx="${px_}" cy="${py_}" r="${pr}" fill="var(--g-stone)" stroke="#2B2418" stroke-width=".08" opacity=".95"/><circle cx="${px_}" cy="${py_}" r="${(pr*.66).toFixed(2)}" fill="none" stroke="var(--g-wall)" stroke-width=".06"/><circle cx="${px_}" cy="${py_}" r=".24" fill="#20241f" stroke="var(--g-wall)" stroke-width=".08"/><circle cx="${px_}" cy="${py_}" r=".1" fill="var(--water)"/>`}
   for(const t of T.trees)s+=`<ellipse cx="${t[0]+.06}" cy="${t[1]+.12}" rx="${t[2]}" ry="${(t[2]*.8).toFixed(2)}" fill="var(--t-shade)" opacity=".5"/><circle cx="${t[0]}" cy="${t[1]}" r="${t[2]}" fill="var(--t-mid)"/><circle cx="${t[0]-t[2]*.25}" cy="${t[1]-t[2]*.25}" r="${(t[2]*.55).toFixed(2)}" fill="var(--t-light)" opacity=".7"/>`;
@@ -235,7 +235,7 @@ const TOWN=L=>(L||[]).map(T=>{let s='';const g=T.ground;
       if(b.k==='inn')q+=hz?`<line x1="${-hw+.05}" y1="${-hh*.5}" x2="${hw-.05}" y2="${-hh*.5}" stroke="#00000044" stroke-width=".04"/><circle cx="${-hw*.55}" cy="${hh+.06}" r=".08" fill="var(--g-lit)"/>`:'';
       if(b.k==='shop')q+=`<rect x="${-hw}" y="${hh-.14}" width="${b.w}" height=".16" fill="var(--g-cloth)" opacity=".8"/>`}
     s+=`<g transform="translate(${b.x},${b.y})">${q}</g>`}
-  if(T.gate){const G=T.gate;let q='';const tw=1.0,tr=.5;
+  for(const G of [T.gate,T.gate_s])if(G){let q='';const tw=1.0,tr=.5;
     q+=`<rect x="${-tw-tr-.95}" y="-.15" width=".95" height=".3" fill="var(--g-stone)" stroke="var(--g-line)" stroke-width=".04"/><rect x="${tw+tr}" y="-.15" width=".95" height=".3" fill="var(--g-stone)" stroke="var(--g-line)" stroke-width=".04"/>`;   /* wall each side */
     q+=`<rect x="${-tw}" y="-.4" width="${2*tw}" height=".8" fill="var(--g-stone)" stroke="var(--g-line)" stroke-width=".05"/><rect x="-.55" y="-.4" width="1.1" height=".8" fill="#1f1b14" opacity=".82"/>`;   /* the gatehouse and the passage under it */
     q+=`<line x1="-.4" y1="-.38" x2="-.4" y2=".38" stroke="var(--g-wall)" stroke-width=".04" opacity=".7"/><line x1="0" y1="-.38" x2="0" y2=".38" stroke="var(--g-wall)" stroke-width=".04" opacity=".7"/><line x1=".4" y1="-.38" x2=".4" y2=".38" stroke="var(--g-wall)" stroke-width=".04" opacity=".7"/>`;
@@ -245,6 +245,18 @@ const TOWN=L=>(L||[]).map(T=>{let s='';const g=T.ground;
   return s}).join('');   /* a village seen from above: streets, plaza and well, houses, church, trees (Edel) */
 let FWPATHS=PATCH(WD.smrpatch,'var(--dirt)','var(--dirt-edge)',.88)+FAINT(WD.smrfaint)+CLIMB(WD.smrclimb)+TOWN(WD.smrtowns);for(const p of (WD.fwtracks||[])){const rd=p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L');
   FWPATHS+=DIRT(rd,.3);}
+for(const B of (WD.smrbridge||[])){const S=B.stream,N=16,x=B.x;let a='',b='';   /* the stream under Edel's stone bridge, then the bridge (owner, Oct 14) */
+  for(let i=0;i<N;i++){const s0=i/N,s1=(i+1)/N,wd=S.w*(.12+.88*Math.pow(Math.sin(Math.PI*(s0+s1)/2),.55)),xa=S.x0+(S.x1-S.x0)*s0,xb=S.x0+(S.x1-S.x0)*s1,ya=S.y+Math.sin(xa*1.3)*.07,yb=S.y+Math.sin(xb*1.3)*.07;
+    a+=`<line x1="${xa.toFixed(2)}" y1="${ya.toFixed(2)}" x2="${xb.toFixed(2)}" y2="${yb.toFixed(2)}" stroke="var(--w-shore)" stroke-width="${(wd+.16).toFixed(2)}" stroke-linecap="round" opacity=".55"/>`;
+    b+=`<line x1="${xa.toFixed(2)}" y1="${ya.toFixed(2)}" x2="${xb.toFixed(2)}" y2="${yb.toFixed(2)}" stroke="var(--water)" stroke-width="${wd.toFixed(2)}" stroke-linecap="round"/>`}
+  FWPATHS+=a+b;
+  const y0=B.y0,y1=B.y1,hw=B.w/2,L=y1-y0;let q=`<rect x="${x-hw-.02}" y="${y0+.08}" width="${B.w+.1}" height="${L}" fill="#000" opacity=".3"/>`;   /* shadow on the water */
+  q+=`<rect x="${x-hw}" y="${y0}" width="${B.w}" height="${L}" fill="var(--g-wall)" stroke="var(--g-line)" stroke-width=".05"/><rect x="${x-hw+.12}" y="${y0}" width="${B.w-.24}" height="${L}" fill="var(--g-stone)"/>`;   /* parapets and the paved deck */
+  for(let yy=y0+.18;yy<y1;yy+=.22)q+=`<line x1="${x-hw+.12}" y1="${yy.toFixed(2)}" x2="${x+hw-.12}" y2="${yy.toFixed(2)}" stroke="#2B2418" stroke-width=".02" opacity=".35"/>`;
+  q+=`<line x1="${x}" y1="${y0+.05}" x2="${x}" y2="${y1-.05}" stroke="#2B2418" stroke-width=".05" stroke-dasharray=".4 .25" opacity=".4"/>`;
+  for(const [yy,hh] of [[y0,.34],[y1,.34]])for(const sx of [-1,1])q+=`<rect x="${x+sx*hw-.17}" y="${yy-.17}" width=".34" height=".34" rx=".03" fill="var(--g-wall)" stroke="var(--g-line)" stroke-width=".05"/>`;   /* a post at each corner */
+  const ym=S.y;for(const sx of [-1,1])q+=`<path d="M${x+sx*hw} ${(ym-.42).toFixed(2)} q${sx*.2} .42 0 .84" fill="none" stroke="var(--g-line)" stroke-width=".05" opacity=".6"/>`;   /* the arch's span seen from above, one each side */
+  FWPATHS+=q}
 /* the roads are drawn as ONE shape: each layer (verge, shadow, curbs, surface, stones) across every stretch of road before the next layer goes on, so where two stretches meet there is no seam */
 const ROADLAYERS=(ds,wd)=>{const L=(sw,col,extra,op)=>`<g opacity="${op}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" ${extra||''}>`+ds.map(d=>`<path d="${d}"/>`).join('')+`</g>`;
   return L(wd+1.25,"var(--road-ground)","",.62)                                  /* the cleared verge either side */

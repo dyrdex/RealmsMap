@@ -410,6 +410,16 @@ def merge_smr(w, layout, edges, seed=71):
             road_d = [[round(gx_, 2), round(ys_, 2)], [round(gx_, 2), round(gy_ + 1.0, 2)], [round(rend_[0], 2), round(rend_[1], 2)]]
             gate_d = {'x': round(gx_, 2), 'y': round(gy_, 2), 'w': 2.7}
             streets.append([[gate_d['x'], gate_d['y']]] + road_d[1:])        # (so filler houses keep clear of it)
+        road2_d = None; gate2_d = None; gs_ = c.get('gate_s')
+        if gs_ and gs_['room'] in pos and gs_['street_room'] in pos:            # the south gate (owner, Oct 14): a gatehouse in the town's south wall, a paved road from the street to the stone bridge
+            bx_ = round(pos[gs_['room']][0] + 0.06, 2); r2 = pos[gs_['street_room']]
+            road2_d = [[round(r2[0], 2), round(r2[1], 2)], [bx_, round(y1_ - 0.6, 2)], [bx_, gs_['bridge']['y0'] + 0.1]]
+            gate2_d = {'x': bx_, 'y': round(y1_ - 0.1, 2), 'w': 2.7}
+            streets.append([[bx_, gate2_d['y']]] + road2_d[1:])
+            bg_ = gs_['bridge']; sm_ = gs_['stream']
+            w['smrbridge'] = list(w.get('smrbridge') or []) + [{'x': bx_, 'y0': bg_['y0'], 'y1': bg_['y1'], 'w': bg_['w'], 'stream': sm_}]
+            for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):
+                w[k_] = [t for t in w[k_] if not (sm_['x0'] - 0.3 <= t[0] <= sm_['x1'] + 0.3 and bg_['y0'] - 0.3 <= t[1] <= bg_['y1'] + 0.3)]
         sst = _samples(streets, 0.1) if streets else np.zeros((0, 2))
         wells = [pos[v] for v in inside if re.search(r'Well|Circle', nm(v))]
         plaza = [round(sum(p[0] for p in wells) / len(wells), 2), round(sum(p[1] for p in wells) / len(wells), 2), 0.85] if wells else None
@@ -460,7 +470,7 @@ def merge_smr(w, layout, edges, seed=71):
             if len(trees) >= 7: break
             cx, cy, r_ = trng.uniform(x0_ + 0.4, x1_ - 0.4), trng.uniform(y0_ + 0.4, y1_ - 0.4), trng.uniform(0.26, 0.38)
             if free_spot(cx, cy, r_, r_, 0.22) and all(math.dist((cx, cy), (q[0], q[1])) > 1.0 for q in trees): trees.append([round(cx, 2), round(cy, 2), round(r_, 2)])
-        towns.append({'name': c['name'], 'ground': [x0_ + 0.12, y0_ + 0.12, x1_ - 0.12, y1_ - 0.12], 'streets': streets, 'plaza': plaza, 'buildings': blds, 'trees': trees, 'road': road_d, 'road_w': (g_ or {}).get('width', 0.95), 'gate': gate_d})
+        towns.append({'name': c['name'], 'ground': [x0_ + 0.12, y0_ + 0.12, x1_ - 0.12, y1_ - 0.12], 'streets': streets, 'plaza': plaza, 'buildings': blds, 'trees': trees, 'road': road_d, 'road2': road2_d, 'gate_s': gate2_d, 'road_w': (g_ or {}).get('width', 0.95), 'gate': gate_d})
         lab = c.get('label') or [(x0_ + x1_) / 2, y0_ - 0.5]
         w['tags'] = list(w['tags']) + [[lab[0], lab[1], c['name'], 0.95]]
         for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):         # nothing grows or stands where the village is

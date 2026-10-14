@@ -180,3 +180,6 @@ Not yet built (backlog, in this order): an automatic QA report script; a "tweaks
 
 ### Darkhaven River tunnel (Oct 14)
 `smr_merge.py` builds `w['smrunder']` from `undergrounds` in `smr_clearings.json` (Catmull-Rom through the rooms, per-room widths, features placed from the room descriptions); `template.html` draws it as a blurred translucent band with dashed walls and a faded river, above the paths. Tunnel rooms are removed from the path/clearing graph; the river block ends at room 1 with a cave mouth. Builds are deterministic.
+
+### Edel south gate and bridge (Oct 14)
+`gate_s` in the Edel town entry of `smr_clearings.json` (gate at room 108, road from street room 106, bridge y 74.85-76.9, stream y 75.75). The stream/bridge are drawn after the fwtracks so they sit over the 119-124 trail; `owner_edits.BRIDGE_TRIM` removes the trail under the gate/bridge and the 109-119 up/down link.
