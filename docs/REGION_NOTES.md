@@ -186,3 +186,6 @@ Not yet built (backlog, in this order): an automatic QA report script; a "tweaks
 
 ### Foothills river (Oct 14)
 `river` in `smr_clearings.json` (rooms incl. spacers, pool/flood/marsh rooms) -> `w['smrriver']` (Catmull-Rom centreline with widths, blobs for pool/flood/marsh, puddles, reeds); drawn in `template.html` after fwtracks, before the Edel bridge. Replaces the old short stream under the falls and the bridge's own stream. The Western Trade Route road is drawn over the flood and marsh (it crosses them in the owner's layout).
+
+### Tunnel branches and the canyon (Oct 14)
+`undergrounds[0].branches` (5-6 water, 6-7 dry, mouth at 7) -> `unders[].branches`; tunnel rooms add land skeleton lines; Underground-terrain rooms are excluded from terrain sources. `canyons` in `smr_clearings.json` -> `w['smrcanyon']` (6 terrace levels, floor slot, ledge segments, caves), drawn by CANYON() after TOWN in `template.html`.

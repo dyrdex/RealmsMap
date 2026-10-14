@@ -189,7 +189,26 @@
         11,
         12
       ],
-      "fall": 13
+      "fall": 13,
+      "branches": [
+        {
+          "rooms": [
+            5,
+            6
+          ],
+          "kind": "water",
+          "width": 0.5
+        },
+        {
+          "rooms": [
+            6,
+            7
+          ],
+          "kind": "dry",
+          "width": 0.9,
+          "mouth": 7
+        }
+      ]
     }
   ],
   "river": {
@@ -219,5 +238,18 @@
     "marsh": 126,
     "width": 0.5,
     "widen_from": 119
-  }
+  },
+  "canyons": [
+    {
+      "name": "The Enormous Canyon",
+      "box": [
+        -25.2,
+        23.0,
+        -17.9,
+        29.3
+      ],
+      "low": 118,
+      "high": 348
+    }
+  ]
 }

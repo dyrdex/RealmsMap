@@ -517,6 +517,11 @@ def merge_smr(w, layout, edges, seed=71):
             for b in G[a]:
                 if a < b: pd.line([px(pos[a]), px(pos[b])], fill=255, width=2)
     for a, b in LINKS + UDL: pd.line([px(pos[a]), px(pos[b])], fill=255, width=2)
+    for U_ in CL.get('undergrounds', []):                                      # land round the tunnel and its branches (no gap of open ground)
+        chain_ = [U_['path']] + [b_['rooms'] for b_ in U_.get('branches', [])]
+        for ch_ in chain_:
+            for a_, b_ in zip(ch_, ch_[1:]):
+                if a_ in pos and b_ in pos: pd.line([px(pos[a_]), px(pos[b_])], fill=255, width=2)
     if vis:
         for p, q in zip(vis, vis[1:]): pd.line([px(p), px(q)], fill=255, width=2)
     for v in onmap:
@@ -550,7 +555,7 @@ def merge_smr(w, layout, edges, seed=71):
     report['land_sq_before_after'] = (round(before), round(float(land_n.sum()) / R8 / R8))
 
     # ---------------------------------------------------------------- terrain: tints and sprites, from the rooms' own terrain
-    real = [v for v in onmap if not void(v) and v in DOM]
+    real = [v for v in onmap if not void(v) and v in DOM and (info[v].get('terrain') or '') != 'Underground']       # (the underground rooms do not set the terrain above them)
     cls = {'Mountains': 'm', 'Hills': 'h', 'Forest': 'd'}
     tree = cKDTree(np.array([pos[v] for v in real])); lab_t = [info[v].get('terrain') or '' for v in real]
     P = np.c_[WXg.ravel(), WYg.ravel()]
@@ -670,7 +675,33 @@ def merge_smr(w, layout, edges, seed=71):
         ft['fall'] = {'x': round(float(far[0]), 2), 'y': round(float(far[1]), 2), 'dx': round(float(ud_[0]), 3), 'dy': round(float(ud_[1]), 3)}
         ft['exit_mouth'] = {'x': round(float(far[0] + ud_[0] * 0.9), 2), 'y': round(float(far[1] + ud_[1] * 0.9), 2), 'dx': round(float(ud_[0]), 3), 'dy': round(float(ud_[1]), 3)}
         ft['bend'] = {'x': round(float(pos[U['bend']][0]), 2), 'y': round(float(pos[U['bend']][1]), 2)}
-        unders.append({'name': U['name'], 'band': band, 'river': riv, 'core': core, 'wall_l': wl, 'wall_r': wr, 'chev': chev, 'mouth': {'x': round(float(pos[pr[0]][0]), 2), 'y': round(float(pos[pr[0]][1]) + 0.55, 2)}, 'features': ft})
+        brs = []
+        for B_ in U.get('branches', []):
+            rm_ = B_['rooms']
+            if not all(v in pos for v in rm_): continue
+            pts_ = [np.array(pos[v], float) for v in rm_]; mid_ = []
+            if len(pts_) == 2:                                                      # a gentle wander between the two rooms
+                d_ = pts_[1] - pts_[0]; L_ = float(np.linalg.norm(d_)); n_ = np.array([-d_[1], d_[0]]) / (L_ or 1)
+                for f_ in (0.33, 0.66): mid_.append(pts_[0] + d_ * f_ + n_ * (float(_hash(pts_[0][0] + f_, pts_[0][1], 41)) - 0.5) * 0.7)
+                pts_ = [pts_[0]] + mid_ + [pts_[1]]
+            dn_ = catmull(pts_, 12); sg_ = np.r_[0, np.cumsum(np.hypot(*np.diff(dn_, axis=0).T))]
+            tn_ = np.gradient(dn_, axis=0); tn_ /= np.maximum(np.hypot(*tn_.T), 1e-9)[:, None]; nr_ = np.c_[-tn_[:, 1], tn_[:, 0]]
+            wr_ = np.full(len(dn_), B_['width']) * (1 + 0.1 * np.sin(sg_ * 2.3)); wt2_ = wr_ + (0.75 if B_['kind'] == 'water' else 0.55)
+            br = {'kind': B_['kind'], 'band': rnd(np.r_[dn_ + nr_ * (wt2_ / 2)[:, None], (dn_ - nr_ * (wt2_ / 2)[:, None])[::-1]]), 'floor': rnd(np.r_[dn_ + nr_ * (wr_ / 2)[:, None], (dn_ - nr_ * (wr_ / 2)[:, None])[::-1]]),
+                  'wall_l': rnd(dn_ + nr_ * (wt2_ / 2)[:, None]), 'wall_r': rnd(dn_ - nr_ * (wt2_ / 2)[:, None])}
+            if B_['kind'] == 'water': br['core'] = rnd(np.r_[dn_ + nr_ * (wr_ * 0.18)[:, None], (dn_ - nr_ * (wr_ * 0.18)[:, None])[::-1]])
+            else:
+                br['rocks'] = []                                                   # a dry cavern: loose rocks and a few stalagmites on its floor
+                for k in range(4, len(dn_) - 4, 5):
+                    sd_ = 1 if (k // 5) % 2 else -1; q_ = dn_[k] + nr_[k] * sd_ * wr_[k] * 0.28 * (0.4 + float(_hash(dn_[k][0], dn_[k][1], 43)))
+                    br['rocks'].append([round(float(q_[0]), 2), round(float(q_[1]), 2), round(0.04 + 0.05 * float(_hash(q_[0], q_[1], 45)), 2)])
+            if B_.get('mouth') in pos:
+                tl_ = tn_[-1]; br['mouth'] = {'x': round(float(pos[B_['mouth']][0]), 2), 'y': round(float(pos[B_['mouth']][1]), 2), 'a': round(float(np.degrees(np.arctan2(tl_[1], tl_[0]))), 1)}
+                for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):
+                    w[k_] = [t for t in w[k_] if not (abs(t[0] - pos[B_['mouth']][0]) < 0.9 and abs(t[1] - pos[B_['mouth']][1]) < 0.9)]
+            brs.append(br)
+        ft['grotto']['surface'] = None
+        unders.append({'name': U['name'], 'band': band, 'river': riv, 'core': core, 'wall_l': wl, 'wall_r': wr, 'chev': chev, 'mouth': {'x': round(float(pos[pr[0]][0]), 2), 'y': round(float(pos[pr[0]][1]) + 0.55, 2)}, 'features': ft, 'branches': brs})
         report.setdefault('undergrounds', {})[U['name']] = {'length': round(float(seg[-1]), 1), 'points': len(dense), 'rooms_not_drawn_as_path': sorted(tun_rooms), 'features': sorted(ft)}
         for k_ in ('trees', 'tufts'):                                            # nothing grows on the cave mouths / waterfall
             for ax, ay in ((pos[pr[0]][0], pos[pr[0]][1] + 0.5), (far[0], far[1])):
@@ -709,6 +740,52 @@ def merge_smr(w, layout, edges, seed=71):
         for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):
             w[k_] = [t for t in w[k_] if not any(math.hypot(t[0] - gx, t[1] - gy) < gr for gx, gy, gr in ((px_, py_, 1.9), (fx_ - 0.6, fy_ - 0.3, 3.4), (mx_ - 0.2, my_ + 0.1, 3.6)))]
         report['river'] = {'length': round(float(seg[-1]), 1), 'rooms': R_['rooms'] + [R_['flood'], R_['marsh']]}
+    # ---- canyons (owner, Oct 14): a top-down view of a deep canyon: steep terraced rock walls round a shadowed floor, a harrowing ledge path with hairpins and small caves from the top entrance (south) down to the base (north)
+    cany = []
+    for C_ in CL.get('canyons', []):
+        x0_, y0_, x1_, y1_ = C_['box']; crng = random.Random(seed * 19 + 3)
+        def rrect(xa, ya, xb, yb, amp, n=72, pw=5.0):
+            cx, cy, a_, b_ = (xa + xb) / 2, (ya + yb) / 2, (xb - xa) / 2, (yb - ya) / 2; ph = [crng.uniform(0, 6.28) for _ in range(3)]; out = []
+            for k in range(n):
+                t = 2 * math.pi * k / n; ct, st = math.cos(t), math.sin(t); f = 1 + amp * (math.sin(5 * t + ph[0]) * .5 + math.sin(9 * t + ph[1]) * .3 + math.sin(14 * t + ph[2]) * .2)
+                out.append([round(cx + a_ * f * math.copysign(abs(ct) ** (2 / pw), ct), 2), round(cy + b_ * f * math.copysign(abs(st) ** (2 / pw), st), 2)])
+            return out
+        ins = [(0.05, 0.0, 0.05), (0.5, 0.1, 1.0), (1.0, 0.2, 1.6), (1.5, 0.3, 2.2), (2.0, 0.4, 2.8), (2.5, 0.5, 3.4)]      # (west/east, north, south) insets: the walls close in toward a narrow floor in the north
+        cols = ['#7A6347', '#8B7455', '#75604A', '#5E4F3E', '#483D31', '#352D25']
+        levels = []
+        for k, (dw, dn, ds) in enumerate(ins):
+            poly = rrect(x0_ + dw, y0_ + dn - (0.25 if k == 0 else 0), x1_ - dw, y1_ - ds, 0.045 + 0.01 * k)
+            cxm = sum(q[0] for q in poly) / len(poly); cym = sum(q[1] for q in poly) / len(poly); hatch = []
+            for (a, b) in zip(poly, poly[1:] + poly[:1]):
+                L_ = math.dist(a, b)
+                for sx in np.arange(0.1, L_, 0.21):
+                    q = (a[0] + (b[0] - a[0]) * sx / L_, a[1] + (b[1] - a[1]) * sx / L_); d_ = np.array([cxm - q[0], cym - q[1]]); d_ /= (np.linalg.norm(d_) or 1); ln = crng.uniform(0.14, 0.3)
+                    hatch.append([round(q[0], 2), round(q[1], 2), round(q[0] + d_[0] * ln, 2), round(q[1] + d_[1] * ln, 2)])
+            levels.append({'poly': poly, 'fill': cols[k], 'hatch': hatch})
+        fx_ = (x0_ + x1_) / 2 + 0.1                                                  # the floor: a shadowed slot that runs out of the canyon at the base entrance (north)
+        floor = [[fx_ - 0.75, 25.4], [fx_ - 0.6, 24.5], [fx_ - 0.42, 23.6], [fx_ - 0.4, 22.6], [fx_ + 0.4, 22.6], [fx_ + 0.45, 23.5], [fx_ + 0.7, 24.5], [fx_ + 0.85, 25.4], [fx_ + 0.4, 25.85], [fx_ - 0.4, 25.85]]
+        lo, hi = pos[C_['low']], pos[C_['high']]
+        ledge = [[round(hi[0], 2), round(hi[1], 2)], [fx_ + 1.65, 27.8], [fx_ - 1.45, 27.4], [fx_ + 1.3, 26.95], [fx_ - 1.3, 26.55], [fx_ + 0.8, 26.2], [fx_ - 0.7, 25.9], [fx_ + 0.05, 25.55]]
+        ledge = [[round(a, 2), round(b, 2)] for a, b in ledge]
+        segs = []                                                                    # the ledge, a wandering line per stretch; the narrowest stretches are thin and broken
+        for i, (a, b) in enumerate(zip(ledge, ledge[1:])):
+            dv = np.array(b) - np.array(a); nv = np.array([-dv[1], dv[0]]) / (np.linalg.norm(dv) or 1); pl = [a]
+            for f_ in (0.2, 0.4, 0.6, 0.8): pl.append([round(a[0] + dv[0] * f_ + nv[0] * crng.uniform(-.07, .07), 2), round(a[1] + dv[1] * f_ + nv[1] * crng.uniform(-.07, .07), 2)])
+            segs.append({'pts': pl + [b], 'thin': i in (2, 4)})
+        caves = []
+        for i, q in enumerate(ledge[1:-1], 1):
+            sd = 1 if q[0] > fx_ else -1; caves.append([round(q[0] + sd * 0.24, 2), round(q[1] - 0.02, 2), round(0.09 + 0.025 * (i % 3), 2), 0 if sd > 0 else 180])
+        caves = caves[:5]; caves += [[round(x1_ - 0.55, 2), 26.0, 0.11, 0], [round(x0_ + 0.5, 2), 27.4, 0.1, 180]]
+        rocks = []
+        for _ in range(26):
+            rx_, ry_ = crng.uniform(x0_ + 0.3, x1_ - 0.3), crng.uniform(y0_ + 0.6, y1_ - 0.3)
+            if any(math.dist((rx_, ry_), q) < 0.45 for q in ledge): continue
+            rocks.append([round(rx_, 2), round(ry_, 2), round(crng.uniform(.04, .1), 2)])
+        cany.append({'name': C_['name'], 'levels': levels, 'floor': [[round(a, 2), round(b, 2)] for a, b in floor], 'ledge': segs, 'caves': caves, 'rocks': rocks, 'pads': [[round(hi[0], 2), round(hi[1], 2)], [round(lo[0], 2), 23.1]]})
+        for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):
+            w[k_] = [t for t in w[k_] if not (x0_ - 0.2 <= t[0] <= x1_ + 0.2 and y0_ - 0.2 <= t[1] <= y1_ + 0.2)]
+        report.setdefault('canyons', {})[C_['name']] = {'levels': len(levels), 'hatch': sum(len(l['hatch']) for l in levels), 'ledge_points': len(ledge), 'caves': len(caves)}
+    w['smrcanyon'] = cany
     # ---- inns (owner, Oct 14): an inn graphic like the Ashen Forest Inn's, with a small label; its rooms are not drawn as road
     for inn in CL.get('inns', []):
         x, y = inn['x'], inn['y']

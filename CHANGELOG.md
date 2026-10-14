@@ -8,6 +8,9 @@
 
 - The Darkhaven River continues beyond the waterfall (room 13) as a stream, a little wider than a path, through rooms 18, 16, 28, 27, 31, 44, 41, 124, 119 and the spacer rooms between them (14899, 14897, 14898, 14900, 123, 20697), down past Edel, under its bridge (the short stream drawn for the bridge is replaced by this). From 119 it widens into a still pool at 120, then spreads into a wide flooded area at 125 and is lost in a marsh (126: puddles, reeds, dark wet ground). Config: `river` in `src/smr_clearings.json`.
 
+- Darkhaven tunnel: the passage from room 5 to the grotto at 6 is now part of the underground river (same faded blue ghost layer; the grotto graphic stays); from 6 to room 7 a dry, brown underground cavern (dashed pale-brown walls, loose rocks, a cave mouth at 7); 7 to 8 stays a normal pathway. The open ground round the lake, grotto and cavern is filled with the area's hills and ground (it was a gap), and the underground rooms no longer set the terrain above them.
+- The Enormous Canyon (box -25.2,23.0 to -17.9,29.3): drawn from above as terraced, hachured rock walls closing in to a shadowed floor, with a narrow ledge path of hairpins (thin, broken stretches) from the top entrance at room 348 (south) down to the base entrance at 118 (north), and small caves in the walls. The hidden rooms are not drawn; sprites inside the box are cleared.
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.

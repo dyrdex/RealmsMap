@@ -243,7 +243,20 @@ const TOWN=L=>(L||[]).map(T=>{let s='';const g=T.ground;
     for(let k=-3;k<=3;k++)if(Math.abs(k*.3)>.58&&Math.abs(k*.3)<1.4)q+=`<rect x="${k*.3-.05}" y="-.45" width=".1" height=".1" fill="var(--g-wall)"/>`;
     s+=`<g transform="translate(${G.x},${G.y})"><ellipse cx=".05" cy=".18" rx="1.7" ry=".6" fill="#000" opacity=".25"/>${q}</g>`}
   return s}).join('');   /* a village seen from above: streets, plaza and well, houses, church, trees (Edel) */
-let FWPATHS=PATCH(WD.smrpatch,'var(--dirt)','var(--dirt-edge)',.88)+FAINT(WD.smrfaint)+CLIMB(WD.smrclimb)+TOWN(WD.smrtowns);for(const p of (WD.fwtracks||[])){const rd=p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L');
+const CANYON=L=>(L||[]).map(C=>{let s='';const P=a=>'M'+a.map(q=>q[0]+' '+q[1]).join('L')+'Z';
+  const bx=C.levels[0].poly;s+=`<path d="${P(bx)}" fill="none" stroke="#1d1812" stroke-width=".4" stroke-linejoin="round" opacity=".35"/>`;
+  C.levels.forEach((l,i)=>{s+=`<path d="${P(l.poly)}" fill="${l.fill}" stroke="#1d1812" stroke-width="${i?.07:.1}" stroke-linejoin="round"/>`;
+    s+=`<g stroke="#1a150f" stroke-width=".035" stroke-linecap="round" opacity="${.35+i*.04}">`+l.hatch.map(h=>`<line x1="${h[0]}" y1="${h[1]}" x2="${h[2]}" y2="${h[3]}"/>`).join('')+`</g>`;
+    s+=`<path d="${P(l.poly)}" fill="none" stroke="#c9b48f" stroke-width=".03" opacity=".3" transform="translate(0 -.05)"/>`});   /* terraced walls: each level lower than the last, hachured downhill */
+  s+=`<path d="${ring(C.floor)}" fill="#1a1511" stroke="#0f0c09" stroke-width=".08" stroke-linejoin="round"/>`;
+  s+=C.rocks.map(r=>`<circle cx="${r[0]}" cy="${r[1]}" r="${r[2]}" fill="#9a8460" opacity=".7"/><circle cx="${r[0]+.02}" cy="${r[1]+.03}" r="${r[2]*.6}" fill="#4a3e30" opacity=".6"/>`).join('');
+  const sg=(w1,w2)=>C.ledge.map(g=>`<path d="${'M'+g.pts.map(q=>q.join(' ')).join('L')}" stroke-width="${g.thin?w2:w1}" ${g.thin?'stroke-dasharray=".22 .1"':''} fill="none"/>`).join('');
+  s+=`<g stroke="#0f0c09" stroke-linecap="round" stroke-linejoin="round" opacity=".7" transform="translate(.04 .07)">${sg(.2,.14)}</g><g stroke="#bda884" stroke-linecap="round" stroke-linejoin="round">${sg(.12,.07)}</g>`;   /* the ledge path: hairpins, with thin, broken narrows; its shadow below */
+  s+=C.caves.map(c=>`<g transform="translate(${c[0]},${c[1]}) rotate(${c[3]})"><ellipse rx="${c[2]*1.3}" ry="${c[2]}" fill="#0b0907"/><path d="M${-c[2]*1.3} 0 A${c[2]*1.3} ${c[2]} 0 0 1 ${c[2]*1.3} 0" fill="none" stroke="#b39d77" stroke-width=".04" opacity=".8" transform="translate(0 -.02)"/></g>`).join('');
+  s+=C.caves.map(c=>`<g transform="translate(${c[0]},${c[1]}) rotate(${c[3]})"><path d="M.08 -${c[2]} Q-${c[2]*1.4} -${c[2]} -${c[2]*1.4} 0 Q-${c[2]*1.4} ${c[2]} .08 ${c[2]} Z" fill="#0b0907"/><path d="M.08 -${c[2]} Q-${c[2]*1.4} -${c[2]} -${c[2]*1.4} 0 Q-${c[2]*1.4} ${c[2]} .08 ${c[2]}" fill="none" stroke="#b39d77" stroke-width=".05"/></g>`).join('');
+  for(const [px,py] of C.pads)s+=`<ellipse cx="${px}" cy="${py}" rx=".3" ry=".22" fill="#8c7b60" stroke="#3b3226" stroke-width=".05" opacity=".9"/>`;   /* the two entrances */
+  return s}).join('');   /* a deep canyon seen from above: terraced rock walls, a shadowed floor, a harrowing ledge path with caves (Enormous Canyon) */
+let FWPATHS=PATCH(WD.smrpatch,'var(--dirt)','var(--dirt-edge)',.88)+FAINT(WD.smrfaint)+CLIMB(WD.smrclimb)+TOWN(WD.smrtowns)+CANYON(WD.smrcanyon);for(const p of (WD.fwtracks||[])){const rd=p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L');
   FWPATHS+=DIRT(rd,.3);}
 {const R=WD.smrriver;if(R){const P=a=>'M'+a.map(q=>q[0]+' '+q[1]).join('L')+'Z',pts=R.pts;let a='',b='';   /* the river beyond the falls: a stream, a still pool, flooded ground and marsh (owner, Oct 14) */
   const mg=P(R.marsh);FWPATHS+=`<path d="${mg}" fill="#202D22" opacity=".5" stroke="#1A241C" stroke-width=".3" stroke-linejoin="round"/><path d="${mg}" fill="#34452F" opacity=".35"/>`;
@@ -305,8 +318,13 @@ WILD+=(()=>{const P=a=>a.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' ')+' Z',L=
   g+=`<path d="${P(U.river)}" fill="var(--water)" opacity=".5" filter="url(#ugB)"/><path d="${P(U.core)}" fill="#bfe3f5" opacity=".16"/>`;
   g+=U.chev.map(c=>`<path d="${L(c)}" stroke="#d6eefa" stroke-width=".04" fill="none" opacity=".5" stroke-linecap="round"/>`).join('');
   const lk=f.lake;g+=`<g transform="translate(${lk.x},${lk.y}) rotate(${lk.a})"><ellipse rx="${lk.rx}" ry="${lk.ry}" fill="#05080c" opacity=".3" filter="url(#ugB)"/><ellipse rx="${lk.rx-.12}" ry="${lk.ry-.12}" fill="var(--water)" opacity=".55"/><ellipse rx="${lk.rx*.55}" ry="${lk.ry*.5}" fill="#bfe3f5" opacity=".12"/><path d="M${-lk.rx*.5} ${-lk.ry*.2} q .5 -.15 1 0 M${-lk.rx*.2} ${lk.ry*.35} q .5 -.15 .9 0" stroke="#d6eefa" stroke-width=".035" fill="none" opacity=".4"/></g>`;
-  const gr=f.grotto;g+=`<path d="M${gr.x} ${gr.y} L${gr.lake[0]} ${gr.lake[1]}" stroke="#05080c" stroke-width=".4" opacity=".3" filter="url(#ugB)"/><path d="M${gr.x} ${gr.y} L${gr.lake[0]} ${gr.lake[1]}" stroke="var(--water)" stroke-width=".22" opacity=".5"/>`;
-  if(gr.surface)g+=`<path d="M${gr.x} ${gr.y} L${gr.surface[0]} ${gr.surface[1]}" stroke="#9fb8c8" stroke-width=".05" stroke-dasharray=".14 .14" fill="none" opacity=".45"/>`;
+  const gr=f.grotto;for(const B of (U.branches||[])){const dry=B.kind==='dry';
+   g+=`<path d="${P(B.band)}" fill="#05080c" opacity="${dry?.34:.38}" filter="url(#ugB)"/>`;
+   const wc=dry?'#c9b48f':'#9fb8c8';g+=`<path d="${L(B.wall_l)}" stroke="${wc}" stroke-width=".05" stroke-dasharray=".16 .12" fill="none" opacity=".55"/><path d="${L(B.wall_r)}" stroke="${wc}" stroke-width=".05" stroke-dasharray=".16 .12" fill="none" opacity=".55"/>`;
+   if(dry){g+=`<path d="${P(B.floor)}" fill="#7a5f40" opacity=".5" filter="url(#ugB)"/><path d="${P(B.floor)}" fill="#a58a63" opacity=".13"/>`;
+     g+=(B.rocks||[]).map(r=>`<circle cx="${r[0]}" cy="${r[1]}" r="${r[2]}" fill="#8a7358" opacity=".7"/><path d="M${r[0]-r[2]*.7} ${r[1]-r[2]} l${r[2]*.7} ${-r[2]*2.4} l${r[2]*.7} ${r[2]*2.4}Z" fill="#6d5a45" opacity=".55" transform="translate(${r[2]*1.6} 0)"/>`).join('');
+     if(B.mouth){const m=B.mouth;g+=`<g transform="translate(${m.x},${m.y}) rotate(${m.a})"><path d="M.12 -.5 Q-.42 -.5 -.42 0 Q-.42 .5 .12 .5 Z" fill="#0d0a07" opacity=".72"/><path d="M.12 -.5 Q-.42 -.5 -.42 0 Q-.42 .5 .12 .5" stroke="#a58a63" stroke-width=".08" fill="none" opacity=".85"/></g>`}}
+   else g+=`<path d="${P(B.floor)}" fill="var(--water)" opacity=".5" filter="url(#ugB)"/><path d="${P(B.core)}" fill="#bfe3f5" opacity=".16"/>`;}
   g+=`<circle cx="${gr.x}" cy="${gr.y}" r="${gr.r}" fill="#05080c" opacity=".38" filter="url(#ugB)"/><circle cx="${gr.x}" cy="${gr.y}" r="${gr.r*.82}" fill="var(--water)" opacity=".5"/><path d="M${gr.x-.55} ${gr.y} a.55 .55 0 0 1 1.1 0 M${gr.x-.3} ${gr.y+.1} a.3 .3 0 0 0 .6 0" stroke="#d6eefa" stroke-width=".04" fill="none" opacity=".5"/><circle cx="${gr.x}" cy="${gr.y}" r="${gr.r}" fill="none" stroke="#9fb8c8" stroke-width=".05" stroke-dasharray=".16 .12" opacity=".5"/>`;
   g+=f.rapids.map(r=>`<path d="M-.1 -.17 L.1 0 L-.1 .17" transform="translate(${r[0]},${r[1]}) rotate(${r[2]})" stroke="#eaf7ff" stroke-width=".05" fill="none" opacity=".75"/>`).join('');
   g+=f.rain.map(r=>`<path d="M${r[0]} ${r[1]-.2} l.03 .17" stroke="#d6eefa" stroke-width=".03" opacity=".7"/><circle cx="${r[0]}" cy="${r[1]+.03}" r=".035" fill="none" stroke="#eaf7ff" stroke-width=".02" opacity=".6"/>`).join('');
