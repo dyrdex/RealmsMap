@@ -1,0 +1,7 @@
+{
+  "_doc": "Clearings the owner marks by hand on the Southern Mountain Range (smr_merge.py). 'boxes': a rectangle [x0, y0, x1, y1] (upper-left and bottom-right corners) drawn as one dirt clearing; every connection with BOTH ends inside it is not drawn, connections that cross its edge are. 'add_rooms': rooms drawn as part of the clearing they sit next to (the nearest one): their link to a room already in it is not drawn.",
+  "boxes": [
+    {"name": "Rough Terrain", "box": [-26.5, 11.5, -16.4, 17.5]}
+  ],
+  "add_rooms": [157]
+}

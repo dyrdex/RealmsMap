@@ -22,12 +22,13 @@ from scipy.spatial import cKDTree, ConvexHull
 from skimage.morphology import disk
 import arrange_apply as AA
 import gap_fill as GF
-from ntr_merge import _chains, _samples
+from ntr_merge import _chains, _samples, _nearest_on
 
 R8 = GF.R8
 X0, X1 = GF.X0, GF.X1
 YN = -215.0
 W = int((X1 - X0) * R8)
+SQ = 1.1             # a room's square (rooms are 1 x 1; a little more so that neighbours merge)
 CELL_MAX = 6.0       # exits longer than this do not make a cell (they are links, not neighbours)
 PAD = 0.55           # a clearing reaches half a room beyond the outer rooms
 MIN_PATCH = 3.0      # smallest clearing / wide pathway kept (sq rooms)
@@ -36,6 +37,18 @@ TERR_R = 3.8         # a room's terrain tint reaches this far
 CLEAR = 1.0          # sprites keep this far from a path or patch
 BAND = 2.4           # standard forest reaches this far (wobbled) from the connection to the Ashen Forest
 SPRITE = {'m': 2.0, 'h': 1.7, 'd': 0.95}   # minimum spacing: peaks, hills, trees
+
+
+def _drawn(p, n=14):
+    """the line the template draws for a polyline p (its curve(): quadratic pieces with the points as controls, joined at the mid-points)"""
+    if len(p) < 3: return [list(q) for q in p]
+    out = [list(p[0])]; start = list(p[0])
+    for i in range(1, len(p) - 1):
+        m = [(p[i][0] + p[i + 1][0]) / 2, (p[i][1] + p[i + 1][1]) / 2]
+        for k in range(1, n + 1):
+            t = k / n; out.append([(1 - t) ** 2 * start[0] + 2 * (1 - t) * t * p[i][0] + t * t * m[0], (1 - t) ** 2 * start[1] + 2 * (1 - t) * t * p[i][1] + t * t * m[1]])
+        start = m
+    out.append(list(p[-1])); return out
 
 
 def _paint(img, a, b, win, wpx):
@@ -72,6 +85,19 @@ def merge_smr(w, layout, edges, seed=71):
             elif (a not in TRT) and (b not in TRT): GS[a].add(b); GS[b].add(a)
             else: links.append((a, b))
         else: links.append((a, b))                                      # to the Sparse Woodlands trail or to a fixed room on the map
+    import json as _js, os as _os
+    CL = _js.load(open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'smr_clearings.json')))      # clearings the owner marks by hand (Oct 14)
+    in_box = lambda v, bx: bx[0] <= pos[v][0] <= bx[2] and bx[1] <= pos[v][1] <= bx[3]
+    boxed = {}                                                                 # box index -> the shown rooms inside it
+    for i, c in enumerate(CL.get('boxes', [])):
+        boxed[i] = {v for v in DOM if in_box(v, c['box'])}
+        for G in (GS,):
+            for a in list(G):
+                for b in list(G[a]):
+                    if a in boxed[i] and b in boxed[i]: G[a].discard(b); G[b].discard(a)      # a connection inside the clearing is not drawn
+        uds[:] = [(a, b) for a, b in uds if not (a in boxed[i] and b in boxed[i])]
+        links[:] = [(a, b) for a, b in links if not (a in boxed[i] and b in boxed[i])]     # (also the range's links to the Trade Route junction inside it)
+    report['clearing_boxes'] = [{'name': c['name'], 'rooms': len(boxed[i])} for i, c in enumerate(CL.get('boxes', []))]
     def prune(G, extra):
         pr = set()
         while True:                                                    # dead-end spacer stubs are left off
@@ -163,29 +189,50 @@ def merge_smr(w, layout, edges, seed=71):
                 if not inside: T[a].add(b); T[b].add(a)
         return T
     dwide, dadj = fabric(GS); rwide, radj = fabric(GT)
+    forced = Image.new('L', (ww, hw), 0); fd = ImageDraw.Draw(forced)
+    for c in CL.get('boxes', []):                                              # the owner's rectangles: one dirt clearing each
+        x0_, y0_, x1_, y1_ = c['box']; fd.rectangle([px((x0_, y0_)), px((x1_, y1_))], fill=255)
+    dwide = ndi.gaussian_filter((dwide | np.array(forced, bool)).astype(float), 0.45 * R8) > 0.5
+    added = {}
+    for v in CL.get('add_rooms', []):                                          # a room added to the clearing it sits next to: its square + a stem to the nearest part of that clearing
+        if v not in DOM: added[v] = 'not shown'; continue
+        d_, (iy_, ix_) = ndi.distance_transform_edt(~dwide, return_indices=True)
+        p_ = px(pos[v]); r_, c_ = min(max(int(p_[1]), 0), hw - 1), min(max(int(p_[0]), 0), ww - 1)
+        tx, ty = int(ix_[r_, c_]), int(iy_[r_, c_]); sq_ = int(SQ * R8)
+        im_ = Image.new('L', (ww, hw), 0); dr_ = ImageDraw.Draw(im_)
+        dr_.line([p_, (tx, ty)], fill=255, width=sq_); dr_.rectangle([p_[0] - sq_ / 2, p_[1] - sq_ / 2, p_[0] + sq_ / 2, p_[1] + sq_ / 2], fill=255)
+        added[v] = round(float(d_[r_, c_]) / R8, 1)                           # (how far the room was from the clearing, in rooms)
+        dwide = ndi.gaussian_filter((dwide | np.array(im_, bool)).astype(float), 0.45 * R8) > 0.5
+    report['clearing_rooms_added'] = added
     dwide &= ~rwide                                                                 # (a road patch lies on top of any dirt patch)
     dT = trails(GS, dwide | rwide); rT = trails(GT, rwide)
     dirt_lines = _chains(dT, pos, set(), 0.8) if dT else []
     road_lines = _chains(rT, pos, set(), 0.8) if rT else []
     # the links between the range, the route, the moved Sparse Woodlands trail and fixed rooms: small dirt lines
     link_lines = []; far = []
+    snap = {}; offs = []                                                       # off-ramps lie ON the drawn road: a Trade Route room's pad (and the end of the line that joins it) goes to the nearest point of the road
+    for a, b in LINKS:
+        for v, o in ((a, b), (b, a)):
+            if v in TRT and o not in TRT and road_lines and v not in snap:
+                q_ = _nearest_on([_drawn(l) for l in road_lines], pos[v]); snap[v] = [round(q_[0], 2), round(q_[1], 2)]; offs.append(round(math.dist(q_, pos[v]), 2))
+    end_ = lambda v: snap.get(v) or [round(pos[v][0], 2), round(pos[v][1], 2)]
     for a, b in LINKS + UDL:
         d = math.dist(pos[a], pos[b])
         if d > 30: far.append((a, b, round(d, 1)))
-        else: link_lines.append([[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]])
+        else: link_lines.append([end_(a), end_(b)])
     dpatch = AA._contours(dwide, wx0, wy0, sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
     rpatch = AA._contours(rwide, wx0, wy0, sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
     pads = []
     for a, b in LINKS:                                                              # off-ramp pads: where the route meets anything that is not the route
         for v, o in ((a, b), (b, a)):
-            if v in TRT and o not in TRT: pads.append([round(pos[v][0], 2), round(pos[v][1], 2)])
+            if v in TRT and o not in TRT: pads.append(end_(v))
     pads = [list(p) for p in sorted({tuple(p) for p in pads})]
     w['smrpatch'] = dpatch; w['roadpatch'] = rpatch
     w['fwtracks'] = list(w['fwtracks']) + dirt_lines + link_lines + ([vis] if vis else [])
     w['etrtracks'] = list(w['etrtracks']) + road_lines
     w['ntrjoins'] = list(w['ntrjoins']) + pads
     report['dirt'] = {'cells': len(dadj), 'patches': len(dpatch), 'patch_sq': round(float(dwide.sum()) / R8 / R8, 1), 'trail_lines': len(dirt_lines)}
-    report['road'] = {'cells': len(radj), 'patches': len(rpatch), 'patch_sq': round(float(rwide.sum()) / R8 / R8, 1), 'road_lines': len(road_lines), 'pads': len(pads)}
+    report['road'] = {'cells': len(radj), 'patches': len(rpatch), 'patch_sq': round(float(rwide.sum()) / R8 / R8, 1), 'road_lines': len(road_lines), 'pads': len(pads), 'pad_was_off_the_road_by': offs}
     report['links_drawn'] = len(link_lines) - len([1 for a, b in UDL if math.dist(pos[a], pos[b]) <= 30]); report['links_over_30'] = far
     report['up_down_exits']['drawn'] = len([1 for a, b in UDL if math.dist(pos[a], pos[b]) <= 30])
 
