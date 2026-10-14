@@ -88,15 +88,24 @@ def merge_smr(w, layout, edges, seed=71):
     import json as _js, os as _os
     CL = _js.load(open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'smr_clearings.json')))      # clearings the owner marks by hand (Oct 14)
     in_box = lambda v, bx: bx[0] <= pos[v][0] <= bx[2] and bx[1] <= pos[v][1] <= bx[3]
-    boxed = {}                                                                 # box index -> the shown rooms inside it
+    boxed = {}; faintG = defaultdict(set)                                       # box index -> the shown rooms inside it
     for i, c in enumerate(CL.get('boxes', [])):
         boxed[i] = {v for v in DOM if in_box(v, c['box'])}
         for G in (GS,):
             for a in list(G):
                 for b in list(G[a]):
-                    if a in boxed[i] and b in boxed[i]: G[a].discard(b); G[b].discard(a)      # a connection inside the clearing is not drawn
+                    if a in boxed[i] and b in boxed[i]:
+                        G[a].discard(b); G[b].discard(a)                      # a connection inside the clearing is not drawn ...
+                        if c.get('faint_paths'): faintG[a].add(b); faintG[b].add(a)      # ... or only very lightly
         uds[:] = [(a, b) for a, b in uds if not (a in boxed[i] and b in boxed[i])]
         links[:] = [(a, b) for a, b in links if not (a in boxed[i] and b in boxed[i])]     # (also the range's links to the Trade Route junction inside it)
+    climb_rooms = [set(c['rooms']) for c in CL.get('climbs', [])]
+    for cr in climb_rooms:                                                      # the thin lines between the rooms of a climb are replaced by its wide rocky path
+        uds[:] = [(a, b) for a, b in uds if not (a in cr and b in cr)]
+        links[:] = [(a, b) for a, b in links if not (a in cr and b in cr)]
+        for a in list(GS):
+            for b in list(GS[a]):
+                if a in cr and b in cr: GS[a].discard(b); GS[b].discard(a)
     report['clearing_boxes'] = [{'name': c['name'], 'rooms': len(boxed[i])} for i, c in enumerate(CL.get('boxes', []))]
     def prune(G, extra):
         pr = set()
@@ -193,16 +202,42 @@ def merge_smr(w, layout, edges, seed=71):
     for c in CL.get('boxes', []):                                              # the owner's rectangles: one dirt clearing each
         x0_, y0_, x1_, y1_ = c['box']; fd.rectangle([px((x0_, y0_)), px((x1_, y1_))], fill=255)
     dwide = ndi.gaussian_filter((dwide | np.array(forced, bool)).astype(float), 0.45 * R8) > 0.5
-    added = {}
-    for v in CL.get('add_rooms', []):                                          # a room added to the clearing it sits next to: its square + a stem to the nearest part of that clearing
-        if v not in DOM: added[v] = 'not shown'; continue
-        d_, (iy_, ix_) = ndi.distance_transform_edt(~dwide, return_indices=True)
-        p_ = px(pos[v]); r_, c_ = min(max(int(p_[1]), 0), hw - 1), min(max(int(p_[0]), 0), ww - 1)
-        tx, ty = int(ix_[r_, c_]), int(iy_[r_, c_]); sq_ = int(SQ * R8)
-        im_ = Image.new('L', (ww, hw), 0); dr_ = ImageDraw.Draw(im_)
-        dr_.line([p_, (tx, ty)], fill=255, width=sq_); dr_.rectangle([p_[0] - sq_ / 2, p_[1] - sq_ / 2, p_[0] + sq_ / 2, p_[1] + sq_ / 2], fill=255)
-        added[v] = round(float(d_[r_, c_]) / R8, 1)                           # (how far the room was from the clearing, in rooms)
-        dwide = ndi.gaussian_filter((dwide | np.array(im_, bool)).astype(float), 0.45 * R8) > 0.5
+    added = {}; done_to = {}
+    def disk_px(): return int(PAD * R8)
+    sq_ = int(SQ * R8)
+    def put_square(dr_, p_): dr_.rectangle([p_[0] - sq_ / 2, p_[1] - sq_ / 2, p_[0] + sq_ / 2, p_[1] + sq_ / 2], fill=255)
+    todo = []
+    for e_ in CL.get('add_rooms', []):
+        e_ = {'room': e_} if isinstance(e_, int) else dict(e_); e_['to'] = [e_['to']] if isinstance(e_.get('to'), int) else list(e_.get('to') or [])
+        if e_['room'] not in pos or any(t not in pos for t in e_['to']): added[e_['room']] = 'missing'; continue
+        todo.append(e_)
+    while todo:                                                               # hulls first, then stems nearest-first (a chain of rooms grows the clearing room by room)
+        hulls = [e_ for e_ in todo if e_.get('mode') == 'hull']
+        if hulls: e_ = hulls[0]
+        else:
+            best = None
+            for e_c in todo:
+                lab_, n_ = ndi.label(dwide); ids_ = {lab_[min(max(int(px(pos[t])[1]), 0), hw - 1), min(max(int(px(pos[t])[0]), 0), ww - 1)] for t in e_c['to']} - {0}
+                comp_ = np.isin(lab_, list(ids_)) if ids_ else dwide
+                d_, (iy_, ix_) = ndi.distance_transform_edt(~comp_, return_indices=True)
+                p_ = px(pos[e_c['room']]); r_, c_ = min(max(int(p_[1]), 0), hw - 1), min(max(int(p_[0]), 0), ww - 1)
+                if best is None or d_[r_, c_] < best[0]: best = (d_[r_, c_], e_c, (int(ix_[r_, c_]), int(iy_[r_, c_])))
+            e_ = best[1]
+        todo.remove(e_)
+        im_ = Image.new('L', (ww, hw), 0); dr_ = ImageDraw.Draw(im_); p_ = px(pos[e_['room']])
+        if e_.get('mode') == 'hull':
+            pts = [pos[e_['room']]] + [pos[t] for t in e_['to']]
+            cor = np.array([(x + dx, y + dy) for x, y in pts for dx in (-SQ / 2, SQ / 2) for dy in (-SQ / 2, SQ / 2)])
+            hl = cor[ConvexHull(cor).vertices]; dr_.polygon([px(q) for q in hl], fill=255, outline=255); added[e_['room']] = 'hull of %d rooms' % len(pts)
+        else:
+            tx, ty = best[2] if not hulls else (int(p_[0]), int(p_[1]))
+            dr_.line([p_, (tx, ty)], fill=255, width=sq_); put_square(dr_, p_); added[e_['room']] = round(float(best[0]) / R8, 1) if not hulls else 0
+            key_ = tuple(e_['to'])
+            for q_ in done_to.get(key_, []) + e_['to']:                          # ... and to the other rooms of its group within 4 rooms: rooms side by side fill the ground between them
+                if math.dist(pos[q_], pos[e_['room']]) <= 4.0: dr_.line([p_, px(pos[q_])], fill=255, width=sq_)
+            done_to.setdefault(key_, []).append(e_['room'])
+        dwide = dwide | np.array(im_, bool)                                       # (smoothed once, below: smoothing after every room eroded the small clearings)
+    if CL.get('add_rooms'): dwide = ndi.gaussian_filter(dwide.astype(float), 0.45 * R8) > 0.5
     report['clearing_rooms_added'] = added
     dwide &= ~rwide                                                                 # (a road patch lies on top of any dirt patch)
     dT = trails(GS, dwide | rwide); rT = trails(GT, rwide)
@@ -222,13 +257,94 @@ def merge_smr(w, layout, edges, seed=71):
         else: link_lines.append([end_(a), end_(b)])
     dpatch = AA._contours(dwide, wx0, wy0, sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
     rpatch = AA._contours(rwide, wx0, wy0, sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
+    # ---- thin paths never run over a clearing (owner, Oct 14): each stops where it enters one (it only shows that the path leads into it)
+    dmask = AA._raster(dpatch, wx0, wy0, ww, hw)
+    def clip(lines, step=0.08, keep_every=4):
+        out = []; cut = 0
+        for ln in lines:
+            pts = []                                                              # the line, sampled; remember which samples are inside a clearing
+            for p, q in zip(ln[:-1], ln[1:]):
+                n_ = max(1, int(math.dist(p, q) / step))
+                pts += [(p[0] + (q[0] - p[0]) * k / n_, p[1] + (q[1] - p[1]) * k / n_) for k in range(n_)]
+            pts.append(tuple(ln[-1]))
+            ins = []
+            for x, y in pts:
+                c_, r_ = int((x - wx0) * R8), int((y - wy0) * R8)
+                ins.append(0 <= r_ < hw and 0 <= c_ < ww and bool(dmask[r_, c_]))
+            if not any(ins): out.append(ln); continue
+            cut += 1; run = []
+            for pt, i_ in zip(pts, ins):
+                if i_:
+                    if len(run) >= 2: out.append(run)
+                    run = []
+                else: run.append(pt)
+            if len(run) >= 2: out.append(run)
+        res = []
+        for ln in out:
+            if isinstance(ln[0], tuple):                                           # a clipped run: thin it (a point every ~0.3), keep both ends
+                th = ln[::keep_every]
+                if th[-1] != ln[-1]: th.append(ln[-1])
+                ln = [[round(x, 2), round(y, 2)] for x, y in th]
+                if math.dist(ln[0], ln[-1]) < 0.12: continue                        # (a stub shorter than that shows nothing)
+            res.append(ln)
+        return res, cut
+    dirt_lines, cut1 = clip(dirt_lines); link_lines, cut2 = clip(link_lines); vis_c, cut3 = clip([vis]) if vis else ([], 0)
+    report['lines_stopped_at_a_clearing'] = {'trails': cut1, 'links': cut2, 'connection_to_670': cut3}
+    # ---- the hand-made clearings' extras: their inner paths very lightly, rough-terrain marks between them
+    faint_lines = _chains(faintG, pos, set(), 0.6) if faintG else []
+    w['smrfaint'] = faint_lines
+    road_s = _samples([_drawn(l) for l in w['etrtracks'] + road_lines if any(wx0 <= q[0] <= wx1 and wy0 <= q[1] <= wy1 for q in l)], 0.1)
+    rtree = cKDTree(road_s) if len(road_s) else None
+    ftree = cKDTree(_samples(faint_lines, 0.1)) if faint_lines else None
+    marks = []
+    for c in CL.get('boxes', []):
+        if not c.get('rough_marks'): continue
+        x0_, y0_, x1_, y1_ = c['box']; cand = []
+        for gx_ in np.arange(x0_ + 0.45, x1_ - 0.4, 0.2):
+            for gy_ in np.arange(y0_ + 0.45, y1_ - 0.4, 0.2):
+                if ftree is not None and ftree.query([gx_, gy_])[0] < 0.42: continue
+                if rtree is not None and rtree.query([gx_, gy_])[0] < 1.0: continue
+                cand.append((gx_ + nrng.uniform(-0.08, 0.08), gy_ + nrng.uniform(-0.08, 0.08)))
+        placed_ = []
+        for i in nrng.permutation(len(cand)):
+            x, y = cand[i]
+            if all(math.dist((x, y), q) >= 0.8 for q in placed_): placed_.append((x, y))
+        for x, y in placed_:
+            marks.append([round(x, 2), round(y, 2), round(rng.uniform(0.55, 0.85), 2), 'b' if rng.random() < 0.4 else rng.choice([0, 1, 2])])
+        report.setdefault('rough_marks', {})[c['name']] = len(placed_)
+    # ---- a climb: one wide rocky path through the four rooms (it stops at clearings too)
+    climbs = []
+    for c in CL.get('climbs', []):
+        pts = [pos[v] for v in c['rooms']]
+        im = Image.new('L', (ww, hw), 0); ImageDraw.Draw(im).polygon([px(p) for p in pts], fill=255, outline=255)
+        m = ndi.binary_dilation(np.array(im, bool), structure=disk(int(0.55 * R8))) & ~ndi.binary_dilation(dmask, structure=disk(1))
+        m = ndi.gaussian_filter(m.astype(float), 0.5 * R8) > 0.5
+        polys = AA._contours(m, wx0, wy0, sigma=1.0, tol=0.3, minarea=0.5)
+        hach = []
+        ys_, xs_ = np.nonzero(m); y_lo, y_hi, x_lo, x_hi = (ys_.min() / R8 + wy0, ys_.max() / R8 + wy0, xs_.min() / R8 + wx0, xs_.max() / R8 + wx0)
+        k_ = 0
+        for gy_ in np.arange(y_lo + 0.3, y_hi - 0.2, 0.5):
+            for gx_ in np.arange(x_lo + 0.3, x_hi - 0.2, 0.55):
+                x, y = gx_ + (0.27 if k_ % 2 else 0) + rng.uniform(-0.07, 0.07), gy_ + rng.uniform(-0.07, 0.07)
+                c_, r_ = int((x - wx0) * R8), int((y - wy0) * R8)
+                if 0 <= r_ < hw and 0 <= c_ < ww and m[r_, c_] and m[min(r_ + 3, hw - 1), c_]: hach.append([round(x - 0.13, 2), round(y + 0.09, 2), round(x + 0.13, 2), round(y - 0.09, 2)] if (int(gx_ * 7) % 2) else [round(x - 0.13, 2), round(y - 0.09, 2), round(x + 0.13, 2), round(y + 0.09, 2)])
+            k_ += 1
+        cand = [(wx0 + xx / R8, wy0 + yy / R8) for yy, xx in zip(ys_[::6], xs_[::6]) if ndi.distance_transform_edt(m)[yy, xx] > 0.3 * R8] if m.sum() else []
+        placed_ = []
+        for i in nrng.permutation(len(cand)):
+            x, y = cand[i]
+            if all(math.dist((x, y), q) >= 1.0 for q in placed_): placed_.append((x, y))
+        for x, y in placed_: marks.append([round(x, 2), round(y, 2), round(rng.uniform(0.55, 0.8), 2), 'b' if rng.random() < 0.45 else rng.choice([0, 1, 2])])
+        climbs.append({'name': c['name'], 'polys': polys, 'hach': hach})
+        report.setdefault('climbs', {})[c['name']] = {'sq': round(float(m.sum()) / R8 / R8, 1), 'hatching': len(hach), 'marks': len(placed_)}
+    w['smrclimb'] = climbs; w['smrmarks'] = marks
     pads = []
     for a, b in LINKS:                                                              # off-ramp pads: where the route meets anything that is not the route
         for v, o in ((a, b), (b, a)):
             if v in TRT and o not in TRT: pads.append(end_(v))
     pads = [list(p) for p in sorted({tuple(p) for p in pads})]
     w['smrpatch'] = dpatch; w['roadpatch'] = rpatch
-    w['fwtracks'] = list(w['fwtracks']) + dirt_lines + link_lines + ([vis] if vis else [])
+    w['fwtracks'] = list(w['fwtracks']) + dirt_lines + link_lines + vis_c
     w['etrtracks'] = list(w['etrtracks']) + road_lines
     w['ntrjoins'] = list(w['ntrjoins']) + pads
     report['dirt'] = {'cells': len(dadj), 'patches': len(dpatch), 'patch_sq': round(float(dwide.sum()) / R8 / R8, 1), 'trail_lines': len(dirt_lines)}

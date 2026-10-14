@@ -1,7 +1,18 @@
 {
-  "_doc": "Clearings the owner marks by hand on the Southern Mountain Range (smr_merge.py). 'boxes': a rectangle [x0, y0, x1, y1] (upper-left and bottom-right corners) drawn as one dirt clearing; every connection with BOTH ends inside it is not drawn, connections that cross its edge are. 'add_rooms': rooms drawn as part of the clearing they sit next to (the nearest one): their link to a room already in it is not drawn.",
+  "_doc": "Hand-made clearings on the Southern Mountain Range (smr_merge.py). 'boxes': a rectangle [x0, y0, x1, y1] (upper-left and bottom-right corners) drawn as one dirt clearing; every connection with BOTH ends inside it is not drawn (with 'faint_paths' they are drawn very lightly instead; with 'rough_marks' crags and boulders are scattered between them). 'add_rooms': {'room': id, 'to': a room (or rooms) already in the clearing it joins, 'mode': 'stem' (default: the room's square plus a band to the nearest part of that clearing) or 'hull' (everything between the room and the 'to' rooms is filled)}; a bare number joins the nearest clearing. Hidden rooms may be named. 'climbs': a rocky path up a mountain through the four rooms [a, b, c, d] (corners in order); the thin lines between those rooms are not drawn. Every thin path stops at the edge of a clearing it runs into (smr_merge.py).",
   "boxes": [
-    {"name": "Rough Terrain", "box": [-26.5, 11.5, -16.4, 17.5]}
+    {"name": "Rough Terrain", "box": [-26.5, 11.5, -16.4, 17.5], "faint_paths": true, "rough_marks": true}
   ],
-  "add_rooms": [157]
+  "add_rooms": [
+    {"room": 157, "to": [152, 153], "mode": "hull"},
+    {"room": 681, "to": 680}, {"room": 353, "to": 680}, {"room": 19998, "to": 680}, {"room": 19989, "to": 680}, {"room": 366, "to": 680},
+    {"room": 354, "to": 680}, {"room": 355, "to": 680}, {"room": 356, "to": 680}, {"room": 358, "to": 680}, {"room": 365, "to": 680},
+    {"room": 686, "to": 314, "mode": "hull"},
+    {"room": 310, "to": 299, "mode": "hull"},
+    {"room": 167, "to": [164, 168], "mode": "hull"},
+    {"room": 174, "to": [171, 173], "mode": "hull"}
+  ],
+  "climbs": [
+    {"name": "Mesa climb", "rooms": [153, 152, 149, 150]}
+  ]
 }
