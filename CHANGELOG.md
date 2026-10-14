@@ -19,7 +19,8 @@
 - Third pass: room 1891 hidden; a short link from the Lost Between Woods thread to the lake's south shore (1124 to 839); the connector from the road to Darkhaven's gate is road; the Along the Forest Path trail now leaves the Darkhaven path at room 820; a new off-ramp pad at room 2319; the field is one terrain (the different strip between x -49 and -40 is gone).
 - Second pass from your new save: the path west out of Darkhaven stops at room 822 where the field begins; short dirt links run from the Lost Between Woods path into the field at 1754 and 1736; the Western Trade Route near Darkhaven follows the rooms you moved.
 
-## In progress · Southern Mountain Range editor
+## In progress · Southern Mountain Range
+- Southern Mountain Range, its Southern Mountain Trade Route and the moved Sparse Woodlands trail are on the map from your saved layout: wide paths and clearings follow your rooms (neighbouring rooms widen the path; a clump of touching rooms is one open dirt patch), the Trade Route is a formal road with off-ramps, the Forest of Tears redrawn round the moved trail, sea along the range's west coast, the map now reaches y 113.
 - New layout editor for the Southern Mountain Range (597 rooms + 99 spacers, anchored to the Forest of Tears); nothing drawn on the map yet.
 - Editor: the Sparse Woodlands trail of the Forest of Tears (38 rooms incl. spacers) unlocked; the Southern Mountain Trade Route (126 rooms) added.
 

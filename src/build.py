@@ -126,7 +126,14 @@ print('Azure Sea Coast merged:',_az)
 from ft_merge import merge_ft                                    # the Forest of Tears, Lake of Tich'Pyga and Western Trade Route from the owner's layout (Oct 13)
 import json as _jft
 _FTL=_jft.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'ft_layout_final.json'))); _FTE=_jft.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'fot_editor_edges.json')))
+_SML=_jft.load(open(os.path.join(_here,'smr_layout_final.json'))); _SME=_jft.load(open(os.path.join(_here,'smr_editor_edges.json')))   # the Southern Mountain Range layout (Oct 14)
+_sp=dict(zip(_SML['ids'],zip(_SML['xs'],_SML['ys']))); _ftx=dict(zip(_FTL['ids'],range(len(_FTL['ids']))))
+for _r in _SME['rooms']:                                          # the Sparse Woodlands trail (Forest of Tears rooms) was moved in that editor: the forest is drawn from its new positions
+    if _r.get('grp')=='ft' and _r['id'] in _ftx and _r['id'] in _sp: _FTL['xs'][_ftx[_r['id']]],_FTL['ys'][_ftx[_r['id']]]=_sp[_r['id']]
 w,_ft=merge_ft(w,_FTL,_FTE)
+from smr_merge import merge_smr                                    # the Southern Mountain Range, its Trade Route and links to the moved trail (Oct 14)
+w,_sm=merge_smr(w,_SML,_SME)
+print('Southern Mountain Range merged:',_sm)
 print('Forest of Tears, Lake of Tich\'Pyga and Western Trade Route merged:',{k:v for k,v in _ft.items() if not k.startswith('_')})
 from west_sea import add_west_sea                                # the sea along the whole west coast + the small marina on it (Oct 13)
 w,_wsea=add_west_sea(w)

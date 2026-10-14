@@ -1,0 +1,245 @@
+"""Puts the Southern Mountain Range, its Southern Mountain Trade Route and the moved Sparse Woodlands trail on the map
+(smr_layout_final.json, smr_editor_edges.json: the owner's layout from tools/southern_mountain_range_editor).
+Owner's rules (Oct 14):
+1. Paths are drawn with respect to their neighbouring rooms: wherever rooms are directly adjacent, the path widens into one pathway that takes in
+   several rooms.
+2. A clump of rooms that all touch one another is not a path but a clearing: one open dirt patch made of those rooms (4 rooms in a square = a
+   square patch). Both rules come from one shape: every cell of mutually exit-joined rooms (3 rooms all joined to each other, or the 4 corners of a
+   square) is filled, cells that share rooms run together, and the patch is widened by half a room. A string of rooms with no such cells is a plain
+   trail. It follows the exits, not the distance between rooms (the owner spread some blocks out to ~2.7 rooms apart).
+Decided here (not in the owner's rules): the Trade Route is a formal road like the other trade routes (same widening, road colours, off-ramp pads
+where the route meets other rooms); everything else is dirt. Terrain comes from the rooms' TinTin terrain. The land grows round the rooms (the map
+now reaches south). Spacer rooms are drawn only between two real rooms (dead-end stubs left off); rooms and links of hidden rooms are not drawn.
+The Sparse Woodlands trail (the Forest of Tears rooms the owner moved in this editor) is drawn by ft_merge from the moved positions (build.py
+passes them in); this module only draws the links between it and the range.
+Runs after ft_merge on a grid that reaches from the map's north edge (y -215) to the new south edge; the land is traced again from it."""
+import math, random
+import numpy as np
+from collections import defaultdict
+from PIL import Image, ImageDraw
+from scipy import ndimage as ndi
+from scipy.spatial import cKDTree, ConvexHull
+from skimage.morphology import disk
+import arrange_apply as AA
+import gap_fill as GF
+from ntr_merge import _chains, _samples
+
+R8 = GF.R8
+X0, X1 = GF.X0, GF.X1
+YN = -215.0
+W = int((X1 - X0) * R8)
+CELL_MAX = 6.0       # exits longer than this do not make a cell (they are links, not neighbours)
+PAD = 0.55           # a clearing reaches half a room beyond the outer rooms
+MIN_PATCH = 3.0      # smallest clearing / wide pathway kept (sq rooms)
+LAND_R = 4.2         # land reaches this far from a path
+TERR_R = 3.8         # a room's terrain tint reaches this far
+CLEAR = 1.0          # sprites keep this far from a path or patch
+SPRITE = {'m': 2.0, 'h': 1.7, 'd': 0.95}   # minimum spacing: peaks, hills, trees
+
+
+def _paint(img, a, b, win, wpx):
+    ImageDraw.Draw(img).line([a, b], fill=255, width=wpx)
+
+
+def merge_smr(w, layout, edges, seed=71):
+    rng = random.Random(seed); nrng = np.random.default_rng(seed)
+    pos = dict(zip(layout['ids'], zip(layout['xs'], layout['ys'])))
+    hidden = set(layout.get('hidden', []))
+    info = {r['id']: r for r in edges['rooms']}
+    mov = {v for v, r in info.items() if not r.get('fixed') and v in pos}
+    shown = lambda v: v in mov and v not in hidden
+    void = lambda v: bool(info[v].get('void'))
+    grp = lambda v: info[v].get('grp')
+    DOM = {v for v in mov if shown(v) and grp(v) in ('sm', 'ug', 'tr')}        # what this module draws (the trail is ft_merge's)
+    TRT = {v for v in DOM if grp(v) == 'tr'}
+    report = {}
+
+    # ---------------------------------------------------------------- the graphs
+    GS = defaultdict(set); GT = defaultdict(set); links = []
+    for a, b, k in edges['edges']:
+        if k == 'ud' or a not in pos or b not in pos: continue
+        ina, inb = a in DOM, b in DOM
+        if not (ina or inb): continue
+        if (a in mov and a in hidden) or (b in mov and b in hidden): continue
+        if ina and inb:
+            if (a in TRT) and (b in TRT): GT[a].add(b); GT[b].add(a)
+            elif (a not in TRT) and (b not in TRT): GS[a].add(b); GS[b].add(a)
+            else: links.append((a, b))
+        else: links.append((a, b))                                      # to the Sparse Woodlands trail or to a fixed room on the map
+    def prune(G, extra):
+        pr = set()
+        while True:                                                    # dead-end spacer stubs are left off
+            sp = [v for v in G if void(v) and len(G[v]) + extra.get(v, 0) <= 1]
+            if not sp: break
+            for v in sp:
+                for u in list(G[v]): G[u].discard(v)
+                del G[v]; pr.add(v)
+        for v in [v for v in G if not G[v]]: del G[v]
+        return pr
+    lcount = defaultdict(int)
+    for a, b in links: lcount[a] += 1; lcount[b] += 1
+    pruned = prune(GS, lcount) | prune(GT, lcount)
+    report['rooms_shown'] = {'range': len([v for v in DOM if v not in TRT]), 'route': len(TRT)}
+    report['spacer_stubs_dropped'] = len(pruned)
+    onmap = {v for G in (GS, GT) for v in G} | {v for a, b in links for v in (a, b) if v in DOM}
+    LINKS = [(a, b) for a, b in links if (a in DOM) != (b in DOM) or (a in DOM and b in DOM)]
+    LINKS = [(a, b) for a, b in LINKS if all((v not in DOM) or v in onmap for v in (a, b))]
+
+    # ---------------------------------------------------------------- the window (everything this module paints lies in it)
+    allp = np.array([pos[v] for v in onmap]); pad = 12.0
+    wx0 = math.floor(allp[:, 0].min() - pad); wx1 = math.ceil(allp[:, 0].max() + pad)
+    wy0 = math.floor(allp[:, 1].min() - pad); wy1 = math.ceil(allp[:, 1].max() + pad)
+    ww, hw = int((wx1 - wx0) * R8), int((wy1 - wy0) * R8)
+    px = lambda p: ((p[0] - wx0) * R8, (p[1] - wy0) * R8)
+    gy, gx = np.mgrid[0:hw, 0:ww]; WXg = (gx + .5) / R8 + wx0; WYg = (gy + .5) / R8 + wy0
+
+    # ---------------------------------------------------------------- wide pathways and clearings (one shape, from the adjacent rooms)
+    def fabric(G):
+        """clearings and wide pathways: every cell of mutually exit-joined real rooms (a triangle, or a 4-cycle = the corners of a square) is filled,
+        the cells that share rooms run together, and the result is widened by half a room (the rooms' own squares). Spacing does not matter: a block
+        of rooms the owner spread out is still a clump."""
+        real = {v for v in G if not void(v)}
+        nb = {v: {u for u in G[v] if u in real and math.dist(pos[u], pos[v]) <= CELL_MAX} for v in real}
+        cells = set()
+        for a in real:
+            for b in nb[a]:
+                for c in nb[a] & nb[b]:
+                    if len({a, b, c}) == 3: cells.add(frozenset((a, b, c)))
+            for b in nb[a]:
+                for c in nb[a]:
+                    if b < c:
+                        for d in (nb[b] & nb[c]) - {a}:
+                            if len({a, b, c, d}) == 4: cells.add(frozenset((a, b, d, c)))
+        im = Image.new('L', (ww, hw), 0); dr = ImageDraw.Draw(im); used = 0
+        for cell in cells:
+            pts = np.array([pos[v] for v in cell])
+            hull = pts[ConvexHull(pts).vertices] if len(pts) >= 3 else pts
+            if ConvexHull(pts).volume < 0.45: continue                                   # (three in a line: no area)
+            dr.polygon([px(p) for p in hull], fill=255, outline=255); used += 1
+        m0 = np.array(im, bool)
+        m0 = ndi.binary_dilation(m0, structure=disk(int(PAD * R8)))                     # (the rooms' own squares)
+        lab, n = ndi.label(m0); keep = np.zeros_like(m0)
+        rp = [(v, px(pos[v])) for v in real]
+        for i in range(1, n + 1):
+            comp = lab == i
+            nrooms = sum(1 for v, p in rp if 0 <= int(p[1]) < hw and 0 <= int(p[0]) < ww and comp[int(p[1]), int(p[0])])
+            if nrooms >= 4 and comp.sum() / R8 / R8 >= MIN_PATCH: keep |= comp
+        op = ndi.gaussian_filter(keep.astype(float), 0.45 * R8) > 0.5                  # (rounds the corners a little)
+        return op, list(cells)
+    def trails(G, wide):
+        """the lines of what is NOT inside a wide pathway or clearing"""
+        T = defaultdict(set)
+        for a in G:
+            for b in G[a]:
+                if a >= b: continue
+                n = max(2, int(math.dist(pos[a], pos[b]) * 3)); inside = True
+                for i in range(n + 1):
+                    x = pos[a][0] + (pos[b][0] - pos[a][0]) * i / n; y = pos[a][1] + (pos[b][1] - pos[a][1]) * i / n
+                    c, r = int((x - wx0) * R8), int((y - wy0) * R8)
+                    if not (0 <= r < hw and 0 <= c < ww and wide[r, c]): inside = False; break
+                if not inside: T[a].add(b); T[b].add(a)
+        return T
+    dwide, dadj = fabric(GS); rwide, radj = fabric(GT)
+    dwide &= ~rwide                                                                 # (a road patch lies on top of any dirt patch)
+    dT = trails(GS, dwide | rwide); rT = trails(GT, rwide)
+    dirt_lines = _chains(dT, pos, set(), 0.8) if dT else []
+    road_lines = _chains(rT, pos, set(), 0.8) if rT else []
+    # the links between the range, the route, the moved Sparse Woodlands trail and fixed rooms: small dirt lines
+    link_lines = []; far = []
+    for a, b in LINKS:
+        d = math.dist(pos[a], pos[b])
+        if d > 30: far.append((a, b, round(d, 1)))
+        else: link_lines.append([[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]])
+    dpatch = AA._contours(dwide, wx0, wy0, sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
+    rpatch = AA._contours(rwide, wx0, wy0, sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
+    pads = []
+    for a, b in LINKS:                                                              # off-ramp pads: where the route meets anything that is not the route
+        for v, o in ((a, b), (b, a)):
+            if v in TRT and o not in TRT: pads.append([round(pos[v][0], 2), round(pos[v][1], 2)])
+    pads = [list(p) for p in sorted({tuple(p) for p in pads})]
+    w['smrpatch'] = dpatch; w['roadpatch'] = rpatch
+    w['fwtracks'] = list(w['fwtracks']) + dirt_lines + link_lines
+    w['etrtracks'] = list(w['etrtracks']) + road_lines
+    w['ntrjoins'] = list(w['ntrjoins']) + pads
+    report['dirt'] = {'cells': len(dadj), 'patches': len(dpatch), 'patch_sq': round(float(dwide.sum()) / R8 / R8, 1), 'trail_lines': len(dirt_lines)}
+    report['road'] = {'cells': len(radj), 'patches': len(rpatch), 'patch_sq': round(float(rwide.sum()) / R8 / R8, 1), 'road_lines': len(road_lines), 'pads': len(pads)}
+    report['links_drawn'] = len(link_lines); report['links_over_30'] = far
+
+    # ---------------------------------------------------------------- the paths as a raster (land margin, sprite clearance)
+    pim = Image.new('L', (ww, hw), 0); pd = ImageDraw.Draw(pim)
+    for G in (GS, GT):
+        for a in G:
+            for b in G[a]:
+                if a < b: pd.line([px(pos[a]), px(pos[b])], fill=255, width=2)
+    for a, b in LINKS: pd.line([px(pos[a]), px(pos[b])], fill=255, width=2)
+    for v in onmap:
+        p = px(pos[v]); pd.ellipse([p[0] - 2, p[1] - 2, p[0] + 2, p[1] + 2], fill=255)
+    skel = np.array(pim, bool)
+    d_path = ndi.distance_transform_edt(~(skel | dwide | rwide)) / R8
+
+    # ---------------------------------------------------------------- the land
+    land0 = AA._raster(w['geo']['land'], X0, YN, W, int((wy1 + 40 - YN) * R8))           # (the grid reaches 40 rooms below the window)
+    water0 = AA._raster(w['geo']['water'], X0, YN, W, int((wy1 + 40 - YN) * R8))
+    c0, r0 = int((wx0 - X0) * R8), int((wy0 - YN) * R8)
+    sub = (slice(r0, r0 + hw), slice(c0, c0 + ww))
+    wob = ndi.gaussian_filter(nrng.normal(size=(hw, ww)), 1.8 * R8); wob = (wob - wob.min()) / (wob.max() - wob.min())
+    near = d_path <= LAND_R * (0.7 + 0.6 * wob)
+    near = ndi.binary_closing(near, structure=np.ones((3, 3), bool), iterations=int(1.5 * R8))
+    near = ndi.binary_fill_holes(near)
+    near = ndi.gaussian_filter(near.astype(float), 0.8 * R8) > 0.5
+    new_land = near & ~water0[sub]
+    before = float(land0.sum()) / R8 / R8
+    land_n = land0.copy(); land_n[sub] |= new_land
+    added = land_n & ~land0
+    lab, n = ndi.label(added)
+    report['land_new_sq'] = round(float(added.sum()) / R8 / R8, 1); report['land_new_pieces'] = int(n)
+    nland = AA._contours(land_n, X0, YN)
+    # (land beyond the traced rows is kept as it was)
+    keep = []
+    cut_y = YN + land_n.shape[0] / R8
+    for p in w['geo']['land']:
+        if min(q[1] for q in p) >= cut_y - 1e-6: keep.append(p)
+    w['geo']['land'] = nland + keep
+    report['land_sq_before_after'] = (round(before), round(float(land_n.sum()) / R8 / R8))
+
+    # ---------------------------------------------------------------- terrain: tints and sprites, from the rooms' own terrain
+    real = [v for v in onmap if not void(v) and v in DOM]
+    cls = {'Mountains': 'm', 'Hills': 'h', 'Forest': 'd'}
+    tree = cKDTree(np.array([pos[v] for v in real])); lab_t = [info[v].get('terrain') or '' for v in real]
+    P = np.c_[WXg.ravel(), WYg.ravel()]
+    dist, idx = tree.query(P)
+    tcls = np.array([cls.get(t, '') for t in lab_t], dtype='U1')[idx].reshape(hw, ww)
+    dist = dist.reshape(hw, ww)
+    landw = land_n[sub]
+    on = landw & (dist <= TERR_R)
+    mount = on & (tcls == 'm')
+    bar = ndi.gaussian_filter(mount.astype(float), 0.6 * R8) > 0.5
+    nz = ndi.gaussian_filter(nrng.normal(size=(hw, ww)), 1.4 * R8); nz = (nz - nz.min()) / (nz.max() - nz.min())
+    bar2 = bar & (nz > 0.58)
+    w['geo']['barren'] = list(w['geo'].get('barren') or []) + AA._contours(bar, wx0, wy0, sigma=2.0)
+    w['geo']['barren2'] = list(w['geo'].get('barren2') or []) + AA._contours(bar2, wx0, wy0, sigma=2.0)
+    free = landw & (d_path > CLEAR) & ~water0[sub]
+    out = {'m': [], 'h': [], 'd': []}
+    for c in ('m', 'h', 'd'):
+        ys, xs = np.nonzero(on & (tcls == c) & free)
+        order = nrng.permutation(len(ys)); placed = []; gridc = {}
+        cs = SPRITE[c]
+        for i in order:
+            x, y = WXg[ys[i], xs[i]], WYg[ys[i], xs[i]]; gk = (int(x // cs), int(y // cs)); ok = True
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    for q in gridc.get((gk[0] + dx, gk[1] + dy), ()):
+                        if math.dist(q, (x, y)) < cs: ok = False; break
+                    if not ok: break
+                if not ok: break
+            if ok: gridc.setdefault(gk, []).append((x, y)); placed.append((round(float(x), 3), round(float(y), 3)))
+        out[c] = placed
+    w['peaks'] = list(w['peaks']) + [[x, y, round(rng.uniform(0.9, 1.25), 2), 'm', rng.choice([0, 0, 1, 1, 2])] for x, y in out['m']]
+    w['hills'] = list(w['hills']) + [[x, y, round(rng.uniform(0.85, 1.2), 2), 'h', rng.choice([0, 1, 2])] for x, y in out['h']]
+    w['trees'] = list(w['trees']) + [[x, y, round(rng.uniform(0.85, 1.15), 2), 'd', rng.choice([0, 1, 2])] for x, y in out['d']]
+    report['terrain'] = {'barren_sq': round(float(bar.sum()) / R8 / R8, 1), 'peaks': len(out['m']), 'hills': len(out['h']), 'trees': len(out['d'])}
+
+    ymax = max(allp[:, 1].max() + 14, 0)                                          # (room below the range for the west sea to taper off)
+    w['bounds'] = [w['bounds'][0], w['bounds'][1], w['bounds'][2], max(w['bounds'][3], int(math.ceil(ymax)))]
+    report['bounds'] = w['bounds']
+    return w, report

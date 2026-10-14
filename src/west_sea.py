@@ -20,6 +20,7 @@ DOCK_AT = (-94.3, -16.4)                     # owner: the small wooden marina
 
 def add_west_sea(w, seed=61):
     nrng = np.random.default_rng(seed)
+    HN = int((max(GF.Y1, w['bounds'][3]) - YN) * R8)                    # (the grid reaches the map's south edge: the Southern Mountain Range's west coast gets its sea too)
     land = AA._raster(w['geo']['land'], X0, YN, W, HN)
     water = AA._raster(w['geo']['water'], X0, YN, W, HN)
     xs = (np.arange(W) + .5) / R8 + X0; ys = (np.arange(HN) + .5) / R8 + YN
