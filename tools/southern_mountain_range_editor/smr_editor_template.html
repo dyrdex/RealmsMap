@@ -64,13 +64,14 @@ svg.names-on .nd .lbl,svg.names-zoom.zoomed .nd .lbl{display:block}
 .nd.ug rect,.nd.ug circle.shape{stroke:#C98A5B}
 .nd.ft rect,.nd.ft circle.shape{stroke:#8DBA4E}
 .nd.tr rect,.nd.tr circle.shape{stroke:#5BC4B0}
+.nd.af rect,.nd.af circle.shape{stroke:#E08A4A}
 
 
 .nd .hx{display:none}.nd.hid .hx{display:block}.nd.hid{opacity:.32}.nd.hid .shape,.nd.hid rect{stroke-dasharray:.16 .12}
 svg line.eh{opacity:.1!important}svg.only .nd.hid,svg.only line.eh{display:none!important}
 .nd.fx{cursor:not-allowed}.nd.fx .lbl{display:none}
 svg line.cxe{pointer-events:none}
-:root{--cx-DH:#6F86A2;--cx-Grove:#9080AE;--cx-FW:#6E9A6C;--cx-FT:#8DBA4E;--cx-LK:#4FB3D9;--cx-WT:#E0B04A;--cx-edge:#7E8B7E}
+:root{--cx-DH:#6F86A2;--cx-Grove:#9080AE;--cx-FW:#6E9A6C;--cx-AF:#B0855A;--cx-FT:#8DBA4E;--cx-LK:#4FB3D9;--cx-WT:#E0B04A;--cx-edge:#7E8B7E}
 </style>
 </head>
 <body>
@@ -84,7 +85,7 @@ svg line.cxe{pointer-events:none}
     <li><b>Scroll</b> to zoom, drag empty space to pan.</li>
   </ul>
   <p id="audit" class="stat" style="color:var(--ink)"></p>
-  <p id="ntrNote" style="margin:4px 0 8px">Every room of the <b>Southern Mountain Range</b> (<b style="color:#C98A5B">copper outline</b>) and of the <b>Southern Mountain Trade Route</b> (<b style="color:#5BC4B0">teal outline</b>; it starts where TinTin's exits lay it out from the range), plus the spacer rooms that join them to each other or to the map, and the Forest of Tears rooms along the whole <b>Sparse Woodlands trail</b> (rooms 1514-1553 whatever their names, and the spacer rooms between them; <b style="color:#8DBA4E">green outline</b>, unlocked: they start where the map has them). Nothing is placed by hand yet: each piece of the range starts where TinTin's own exits put it, anchored (shifted, and stretched a little per axis when it touches the map in several places) to the Forest of Tears rooms it links to. Expect it to overlap itself and the forest until you move it. Rooms with no exit to anything here are parked in a column east of the range. Hide any room you don't want on the map. <b>Select the whole piece</b> grabs every room in the same piece as the rooms you have selected; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms to where TinTin's exits alone would put them.</p>
+  <p id="ntrNote" style="margin:4px 0 8px">Every room of the <b>Southern Mountain Range</b> (<b style="color:#C98A5B">copper outline</b>) and of the <b>Southern Mountain Trade Route</b> (<b style="color:#5BC4B0">teal outline</b>; it starts where TinTin's exits lay it out from the range), plus the spacer rooms that join them to each other or to the map, and the Forest of Tears rooms along the whole <b>Sparse Woodlands trail</b> (rooms 1514-1553 whatever their names, and the spacer rooms between them; <b style="color:#8DBA4E">green outline</b>, unlocked: they start where the map has them). A <b>visual-only connection</b> (not in TinTin's map): room 559 → northeast → a new spacer room → north → room 670 "Before the Ashen Forest" (<b style="color:#E08A4A">orange outline</b>, both movable, 670 starts where the Ashen Forest has it; drag the spacer to shape the line). Nothing is placed by hand yet: each piece of the range starts where TinTin's own exits put it, anchored (shifted, and stretched a little per axis when it touches the map in several places) to the Forest of Tears rooms it links to. Expect it to overlap itself and the forest until you move it. Rooms with no exit to anything here are parked in a column east of the range. Hide any room you don't want on the map. <b>Select the whole piece</b> grabs every room in the same piece as the rooms you have selected; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms to where TinTin's exits alone would put them.</p>
   <p><b>The fixed rooms</b> (small round dots, apart from the unlocked Sparse Woodlands rooms: grey-blue for Darkhaven, violet for the Shadow Grove, green for the Forgotten Woods, olive for the Forest of Tears, blue for the Lake of Tich'Pyga, gold for the Western Trade Route) are the rooms already on the finished map, exactly where they are. They can't be moved. Hover one to see its name. The faint lines between them are the exits between those rooms. The finished map (land, lake, trails) is faintly behind.</p>
   <p style="color:var(--soft)">North is up. Rooms that TinTin puts on a level above or below ground (the tunnels, caverns and underground rivers) have a dashed outline and start a little to the side of the ground room they sit under or over. Up and down exits are dashed purple lines.</p>
 
@@ -106,7 +107,7 @@ svg line.cxe{pointer-events:none}
   <label class="l"><input type="checkbox" id="snap"> Snap to grid</label>
   <div class="row"><select id="snapStep"><option value=".25">¼ room</option><option value=".5" selected>½ room</option><option value="1">1 room</option></select></div>
   <div class="row">
-    <button id="selPiece">Select the whole piece</button><button id="selNtr">Select the Southern Mountain Range</button><button id="selRoad">Select the underground rooms</button><button id="selFt">Select the Sparse Woodlands trail</button><button id="selTr">Select the Southern Mountain Trade Route</button>
+    <button id="selPiece">Select the whole piece</button><button id="selNtr">Select the Southern Mountain Range</button><button id="selRoad">Select the underground rooms</button><button id="selFt">Select the Sparse Woodlands trail</button><button id="selTr">Select the Southern Mountain Trade Route</button><button id="selAf">Select room 670 and its spacer</button>
   </div>
   <div class="row">
     <button id="rawSel">Selected → where TinTin's exits suggest</button>
@@ -130,11 +131,13 @@ svg line.cxe{pointer-events:none}
     <i style="background:var(--t-Mountains);border:2px solid #C98A5B"></i><span>Southern Mountain Range room (movable)</span>
     <i style="background:var(--t-Forest);border:2px solid #8DBA4E"></i><span>Forest of Tears room on the Sparse Woodlands trail (unlocked, movable)</span>
     <i style="background:var(--t-Hills);border:2px solid #5BC4B0"></i><span>Southern Mountain Trade Route room (movable)</span>
+    <i style="background:var(--t-Forest);border:2px solid #E08A4A"></i><span>Ashen Forest room 670 and the visual-only spacer between it and room 559 (movable)</span>
     <i style="background:var(--t-other);border-radius:50%;width:8px;height:8px;border:1px solid #B3541E"></i><span>Spacer room (invisible in the game, free to move)</span>
     <i style="background:var(--cx-DH);border-radius:50%"></i><span>Fixed room in Darkhaven</span>
     <i style="background:var(--cx-Grove);border-radius:50%"></i><span>Fixed room in the Shadow Grove</span>
     <i style="background:var(--cx-FW);border-radius:50%"></i><span>Fixed room in the Forgotten Woods</span>
     <i style="background:var(--cx-FT);border-radius:50%"></i><span>Fixed room in the Forest of Tears</span>
+    <i style="background:var(--cx-AF);border-radius:50%"></i><span>Fixed room in the Ashen Forest</span>
     <i style="background:var(--cx-LK);border-radius:50%"></i><span>Fixed room in the Lake of Tich'Pyga</span>
     <i style="background:var(--cx-WT);border-radius:50%"></i><span>Fixed room on the Western Trade Route</span>
     <i style="border:2px dashed var(--ud);background:none"></i><span>On a level above or below ground</span>
@@ -365,7 +368,7 @@ $('zin').onclick=()=>{cam.k=Math.min(140,cam.k*1.5);applyCam()};$('zout').onclic
 function hover(e){const nd=e.target.closest&&e.target.closest('.nd');
   if(!nd){tip.style.display='none';return}
   const r=byId.get(+nd.dataset.id),p=pos.get(r.id),s=stage.getBoundingClientRect();
-  tip.innerHTML=`<b>${esc(r.name||'(spacer room)')}</b><br>Room ${r.id} · ${esc(r.terrain||'-')}${r.area==='SM'?' · '+(r.grp==='ft'?'Forest of Tears, Sparse Woodlands trail (unlocked)':r.grp==='tr'?'Southern Mountain Trade Route':'Southern Mountain Range')+(r.void?' (spacer room)':''):(r.src?' · '+({DH:'Darkhaven',Grove:'Shadow Grove',FW:'Forgotten Woods',FT:'Forest of Tears',LK:"Lake of Tich'Pyga",WT:'Western Trade Route'})[r.src]+' (fixed)':'')}${r.piece!=null?' · piece '+(r.piece+1):''}${r.lvl?` · level ${r.lvl>0?'+':''}${r.lvl} in TinTin`:''}${locked.has(r.id)?' · locked':''}${hidden.has(r.id)?' · <b style="color:#C23B22">hidden on the map</b>':''}<br>at ${p[0].toFixed(2)}, ${p[1].toFixed(2)}<br>${(r.ex||[]).map(esc).join('<br>')}`;
+  tip.innerHTML=`<b>${esc(r.name||'(spacer room)')}</b><br>Room ${r.id} · ${esc(r.terrain||'-')}${r.area==='SM'?' · '+(r.grp==='ft'?'Forest of Tears, Sparse Woodlands trail (unlocked)':r.grp==='tr'?'Southern Mountain Trade Route':r.grp==='af'?(r.void?'visual-only link to the Ashen Forest (not in TinTin)':'Ashen Forest (unlocked)'):'Southern Mountain Range')+(r.void?' (spacer room)':''):(r.src?' · '+({DH:'Darkhaven',Grove:'Shadow Grove',FW:'Forgotten Woods',AF:'Ashen Forest',FT:'Forest of Tears',LK:"Lake of Tich'Pyga",WT:'Western Trade Route'})[r.src]+' (fixed)':'')}${r.piece!=null?' · piece '+(r.piece+1):''}${r.lvl?` · level ${r.lvl>0?'+':''}${r.lvl} in TinTin`:''}${locked.has(r.id)?' · locked':''}${hidden.has(r.id)?' · <b style="color:#C23B22">hidden on the map</b>':''}<br>at ${p[0].toFixed(2)}, ${p[1].toFixed(2)}<br>${(r.ex||[]).map(esc).join('<br>')}`;
   tip.style.display='block';let x=e.clientX-s.left+14,y=e.clientY-s.top+12;if(x>s.width-350)x-=360;if(y>s.height-160)y-=150;tip.style.left=x+'px';tip.style.top=y+'px'}
 window.addEventListener('keydown',e=>{
   if(['INPUT','TEXTAREA','SELECT'].includes((e.target.tagName||''))&&e.target.id!=='snap')return;
@@ -388,6 +391,7 @@ $('selNtr').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.area==='SM'&&!r.void
 $('selRoad').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='ug')sel.add(r.id)});refreshSel()};
 $('selFt').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='ft')sel.add(r.id)});refreshSel()};
 $('selTr').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='tr'&&!r.void)sel.add(r.id)});refreshSel()};
+$('selAf').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='af')sel.add(r.id)});refreshSel()};
 $('selPiece').onclick=()=>{const ps=new Set([...sel].map(id=>byId.get(id).piece).filter(p=>p!=null));if(!ps.size){toast('Select a room of the piece first');return}rooms.forEach(r=>{if(ps.has(r.piece))sel.add(r.id)});refreshSel()};
 let armed=null;$('baseAll').onclick=function(){if(!armed){this.textContent='Click again to confirm';armed=setTimeout(()=>{armed=null;this.textContent='Undo all my changes…'},4000);return}
   clearTimeout(armed);armed=null;this.textContent='Undo all my changes…';setTo([...pos.keys()],base);toast('Back to the starting layout')};

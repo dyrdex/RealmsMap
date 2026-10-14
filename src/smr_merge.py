@@ -58,6 +58,7 @@ def merge_smr(w, layout, edges, seed=71):
     GS = defaultdict(set); GT = defaultdict(set); links = []
     for a, b, k in edges['edges']:
         if k == 'ud' or a not in pos or b not in pos: continue
+        if grp(a) == 'af' or grp(b) == 'af': continue                    # the visual-only link to the Ashen Forest (room 670): not drawn yet (owner, Oct 14)
         ina, inb = a in DOM, b in DOM
         if not (ina or inb): continue
         if (a in mov and a in hidden) or (b in mov and b in hidden): continue

@@ -34,6 +34,11 @@ for v, r in FINFO.items():
     if r.get('fixed') or v in FHID or v not in FPOS or v not in rooms: continue
     CTX[v] = {'ft': 'FT', 'lk': 'LK', 'wt': 'WT', 'fw': 'FW'}[r['grp']]; cpos[v] = tuple(FPOS[v])
 if 20036 not in CTX: CTX[20036] = 'FT'; cpos[20036] = tuple(tr['ft20036'][:2])         # (a dead-end spacer stub the forest editor left off: where the old map had it)
+# A visual-only connection (owner, Oct 14; not in TinTin's map): room 559 --ne--> a new spacer room --n--> room 670 'Before the Ashen Forest'. Room 670 (an
+# Ashen Forest room, where the Ashen save puts it) is unlocked; the Ashen room it leads north to (2864) is shown fixed so its neighbour is visible.
+AF_ROOM, AF_NEXT, FICT = 670, 2864, 990001
+AL = json.load(open(os.path.join(here, 'ashen_layout_final.json'))); AFPOS = dict(zip(AL['ids'], zip(AL['xs'], AL['ys']))); assert AF_ROOM in AFPOS and AF_NEXT in AFPOS and not {AF_ROOM, AF_NEXT} & set(AL['hidden'])
+CTX[AF_NEXT] = 'AF'; cpos[AF_NEXT] = tuple(AFPOS[AF_NEXT])
 SMR = {v for v, r in rooms.items() if r['area'] == SA}
 assert not SMR & set(CTX)
 # Forest of Tears rooms unlocked on request (owner, Oct 14): the whole Sparse Woodlands trail, 1514 -> 1553, i.e. the 18 rooms named 'The Sparse Woodlands'
@@ -172,6 +177,13 @@ for s in UNLOCK:                                                                
             if t in UL and d[2] == 0 and t not in _seen: _seen.add(t); _st.append(t)
     _np += 1
 S = S | UL; SP = {v for v in S if isspacer(v)}
+try: _svp = dict(zip(*(lambda d: (d['ids'], zip(d['xs'], d['ys'])))(json.load(open(os.path.join(here, 'smr_layout_final.json'))))))   # the owner's save, if there is one: 559's spot
+except Exception: _svp = {}
+_p559 = _svp.get(559) or start[559]
+start[AF_ROOM] = list(AFPOS[AF_ROOM]); start[FICT] = [(_p559[0] + AFPOS[AF_ROOM][0]) / 2, (_p559[1] + AFPOS[AF_ROOM][1]) / 2]       # (the new spacer starts half way)
+for v in (AF_ROOM, FICT): raw[v] = list(start[v]); lvl[v] = 0
+piece[AF_ROOM] = piece[FICT] = _np; _np += 1
+S = S | {AF_ROOM, FICT}; SP = SP | {FICT}
 xy = {v: list(p) for v, p in start.items()}
 for Pz in (xy, raw):
     cells = defaultdict(list)
@@ -187,15 +199,19 @@ def exlist(v):
         if not r: continue
         res.append(f"{DN.get(e['dir'], '?')} → {r['name'] or 'spacer room'}" + (f" ({r['area']})" if r['area'] and r['area'] != SA else ''))
     return res
-GROUP = {v: ('ft' if v in UL else 'tr' if v in TR or (v in SP and v not in S0) else 'ug' if rooms[v]['terrain'] == 'Underground' else 'sm') for v in S}
+GROUP = {v: ('af' if v in (AF_ROOM, FICT) else 'ft' if v in UL else 'tr' if v in TR or (v in SP and v not in S0) else 'ug' if rooms[v]['terrain'] == 'Underground' else 'sm') for v in S}
 R = []
 for v in sorted(CTX):
     r = rooms[v]
     R.append(dict(id=v, name=r['name'], terrain='', void=isspacer(v), lvl=0, x=round(cpos[v][0], 2), y=round(cpos[v][1], 2), x0=round(cpos[v][0], 2), y0=round(cpos[v][1], 2), fixed=True, src=CTX[v]))
 for v in sorted(S):
-    r = rooms[v]; sp = v in SP
+    r = rooms.get(v) or dict(name='', terrain='', area=''); sp = v in SP
     R.append(dict(id=v, name='' if sp else r['name'], terrain='' if sp else r['terrain'], void=sp, lvl=lvl.get(v, 0), area='SM', grp=GROUP[v], piece=piece[v],
                   x=round(xy[v][0], 2), y=round(xy[v][1], 2), x0=round(raw[v][0], 2), y0=round(raw[v][1], 2), ex=exlist(v)))
+for _r in R:                                                                      # the visual-only link, in the rooms' exit lists
+    if _r['id'] == 559: _r['ex'] = _r['ex'] + ['ne → spacer room (visual only, not in TinTin)']
+    elif _r['id'] == AF_ROOM: _r['ex'] = _r['ex'] + ['s → spacer room (visual only, not in TinTin)']
+    elif _r['id'] == FICT: _r['ex'] = ['sw → Lost In The Dark Pine Forest (visual only)', 'n → Before the Ashen Forest']
 V = {r['id'] for r in R}
 pair = defaultdict(lambda: [False, False, False])
 for v in V:
@@ -205,9 +221,10 @@ for v in V:
         k = (min(v, t), max(v, t)); pair[k][0 if v == k[0] else 1] = True
         if e['dir'] not in (16, 32): pair[k][2] = True
 EDG = [[a, b, 'two' if (f and r and flat) else ('one' if flat else 'ud')] for (a, b), (f, r, flat) in sorted(pair.items())]
+EDG += [[559, FICT, 'two'], [FICT, AF_ROOM, 'two']]                                  # the visual-only connection
 lk = sorted(k for k in pair if (k[0] in S) != (k[1] in S))
 cnt = Counter(CTX.values()); tz = Counter(lvl.get(v, 0) for v in S)
-audit = dict(smr=len(SMR), tr=len(TR), spacers=len(SP), stubs=len(stubs), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), pieces=_np, unlocked=len(UL),
+audit = dict(af=1, fict=FICT, smr=len(SMR), tr=len(TR), spacers=len(SP), stubs=len(stubs), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), pieces=_np, unlocked=len(UL),
              parked=len(PARKED), levels=', '.join(f'{z:+d}: {n}' for z, n in sorted(tz.items())),
              anchored=sum(len(comps[k]) for k in anchored), anchored_pieces=len(anchored),
              dh=cnt['DH'], grove=cnt['Grove'], fw=cnt['FW'], ft=cnt['FT'], lake=cnt['LK'], wtr=cnt['WT'])
@@ -218,7 +235,7 @@ ctx = dict(land=[rd(p) for p in w['geo']['land']], water=[rd(p) for p in w['geo'
            tracks=[rd(t) for t in trk if len(t) > 1], mazes=[dict(poly=rd(m['poly'])) for m in w['fwmazes']], town=[-7.4, -9.4, 7.4, 9.4],
            labels=[[0, 0.4, 'Darkhaven', 2.4], [3, -14.2, 'Shadow Grove', 1.5], [1, -47.3, 'Forgotten Woods', 2.4]] +
                   [[(a['x0'] + a['x1']) / 2, a['y'], 'Forest of Tears', 2.4] for a in [w['label']]])
-D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=sorted(UL))
+D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=sorted(UL) + [AF_ROOM, FICT])
 t = open(os.path.join(here, 'smr_editor_template.html'), encoding='utf-8').read()
 open(out, 'w', encoding='utf-8').write(t.replace('__DATA__', json.dumps(D, separators=(',', ':'))))
 json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed', 'src', 'area', 'grp', 'piece') if k in r} for r in R], edges=EDG),
