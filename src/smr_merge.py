@@ -13,7 +13,7 @@ now reaches south). Spacer rooms are drawn only between two real rooms (dead-end
 The Sparse Woodlands trail (the Forest of Tears rooms the owner moved in this editor) is drawn by ft_merge from the moved positions (build.py
 passes them in); this module only draws the links between it and the range.
 Runs after ft_merge on a grid that reaches from the map's north edge (y -215) to the new south edge; the land is traced again from it."""
-import math, random
+import math, random, re
 import numpy as np
 from collections import defaultdict
 from PIL import Image, ImageDraw
@@ -37,6 +37,14 @@ TERR_R = 3.8         # a room's terrain tint reaches this far
 CLEAR = 1.0          # sprites keep this far from a path or patch
 BAND = 2.4           # standard forest reaches this far (wobbled) from the connection to the Ashen Forest
 SPRITE = {'m': 2.0, 'h': 1.7, 'd': 0.95}   # minimum spacing: peaks, hills, trees
+
+
+def _hash(x, y, salt=0):
+    """a number in [0, 1) that depends only on a position (and a salt): sprites are ordered and sized by it, so changing the mask in one place never re-rolls the ones elsewhere"""
+    x = np.asarray(x, float); y = np.asarray(y, float)
+    n = (np.round(x * 1000).astype(np.int64) * 73856093 ^ np.round(y * 1000).astype(np.int64) * 19349663 ^ (salt * 83492791)) & 0xFFFFFFFF
+    n = ((n ^ (n >> 13)) * 1274126177) & 0xFFFFFFFF
+    return ((n ^ (n >> 16)) & 0xFFFF) / 65536.0
 
 
 def _drawn(p, n=14):
@@ -88,14 +96,14 @@ def merge_smr(w, layout, edges, seed=71):
     import json as _js, os as _os
     CL = _js.load(open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'smr_clearings.json')))      # clearings the owner marks by hand (Oct 14)
     in_box = lambda v, bx: bx[0] <= pos[v][0] <= bx[2] and bx[1] <= pos[v][1] <= bx[3]
-    boxed = {}; faintG = defaultdict(set)                                       # box index -> the shown rooms inside it
-    for i, c in enumerate(CL.get('boxes', [])):
+    boxed = {}; faintG = defaultdict(set); inner_e = defaultdict(set)                                       # box index -> the shown rooms inside it
+    for i, c in enumerate(CL.get('boxes', []) + CL.get('towns', [])):
         boxed[i] = {v for v in DOM if in_box(v, c['box'])}
         for G in (GS,):
             for a in list(G):
                 for b in list(G[a]):
                     if a in boxed[i] and b in boxed[i]:
-                        G[a].discard(b); G[b].discard(a)                      # a connection inside the clearing is not drawn ...
+                        G[a].discard(b); G[b].discard(a); inner_e[i].add((min(a, b), max(a, b)))      # a connection inside the clearing is not drawn ...
                         if c.get('faint_paths'): faintG[a].add(b); faintG[b].add(a)      # ... or only very lightly
         uds[:] = [(a, b) for a, b in uds if not (a in boxed[i] and b in boxed[i])]
         links[:] = [(a, b) for a, b in links if not (a in boxed[i] and b in boxed[i])]     # (also the range's links to the Trade Route junction inside it)
@@ -239,6 +247,10 @@ def merge_smr(w, layout, edges, seed=71):
         dwide = dwide | np.array(im_, bool)                                       # (smoothed once, below: smoothing after every room eroded the small clearings)
     if CL.get('add_rooms'): dwide = ndi.gaussian_filter(dwide.astype(float), 0.45 * R8) > 0.5
     report['clearing_rooms_added'] = added
+    townm = Image.new('L', (ww, hw), 0); tdr = ImageDraw.Draw(townm)
+    for t_ in CL.get('towns', []): tdr.rectangle([px((t_['box'][0], t_['box'][1])), px((t_['box'][2], t_['box'][3]))], fill=255)
+    townmask = np.array(townm, bool)
+    dwide &= ~townmask                                                              # (a town replaces any clearing under it)
     dwide &= ~rwide                                                                 # (a road patch lies on top of any dirt patch)
     dT = trails(GS, dwide | rwide); rT = trails(GT, rwide)
     dirt_lines = _chains(dT, pos, set(), 0.8) if dT else []
@@ -258,7 +270,7 @@ def merge_smr(w, layout, edges, seed=71):
     dpatch = AA._contours(dwide, wx0, wy0, sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
     rpatch = AA._contours(rwide, wx0, wy0, sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
     # ---- thin paths never run over a clearing (owner, Oct 14): each stops where it enters one (it only shows that the path leads into it)
-    dmask = AA._raster(dpatch, wx0, wy0, ww, hw)
+    dmask = AA._raster(dpatch, wx0, wy0, ww, hw) | townmask                          # (paths stop at a town's edge too)
     def clip(lines, step=0.08, keep_every=4):
         out = []; cut = 0
         for ln in lines:
@@ -304,39 +316,115 @@ def merge_smr(w, layout, edges, seed=71):
             for gy_ in np.arange(y0_ + 0.45, y1_ - 0.4, 0.2):
                 if ftree is not None and ftree.query([gx_, gy_])[0] < 0.42: continue
                 if rtree is not None and rtree.query([gx_, gy_])[0] < 1.0: continue
-                cand.append((gx_ + nrng.uniform(-0.08, 0.08), gy_ + nrng.uniform(-0.08, 0.08)))
+                cand.append((gx_ + 0.16 * float(_hash(gx_, gy_, 5)) - 0.08, gy_ + 0.16 * float(_hash(gx_, gy_, 6)) - 0.08))
         placed_ = []
-        for i in nrng.permutation(len(cand)):
+        for i in np.argsort(_hash([q[0] for q in cand], [q[1] for q in cand], 7), kind='stable'):
             x, y = cand[i]
             if all(math.dist((x, y), q) >= 0.8 for q in placed_): placed_.append((x, y))
         for x, y in placed_:
-            marks.append([round(x, 2), round(y, 2), round(rng.uniform(0.55, 0.85), 2), 'b' if rng.random() < 0.4 else rng.choice([0, 1, 2])])
+            marks.append([round(x, 2), round(y, 2), round(0.55 + 0.3 * float(_hash(x, y, 8)), 2), 'b' if float(_hash(x, y, 9)) < 0.4 else int(float(_hash(x, y, 10)) * 3)])
         report.setdefault('rough_marks', {})[c['name']] = len(placed_)
-    # ---- a climb: one wide rocky path through the four rooms (it stops at clearings too)
-    climbs = []
+    # ---- towns (owner, Oct 14): a top-down village in the box; the streets are the paths that were there, its buildings are its rooms
+    import ashen_forest as AF
+    _names = AF._world()[0]
+    towns = []; nboxes = len(CL.get('boxes', []))
+    for ti, c in enumerate(CL.get('towns', [])):
+        trng = random.Random(seed * 13 + ti)
+        x0_, y0_, x1_, y1_ = c['box']; ins_ = 0.2
+        nm = lambda v: _names[v]['name'] if v in _names else ''
+        terr = lambda v: info[v].get('terrain') or ''
+        inside = sorted(v for v in boxed[nboxes + ti] if v not in hidden)
+        BW = re.compile(r'Shrine|Congregation|Sewer|Drain|Well|Bank|Shelter')
+        street_room = lambda v: terr(v) == 'City' and not void(v) and not BW.search(nm(v))
+        SG = defaultdict(set)
+        for a, b in inner_e[nboxes + ti]:
+            if street_room(a) and street_room(b): SG[a].add(b); SG[b].add(a)
+        streets = _chains(SG, pos, set(), 0.6) if SG else []
+        for ci, ln in enumerate(list(streets)):                                # a street that stops a few rooms short of another one (a hidden room between them) is joined to it
+            for end in (ln[0], ln[-1]):
+                best = None
+                for cj, other in enumerate(streets):
+                    if cj == ci: continue
+                    q_ = _nearest_on([other], end); d_ = math.dist(q_, end)
+                    if 0.05 < d_ <= 3.8 and (best is None or d_ < best[0]): best = (d_, q_)
+                aligned = best and (abs(best[1][1] - end[1]) <= 1.2 and abs(best[1][0] - end[0]) >= 0.5 or abs(best[1][0] - end[0]) <= 1.2 and abs(best[1][1] - end[1]) >= 0.5)
+                if aligned and not any(_nearest_on([[end, list(best[1])]], pos[v]) is not None and math.dist(_nearest_on([[end, list(best[1])]], pos[v]), pos[v]) < 0.6 for v in inside if not street_room(v) and not void(v) and not re.search(r'Well|Circle', nm(v))):
+                    streets.append([[round(end[0], 2), round(end[1], 2)], [round(best[1][0], 2), round(best[1][1], 2)]])
+        sst = _samples(streets, 0.1) if streets else np.zeros((0, 2))
+        wells = [pos[v] for v in inside if re.search(r'Well|Circle', nm(v))]
+        plaza = [round(sum(p[0] for p in wells) / len(wells), 2), round(sum(p[1] for p in wells) / len(wells), 2), 0.85] if wells else None
+        def hits_street(cx, cy, hw_, hh_, pad=0.36):
+            return len(sst) and bool(np.any((np.abs(sst[:, 0] - cx) < hw_ + pad) & (np.abs(sst[:, 1] - cy) < hh_ + pad)))
+        def hits_plaza(cx, cy, hw_, hh_, pad=0.1):
+            return plaza is not None and math.hypot(max(abs(cx - plaza[0]) - hw_, 0), max(abs(cy - plaza[1]) - hh_, 0)) < plaza[2] + pad
+        blds = []
+        def free_spot(cx, cy, hw_, hh_, gap=0.16):
+            if cx - hw_ < x0_ + ins_ or cx + hw_ > x1_ - ins_ or cy - hh_ < y0_ + ins_ or cy + hh_ > y1_ - ins_: return False
+            if hits_street(cx, cy, hw_, hh_) or hits_plaza(cx, cy, hw_, hh_): return False
+            return all(abs(cx - b['x']) >= hw_ + b['w'] / 2 + gap or abs(cy - b['y']) >= hh_ + b['h'] / 2 + gap for b in blds)
+        roofs = ['#7A4638', '#86503C', '#6B4A36', '#5F4B3A', '#7E5A40', '#704034']
+        for v in inside:                                                       # the rooms that are buildings, where they are
+            n_ = nm(v); t_ = terr(v)
+            if re.search(r'Congregation', n_): k, w_, h_ = 'church', 1.1, 1.15
+            elif re.search(r'Shrine', n_): k, w_, h_ = 'shrine', 0.62, 0.62
+            elif re.search(r'Pick And Payload$', n_): k, w_, h_ = 'inn', 1.7, 1.05
+            elif re.search(r'Shop|Smelter', n_): k, w_, h_ = 'shop', 0.95, 0.8
+            elif re.search(r'Shelter', n_): k, w_, h_ = 'house', 0.75, 0.6
+            elif t_ in ('Inside', 'DHinside3'): k, w_, h_ = 'house', 0.95, 0.8
+            else: continue
+            cx, cy = pos[v]
+            cx = min(max(cx, x0_ + ins_ + w_ / 2), x1_ - ins_ - w_ / 2); cy = min(max(cy, y0_ + ins_ + h_ / 2), y1_ - ins_ - h_ / 2)
+            if hits_street(cx, cy, w_ / 2, h_ / 2):                            # nudge it off a street by the smallest step
+                for step in (0.1, 0.2, 0.3, 0.4, 0.5, 0.6):
+                    alt = [(cx + dx, cy + dy) for dx, dy in ((step, 0), (-step, 0), (0, step), (0, -step))]
+                    ok_ = [p for p in alt if not hits_street(p[0], p[1], w_ / 2, h_ / 2) and x0_ + ins_ + w_ / 2 <= p[0] <= x1_ - ins_ - w_ / 2 and y0_ + ins_ + h_ / 2 <= p[1] <= y1_ - ins_ - h_ / 2]
+                    if ok_: cx, cy = ok_[0]; break
+            blds.append({'x': round(cx, 2), 'y': round(cy, 2), 'w': w_, 'h': h_, 'k': k, 'roof': '#5E5B55' if k == 'church' else '#6A3C30' if k == 'inn' else trng.choice(roofs), 'room': v})
+        nfixed = len(blds)
+        cand = []                                                              # filler houses along the streets, both sides
+        for ln in streets:
+            for (p, q) in zip(ln[:-1], ln[1:]):
+                L_ = math.dist(p, q)
+                if L_ < 0.05: continue
+                tx, ty = (q[0] - p[0]) / L_, (q[1] - p[1]) / L_; horiz = abs(tx) >= abs(ty)
+                for s_ in np.arange(0.3, L_, 1.3):
+                    for side in (-1, 1):
+                        cand.append((p[0] + tx * s_ - ty * side * 1.05, p[1] + ty * s_ + tx * side * 1.05, horiz))
+        trng.shuffle(cand); nfill = 0
+        for cx, cy, horiz in cand:
+            if nfill >= 10: break
+            w_, h_ = (trng.uniform(0.8, 1.05), trng.uniform(0.62, 0.8)) if horiz else (trng.uniform(0.62, 0.8), trng.uniform(0.8, 1.05))
+            if free_spot(cx, cy, w_ / 2, h_ / 2): blds.append({'x': round(cx, 2), 'y': round(cy, 2), 'w': round(w_, 2), 'h': round(h_, 2), 'k': 'house', 'roof': trng.choice(roofs), 'room': None}); nfill += 1
+        trees = []
+        for _ in range(60):
+            if len(trees) >= 7: break
+            cx, cy, r_ = trng.uniform(x0_ + 0.4, x1_ - 0.4), trng.uniform(y0_ + 0.4, y1_ - 0.4), trng.uniform(0.26, 0.38)
+            if free_spot(cx, cy, r_, r_, 0.22) and all(math.dist((cx, cy), (q[0], q[1])) > 1.0 for q in trees): trees.append([round(cx, 2), round(cy, 2), round(r_, 2)])
+        towns.append({'name': c['name'], 'ground': [x0_ + 0.12, y0_ + 0.12, x1_ - 0.12, y1_ - 0.12], 'streets': streets, 'plaza': plaza, 'buildings': blds, 'trees': trees})
+        lab = c.get('label') or [(x0_ + x1_) / 2, y0_ - 0.5]
+        w['tags'] = list(w['tags']) + [[lab[0], lab[1], c['name'], 0.95]]
+        for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):         # nothing grows or stands where the village is
+            w[k_] = [t for t in w[k_] if not (x0_ <= t[0] <= x1_ and y0_ <= t[1] <= y1_)]
+        report.setdefault('towns', {})[c['name']] = {'rooms_inside': len(inside), 'streets': len(streets), 'buildings_from_rooms': nfixed, 'filler_houses': nfill, 'trees': len(trees), 'plaza': plaza}
+    w['smrtowns'] = towns
+    # ---- a climb: one wide path through the four rooms with slight rocky steps across it (owner, Oct 14: a regular but wide path, not a mountain); it stops at clearings too
+    climbs = []; climbmask = np.zeros((hw, ww), bool)
     for c in CL.get('climbs', []):
         pts = [pos[v] for v in c['rooms']]
         im = Image.new('L', (ww, hw), 0); ImageDraw.Draw(im).polygon([px(p) for p in pts], fill=255, outline=255)
         m = ndi.binary_dilation(np.array(im, bool), structure=disk(int(0.55 * R8))) & ~ndi.binary_dilation(dmask, structure=disk(1))
         m = ndi.gaussian_filter(m.astype(float), 0.5 * R8) > 0.5
         polys = AA._contours(m, wx0, wy0, sigma=1.0, tol=0.3, minarea=0.5)
-        hach = []
-        ys_, xs_ = np.nonzero(m); y_lo, y_hi, x_lo, x_hi = (ys_.min() / R8 + wy0, ys_.max() / R8 + wy0, xs_.min() / R8 + wx0, xs_.max() / R8 + wx0)
-        k_ = 0
-        for gy_ in np.arange(y_lo + 0.3, y_hi - 0.2, 0.5):
-            for gx_ in np.arange(x_lo + 0.3, x_hi - 0.2, 0.55):
-                x, y = gx_ + (0.27 if k_ % 2 else 0) + rng.uniform(-0.07, 0.07), gy_ + rng.uniform(-0.07, 0.07)
-                c_, r_ = int((x - wx0) * R8), int((y - wy0) * R8)
-                if 0 <= r_ < hw and 0 <= c_ < ww and m[r_, c_] and m[min(r_ + 3, hw - 1), c_]: hach.append([round(x - 0.13, 2), round(y + 0.09, 2), round(x + 0.13, 2), round(y - 0.09, 2)] if (int(gx_ * 7) % 2) else [round(x - 0.13, 2), round(y - 0.09, 2), round(x + 0.13, 2), round(y + 0.09, 2)])
-            k_ += 1
-        cand = [(wx0 + xx / R8, wy0 + yy / R8) for yy, xx in zip(ys_[::6], xs_[::6]) if ndi.distance_transform_edt(m)[yy, xx] > 0.3 * R8] if m.sum() else []
-        placed_ = []
-        for i in nrng.permutation(len(cand)):
-            x, y = cand[i]
-            if all(math.dist((x, y), q) >= 1.0 for q in placed_): placed_.append((x, y))
-        for x, y in placed_: marks.append([round(x, 2), round(y, 2), round(rng.uniform(0.55, 0.8), 2), 'b' if rng.random() < 0.45 else rng.choice([0, 1, 2])])
-        climbs.append({'name': c['name'], 'polys': polys, 'hach': hach})
-        report.setdefault('climbs', {})[c['name']] = {'sq': round(float(m.sum()) / R8 / R8, 1), 'hatching': len(hach), 'marks': len(placed_)}
+        ys_, xs_ = np.nonzero(m); y_lo, y_hi = ys_.min() / R8 + wy0, ys_.max() / R8 + wy0
+        steps = []
+        for gy_ in np.arange(y_lo + 0.55, y_hi - 0.3, 0.9):                       # a tread across the path every ~0.9 rooms, not quite edge to edge, a little uneven
+            row = np.nonzero(m[int((gy_ - wy0) * R8)])[0]
+            if len(row) < 6: continue
+            xa, xb = row.min() / R8 + wx0 + 0.4, row.max() / R8 + wx0 - 0.4
+            if xb - xa > 0.6: steps.append([round(xa + rng.uniform(0, 0.25), 2), round(gy_ + rng.uniform(-0.04, 0.04), 2), round(xb - rng.uniform(0, 0.25), 2), round(gy_ + rng.uniform(-0.04, 0.04), 2)])
+        climbmask |= m
+        climbs.append({'name': c['name'], 'polys': polys, 'steps': steps})
+        report.setdefault('climbs', {})[c['name']] = {'sq': round(float(m.sum()) / R8 / R8, 1), 'steps': len(steps)}
     w['smrclimb'] = climbs; w['smrmarks'] = marks
     pads = []
     for a, b in LINKS:                                                              # off-ramp pads: where the route meets anything that is not the route
@@ -364,7 +452,7 @@ def merge_smr(w, layout, edges, seed=71):
     for v in onmap:
         p = px(pos[v]); pd.ellipse([p[0] - 2, p[1] - 2, p[0] + 2, p[1] + 2], fill=255)
     skel = np.array(pim, bool)
-    d_path = ndi.distance_transform_edt(~(skel | dwide | rwide)) / R8
+    d_path = ndi.distance_transform_edt(~(skel | dwide | rwide | climbmask)) / R8
 
     # ---------------------------------------------------------------- the land
     land0 = AA._raster(w['geo']['land'], X0, YN, W, int((wy1 + 40 - YN) * R8))           # (the grid reaches 40 rooms below the window)
@@ -413,7 +501,7 @@ def merge_smr(w, layout, edges, seed=71):
     bar2 = bar & (nz > 0.58)
     w['geo']['barren'] = list(w['geo'].get('barren') or []) + AA._contours(bar, wx0, wy0, sigma=2.0)
     w['geo']['barren2'] = list(w['geo'].get('barren2') or []) + AA._contours(bar2, wx0, wy0, sigma=2.0)
-    free = landw & (d_path > CLEAR) & ~water0[sub]
+    free = landw & (d_path > CLEAR) & ~water0[sub] & ~townmask
     forest = {'trees': 0, 'fill_sq': 0.0, 'old_trees_cleared': 0, 'old_tufts_cleared': 0, 'tints_clipped': {}}
     if vis:
         for k, ks in (('trees', 'old_trees_cleared'), ('tufts', 'old_tufts_cleared')):         # what was growing there is cleared (gotcha 2); the standard forest replaces it
@@ -432,20 +520,20 @@ def merge_smr(w, layout, edges, seed=71):
         w['geo']['fill'] = list(w['geo'].get('fill') or []) + AA._contours(band, wx0, wy0, sigma=2.0)
         forest['fill_sq'] = round(float(band.sum()) / R8 / R8, 1)
         ys, xs = np.nonzero(band & free); placed = []; gridc = {}
-        for i in nrng.permutation(len(ys)):
+        for i in np.argsort(_hash(WXg[ys, xs], WYg[ys, xs], 21), kind='stable'):
             x, y = WXg[ys[i], xs[i]], WYg[ys[i], xs[i]]; gk = (int(x // 1.0), int(y // 1.0)); ok = True
             for dx in (-1, 0, 1):
                 for dy in (-1, 0, 1):
                     if any(math.dist(q, (x, y)) < 1.0 for q in gridc.get((gk[0] + dx, gk[1] + dy), ())): ok = False
             if ok: gridc.setdefault(gk, []).append((x, y)); placed.append((round(float(x), 3), round(float(y), 3)))
-        w['trees'] = list(w['trees']) + [[x, y, round(rng.uniform(0.85, 1.15), 2), rng.choice(['w', 'w', 'd']), rng.choice([0, 1, 2])] for x, y in placed]
+        w['trees'] = list(w['trees']) + [[x, y, round(0.85 + 0.3 * float(_hash(x, y, 2)), 2), ['w', 'w', 'd'][int(float(_hash(x, y, 4)) * 3)], int(float(_hash(x, y, 3)) * 3)] for x, y in placed]
         forest['trees'] = len(placed)
         free &= ~band                                                          # (no hills / peaks sprites inside the forest band)
     report['ashen_connection']['forest'] = forest
     out = {'m': [], 'h': [], 'd': []}
     for c in ('m', 'h', 'd'):
         ys, xs = np.nonzero(on & (tcls == c) & free)
-        order = nrng.permutation(len(ys)); placed = []; gridc = {}
+        order = np.argsort(_hash(WXg[ys, xs], WYg[ys, xs], 11 + ord(c)), kind='stable'); placed = []; gridc = {}
         cs = SPRITE[c]
         for i in order:
             x, y = WXg[ys[i], xs[i]], WYg[ys[i], xs[i]]; gk = (int(x // cs), int(y // cs)); ok = True
@@ -457,9 +545,9 @@ def merge_smr(w, layout, edges, seed=71):
                 if not ok: break
             if ok: gridc.setdefault(gk, []).append((x, y)); placed.append((round(float(x), 3), round(float(y), 3)))
         out[c] = placed
-    w['peaks'] = list(w['peaks']) + [[x, y, round(rng.uniform(0.9, 1.25), 2), 'm', rng.choice([0, 0, 1, 1, 2])] for x, y in out['m']]
-    w['hills'] = list(w['hills']) + [[x, y, round(rng.uniform(0.85, 1.2), 2), 'h', rng.choice([0, 1, 2])] for x, y in out['h']]
-    w['trees'] = list(w['trees']) + [[x, y, round(rng.uniform(0.85, 1.15), 2), 'd', rng.choice([0, 1, 2])] for x, y in out['d']]
+    w['peaks'] = list(w['peaks']) + [[x, y, round(0.9 + 0.35 * float(_hash(x, y, 2)), 2), 'm', [0, 0, 1, 1, 2][int(float(_hash(x, y, 3)) * 5)]] for x, y in out['m']]
+    w['hills'] = list(w['hills']) + [[x, y, round(0.85 + 0.35 * float(_hash(x, y, 2)), 2), 'h', int(float(_hash(x, y, 3)) * 3)] for x, y in out['h']]
+    w['trees'] = list(w['trees']) + [[x, y, round(0.85 + 0.3 * float(_hash(x, y, 2)), 2), 'd', int(float(_hash(x, y, 3)) * 3)] for x, y in out['d']]
     report['terrain'] = {'barren_sq': round(float(bar.sum()) / R8 / R8, 1), 'peaks': len(out['m']), 'hills': len(out['h']), 'trees': len(out['d'])}
 
     ymax = max(allp[:, 1].max() + 14, 0)                                          # (room below the range for the west sea to taper off)

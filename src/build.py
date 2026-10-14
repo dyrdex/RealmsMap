@@ -144,6 +144,9 @@ print('west sea and marina:',_wsea)
 from route_fix import fix_routes                                 # routes along the trade routes drawn unbroken; the Ofcol Shortcut portal (owner, Oct 13)
 w,_rf=fix_routes(w,[_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL()])
 print('routes traced again:',_rf)
+from owner_edits import apply_edits                              # lines and places the owner asked to take out (Oct 14)
+w,_oe=apply_edits(w)
+print('owner edits:',_oe)
 for _p in w['places']:                                          # owner's renames: the place keeps its old name as its key for the label tweaks
     if _p['name']=='Ofcol': _p['key']='Ofcol'; _p['name']='New Ofcol'
 w['places']=[_p for _p in w['places'] if not (_p['name']=='New Ofcol' and _p.get('key')!='Ofcol')]   # the Woods' own New Ofcol marker removed (owner, Oct 10)
