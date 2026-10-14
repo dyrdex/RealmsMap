@@ -125,6 +125,21 @@ def merge_smr(w, layout, edges, seed=71):
                 if a in inn_rooms or b in inn_rooms: G[a].discard(b); G[b].discard(a)
         for v in [v for v in G if not G[v]]: del G[v]
     links[:] = [(a, b) for a, b in links if a not in inn_rooms and b not in inn_rooms]
+    tun_rooms = set()
+    for U_ in CL.get('undergrounds', []):                                       # the river's tunnel is not a path: its rooms (but not the surface rooms it opens onto) leave the path graphs
+        tun_rooms |= set(U_['path']) - {U_['path'][-1]} | {U_['grotto']}
+    for G in (GS, GT):
+        for a in list(G):
+            for b in list(G[a]):
+                if (a in tun_rooms or b in tun_rooms) or (a in {U_['path'][-1] for U_ in CL.get('undergrounds', [])} and b in tun_rooms): G[a].discard(b); G[b].discard(a)
+        for v in [v for v in G if not G[v]]: del G[v]
+    for U_ in CL.get('undergrounds', []):                                       # the edge between the far-end room and the tunnel goes too (it is the tunnel)
+        e_ = U_['path'][-1]
+        for G in (GS,):
+            for b in list(G.get(e_, [])):
+                if b in tun_rooms: G[e_].discard(b); G[b].discard(e_)
+    links[:] = [(a, b) for a, b in links if a not in tun_rooms and b not in tun_rooms]
+    uds[:] = [(a, b) for a, b in uds if a not in tun_rooms and b not in tun_rooms]
     climb_rooms = [set(c['rooms']) for c in CL.get('climbs', [])]
     for cr in climb_rooms:                                                      # the thin lines between the rooms of a climb are replaced by its wide rocky path
         uds[:] = [(a, b) for a, b in uds if not (a in cr and b in cr)]
@@ -595,6 +610,63 @@ def merge_smr(w, layout, edges, seed=71):
     w['trees'] = list(w['trees']) + [[x, y, round(0.85 + 0.3 * float(_hash(x, y, 2)), 2), 'd', int(float(_hash(x, y, 3)) * 3)] for x, y in out['d']]
     report['terrain'] = {'barren_sq': round(float(bar.sum()) / R8 / R8, 1), 'peaks': len(out['m']), 'hills': len(out['h']), 'trees': len(out['d'])}
 
+    # ---- the Darkhaven River's tunnel (owner, Oct 14): an underground river, shown as if seen through the ground
+    def catmull(P_, n=10):
+        P_ = [np.array(p, float) for p in P_]; ext = [2 * P_[0] - P_[1]] + P_ + [2 * P_[-1] - P_[-2]]; out = []
+        for i in range(1, len(ext) - 2):
+            p0, p1, p2, p3 = ext[i - 1], ext[i], ext[i + 1], ext[i + 2]
+            for k in range(n):
+                t = k / n; out.append(0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 3))
+        out.append(ext[-2]); return np.array(out)
+    unders = []
+    for U in CL.get('undergrounds', []):
+        pr = U['path']
+        if not all(v in pos for v in pr): continue
+        mouth = np.array([pos[pr[0]][0], pos[pr[0]][1] + 0.45])                    # the river goes in a little south of room 1's centre
+        far = np.array(pos[pr[-1]]); prev_ = np.array(pos[pr[-2]]); ud_ = (prev_ - far) / (np.linalg.norm(prev_ - far) or 1)    # from the far end toward the tunnel (north-east)
+        key = [mouth] + [np.array(pos[v]) for v in pr[1:-1]] + [far + ud_ * 0.9]     # (the tunnel mouth at the far end sits 0.9 beyond the waterfall room)
+        dense = catmull(key, 12); seg = np.r_[0, np.cumsum(np.hypot(*np.diff(dense, axis=0).T))]
+        kidx = [0] + [int(np.argmin(np.hypot(*(dense - np.array(pos[v])).T))) for v in pr[1:-1]] + [len(dense) - 1]
+        RW = {pr[0]: 0.55, 22559: 0.5, 2: 0.8, 3: 0.42, 4: 0.6, 5: 0.6, 11: 0.55, 12: 0.72, pr[-1]: 0.8}
+        kw = [0.55] + [RW.get(v, 0.5) for v in pr[1:-1]] + [0.8]
+        rw = np.interp(seg, [seg[i] for i in kidx], kw)
+        tan = np.gradient(dense, axis=0); tan /= np.maximum(np.hypot(*tan.T), 1e-9)[:, None]; nor = np.c_[-tan[:, 1], tan[:, 0]]
+        wt = rw + 0.75                                                           # the tunnel is a little wider than its river
+        at = lambda v: int(np.argmin(np.hypot(*(dense - np.array(pos[v])).T)))
+        rnd = lambda arr: [[round(float(x), 2), round(float(y), 2)] for x, y in arr]
+        riv = rnd(np.r_[dense + nor * (rw / 2)[:, None], (dense - nor * (rw / 2)[:, None])[::-1]]); band = rnd(np.r_[dense + nor * (wt / 2)[:, None], (dense - nor * (wt / 2)[:, None])[::-1]])
+        wl = rnd(dense + nor * (wt / 2)[:, None]); wr = rnd(dense - nor * (wt / 2)[:, None])
+        core = rnd(np.r_[dense + nor * (rw * 0.18)[:, None], (dense - nor * (rw * 0.18)[:, None])[::-1]])
+        chev = []                                                                # faint arrows: the water runs toward the mouth at room 1
+        for k in range(8, len(dense) - 8, 18):
+            p_, t_ = dense[k], tan[k]; n_ = nor[k]
+            chev.append([[round(float(p_[0] - t_[0] * 0.16 + n_[0] * 0.13), 2), round(float(p_[1] - t_[1] * 0.16 + n_[1] * 0.13), 2)], [round(float(p_[0] - t_[0] * 0.0), 2), round(float(p_[1] - t_[1] * 0.0), 2)], [round(float(p_[0] - t_[0] * 0.16 - n_[0] * 0.13), 2), round(float(p_[1] - t_[1] * 0.16 - n_[1] * 0.13), 2)]])
+        # features, from the rooms' own descriptions
+        ft = {}
+        i5 = at(U['lake']); ft['lake'] = {'x': round(float(pos[U['lake']][0]) - 0.1, 2), 'y': round(float(pos[U['lake']][1]) + 0.1, 2), 'rx': 1.5, 'ry': 1.05, 'a': round(float(np.degrees(np.arctan2(tan[i5][1], tan[i5][0]))), 1)}
+        g6 = pos[U['grotto']]; ft['grotto'] = {'x': round(g6[0], 2), 'y': round(g6[1], 2), 'r': 1.0, 'lake': [round(pos[U['lake']][0], 2), round(pos[U['lake']][1], 2)], 'surface': [round(pos[U['surface_exit']][0], 2), round(pos[U['surface_exit']][1], 2)] if U.get('surface_exit') in pos and math.dist(pos[U['surface_exit']], g6) < 14 else None}
+        i3 = at(U['rapids']); ft['rapids'] = [[round(float(dense[k][0]), 2), round(float(dense[k][1]), 2), round(float(np.degrees(np.arctan2(tan[k][1], tan[k][0]))), 1)] for k in range(max(0, i3 - 6), min(len(dense), i3 + 7), 3)]
+        i4 = at(U['rain']); rain = []
+        for k in range(9):
+            t_ = (k - 4) / 4.0; q_ = dense[i4] + nor[i4] * t_ * 0.55 + tan[i4] * (((k * 37) % 7) - 3) * 0.13
+            rain.append([round(float(q_[0]), 2), round(float(q_[1]), 2)])
+        ft['rain'] = rain
+        st = []
+        i11, i12, i5b = at(U['stalactites'][0]), at(U['stalactites'][1]), at(U['lake'])
+        for k in range(min(i11, i12) - 4, max(i11, i12) + 5, 2):
+            for sd in (-1, 1):
+                if 0 <= k < len(dense): q_ = dense[k] + nor[k] * sd * (wt[k] / 2 - 0.09); st.append([round(float(q_[0]), 2), round(float(q_[1]), 2), round(0.07 + 0.05 * float(_hash(q_[0], q_[1], 31)), 2), sd])
+        ft['stalactites'] = st
+        ft['fall'] = {'x': round(float(far[0]), 2), 'y': round(float(far[1]), 2), 'dx': round(float(ud_[0]), 3), 'dy': round(float(ud_[1]), 3)}
+        ft['exit_mouth'] = {'x': round(float(far[0] + ud_[0] * 0.9), 2), 'y': round(float(far[1] + ud_[1] * 0.9), 2), 'dx': round(float(ud_[0]), 3), 'dy': round(float(ud_[1]), 3)}
+        ft['bend'] = {'x': round(float(pos[U['bend']][0]), 2), 'y': round(float(pos[U['bend']][1]), 2)}
+        unders.append({'name': U['name'], 'band': band, 'river': riv, 'core': core, 'wall_l': wl, 'wall_r': wr, 'chev': chev, 'mouth': {'x': round(float(pos[pr[0]][0]), 2), 'y': round(float(pos[pr[0]][1]) + 0.55, 2)}, 'features': ft})
+        report.setdefault('undergrounds', {})[U['name']] = {'length': round(float(seg[-1]), 1), 'points': len(dense), 'rooms_not_drawn_as_path': sorted(tun_rooms), 'features': sorted(ft)}
+        w['streams'] = list(w['streams']) + [[[round(float(far[0] - ud_[0] * 1.9), 2), round(float(far[1] - ud_[1] * 1.9), 2)], [round(float(far[0] - ud_[0] * 0.3), 2), round(float(far[1] - ud_[1] * 0.3), 2)]]]   # the river arriving at the falls, from the valley (surface)
+        for k_ in ('trees', 'tufts'):                                            # nothing grows on the cave mouths / waterfall
+            for ax, ay in ((pos[pr[0]][0], pos[pr[0]][1] + 0.5), (far[0], far[1])):
+                w[k_] = [t for t in w[k_] if not (abs(t[0] - ax) < 1.1 and abs(t[1] - ay) < 1.1)]
+    w['smrunder'] = unders
     # ---- inns (owner, Oct 14): an inn graphic like the Ashen Forest Inn's, with a small label; its rooms are not drawn as road
     for inn in CL.get('inns', []):
         x, y = inn['x'], inn['y']

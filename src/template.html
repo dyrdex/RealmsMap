@@ -276,6 +276,28 @@ FWPATHS+=(WD.seadash||[]).map(p=>`<path d="M${p.map(q=>q.join(' ')).join('L')}" 
 {const SW=(WD.seaways||[]).map(p=>p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L'));if(SW.length){const L=(sw,col,extra,op)=>`<g opacity="${op}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" ${extra||''}>`+SW.map(d=>`<path d="${d}"/>`).join('')+`</g>`;
   FWPATHS+=L(.5,'var(--seaway-edge)','',.55)+L(.32,'var(--seaway)','',1)+L(.07,'var(--seaway-hi)','stroke-dasharray=".35 .3"',.5);}}
 WILD+=FWPATHS;
+/* the Darkhaven River's tunnel: an underground river, drawn as if seen through the ground (owner, Oct 14) */
+WILD+=(()=>{const P=a=>a.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' ')+' Z',L=a=>a.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' ');let g='';
+ for(const U of (WD.smrunder||[])){const f=U.features;
+  g+=`<defs><filter id="ugB" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".16"/></filter><filter id="ugM" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation=".22"/></filter></defs>`;
+  g+=`<path d="${P(U.band)}" fill="#05080c" opacity=".38" filter="url(#ugB)"/>`;
+  g+=`<path d="${L(U.wall_l)}" stroke="#9fb8c8" stroke-width=".05" stroke-dasharray=".16 .12" fill="none" opacity=".5"/><path d="${L(U.wall_r)}" stroke="#9fb8c8" stroke-width=".05" stroke-dasharray=".16 .12" fill="none" opacity=".5"/>`;
+  g+=`<path d="${P(U.river)}" fill="var(--water)" opacity=".5" filter="url(#ugB)"/><path d="${P(U.core)}" fill="#bfe3f5" opacity=".16"/>`;
+  g+=U.chev.map(c=>`<path d="${L(c)}" stroke="#d6eefa" stroke-width=".04" fill="none" opacity=".5" stroke-linecap="round"/>`).join('');
+  const lk=f.lake;g+=`<g transform="translate(${lk.x},${lk.y}) rotate(${lk.a})"><ellipse rx="${lk.rx}" ry="${lk.ry}" fill="#05080c" opacity=".3" filter="url(#ugB)"/><ellipse rx="${lk.rx-.12}" ry="${lk.ry-.12}" fill="var(--water)" opacity=".55"/><ellipse rx="${lk.rx*.55}" ry="${lk.ry*.5}" fill="#bfe3f5" opacity=".12"/><path d="M${-lk.rx*.5} ${-lk.ry*.2} q .5 -.15 1 0 M${-lk.rx*.2} ${lk.ry*.35} q .5 -.15 .9 0" stroke="#d6eefa" stroke-width=".035" fill="none" opacity=".4"/></g>`;
+  const gr=f.grotto;g+=`<path d="M${gr.x} ${gr.y} L${gr.lake[0]} ${gr.lake[1]}" stroke="#05080c" stroke-width=".4" opacity=".3" filter="url(#ugB)"/><path d="M${gr.x} ${gr.y} L${gr.lake[0]} ${gr.lake[1]}" stroke="var(--water)" stroke-width=".22" opacity=".5"/>`;
+  if(gr.surface)g+=`<path d="M${gr.x} ${gr.y} L${gr.surface[0]} ${gr.surface[1]}" stroke="#9fb8c8" stroke-width=".05" stroke-dasharray=".14 .14" fill="none" opacity=".45"/>`;
+  g+=`<circle cx="${gr.x}" cy="${gr.y}" r="${gr.r}" fill="#05080c" opacity=".38" filter="url(#ugB)"/><circle cx="${gr.x}" cy="${gr.y}" r="${gr.r*.82}" fill="var(--water)" opacity=".5"/><path d="M${gr.x-.55} ${gr.y} a.55 .55 0 0 1 1.1 0 M${gr.x-.3} ${gr.y+.1} a.3 .3 0 0 0 .6 0" stroke="#d6eefa" stroke-width=".04" fill="none" opacity=".5"/><circle cx="${gr.x}" cy="${gr.y}" r="${gr.r}" fill="none" stroke="#9fb8c8" stroke-width=".05" stroke-dasharray=".16 .12" opacity=".5"/>`;
+  g+=f.rapids.map(r=>`<path d="M-.1 -.17 L.1 0 L-.1 .17" transform="translate(${r[0]},${r[1]}) rotate(${r[2]})" stroke="#eaf7ff" stroke-width=".05" fill="none" opacity=".75"/>`).join('');
+  g+=f.rain.map(r=>`<path d="M${r[0]} ${r[1]-.2} l.03 .17" stroke="#d6eefa" stroke-width=".03" opacity=".7"/><circle cx="${r[0]}" cy="${r[1]+.03}" r=".035" fill="none" stroke="#eaf7ff" stroke-width=".02" opacity=".6"/>`).join('');
+  g+=f.stalactites.map(s=>`<path d="M${s[0]-s[2]} ${s[1]} L${s[0]} ${s[1]+s[3]*s[2]*1.6} L${s[0]+s[2]} ${s[1]} Z" fill="#8c96a0" opacity=".6"/>`).join('');
+  const bd=f.bend;g+=`<circle cx="${bd.x}" cy="${bd.y}" r=".06" fill="none"/>`;
+  const em=f.exit_mouth,fl=f.fall,a=Math.atan2(fl.dy,fl.dx)*180/Math.PI;
+  g+=`<g transform="translate(${em.x},${em.y}) rotate(${a})"><path d="M0 -.62 Q.5 -.62 .5 0 Q.5 .62 0 .62 Z" fill="#05080c" opacity=".55"/><path d="M0 -.62 Q.5 -.62 .5 0 Q.5 .62 0 .62" stroke="#9fb8c8" stroke-width=".06" fill="none" opacity=".7"/></g>`;
+  g+=`<g transform="translate(${fl.x},${fl.y}) rotate(${a})"><path d="M.1 -.12 L-.9 -.55 L-.95 -.35 L.05 0 Z M.1 .12 L-.9 .55 L-.95 .35 L.05 0 Z" fill="var(--water)"/><path d="M-.2 -.2 L-.85 -.45 M-.2 .2 L-.85 .45 M-.3 -.05 L-.9 -.2 M-.3 .05 L-.9 .2" stroke="#eaf7ff" stroke-width=".04" opacity=".7"/><ellipse cx="-.95" cy="0" rx=".5" ry=".4" fill="#eaf7ff" opacity=".4" filter="url(#ugM)"/></g>`;
+  const m=U.mouth;g+=`<g transform="translate(${m.x},${m.y})"><path d="M-.6 .2 Q-.6 -.55 0 -.55 Q.6 -.55 .6 .2 Z" fill="#05080c" opacity=".7"/><path d="M-.6 .2 Q-.6 -.55 0 -.55 Q.6 -.55 .6 .2" stroke="#7d8790" stroke-width=".09" fill="none"/></g>`;
+ }
+ return g})();
 WILD+=(WD.smrmarks||[]).map(r=>`<use href="#${r[3]==='b'?'bd':'cg'+r[3]}" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');   /* rough-terrain crags and boulders, above the clearings and the climb */
 for(const m of (WD.fwmazes||[])){if(m.style!=='dark')continue;const d=ring(m.poly);WILD+=`<path d="${d}" fill="var(--dmaze-fill)"/><path d="${d}" fill="url(#dmazePat)" opacity=".8"/><path d="${d}" fill="none" stroke="var(--dmaze-line)" stroke-width=".09" stroke-dasharray=".35 .2"/>`;}           // dark mazes hide the paths under them; their names go on top
 for(const m of (WD.fwmazes||[])){WILD+=`<text x="${m.lx??m.cx}" y="${(m.ly??m.cy)+.2}" text-anchor="middle" font-size="${m.fs||.7}" font-style="italic" font-weight="600" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.24px;stroke-linejoin:round">${String(m.name).replace(/&/g,'&amp;')}</text>`;}                    // the maze names go on top of the roads
@@ -305,13 +327,13 @@ h+=`<rect x="-400" y="-400" width="800" height="800" fill="var(--paper)"/>`;
 h+=WILD;
 RINGDRAW();
 // river: wobbly band with ripples
-{const rp=[[-8.4,14.0],[-4,14.0],[-1,14.2],[3,14.05],[6,14.3],[9,14.5],[12,14.1]];let d=curve(rp);
+{const rp=[[-8.4,14.0],[-4,14.0],[-1,14.2],[3,14.05],[4.8,14.2],[5.45,14.6],[5.55,15.25]];let d=curve(rp);
  /* its west end (owner, Oct 14): 3.6 rooms shorter, then it curves north and dwindles to a thread that disappears */
  const tail=[[-8.4,14.0],[-9.5,13.95],[-10.4,13.55],[-10.95,12.8],[-11.15,11.9],[-11.2,11.1]],N=26,seg=[];
  for(let i=0;i<=N;i++){const s=i/N,k=s*(tail.length-1),j=Math.min(tail.length-2,Math.floor(k)),f=k-j,A=tail[j],B=tail[j+1];seg.push([A[0]+(B[0]-A[0])*f,A[1]+(B[1]-A[1])*f,1.12*Math.pow(1-s,1.7)+.05*(1-s)])}
  let shore='',water='';for(let i=0;i<N;i++){const a=seg[i],b=seg[i+1],wd=(a[2]+b[2])/2;shore+=`<line x1="${a[0].toFixed(3)}" y1="${a[1].toFixed(3)}" x2="${b[0].toFixed(3)}" y2="${b[1].toFixed(3)}" stroke="var(--w-shore)" stroke-width="${(wd+.16).toFixed(3)}" stroke-linecap="round" opacity=".55"/>`;water+=`<line x1="${a[0].toFixed(3)}" y1="${a[1].toFixed(3)}" x2="${b[0].toFixed(3)}" y2="${b[1].toFixed(3)}" stroke="var(--water)" stroke-width="${wd.toFixed(3)}" stroke-linecap="round"/>`}
  h+=`<path d="${d}" stroke="var(--w-shore)" stroke-width="1.28" fill="none" stroke-linecap="round" opacity=".55"/>`+shore+`<path d="${d}" stroke="var(--water)" stroke-width="1.12" fill="none" stroke-linecap="round"/>`+water;
- for(let i=0;i<22;i++){const x=-11+i*1.05+R0()*.4,y=13.85+Math.sin(x*.5)*.15+R0()*.35;if(x>-8.0)h+=`<path d="M${x.toFixed(2)} ${y.toFixed(2)} q .18 -.1 .36 0" stroke="var(--w-shore)" stroke-width=".04" fill="none" opacity=".7"/>`}}   /* (same 22 random draws as before, so nothing drawn after it moves; the ripples on the removed stretch are skipped) */
+ for(let i=0;i<22;i++){const x=-11+i*1.05+R0()*.4,y=13.85+Math.sin(x*.5)*.15+R0()*.35;if(x>-8.0&&x<5)h+=`<path d="M${x.toFixed(2)} ${y.toFixed(2)} q .18 -.1 .36 0" stroke="var(--w-shore)" stroke-width=".04" fill="none" opacity=".7"/>`}}   /* (same 22 random draws as before, so nothing drawn after it moves; the ripples on the removed stretch are skipped) */
 h+=BRIDGEH;
 if(WD.southpath){const sp=curve(WD.southpath);
   h+=DIRT(sp,.28);}

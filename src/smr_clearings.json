@@ -1,5 +1,5 @@
 {
-  "_doc": "Hand-made clearings on the Southern Mountain Range (smr_merge.py). 'boxes': a rectangle [x0, y0, x1, y1] (upper-left and bottom-right corners) drawn as one dirt clearing; every connection with BOTH ends inside it is not drawn (with 'faint_paths' they are drawn very lightly instead; with 'rough_marks' crags and boulders are scattered between them). 'add_rooms': {'room': id, 'to': a room (or rooms) already in the clearing it joins, 'mode': 'stem' (default: the room's square plus a band to the nearest part of that clearing) or 'hull' (everything between the room and the 'to' rooms is filled)}; a bare number joins the nearest clearing. Hidden rooms may be named. 'climbs': a rocky path up a mountain through the four rooms [a, b, c, d] (corners in order); the thin lines between those rooms are not drawn. Every thin path stops at the edge of a clearing it runs into (smr_merge.py). 'towns': a box [x0, y0, x1, y1] drawn as a top-down village instead of paths: the streets come from its street rooms, buildings from its rooms (inside rooms, shrine, church, inn, shop), a plaza at the well, a few filler houses and trees; nothing else is drawn inside it, paths stop at its edge, and it gets a name label. 'faint_links' (on a box): [a, b] pairs whose path is shown in the clearing's light style where it runs inside the box (the part outside stops at the edge as usual). 'gate' (on a town): rooms [outside room, spacer, street room] joined by a grand paved road with a town gate where it crosses the town's north edge. 'inns': a Trade Route room drawn as an inn graphic with a small label; the rooms listed are its interior and are not drawn as road.",
+  "_doc": "Hand-made clearings on the Southern Mountain Range (smr_merge.py). 'boxes': a rectangle [x0, y0, x1, y1] (upper-left and bottom-right corners) drawn as one dirt clearing; every connection with BOTH ends inside it is not drawn (with 'faint_paths' they are drawn very lightly instead; with 'rough_marks' crags and boulders are scattered between them). 'add_rooms': {'room': id, 'to': a room (or rooms) already in the clearing it joins, 'mode': 'stem' (default: the room's square plus a band to the nearest part of that clearing) or 'hull' (everything between the room and the 'to' rooms is filled)}; a bare number joins the nearest clearing. Hidden rooms may be named. 'climbs': a rocky path up a mountain through the four rooms [a, b, c, d] (corners in order); the thin lines between those rooms are not drawn. Every thin path stops at the edge of a clearing it runs into (smr_merge.py). 'towns': a box [x0, y0, x1, y1] drawn as a top-down village instead of paths: the streets come from its street rooms, buildings from its rooms (inside rooms, shrine, church, inn, shop), a plaza at the well, a few filler houses and trees; nothing else is drawn inside it, paths stop at its edge, and it gets a name label. 'faint_links' (on a box): [a, b] pairs whose path is shown in the clearing's light style where it runs inside the box (the part outside stops at the edge as usual). 'gate' (on a town): rooms [outside room, spacer, street room] joined by a grand paved road with a town gate where it crosses the town's north edge. 'inns': a Trade Route room drawn as an inn graphic with a small label; the rooms listed are its interior and are not drawn as road. 'undergrounds': the Darkhaven River's tunnel: [path] lists the rooms from the mouth (room 1) to the far end (the waterfall room); drawn as a ghosted, blurred dark band with dashed walls and a faded river over the surface, with a cave mouth at the start, rapids, a downpour, a lake with mist, a grotto, stalactites and a twin waterfall with its mist and tunnel mouth; none of these rooms is drawn as a path. The rooms named (bend, rapids, rain, lake, grotto, stalactites, fall) place those features.",
   "boxes": [
     {
       "name": "Rough Terrain",
@@ -149,6 +149,38 @@
       "x": -12.06,
       "y": 53.3,
       "label_dy": -1.7
+    }
+  ],
+  "undergrounds": [
+    {
+      "name": "Darkhaven River tunnel",
+      "mouth_room": 1,
+      "path": [
+        1,
+        22559,
+        22560,
+        22561,
+        22562,
+        22563,
+        2,
+        3,
+        4,
+        5,
+        11,
+        12,
+        13
+      ],
+      "bend": 2,
+      "rapids": 3,
+      "rain": 4,
+      "lake": 5,
+      "grotto": 6,
+      "surface_exit": 7,
+      "stalactites": [
+        11,
+        12
+      ],
+      "fall": 13
     }
   ]
 }
