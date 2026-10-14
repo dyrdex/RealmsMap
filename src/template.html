@@ -221,6 +221,8 @@ const TOWN=L=>(L||[]).map(T=>{let s='';const g=T.ground;
   const sd=T.streets.map(p=>p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L'));
   const SL=(sw,col,extra,op)=>`<g fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" opacity="${op}" ${extra||''}>`+sd.map(d=>`<path d="${d}"/>`).join('')+`</g>`;
   s+=SL(.72,'#2B2418','',.4)+SL(.54,'var(--g-wall)','',.95)+SL(.2,'#B3A583','stroke-dasharray=".18 .15"',.5);   /* the main streets: cobbles with a worn line */
+  if(T.road&&T.road.length>1){const rd=T.road.length>2?curve(T.road):'M'+T.road.map(q=>q.join(' ')).join('L'),RW=T.road_w||.95;const RL=(sw,col,extra,op)=>`<path d="${rd}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" opacity="${op}" ${extra||''}/>`;
+    s+=RL((RW+.55).toFixed(2),'#2B2418','',.38)+RL((RW+.24).toFixed(2),'var(--g-wall)','',1)+RL(RW,'#B3A583','',1)+RL((RW*.78).toFixed(2),'var(--g-stone)','',.45)+RL('.06','#2B2418','stroke-dasharray=".5 .3"',.45)}   /* the grand road into the town: kerb stones, paving */
   if(T.plaza){const[px_,py_,pr]=T.plaza;s+=`<circle cx="${px_}" cy="${py_}" r="${pr}" fill="var(--g-stone)" stroke="#2B2418" stroke-width=".08" opacity=".95"/><circle cx="${px_}" cy="${py_}" r="${(pr*.66).toFixed(2)}" fill="none" stroke="var(--g-wall)" stroke-width=".06"/><circle cx="${px_}" cy="${py_}" r=".24" fill="#20241f" stroke="var(--g-wall)" stroke-width=".08"/><circle cx="${px_}" cy="${py_}" r=".1" fill="var(--water)"/>`}
   for(const t of T.trees)s+=`<ellipse cx="${t[0]+.06}" cy="${t[1]+.12}" rx="${t[2]}" ry="${(t[2]*.8).toFixed(2)}" fill="var(--t-shade)" opacity=".5"/><circle cx="${t[0]}" cy="${t[1]}" r="${t[2]}" fill="var(--t-mid)"/><circle cx="${t[0]-t[2]*.25}" cy="${t[1]-t[2]*.25}" r="${(t[2]*.55).toFixed(2)}" fill="var(--t-light)" opacity=".7"/>`;
   for(const b of T.buildings){const hw=b.w/2,hh=b.h/2,hz=b.w>=b.h;let q='';
@@ -233,6 +235,13 @@ const TOWN=L=>(L||[]).map(T=>{let s='';const g=T.ground;
       if(b.k==='inn')q+=hz?`<line x1="${-hw+.05}" y1="${-hh*.5}" x2="${hw-.05}" y2="${-hh*.5}" stroke="#00000044" stroke-width=".04"/><circle cx="${-hw*.55}" cy="${hh+.06}" r=".08" fill="var(--g-lit)"/>`:'';
       if(b.k==='shop')q+=`<rect x="${-hw}" y="${hh-.14}" width="${b.w}" height=".16" fill="var(--g-cloth)" opacity=".8"/>`}
     s+=`<g transform="translate(${b.x},${b.y})">${q}</g>`}
+  if(T.gate){const G=T.gate;let q='';const tw=1.0,tr=.5;
+    q+=`<rect x="${-tw-tr-.95}" y="-.15" width=".95" height=".3" fill="var(--g-stone)" stroke="var(--g-line)" stroke-width=".04"/><rect x="${tw+tr}" y="-.15" width=".95" height=".3" fill="var(--g-stone)" stroke="var(--g-line)" stroke-width=".04"/>`;   /* wall each side */
+    q+=`<rect x="${-tw}" y="-.4" width="${2*tw}" height=".8" fill="var(--g-stone)" stroke="var(--g-line)" stroke-width=".05"/><rect x="-.55" y="-.4" width="1.1" height=".8" fill="#1f1b14" opacity=".82"/>`;   /* the gatehouse and the passage under it */
+    q+=`<line x1="-.4" y1="-.38" x2="-.4" y2=".38" stroke="var(--g-wall)" stroke-width=".04" opacity=".7"/><line x1="0" y1="-.38" x2="0" y2=".38" stroke="var(--g-wall)" stroke-width=".04" opacity=".7"/><line x1=".4" y1="-.38" x2=".4" y2=".38" stroke="var(--g-wall)" stroke-width=".04" opacity=".7"/>`;
+    for(const sx of [-1,1]){q+=`<circle cx="${sx*tw}" cy="0" r="${tr}" fill="var(--g-stone)" stroke="var(--g-line)" stroke-width=".06"/><circle cx="${sx*tw}" cy="0" r="${tr*.62}" fill="var(--g-wall)" stroke="var(--g-line)" stroke-width=".04"/><circle cx="${sx*tw}" cy="0" r=".08" fill="var(--g-lit)"/>`}   /* a round tower each side */
+    for(let k=-3;k<=3;k++)if(Math.abs(k*.3)>.58&&Math.abs(k*.3)<1.4)q+=`<rect x="${k*.3-.05}" y="-.45" width=".1" height=".1" fill="var(--g-wall)"/>`;
+    s+=`<g transform="translate(${G.x},${G.y})"><ellipse cx=".05" cy=".18" rx="1.7" ry=".6" fill="#000" opacity=".25"/>${q}</g>`}
   return s}).join('');   /* a village seen from above: streets, plaza and well, houses, church, trees (Edel) */
 let FWPATHS=PATCH(WD.smrpatch,'var(--dirt)','var(--dirt-edge)',.88)+FAINT(WD.smrfaint)+CLIMB(WD.smrclimb)+TOWN(WD.smrtowns);for(const p of (WD.fwtracks||[])){const rd=p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L');
   FWPATHS+=DIRT(rd,.3);}

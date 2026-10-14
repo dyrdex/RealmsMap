@@ -1,5 +1,5 @@
 {
-  "_doc": "Hand-made clearings on the Southern Mountain Range (smr_merge.py). 'boxes': a rectangle [x0, y0, x1, y1] (upper-left and bottom-right corners) drawn as one dirt clearing; every connection with BOTH ends inside it is not drawn (with 'faint_paths' they are drawn very lightly instead; with 'rough_marks' crags and boulders are scattered between them). 'add_rooms': {'room': id, 'to': a room (or rooms) already in the clearing it joins, 'mode': 'stem' (default: the room's square plus a band to the nearest part of that clearing) or 'hull' (everything between the room and the 'to' rooms is filled)}; a bare number joins the nearest clearing. Hidden rooms may be named. 'climbs': a rocky path up a mountain through the four rooms [a, b, c, d] (corners in order); the thin lines between those rooms are not drawn. Every thin path stops at the edge of a clearing it runs into (smr_merge.py). 'towns': a box [x0, y0, x1, y1] drawn as a top-down village instead of paths: the streets come from its street rooms, buildings from its rooms (inside rooms, shrine, church, inn, shop), a plaza at the well, a few filler houses and trees; nothing else is drawn inside it, paths stop at its edge, and it gets a name label.",
+  "_doc": "Hand-made clearings on the Southern Mountain Range (smr_merge.py). 'boxes': a rectangle [x0, y0, x1, y1] (upper-left and bottom-right corners) drawn as one dirt clearing; every connection with BOTH ends inside it is not drawn (with 'faint_paths' they are drawn very lightly instead; with 'rough_marks' crags and boulders are scattered between them). 'add_rooms': {'room': id, 'to': a room (or rooms) already in the clearing it joins, 'mode': 'stem' (default: the room's square plus a band to the nearest part of that clearing) or 'hull' (everything between the room and the 'to' rooms is filled)}; a bare number joins the nearest clearing. Hidden rooms may be named. 'climbs': a rocky path up a mountain through the four rooms [a, b, c, d] (corners in order); the thin lines between those rooms are not drawn. Every thin path stops at the edge of a clearing it runs into (smr_merge.py). 'towns': a box [x0, y0, x1, y1] drawn as a top-down village instead of paths: the streets come from its street rooms, buildings from its rooms (inside rooms, shrine, church, inn, shop), a plaza at the well, a few filler houses and trees; nothing else is drawn inside it, paths stop at its edge, and it gets a name label. 'faint_links' (on a box): [a, b] pairs whose path is shown in the clearing's light style where it runs inside the box (the part outside stops at the edge as usual). 'gate' (on a town): rooms [outside room, spacer, street room] joined by a grand paved road with a town gate where it crosses the town's north edge. 'inns': a Trade Route room drawn as an inn graphic with a small label; the rooms listed are its interior and are not drawn as road.",
   "boxes": [
     {
       "name": "Rough Terrain",
@@ -10,7 +10,13 @@
         17.5
       ],
       "faint_paths": true,
-      "rough_marks": true
+      "rough_marks": true,
+      "faint_links": [
+        [
+          593,
+          591
+        ]
+      ]
     }
   ],
   "add_rooms": [
@@ -87,6 +93,14 @@
         173
       ],
       "mode": "hull"
+    },
+    {
+      "room": 19997,
+      "to": [
+        309,
+        311
+      ],
+      "mode": "hull"
     }
   ],
   "climbs": [
@@ -112,7 +126,29 @@
       "label": [
         -14.45,
         67.35
-      ]
+      ],
+      "gate": {
+        "rooms": [
+          81,
+          134,
+          82
+        ],
+        "width": 0.95
+      }
+    }
+  ],
+  "inns": [
+    {
+      "name": "Suds 'n Stones",
+      "room": 9303,
+      "rooms": [
+        9303,
+        9304,
+        9305
+      ],
+      "x": -12.06,
+      "y": 53.3,
+      "label_dy": -1.7
     }
   ]
 }

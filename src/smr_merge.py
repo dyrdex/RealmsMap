@@ -29,6 +29,8 @@ X0, X1 = GF.X0, GF.X1
 YN = -215.0
 W = int((X1 - X0) * R8)
 SQ = 1.1             # a room's square (rooms are 1 x 1; a little more so that neighbours merge)
+MIN_STUB = 0.4       # a path that leads into a clearing but would vanish (outside part < VANISH) is still shown this much, so it is seen to lead in
+VANISH = 0.12
 CELL_MAX = 6.0       # exits longer than this do not make a cell (they are links, not neighbours)
 PAD = 0.55           # a clearing reaches half a room beyond the outer rooms
 MIN_PATCH = 3.0      # smallest clearing / wide pathway kept (sq rooms)
@@ -107,6 +109,22 @@ def merge_smr(w, layout, edges, seed=71):
                         if c.get('faint_paths'): faintG[a].add(b); faintG[b].add(a)      # ... or only very lightly
         uds[:] = [(a, b) for a, b in uds if not (a in boxed[i] and b in boxed[i])]
         links[:] = [(a, b) for a, b in links if not (a in boxed[i] and b in boxed[i])]     # (also the range's links to the Trade Route junction inside it)
+    for t_ in CL.get('towns', []):                                              # the gate road replaces the thin lines between its rooms
+        g_ = t_.get('gate')
+        if g_:
+            for a_, b_ in zip(g_['rooms'], g_['rooms'][1:]):
+                for G in (GS,):
+                    if a_ in G: G[a_].discard(b_)
+                    if b_ in G: G[b_].discard(a_)
+            uds[:] = [(a, b) for a, b in uds if not (a in g_['rooms'] and b in g_['rooms'])]
+            links[:] = [(a, b) for a, b in links if not (a in g_['rooms'] and b in g_['rooms'])]
+    inn_rooms = {v for i_ in CL.get('inns', []) for v in i_['rooms']}
+    for G in (GT,):                                                             # an inn's rooms are inside the building, not road
+        for a in list(G):
+            for b in list(G[a]):
+                if a in inn_rooms or b in inn_rooms: G[a].discard(b); G[b].discard(a)
+        for v in [v for v in G if not G[v]]: del G[v]
+    links[:] = [(a, b) for a, b in links if a not in inn_rooms and b not in inn_rooms]
     climb_rooms = [set(c['rooms']) for c in CL.get('climbs', [])]
     for cr in climb_rooms:                                                      # the thin lines between the rooms of a climb are replaced by its wide rocky path
         uds[:] = [(a, b) for a, b in uds if not (a in cr and b in cr)]
@@ -271,39 +289,54 @@ def merge_smr(w, layout, edges, seed=71):
     rpatch = AA._contours(rwide, wx0, wy0, sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
     # ---- thin paths never run over a clearing (owner, Oct 14): each stops where it enters one (it only shows that the path leads into it)
     dmask = AA._raster(dpatch, wx0, wy0, ww, hw) | townmask                          # (paths stop at a town's edge too)
+    clearmask = dmask & ~townmask
     def clip(lines, step=0.08, keep_every=4):
-        out = []; cut = 0
+        out = []; cut = 0; ext = 0
         for ln in lines:
-            pts = []                                                              # the line, sampled; remember which samples are inside a clearing
+            pts = []                                                              # the line, sampled; remember which samples are inside a clearing / a town
             for p, q in zip(ln[:-1], ln[1:]):
                 n_ = max(1, int(math.dist(p, q) / step))
                 pts += [(p[0] + (q[0] - p[0]) * k / n_, p[1] + (q[1] - p[1]) * k / n_) for k in range(n_)]
             pts.append(tuple(ln[-1]))
-            ins = []
+            ins = []; inc = []
             for x, y in pts:
-                c_, r_ = int((x - wx0) * R8), int((y - wy0) * R8)
-                ins.append(0 <= r_ < hw and 0 <= c_ < ww and bool(dmask[r_, c_]))
+                c_, r_ = int((x - wx0) * R8), int((y - wy0) * R8); ok_ = 0 <= r_ < hw and 0 <= c_ < ww
+                ins.append(ok_ and bool(dmask[r_, c_])); inc.append(ok_ and bool(clearmask[r_, c_]))
             if not any(ins): out.append(ln); continue
-            cut += 1; run = []
-            for pt, i_ in zip(pts, ins):
+            cut += 1; runs = []; run = []
+            for k, (pt, i_) in enumerate(zip(pts, ins)):
                 if i_:
-                    if len(run) >= 2: out.append(run)
+                    if len(run) >= 2: runs.append(run)
                     run = []
-                else: run.append(pt)
-            if len(run) >= 2: out.append(run)
-        res = []
-        for ln in out:
-            if isinstance(ln[0], tuple):                                           # a clipped run: thin it (a point every ~0.3), keep both ends
-                th = ln[::keep_every]
-                if th[-1] != ln[-1]: th.append(ln[-1])
-                ln = [[round(x, 2), round(y, 2)] for x, y in th]
-                if math.dist(ln[0], ln[-1]) < 0.12: continue                        # (a stub shorter than that shows nothing)
-            res.append(ln)
-        return res, cut
-    dirt_lines, cut1 = clip(dirt_lines); link_lines, cut2 = clip(link_lines); vis_c, cut3 = clip([vis]) if vis else ([], 0)
-    report['lines_stopped_at_a_clearing'] = {'trails': cut1, 'links': cut2, 'connection_to_670': cut3}
+                else: run.append((k, pt))
+            if len(run) >= 2: runs.append(run)
+            for run in runs:
+                k0, k1 = run[0][0], run[-1][0]; L_ = sum(math.dist(a[1], b[1]) for a, b in zip(run[:-1], run[1:]))
+                if L_ < VANISH:                                                    # a path that ends right at a clearing and would vanish still shows that it leads in: MIN_STUB long, into the clearing (not into a town); longer ones stop at the edge as before
+                    if k0 == 0 and k1 + 1 < len(pts):
+                        kk = k1
+                        while L_ < MIN_STUB and kk + 1 < len(pts) and inc[kk + 1]:
+                            L_ += math.dist(pts[kk], pts[kk + 1]); kk += 1; run.append((kk, pts[kk])); ext += 1
+                    elif k1 == len(pts) - 1 and k0 > 0:
+                        kk = k0
+                        while L_ < MIN_STUB and kk - 1 >= 0 and inc[kk - 1]:
+                            L_ += math.dist(pts[kk], pts[kk - 1]); kk -= 1; run.insert(0, (kk, pts[kk])); ext += 1
+                th = [p for _, p in run][::keep_every]
+                if th[-1] != run[-1][1]: th.append(run[-1][1])
+                l2 = [[round(x, 2), round(y, 2)] for x, y in th]
+                if len(l2) >= 2 and math.dist(l2[0], l2[-1]) >= 0.04: out.append(l2)
+        return out, cut, ext
+    dirt_lines, cut1, e1 = clip(dirt_lines); link_lines, cut2, e2 = clip(link_lines); vis_c, cut3, e3 = clip([vis]) if vis else ([], 0, 0)
+    report['lines_stopped_at_a_clearing'] = {'trails': cut1, 'links': cut2, 'connection_to_670': cut3, 'paths_that_would_vanish_kept': (e1 + e2 + e3)}
     # ---- the hand-made clearings' extras: their inner paths very lightly, rough-terrain marks between them
     faint_lines = _chains(faintG, pos, set(), 0.6) if faintG else []
+    for c in CL.get('boxes', []):                                              # (owner, Oct 14) a path that crosses into the box and should keep showing inside it, in the light style
+        x0_, y0_, x1_, y1_ = c['box']
+        for a_, b_ in c.get('faint_links', []):
+            if a_ not in pos or b_ not in pos or a_ in hidden or b_ in hidden: continue
+            n_ = 200; inside_pts = [(pos[a_][0] + (pos[b_][0] - pos[a_][0]) * k / n_, pos[a_][1] + (pos[b_][1] - pos[a_][1]) * k / n_) for k in range(n_ + 1)]
+            inside_pts = [p for p in inside_pts if x0_ <= p[0] <= x1_ and y0_ <= p[1] <= y1_]
+            if len(inside_pts) >= 2: faint_lines.append([[round(inside_pts[0][0], 2), round(inside_pts[0][1], 2)], [round(inside_pts[-1][0], 2), round(inside_pts[-1][1], 2)]])
     w['smrfaint'] = faint_lines
     road_s = _samples([_drawn(l) for l in w['etrtracks'] + road_lines if any(wx0 <= q[0] <= wx1 and wy0 <= q[1] <= wy1 for q in l)], 0.1)
     rtree = cKDTree(road_s) if len(road_s) else None
@@ -350,6 +383,18 @@ def merge_smr(w, layout, edges, seed=71):
                 aligned = best and (abs(best[1][1] - end[1]) <= 1.2 and abs(best[1][0] - end[0]) >= 0.5 or abs(best[1][0] - end[0]) <= 1.2 and abs(best[1][1] - end[1]) >= 0.5)
                 if aligned and not any(_nearest_on([[end, list(best[1])]], pos[v]) is not None and math.dist(_nearest_on([[end, list(best[1])]], pos[v]), pos[v]) < 0.6 for v in inside if not street_room(v) and not void(v) and not re.search(r'Well|Circle', nm(v))):
                     streets.append([[round(end[0], 2), round(end[1], 2)], [round(best[1][0], 2), round(best[1][1], 2)]])
+        road_d = None; gate_d = None
+        g_ = c.get('gate')
+        if g_ and all(v in pos for v in g_['rooms']):                          # the grand road into the town (owner, Oct 14), from where the cartyard clearing ends, through the gate, to the first street
+            gx_ = pos[g_['rooms'][1]][0]; gy_ = y0_ + 0.1                      # the gate stands in the town's north edge, over the spacer room; the road runs straight at it, then bends to the first street
+            ys_ = pos[g_['rooms'][0]][1]
+            for yy_ in np.arange(pos[g_['rooms'][0]][1], gy_, 0.04):            # where the road leaves the cartyard clearing (it starts 0.2 inside it, so the join is clean)
+                c_, r_ = min(max(int((gx_ - wx0) * R8), 0), ww - 1), min(max(int((yy_ - wy0) * R8), 0), hw - 1)
+                if not clearmask[r_, c_]: ys_ = yy_ - 0.2; break
+            rend_ = pos[g_['rooms'][-1]]
+            road_d = [[round(gx_, 2), round(ys_, 2)], [round(gx_, 2), round(gy_ + 1.0, 2)], [round(rend_[0], 2), round(rend_[1], 2)]]
+            gate_d = {'x': round(gx_, 2), 'y': round(gy_, 2), 'w': 2.7}
+            streets.append([[gate_d['x'], gate_d['y']]] + road_d[1:])        # (so filler houses keep clear of it)
         sst = _samples(streets, 0.1) if streets else np.zeros((0, 2))
         wells = [pos[v] for v in inside if re.search(r'Well|Circle', nm(v))]
         plaza = [round(sum(p[0] for p in wells) / len(wells), 2), round(sum(p[1] for p in wells) / len(wells), 2), 0.85] if wells else None
@@ -400,12 +445,12 @@ def merge_smr(w, layout, edges, seed=71):
             if len(trees) >= 7: break
             cx, cy, r_ = trng.uniform(x0_ + 0.4, x1_ - 0.4), trng.uniform(y0_ + 0.4, y1_ - 0.4), trng.uniform(0.26, 0.38)
             if free_spot(cx, cy, r_, r_, 0.22) and all(math.dist((cx, cy), (q[0], q[1])) > 1.0 for q in trees): trees.append([round(cx, 2), round(cy, 2), round(r_, 2)])
-        towns.append({'name': c['name'], 'ground': [x0_ + 0.12, y0_ + 0.12, x1_ - 0.12, y1_ - 0.12], 'streets': streets, 'plaza': plaza, 'buildings': blds, 'trees': trees})
+        towns.append({'name': c['name'], 'ground': [x0_ + 0.12, y0_ + 0.12, x1_ - 0.12, y1_ - 0.12], 'streets': streets, 'plaza': plaza, 'buildings': blds, 'trees': trees, 'road': road_d, 'road_w': (g_ or {}).get('width', 0.95), 'gate': gate_d})
         lab = c.get('label') or [(x0_ + x1_) / 2, y0_ - 0.5]
         w['tags'] = list(w['tags']) + [[lab[0], lab[1], c['name'], 0.95]]
         for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):         # nothing grows or stands where the village is
             w[k_] = [t for t in w[k_] if not (x0_ <= t[0] <= x1_ and y0_ <= t[1] <= y1_)]
-        report.setdefault('towns', {})[c['name']] = {'rooms_inside': len(inside), 'streets': len(streets), 'buildings_from_rooms': nfixed, 'filler_houses': nfill, 'trees': len(trees), 'plaza': plaza}
+        report.setdefault('towns', {})[c['name']] = {'road': road_d, 'gate': gate_d, 'rooms_inside': len(inside), 'streets': len(streets), 'buildings_from_rooms': nfixed, 'filler_houses': nfill, 'trees': len(trees), 'plaza': plaza}
     w['smrtowns'] = towns
     # ---- a climb: one wide path through the four rooms with slight rocky steps across it (owner, Oct 14: a regular but wide path, not a mountain); it stops at clearings too
     climbs = []; climbmask = np.zeros((hw, ww), bool)
@@ -550,6 +595,13 @@ def merge_smr(w, layout, edges, seed=71):
     w['trees'] = list(w['trees']) + [[x, y, round(0.85 + 0.3 * float(_hash(x, y, 2)), 2), 'd', int(float(_hash(x, y, 3)) * 3)] for x, y in out['d']]
     report['terrain'] = {'barren_sq': round(float(bar.sum()) / R8 / R8, 1), 'peaks': len(out['m']), 'hills': len(out['h']), 'trees': len(out['d'])}
 
+    # ---- inns (owner, Oct 14): an inn graphic like the Ashen Forest Inn's, with a small label; its rooms are not drawn as road
+    for inn in CL.get('inns', []):
+        x, y = inn['x'], inn['y']
+        w['gfx'] = list(w['gfx']) + [{'k': 'inn', 'at': 'xy', 'x': x, 'y': y, 'w': 2.3, 'h': 2.0}, {'k': 'text', 'at': 'xy', 'x': x, 'y': round(y + inn.get('label_dy', 2.9), 2), 'text': inn['name']}]
+        for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):         # nothing grows under it
+            w[k_] = [t for t in w[k_] if not (abs(t[0] - x) < 1.5 and abs(t[1] - y) < 1.4)]
+        report.setdefault('inns', {})[inn['name']] = {'at': [x, y], 'rooms_not_drawn_as_road': inn['rooms']}
     ymax = max(allp[:, 1].max() + 14, 0)                                          # (room below the range for the west sea to taper off)
     w['bounds'] = [w['bounds'][0], w['bounds'][1], w['bounds'][2], max(w['bounds'][3], int(math.ceil(ymax)))]
     report['bounds'] = w['bounds']
