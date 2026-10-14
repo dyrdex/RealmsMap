@@ -34,6 +34,7 @@ MIN_PATCH = 3.0      # smallest clearing / wide pathway kept (sq rooms)
 LAND_R = 4.2         # land reaches this far from a path
 TERR_R = 3.8         # a room's terrain tint reaches this far
 CLEAR = 1.0          # sprites keep this far from a path or patch
+BAND = 2.4           # standard forest reaches this far (wobbled) from the connection to the Ashen Forest
 SPRITE = {'m': 2.0, 'h': 1.7, 'd': 0.95}   # minimum spacing: peaks, hills, trees
 
 
@@ -94,8 +95,21 @@ def merge_smr(w, layout, edges, seed=71):
     UDL = [e for e in UDL if e not in LINKS and (e[1], e[0]) not in LINKS]
     report['up_down_exits'] = {'with_a_range_end': len(uds), 'not_drawn_pruned': len(uds) - len(UDL), 'left_out': [291, 292]}
 
+    # the visual-only connection (owner, Oct 14; not in TinTin's map): room 559 -> spacer room 990001 -> Ashen Forest room 670, a standard dirt trail through standard forest
+    VIS = (559, 990001, 670)
+    vis = [[round(pos[v][0], 2), round(pos[v][1], 2)] for v in VIS] if all(v in pos and v not in hidden for v in VIS) else None
+    moved_ends = 0
+    if vis:
+        import json, os
+        _al = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ashen_layout_final.json')))
+        old670 = dict(zip(_al['ids'], zip(_al['xs'], _al['ys'])))[670]                  # where the Ashen Forest drew room 670 (its trail north to 2864 starts there)
+        for ln in w['fwtracks']:
+            for i in (0, -1):
+                if math.dist(ln[i], old670) < 0.06: ln[i] = list(vis[-1]); moved_ends += 1   # (not moved inside the Ashen merge: that re-rolls its random trees)
+    report['ashen_connection'] = {'trail_ends_moved': moved_ends, 'drawn': bool(vis), 'length': round(sum(math.dist(p, q) for p, q in zip(vis, vis[1:])), 1) if vis else None}
+
     # ---------------------------------------------------------------- the window (everything this module paints lies in it)
-    allp = np.array([pos[v] for v in onmap]); pad = 12.0
+    allp = np.array([pos[v] for v in onmap] + ([pos[v] for v in VIS] if vis else [])); pad = 12.0
     wx0 = math.floor(allp[:, 0].min() - pad); wx1 = math.ceil(allp[:, 0].max() + pad)
     wy0 = math.floor(allp[:, 1].min() - pad); wy1 = math.ceil(allp[:, 1].max() + pad)
     ww, hw = int((wx1 - wx0) * R8), int((wy1 - wy0) * R8)
@@ -167,7 +181,7 @@ def merge_smr(w, layout, edges, seed=71):
             if v in TRT and o not in TRT: pads.append([round(pos[v][0], 2), round(pos[v][1], 2)])
     pads = [list(p) for p in sorted({tuple(p) for p in pads})]
     w['smrpatch'] = dpatch; w['roadpatch'] = rpatch
-    w['fwtracks'] = list(w['fwtracks']) + dirt_lines + link_lines
+    w['fwtracks'] = list(w['fwtracks']) + dirt_lines + link_lines + ([vis] if vis else [])
     w['etrtracks'] = list(w['etrtracks']) + road_lines
     w['ntrjoins'] = list(w['ntrjoins']) + pads
     report['dirt'] = {'cells': len(dadj), 'patches': len(dpatch), 'patch_sq': round(float(dwide.sum()) / R8 / R8, 1), 'trail_lines': len(dirt_lines)}
@@ -182,6 +196,8 @@ def merge_smr(w, layout, edges, seed=71):
             for b in G[a]:
                 if a < b: pd.line([px(pos[a]), px(pos[b])], fill=255, width=2)
     for a, b in LINKS + UDL: pd.line([px(pos[a]), px(pos[b])], fill=255, width=2)
+    if vis:
+        for p, q in zip(vis, vis[1:]): pd.line([px(p), px(q)], fill=255, width=2)
     for v in onmap:
         p = px(pos[v]); pd.ellipse([p[0] - 2, p[1] - 2, p[0] + 2, p[1] + 2], fill=255)
     skel = np.array(pim, bool)
@@ -221,14 +237,48 @@ def merge_smr(w, layout, edges, seed=71):
     tcls = np.array([cls.get(t, '') for t in lab_t], dtype='U1')[idx].reshape(hw, ww)
     dist = dist.reshape(hw, ww)
     landw = land_n[sub]
+    band = np.zeros((hw, ww), bool)
+    if vis:                                                                    # standard forest round the connection and the trail on to 2864: ground, trees; no other tint
+        bl = [vis, [vis[-1], [round(pos[2864][0], 2), round(pos[2864][1], 2)]]]
+        dv = cKDTree(_samples(bl, 0.1)).query(np.c_[WXg.ravel(), WYg.ravel()])[0].reshape(hw, ww)
+        band = (dv <= BAND * (0.7 + 0.6 * wob)) & landw & ~water0[sub]
+        band = ndi.gaussian_filter(band.astype(float), 0.6 * R8) > 0.5
     on = landw & (dist <= TERR_R)
-    mount = on & (tcls == 'm')
+    mount = on & (tcls == 'm') & ~band
     bar = ndi.gaussian_filter(mount.astype(float), 0.6 * R8) > 0.5
     nz = ndi.gaussian_filter(nrng.normal(size=(hw, ww)), 1.4 * R8); nz = (nz - nz.min()) / (nz.max() - nz.min())
     bar2 = bar & (nz > 0.58)
     w['geo']['barren'] = list(w['geo'].get('barren') or []) + AA._contours(bar, wx0, wy0, sigma=2.0)
     w['geo']['barren2'] = list(w['geo'].get('barren2') or []) + AA._contours(bar2, wx0, wy0, sigma=2.0)
     free = landw & (d_path > CLEAR) & ~water0[sub]
+    forest = {'trees': 0, 'fill_sq': 0.0, 'old_trees_cleared': 0, 'old_tufts_cleared': 0, 'tints_clipped': {}}
+    if vis:
+        for k, ks in (('trees', 'old_trees_cleared'), ('tufts', 'old_tufts_cleared')):         # what was growing there is cleared (gotcha 2); the standard forest replaces it
+            keep_, n_ = [], 0
+            for t in w[k]:
+                c_, r_ = int((t[0] - wx0) * R8), int((t[1] - wy0) * R8)
+                if 0 <= r_ < hw and 0 <= c_ < ww and band[r_, c_]: n_ += 1
+                else: keep_.append(t)
+            w[k] = keep_; forest[ks] = n_
+        for k in ('ash', 'dread', 'dread2', 'sparse', 'deep', 'bog', 'sand', 'shallows', 'blight', 'black', 'blackheart', 'bramble', 'doom'):    # other ground tints are taken out of the band (a polygon on top of the tint, drawn even-odd, is a hole)
+            polys = w['geo'].get(k) or []
+            if not polys: continue
+            inter = band & AA._raster([p for p in polys if any(wx0 <= q[0] < wx1 and wy0 <= q[1] < wy1 for q in p)], wx0, wy0, ww, hw)
+            if inter.sum() > 0:
+                w['geo'][k] = list(polys) + AA._contours(inter, wx0, wy0, sigma=1.0, minarea=0.1); forest['tints_clipped'][k] = round(float(inter.sum()) / R8 / R8, 1)
+        w['geo']['fill'] = list(w['geo'].get('fill') or []) + AA._contours(band, wx0, wy0, sigma=2.0)
+        forest['fill_sq'] = round(float(band.sum()) / R8 / R8, 1)
+        ys, xs = np.nonzero(band & free); placed = []; gridc = {}
+        for i in nrng.permutation(len(ys)):
+            x, y = WXg[ys[i], xs[i]], WYg[ys[i], xs[i]]; gk = (int(x // 1.0), int(y // 1.0)); ok = True
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    if any(math.dist(q, (x, y)) < 1.0 for q in gridc.get((gk[0] + dx, gk[1] + dy), ())): ok = False
+            if ok: gridc.setdefault(gk, []).append((x, y)); placed.append((round(float(x), 3), round(float(y), 3)))
+        w['trees'] = list(w['trees']) + [[x, y, round(rng.uniform(0.85, 1.15), 2), rng.choice(['w', 'w', 'd']), rng.choice([0, 1, 2])] for x, y in placed]
+        forest['trees'] = len(placed)
+        free &= ~band                                                          # (no hills / peaks sprites inside the forest band)
+    report['ashen_connection']['forest'] = forest
     out = {'m': [], 'h': [], 'd': []}
     for c in ('m', 'h', 'd'):
         ys, xs = np.nonzero(on & (tcls == c) & free)
