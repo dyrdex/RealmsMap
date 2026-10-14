@@ -221,6 +221,12 @@ for v in V:
         k = (min(v, t), max(v, t)); pair[k][0 if v == k[0] else 1] = True
         if e['dir'] not in (16, 32): pair[k][2] = True
 EDG = [[a, b, 'two' if (f and r and flat) else ('one' if flat else 'ud')] for (a, b), (f, r, flat) in sorted(pair.items())]
+CUT = [(560, 670)]                                                                 # TinTin exits left out of the editor (owner, Oct 14): 670 joins the range only by the visual-only link
+EDG = [e for e in EDG if (e[0], e[1]) not in CUT and (e[1], e[0]) not in CUT]
+for _a, _b in CUT:
+    for _r in R:
+        if _r['id'] == _a: _r['ex'] = [x for x in _r['ex'] if f"→ {rooms[_b]['name']}" not in x]
+        elif _r['id'] == _b: _r['ex'] = [x for x in _r['ex'] if f"→ {rooms[_a]['name']}" not in x]
 EDG += [[559, FICT, 'two'], [FICT, AF_ROOM, 'two']]                                  # the visual-only connection
 lk = sorted(k for k in pair if (k[0] in S) != (k[1] in S))
 cnt = Counter(CTX.values()); tz = Counter(lvl.get(v, 0) for v in S)
