@@ -30,13 +30,24 @@ for k, p in tr.items():
         v = int(k[2:]); CTX[v] = 'WT' if k[:2] == 'wt' else ('LK' if rooms[v]['area'] == LA else 'FT'); cpos[v] = tuple(p)
 SMR = {v for v, r in rooms.items() if r['area'] == SA}
 assert not SMR & set(CTX)
-# Forest of Tears rooms unlocked on request (owner, Oct 14): the rooms along the Sparse Woodlands trail (18 rooms named 'The Sparse Woodlands') and the spacer
-# rooms that join two of them. Movable (grp 'ft'), starting exactly where the map has them; they do not take part in anchoring the range.
-UNLOCK = sorted(v for v in CTX if CTX[v] == 'FT' and rooms[v]['name'] == 'The Sparse Woodlands')
+# Forest of Tears rooms unlocked on request (owner, Oct 14): the whole Sparse Woodlands trail, 1514 -> 1553, i.e. the 18 rooms named 'The Sparse Woodlands'
+# and the rooms with other names between them (1533-1538 Canyon Edge ... Harsh, Dry Lands, 1540, 1543, 1544, 1547, 1548), plus the spacer rooms (chains of them
+# too) that join two of those rooms. Movable (grp 'ft'), starting exactly where the map has them; they do not take part in anchoring the range.
 _nb = defaultdict(set)
 for _v, _l in exits.items():
     for _e in _l: _nb[_v].add(_e['to']); _nb[_e['to']].add(_v)
-UNLOCK += sorted(v for v in CTX if CTX[v] == 'FT' and isspacer(v) and len(_nb[v] & set(UNLOCK)) >= 2)
+TRAIL = sorted(v for v in CTX if CTX[v] == 'FT' and rooms[v]['name'] == 'The Sparse Woodlands') + list(range(1533, 1539)) + [1540, 1543, 1544, 1547, 1548]
+assert all(CTX.get(v) == 'FT' for v in TRAIL)
+UNLOCK = sorted(TRAIL); _seen = set()
+for s in sorted(v for v in CTX if CTX[v] == 'FT' and isspacer(v)):                      # spacer chains whose ends touch two trail rooms
+    if s in _seen: continue
+    comp = {s}; st = [s]
+    while st:
+        x = st.pop()
+        for t in _nb[x]:
+            if CTX.get(t) == 'FT' and isspacer(t) and t not in comp: comp.add(t); st.append(t)
+    _seen |= comp
+    if len({u for x in comp for u in _nb[x] if u in set(TRAIL)}) >= 2: UNLOCK += sorted(comp)
 UL = set(UNLOCK)
 for v in UL: CTX.pop(v)                                      # (cpos keeps their map position: anchor and starting spot)
 
