@@ -25,9 +25,15 @@ tr = w['track']
 # ---- fixed rooms ----
 CTX = {}; cpos = {}
 for k, src in w['ctxsrc'].items(): CTX[int(k)] = src; cpos[int(k)] = tuple(tr['cx' + k])
-for k, p in tr.items():
-    if k[:2] in ('ft', 'wt') and k[2:].isdigit() and int(k[2:]) in rooms and int(k[2:]) not in CTX:
-        v = int(k[2:]); CTX[v] = 'WT' if k[:2] == 'wt' else ('LK' if rooms[v]['area'] == LA else 'FT'); cpos[v] = tuple(p)
+# The Forest of Tears, the lake's ring path and the Western Trade Route are where the owner's Forest of Tears layout put them (ft_layout_final.json, which
+# ft_merge.py draws from), NOT at w['track']'s 'ft<id>' / 'wt<id>' positions: those are the forest's OLD positions (median 6.6 rooms away; found Oct 14).
+FL = json.load(open(os.path.join(here, 'ft_layout_final.json'))); FE = json.load(open(os.path.join(here, 'fot_editor_edges.json')))
+FPOS = dict(zip(FL['ids'], zip(FL['xs'], FL['ys']))); FHID = set(FL['hidden']) | {1891}
+FINFO = {r['id']: r for r in FE['rooms']}
+for v, r in FINFO.items():
+    if r.get('fixed') or v in FHID or v not in FPOS or v not in rooms: continue
+    CTX[v] = {'ft': 'FT', 'lk': 'LK', 'wt': 'WT', 'fw': 'FW'}[r['grp']]; cpos[v] = tuple(FPOS[v])
+if 20036 not in CTX: CTX[20036] = 'FT'; cpos[20036] = tuple(tr['ft20036'][:2])         # (a dead-end spacer stub the forest editor left off: where the old map had it)
 SMR = {v for v, r in rooms.items() if r['area'] == SA}
 assert not SMR & set(CTX)
 # Forest of Tears rooms unlocked on request (owner, Oct 14): the whole Sparse Woodlands trail, 1514 -> 1553, i.e. the 18 rooms named 'The Sparse Woodlands'
