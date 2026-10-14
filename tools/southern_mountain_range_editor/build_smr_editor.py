@@ -30,6 +30,15 @@ for k, p in tr.items():
         v = int(k[2:]); CTX[v] = 'WT' if k[:2] == 'wt' else ('LK' if rooms[v]['area'] == LA else 'FT'); cpos[v] = tuple(p)
 SMR = {v for v, r in rooms.items() if r['area'] == SA}
 assert not SMR & set(CTX)
+# Forest of Tears rooms unlocked on request (owner, Oct 14): the rooms along the Sparse Woodlands trail (18 rooms named 'The Sparse Woodlands') and the spacer
+# rooms that join two of them. Movable (grp 'ft'), starting exactly where the map has them; they do not take part in anchoring the range.
+UNLOCK = sorted(v for v in CTX if CTX[v] == 'FT' and rooms[v]['name'] == 'The Sparse Woodlands')
+_nb = defaultdict(set)
+for _v, _l in exits.items():
+    for _e in _l: _nb[_v].add(_e['to']); _nb[_e['to']].add(_v)
+UNLOCK += sorted(v for v in CTX if CTX[v] == 'FT' and isspacer(v) and len(_nb[v] & set(UNLOCK)) >= 2)
+UL = set(UNLOCK)
+for v in UL: CTX.pop(v)                                      # (cpos keeps their map position: anchor and starting spot)
 
 # ---- the spacer rooms that join the range to itself and to fixed rooms ----
 rev = defaultdict(list)
@@ -43,7 +52,7 @@ while q:
     v = q.popleft()
     for t in raw_nb[v]:
         if t not in cand and t not in CTX and t not in SMR and isspacer(t): cand.add(t); q.append(t)
-scope = SMR | set(CTX)
+scope = SMR | set(CTX) | UL
 keep = set(); stubs = set(); seen = set()
 for s in sorted(cand):
     if s in seen: continue
@@ -109,6 +118,17 @@ for k in sorted((k for k in range(len(comps)) if k not in anchored), key=lambda 
     if len(comps[k]) <= 3: ex += 0.4
     if ex > min(p[0] for p in start.values()) + 200: ex = min(p[0] for p in start.values()); ey += ht + 4
 assert set(start) == S, S - set(start)
+for v in UNLOCK: start[v] = list(cpos[v]); raw[v] = list(cpos[v]); lvl[v] = 0           # unlocked Forest of Tears rooms: where the map has them
+_seen = set(); _np = len(comps)
+for s in UNLOCK:                                                                      # their own pieces (flat exits among themselves)
+    if s in _seen: continue
+    _st = [s]; _seen.add(s)
+    while _st:
+        x = _st.pop(); piece[x] = _np
+        for t, d in links(x):
+            if t in UL and d[2] == 0 and t not in _seen: _seen.add(t); _st.append(t)
+    _np += 1
+S = S | UL; SP = {v for v in S if isspacer(v)}
 xy = {v: list(p) for v, p in start.items()}
 for Pz in (xy, raw):
     cells = defaultdict(list)
@@ -124,7 +144,7 @@ def exlist(v):
         if not r: continue
         res.append(f"{DN.get(e['dir'], '?')} → {r['name'] or 'spacer room'}" + (f" ({r['area']})" if r['area'] and r['area'] != SA else ''))
     return res
-GROUP = {v: ('ug' if rooms[v]['terrain'] == 'Underground' else 'sm') for v in S}
+GROUP = {v: ('ft' if v in UL else 'ug' if rooms[v]['terrain'] == 'Underground' else 'sm') for v in S}
 R = []
 for v in sorted(CTX):
     r = rooms[v]
@@ -144,7 +164,7 @@ for v in V:
 EDG = [[a, b, 'two' if (f and r and flat) else ('one' if flat else 'ud')] for (a, b), (f, r, flat) in sorted(pair.items())]
 lk = sorted(k for k in pair if (k[0] in S) != (k[1] in S))
 cnt = Counter(CTX.values()); tz = Counter(lvl.get(v, 0) for v in S)
-audit = dict(smr=len(SMR), spacers=len(SP), stubs=len(stubs), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), pieces=len(comps),
+audit = dict(smr=len(SMR), spacers=len(SP), stubs=len(stubs), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), pieces=_np, unlocked=len(UL),
              parked=len(PARKED), levels=', '.join(f'{z:+d}: {n}' for z, n in sorted(tz.items())),
              anchored=sum(len(comps[k]) for k in anchored), anchored_pieces=len(anchored),
              dh=cnt['DH'], grove=cnt['Grove'], fw=cnt['FW'], ft=cnt['FT'], lake=cnt['LK'], wtr=cnt['WT'])
@@ -155,7 +175,7 @@ ctx = dict(land=[rd(p) for p in w['geo']['land']], water=[rd(p) for p in w['geo'
            tracks=[rd(t) for t in trk if len(t) > 1], mazes=[dict(poly=rd(m['poly'])) for m in w['fwmazes']], town=[-7.4, -9.4, 7.4, 9.4],
            labels=[[0, 0.4, 'Darkhaven', 2.4], [3, -14.2, 'Shadow Grove', 1.5], [1, -47.3, 'Forgotten Woods', 2.4]] +
                   [[(a['x0'] + a['x1']) / 2, a['y'], 'Forest of Tears', 2.4] for a in [w['label']]])
-D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=[])
+D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=sorted(UL))
 t = open(os.path.join(here, 'smr_editor_template.html'), encoding='utf-8').read()
 open(out, 'w', encoding='utf-8').write(t.replace('__DATA__', json.dumps(D, separators=(',', ':'))))
 json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed', 'src', 'area', 'grp', 'piece') if k in r} for r in R], edges=EDG),
@@ -164,5 +184,5 @@ json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed'
 # ---- report ----
 print('AUDIT', audit)
 print('anchored pieces (piece, rooms, link pairs, scale x/y):', fit)
-print('pieces', sorted((len(p) for p in comps), reverse=True)[:12], '...', len(comps), '| parked', len(PARKED))
+print('pieces', sorted((len(p) for p in comps), reverse=True)[:12], '...', len(comps), '| parked', len(PARKED), '| unlocked', UNLOCK)
 print('fixed rooms', len(CTX), dict(cnt), '| edges', len(EDG), '| file', os.path.getsize(out) // 1024, 'KB')
