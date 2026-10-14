@@ -9,6 +9,9 @@ DROP_LINES = {                                   # (layer, one end, the other en
 }
 DROP_LINES |= {('fwtracks', (-11.05, 76.59), (-12.62, 75.77))}   # the up/down link from the bridge to the river room below it (Edel bridge, owner, Oct 14): the stream is drawn instead
 BRIDGE_TRIM = ((-11.16, 74.16), 76.9, -11.0)       # the trail from Edel's south gate south: its stretch under the gate road and the stone bridge (to y 76.9) is not drawn as a trail
+OWNER_PATHS = [                                   # paths the owner describes instead of mapping (Oct 14): room 3422 (Miden'nir, Stuck in the Brambles) to the Moria marker, round the east side of the Mountains of Desolation
+    ('fwtracks', [[11.0, 16.0], [12.6, 16.0], [14.3, 16.1], [15.5, 16.7], [16.3, 15.7], [16.2, 13.2], [15.8, 10.6], [15.4, 8.7], [14.9, 7.2], [14.0, 5.62]]),
+]
 DROP_PLACES = {'Southern Mountain Range'}        # the marker, its text and its sidebar entry (owner, Oct 14: "Southern Mountain Rage" is the owner's typo)
 
 
@@ -28,6 +31,7 @@ def apply_edits(w):
             if hit: report['lines_dropped'].append((layer, ln[0], ln[-1], len(ln)))
             else: keep.append(ln)
         w[layer] = keep
+    for layer_, pl_ in OWNER_PATHS: w[layer_] = list(w.get(layer_, [])) + [[list(q) for q in pl_]]; report['owner_paths'] = report.get('owner_paths', 0) + 1
     (sx_, sy_), ty_, tx_ = BRIDGE_TRIM
     for ln in w.get('fwtracks', []):
         if len(ln) > 3 and math.dist(ln[0], (sx_, sy_)) < 0.03:

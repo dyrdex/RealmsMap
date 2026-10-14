@@ -189,3 +189,6 @@ Not yet built (backlog, in this order): an automatic QA report script; a "tweaks
 
 ### Tunnel branches and the canyon (Oct 14)
 `undergrounds[0].branches` (5-6 water, 6-7 dry, mouth at 7) -> `unders[].branches`; tunnel rooms add land skeleton lines; Underground-terrain rooms are excluded from terrain sources. `canyons` in `smr_clearings.json` -> `w['smrcanyon']` (6 terrace levels, floor slot, ledge segments, caves), drawn by CANYON() after TOWN in `template.html`.
+
+### Sub-area markers, Moria path, tunnel exit (Oct 14)
+`smr_marker_routes.py` (one-time; walks your directions from 764, writes `smr_marker_routes.json`) and `smr_markers.py` (places the markers on the range rooms; hidden rooms keep their place for the traced line). Hooked in `build.py` right after `merge_smr`. The 3422-to-Moria path is `OWNER_PATHS` in `owner_edits.py`, appended to `fwtracks` (room 3422 at (11,16) per `fot_extract`). The tunnel's far mouth sits 0.3 beyond room 13 (was 0.9).

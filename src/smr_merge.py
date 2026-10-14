@@ -639,7 +639,7 @@ def merge_smr(w, layout, edges, seed=71):
         if not all(v in pos for v in pr): continue
         mouth = np.array([pos[pr[0]][0], pos[pr[0]][1] + 0.45])                    # the river goes in a little south of room 1's centre
         far = np.array(pos[pr[-1]]); prev_ = np.array(pos[pr[-2]]); ud_ = (prev_ - far) / (np.linalg.norm(prev_ - far) or 1)    # from the far end toward the tunnel (north-east)
-        key = [mouth] + [np.array(pos[v]) for v in pr[1:-1]] + [far + ud_ * 0.9]     # (the tunnel mouth at the far end sits 0.9 beyond the waterfall room)
+        key = [mouth] + [np.array(pos[v]) for v in pr[1:-1]] + [far + ud_ * 0.3]     # (the tunnel mouth at the far end sits 0.9 beyond the waterfall room)
         dense = catmull(key, 12); seg = np.r_[0, np.cumsum(np.hypot(*np.diff(dense, axis=0).T))]
         kidx = [0] + [int(np.argmin(np.hypot(*(dense - np.array(pos[v])).T))) for v in pr[1:-1]] + [len(dense) - 1]
         RW = {pr[0]: 0.55, 22559: 0.5, 2: 0.8, 3: 0.42, 4: 0.6, 5: 0.6, 11: 0.55, 12: 0.72, pr[-1]: 0.8}
@@ -673,7 +673,7 @@ def merge_smr(w, layout, edges, seed=71):
                 if 0 <= k < len(dense): q_ = dense[k] + nor[k] * sd * (wt[k] / 2 - 0.09); st.append([round(float(q_[0]), 2), round(float(q_[1]), 2), round(0.07 + 0.05 * float(_hash(q_[0], q_[1], 31)), 2), sd])
         ft['stalactites'] = st
         ft['fall'] = {'x': round(float(far[0]), 2), 'y': round(float(far[1]), 2), 'dx': round(float(ud_[0]), 3), 'dy': round(float(ud_[1]), 3)}
-        ft['exit_mouth'] = {'x': round(float(far[0] + ud_[0] * 0.9), 2), 'y': round(float(far[1] + ud_[1] * 0.9), 2), 'dx': round(float(ud_[0]), 3), 'dy': round(float(ud_[1]), 3)}
+        ft['exit_mouth'] = {'x': round(float(far[0] + ud_[0] * 0.3), 2), 'y': round(float(far[1] + ud_[1] * 0.3), 2), 'dx': round(float(ud_[0]), 3), 'dy': round(float(ud_[1]), 3)}
         ft['bend'] = {'x': round(float(pos[U['bend']][0]), 2), 'y': round(float(pos[U['bend']][1]), 2)}
         brs = []
         for B_ in U.get('branches', []):
