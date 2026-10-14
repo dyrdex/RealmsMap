@@ -60,24 +60,32 @@ for v, l in exits.items():
 raw_nb = defaultdict(set)
 for v, l in exits.items():
     for e in l: raw_nb[v].add(e['to']); raw_nb[e['to']].add(v)
-cand = set(); q = deque(SMR)
-while q:
-    v = q.popleft()
-    for t in raw_nb[v]:
-        if t not in cand and t not in CTX and t not in SMR and isspacer(t): cand.add(t); q.append(t)
-scope = SMR | set(CTX) | UL
-keep = set(); stubs = set(); seen = set()
-for s in sorted(cand):
-    if s in seen: continue
-    comp = {s}; st = [s]
-    while st:
-        x = st.pop()
-        for t in raw_nb[x]:
-            if t in cand and t not in comp: comp.add(t); st.append(t)
-    seen |= comp
-    real = {u for x in comp for u in raw_nb[x] if u in scope}
-    (keep if len(real) >= 2 else stubs).update(comp)
-S = SMR | keep
+TA = 'The Southern Mountain Trade Route'
+TR = {v for v, r in rooms.items() if r['area'] == TA}                  # added on request (owner, Oct 14): all 126 rooms, one piece, 12 exits to the range
+assert TR and not TR & set(CTX) and not TR & UL
+def spacer_keep(core, scope):
+    """the spacer rooms hanging off `core` whose chains touch at least two rooms of `scope`; the dead-end stubs"""
+    cand = set(); q = deque(core)
+    while q:
+        v = q.popleft()
+        for t in raw_nb[v]:
+            if t not in cand and t not in CTX and t not in core and isspacer(t): cand.add(t); q.append(t)
+    keep = set(); stubs = set(); seen = set()
+    for s in sorted(cand):
+        if s in seen: continue
+        comp = {s}; st = [s]
+        while st:
+            x = st.pop()
+            for t in raw_nb[x]:
+                if t in cand and t not in comp: comp.add(t); st.append(t)
+        seen |= comp
+        real = {u for x in comp for u in raw_nb[x] if u in scope}
+        (keep if len(real) >= 2 else stubs).update(comp)
+    return keep, stubs
+keep0, stubs0 = spacer_keep(SMR, SMR | set(CTX) | UL)                    # the range alone, as in the first version of the editor (its layout must not change)
+keep, stubs = spacer_keep(SMR | TR, SMR | TR | set(CTX) | UL)
+S0 = SMR | keep0; S = SMR | TR | keep
+assert S0 <= S
 SP = {v for v in S if isspacer(v)}
 
 def links(v):
@@ -88,7 +96,7 @@ def links(v):
     return res
 
 # ---- pieces by TinTin's own exits, with levels ----
-rest = sorted(S); inS = set(S); loc3 = {}; piece = {}; comps = []
+rest = sorted(S0); inS = set(S0); loc3 = {}; piece = {}; comps = []
 for s in rest:
     if s in piece: continue
     loc = {s: (0, 0, 0)}; q = deque([s]); piece[s] = len(comps)
@@ -96,6 +104,21 @@ for s in rest:
         x = q.popleft()
         for t, d in links(x):
             if t in inS and t not in loc: loc[t] = tuple(a + b for a, b in zip(loc[x], d)); piece[t] = len(comps); q.append(t)
+    comps.append(loc)
+inS = set(S)                                                           # phase 2: the Trade Route (and its spacers), laid out from the range outwards
+for k, loc in enumerate(comps):
+    q = deque(loc)
+    while q:
+        x = q.popleft()
+        for t, d in links(x):
+            if t in inS and t not in loc and t not in piece: loc[t] = tuple(a + b for a, b in zip(loc[x], d)); piece[t] = k; q.append(t)
+for s in sorted(S - set(piece)):                                       # (anything not reached from the range: its own piece)
+    if s in piece: continue
+    loc = {s: (0, 0, 0)}; q = deque([s]); piece[s] = len(comps)
+    while q:
+        x = q.popleft()
+        for t, d in links(x):
+            if t in inS and t not in loc and t not in piece: loc[t] = tuple(a + b for a, b in zip(loc[x], d)); piece[t] = len(comps); q.append(t)
     comps.append(loc)
 lvl = {v: loc[v][2] for loc in comps for v in loc}
 pl = lambda loc: {v: (p[0] + LV * p[2], p[1] - LV * p[2]) for v, p in loc.items()}
@@ -105,6 +128,7 @@ start = {}; raw = {}; fit = []; anchored = set()
 for k, loc in enumerate(comps):
     P = pl(loc); pairs = []; seenp = set()
     for v in loc:
+        if v not in S0: continue                                          # (the fit uses the range's own links, so adding the Trade Route never moves it)
         for t, d in links(v):
             if t in cpos and (v, t) not in seenp:
                 seenp.add((v, t)); g = (1.0, 0.0) if d[2] else (-d[0], -d[1]); pairs.append((P[v], (cpos[t][0] + g[0], cpos[t][1] + g[1])))
@@ -157,7 +181,7 @@ def exlist(v):
         if not r: continue
         res.append(f"{DN.get(e['dir'], '?')} → {r['name'] or 'spacer room'}" + (f" ({r['area']})" if r['area'] and r['area'] != SA else ''))
     return res
-GROUP = {v: ('ft' if v in UL else 'ug' if rooms[v]['terrain'] == 'Underground' else 'sm') for v in S}
+GROUP = {v: ('ft' if v in UL else 'tr' if v in TR or (v in SP and v not in S0) else 'ug' if rooms[v]['terrain'] == 'Underground' else 'sm') for v in S}
 R = []
 for v in sorted(CTX):
     r = rooms[v]
@@ -177,7 +201,7 @@ for v in V:
 EDG = [[a, b, 'two' if (f and r and flat) else ('one' if flat else 'ud')] for (a, b), (f, r, flat) in sorted(pair.items())]
 lk = sorted(k for k in pair if (k[0] in S) != (k[1] in S))
 cnt = Counter(CTX.values()); tz = Counter(lvl.get(v, 0) for v in S)
-audit = dict(smr=len(SMR), spacers=len(SP), stubs=len(stubs), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), pieces=_np, unlocked=len(UL),
+audit = dict(smr=len(SMR), tr=len(TR), spacers=len(SP), stubs=len(stubs), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), pieces=_np, unlocked=len(UL),
              parked=len(PARKED), levels=', '.join(f'{z:+d}: {n}' for z, n in sorted(tz.items())),
              anchored=sum(len(comps[k]) for k in anchored), anchored_pieces=len(anchored),
              dh=cnt['DH'], grove=cnt['Grove'], fw=cnt['FW'], ft=cnt['FT'], lake=cnt['LK'], wtr=cnt['WT'])

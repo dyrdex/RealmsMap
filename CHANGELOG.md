@@ -21,6 +21,7 @@
 
 ## In progress · Southern Mountain Range editor
 - New layout editor for the Southern Mountain Range (597 rooms + 99 spacers, anchored to the Forest of Tears); nothing drawn on the map yet.
+- Editor: the Sparse Woodlands trail of the Forest of Tears (38 rooms incl. spacers) unlocked; the Southern Mountain Trade Route (126 rooms) added.
 
 ## Earlier in progress · Forest of Tears + Lake of Tich'Pyga editor
 - New layout editor for the Forest of Tears (683 rooms) and the Lake of Tich'Pyga (276 rooms) together, with the spacer rooms that join them (`tools/forest_of_tears_editor`, October 12). Nothing on the map changes until you save an arrangement.
