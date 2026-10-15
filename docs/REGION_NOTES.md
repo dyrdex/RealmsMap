@@ -192,3 +192,6 @@ Not yet built (backlog, in this order): an automatic QA report script; a "tweaks
 
 ### Sub-area markers, Moria path, tunnel exit (Oct 14)
 `smr_marker_routes.py` (one-time; walks your directions from 764, writes `smr_marker_routes.json`) and `smr_markers.py` (places the markers on the range rooms; hidden rooms keep their place for the traced line). Hooked in `build.py` right after `merge_smr`. The 3422-to-Moria path is `OWNER_PATHS` in `owner_edits.py`, appended to `fwtracks` (room 3422 at (11,16) per `fot_extract`). The tunnel's far mouth sits 0.3 beyond room 13 (was 0.9).
+
+### Oct 15 batch
+`exact_road_rooms` (smr_clearings.json -> `_chains(..., exact=)`) keeps the road on those rooms; `pad_links` give off-ramps to Trade Route rooms inside a clearing box; `FILL_HOLES`, `OWNER_TAGS` in owner_edits.py (a land hole removed and planted; a plain text tag); `farms` -> `w['smrfarm']` -> FARM() in template.html (drawn after the river so it sits over the marsh); `EXTEND` in smr_markers.py (Desert of Despair marker moved on to 19863, 6365); labels pinned in template.html LBL/PINNED; `smr_marker_routes.py` also looks at exits INTO the range from an area (the four Trade Route areas).

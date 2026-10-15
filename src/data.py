@@ -174,6 +174,9 @@ WEST_PAINTING = "n;n;n;n;n;n;nw;nw;nw;n;n;nw;nw;sw;n"
 
 # Directions you gave for places that had none (condensed to numbered quantities)
 MORE_DIRECTIONS = '''
+Lamech's Abandoned Manor|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;ne;nw;#2 w;sw;#3 s;#2 se;ne;e;sw;s;ne
+The Castle of Rol Na Feinne|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;ne;nw;#2 n;ne;n;e;n;ne;n
+The Ruins of T'man|#13 s;#2 e;#2 u;e;#3 se;d;s;se;e;se;#2 e;n
 Notre Dame de Sioux|nw;#2 w;#2 n
 Sonoria|nw;#2 w;#5 n
 Guild of Origin|#2 ne;e;ne;nw

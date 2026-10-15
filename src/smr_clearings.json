@@ -257,5 +257,19 @@
       7,
       8
     ]
+  ],
+  "exact_road_rooms": [
+    9282,
+    9283,
+    9284,
+    9285,
+    9286
+  ],
+  "farms": [
+    {
+      "name": "MacMillan Family Farm",
+      "x": -26.4,
+      "y": 78.4
+    }
   ]
 }

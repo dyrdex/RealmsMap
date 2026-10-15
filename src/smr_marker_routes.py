@@ -31,10 +31,12 @@ def walk(route):
     return trail, None
 # (name on the map, the area in your TinTin map, the name in your list or None). Left off: areas that already have a marker or are drawn (Azure Sea, Bartok Grove, Forest of Tears, Miden'nir, New Darkhaven, The Ashen Forest) and World Housing (owner, Oct 12).
 AREAS = [("Desert of Despair", "Desert of Despair", "Desert of Despair"), ("Dragon's Pass", "Dragon's Pass", "Dragon's Pass"), ("Elemental Canyon", "Elemental Canyon", "Elemental Canyon"),
-         ("Emerald Hills", "Emerald Hills", "Emerald Hills"), ("Lamech's Abandoned Manor", "Lamech's Abandoned Manor", None), ("MacMillan Family Farm", "MacMillan Family Farm", "MacMillan Family Farm"),
+         ("Emerald Hills", "Emerald Hills", "Emerald Hills"), ("Lamech's Abandoned Manor", "Lamech's Abandoned Manor", "Lamech's Abandoned Manor"), ("MacMillan Family Farm", "MacMillan Family Farm", "MacMillan Family Farm"),
          ("Mithril Hall", "Mithril Hall", "Mithril Hall"), ("The Mire", "The Mire", "The Mire"), ("Seth's Fortress", "Seth's Fortress", "Seth's Fortress"),
-         ("Steading of the Hill Giants", "Steading of the Hill Giants", "Steading of the Hill Giants"), ("The Castle of Rol Na Feinne", "The Castle of Rol Na Feinne", None),
-         ("The Ruins of T'man", "The Ruins of T'man", None), ("The Von Deusen Mausoleum", "The Von Deusen Mausoleum", "The Von Deusen Mausoleum"), ("The Wilds", "The Wilds", "The Wilds"),
+         ("Steading of the Hill Giants", "Steading of the Hill Giants", "Steading of the Hill Giants"), ("The Castle of Rol Na Feinne", "The Castle of Rol Na Feinne", "The Castle of Rol Na Feinne"),
+         ("The Ruins of T'man", "The Ruins of T'man", "The Ruins of T'man"),
+         ("Old Pottswort's Fields", "Old Pottswort's Fields", "Old Pottswort's Fields"), ("Black Dagger Outlaws Hideout", "Black Dagger Outlaws Hideout", "Black Dagger Outlaws Hideout"),
+         ("The Curse of Prosperity", "The Curse of Prosperity", "Curse of Prosperity"), ("Dawn to Dusk", "Dawn to Dusk", "Dawn to Dusk"), ("The Von Deusen Mausoleum", "The Von Deusen Mausoleum", "The Von Deusen Mausoleum"), ("The Wilds", "The Wilds", "The Wilds"),
          ("Transylvania", "Transylvania", "Transylvania"), ("Wastelands", "Wastelands", "Wastelands")]
 def doors(area):                                            # Plains rooms that open into the area (directly, or through a string of spacer rooms)
     out = set()
@@ -47,6 +49,11 @@ def doors(area):                                            # Plains rooms that 
                 if not nx: break
                 t = nx[0]; k += 1
             if t in rooms and rooms[t]['area'] == area: out.add(v)
+    for v in rooms:                                         # (and rooms of the area whose exits lead into the range or its trade route)
+        if rooms[v]['area'] != area: continue
+        for e in exits.get(v, []):
+            t = e['to']
+            if t in rooms and rooms[t]['area'] in SM: out.add(t)
     return sorted(out)
 out = []
 for name, area, listed in AREAS:

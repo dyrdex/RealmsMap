@@ -12,6 +12,8 @@ BRIDGE_TRIM = ((-11.16, 74.16), 76.9, -11.0)       # the trail from Edel's south
 OWNER_PATHS = [                                   # paths the owner describes instead of mapping (Oct 14): room 3422 (Miden'nir, Stuck in the Brambles) to the Moria marker, round the east side of the Mountains of Desolation
     ('fwtracks', [[11.0, 16.0], [12.6, 16.0], [14.3, 16.1], [15.5, 16.7], [16.3, 15.7], [16.2, 13.2], [15.8, 10.6], [15.4, 8.7], [14.9, 7.2], [14.0, 5.62]]),
 ]
+FILL_HOLES = [(12.3, 8.8, 17.8, 18.0)]            # a gap in the land (no ground, no coast) under the 3422-to-Moria path (owner, Oct 15): its land polygon (a hole) is removed so the ground fills in
+OWNER_TAGS = [[7.94, 43.55, 'Elemental Canyon', 0.5]]       # a plain text label on the map (not a marker), just north of room 172 (owner, Oct 15)
 DROP_PLACES = {'Southern Mountain Range'}        # the marker, its text and its sidebar entry (owner, Oct 14: "Southern Mountain Rage" is the owner's typo)
 
 
@@ -32,6 +34,27 @@ def apply_edits(w):
             else: keep.append(ln)
         w[layer] = keep
     for layer_, pl_ in OWNER_PATHS: w[layer_] = list(w.get(layer_, [])) + [[list(q) for q in pl_]]; report['owner_paths'] = report.get('owner_paths', 0) + 1
+    for hb in FILL_HOLES:                                                              # land polygons (holes) wholly inside a box
+        keep_ = []
+        for pl in w['geo']['land']:
+            xs_ = [q[0] for q in pl]; ys_ = [q[1] for q in pl]
+            if hb[0] <= min(xs_) and max(xs_) <= hb[2] and hb[1] <= min(ys_) and max(ys_) <= hb[3]:
+                from matplotlib.path import Path as _P
+                from smr_merge import _hash as _h
+                pth_ = _P(pl); opath_ = [q for ln_ in w['fwtracks'] for q in ln_ if hb[0] - 1 <= q[0] <= hb[2] + 1 and hb[1] - 1 <= q[1] <= hb[3] + 1]
+                near_ = [(t[0], t[1]) for t in w['trees'] if hb[0] - 2 <= t[0] <= hb[2] + 2 and hb[1] - 2 <= t[1] <= hb[3] + 2]
+                add_ = []
+                for gx_ in [hb[0] + 0.5 * i_ for i_ in range(int((hb[2] - hb[0]) / 0.5) + 1)]:         # a jittered grid, thinned to about one tree a room
+                    for gy_ in [hb[1] + 0.5 * j_ for j_ in range(int((hb[3] - hb[1]) / 0.5) + 1)]:
+                        x_ = round(gx_ + (float(_h(gx_, gy_, 5)) - .5) * .45, 3); y_ = round(gy_ + (float(_h(gx_, gy_, 6)) - .5) * .45, 3)
+                        if float(_h(x_, y_, 7)) > 0.42 or not pth_.contains_point((x_, y_)): continue
+                        if any(math.dist((x_, y_), q) < 0.9 for q in opath_) or any(math.dist((x_, y_), q) < 0.95 for q in near_ + [(a[0], a[1]) for a in add_]): continue
+                        add_.append([x_, y_, round(0.85 + 0.3 * float(_h(x_, y_, 2)), 2), ['w', 'w', 'd'][int(float(_h(x_, y_, 4)) * 3)], int(float(_h(x_, y_, 3)) * 3)])
+                w['trees'] = list(w['trees']) + add_; report['hole_trees'] = len(add_)
+                report['hole_filled_sq'] = round(0.5 * abs(sum(xs_[i] * ys_[(i + 1) % len(pl)] - xs_[(i + 1) % len(pl)] * ys_[i] for i in range(len(pl)))), 1)
+            else: keep_.append(pl)
+        w['geo']['land'] = keep_
+    w['tags'] = list(w['tags']) + [list(t_) for t_ in OWNER_TAGS]
     (sx_, sy_), ty_, tx_ = BRIDGE_TRIM
     for ln in w.get('fwtracks', []):
         if len(ln) > 3 and math.dist(ln[0], (sx_, sy_)) < 0.03:

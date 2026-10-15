@@ -8,6 +8,7 @@ OTHER_WAY = "Your directions reach this area another way, not across the Souther
 DROP = set()                                                   # removed on request (Oct 12)
 PORTAL = set()             # 'Before the Graveyard', where the painting in Alms for the Poor (783) sets you down, one step from the range's first room
                             # (4221): the traced line jumps there, which is not a gap in the map (owner, Oct 12)
+EXTEND = {'Desert of Despair': [19863, 6365]}               # the marker moved on to these rooms (owner, Oct 15: down to room 6365)
 GAP_NOTE = "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."
 
 
@@ -35,6 +36,8 @@ def add_smr_subareas(w, smr_layout, routes):
                 elif cur:
                     segs.append(cur); cur = []
                     if v not in PORTAL: gaps += 1
+            for v_ in EXTEND.get(name, []):
+                if v_ in pos: cur.append([round(pos[v_][0], 3), round(pos[v_][1], 3)]); site = pos[v_]
             cur.append([round(site[0], 3), round(site[1], 3)]); segs.append(cur)
             pl = dict(name=name, route=r['route'], room='the Southern Mountain Range', dir='here', path=[q for s in segs for q in s], segs=segs,
                       group='af', where='off the Southern Mountain Range', note=GAP_NOTE if gaps else None)

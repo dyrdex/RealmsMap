@@ -21,6 +21,12 @@
 
 - The 7 to 8 path (cavern mouth to Mount Anagon) now winds with a few bends like the other trails (`bent_links` in `src/smr_clearings.json`).
 
+- The gap in the land under the Miden'nir-to-Moria path is filled (ground and eight trees).
+- Directions added for Lamech's Abandoned Manor, The Castle of Rol Na Feinne and The Ruins of T'man (condensed with `#N dir`); they now have traced routes. New markers with routes for Old Pottswort's Fields, Black Dagger Outlaws Hideout, The Curse of Prosperity and Dawn to Dusk (areas that open off Trade Route rooms 9249, 9315, 9320, 9321). The Old Pottswort's Fields directions stop short at their last step (`n`), so its route ends at room 9248, beside the door 9249.
+- Marker names: Southern Plains, Shattered Refuge and Intrigues of the Miden'nir on the left of their dots; Lamech's Abandoned Manor and Emerald Hills to the right; Seth's Fortress centred above; The Castle of Rol Na Feinne and The Ruins of T'man to the left. The Desert of Despair marker and name moved to room 6365. A plain text label "Elemental Canyon" (not a marker) just north of room 172.
+- Southern Mountain Trade Route: the road now runs exactly through rooms 9282 to 9286 (it was smoothed away from them, round the bottom of the Rough Terrain), and there are off-ramps at 9282 (to 327) and at 9285 (into the Rough Terrain, to 615 and 622).
+- A farm graphic (fenced holding, three crop fields, barn, house, silo, hay, pond) centred on -26.4, 78.4 (`farms` in `src/smr_clearings.json`).
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.

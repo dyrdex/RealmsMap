@@ -98,6 +98,7 @@ def merge_smr(w, layout, edges, seed=71):
     import json as _js, os as _os
     CL = _js.load(open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'smr_clearings.json')))      # clearings the owner marks by hand (Oct 14)
     in_box = lambda v, bx: bx[0] <= pos[v][0] <= bx[2] and bx[1] <= pos[v][1] <= bx[3]
+    pad_links = []
     boxed = {}; faintG = defaultdict(set); inner_e = defaultdict(set)                                       # box index -> the shown rooms inside it
     for i, c in enumerate(CL.get('boxes', []) + CL.get('towns', [])):
         boxed[i] = {v for v in DOM if in_box(v, c['box'])}
@@ -108,6 +109,7 @@ def merge_smr(w, layout, edges, seed=71):
                         G[a].discard(b); G[b].discard(a); inner_e[i].add((min(a, b), max(a, b)))      # a connection inside the clearing is not drawn ...
                         if c.get('faint_paths'): faintG[a].add(b); faintG[b].add(a)      # ... or only very lightly
         uds[:] = [(a, b) for a, b in uds if not (a in boxed[i] and b in boxed[i])]
+        pad_links.extend((a, b) for a, b in links if a in boxed[i] and b in boxed[i] and ((a in TRT) != (b in TRT)))     # (a Trade Route room inside a clearing still gets its off-ramp)
         links[:] = [(a, b) for a, b in links if not (a in boxed[i] and b in boxed[i])]     # (also the range's links to the Trade Route junction inside it)
     for t_ in CL.get('towns', []):                                              # the gate road replaces the thin lines between its rooms
         g_ = t_.get('gate')
@@ -287,11 +289,11 @@ def merge_smr(w, layout, edges, seed=71):
     dwide &= ~rwide                                                                 # (a road patch lies on top of any dirt patch)
     dT = trails(GS, dwide | rwide); rT = trails(GT, rwide)
     dirt_lines = _chains(dT, pos, set(), 0.8) if dT else []
-    road_lines = _chains(rT, pos, set(), 0.8) if rT else []
+    road_lines = _chains(rT, pos, set(), 0.8, exact=set(CL.get('exact_road_rooms', []))) if rT else []
     # the links between the range, the route, the moved Sparse Woodlands trail and fixed rooms: small dirt lines
     link_lines = []; far = []
     snap = {}; offs = []                                                       # off-ramps lie ON the drawn road: a Trade Route room's pad (and the end of the line that joins it) goes to the nearest point of the road
-    for a, b in LINKS:
+    for a, b in LINKS + pad_links:
         for v, o in ((a, b), (b, a)):
             if v in TRT and o not in TRT and road_lines and v not in snap:
                 q_ = _nearest_on([_drawn(l) for l in road_lines], pos[v]); snap[v] = [round(q_[0], 2), round(q_[1], 2)]; offs.append(round(math.dist(q_, pos[v]), 2))
@@ -501,7 +503,7 @@ def merge_smr(w, layout, edges, seed=71):
         report.setdefault('climbs', {})[c['name']] = {'sq': round(float(m.sum()) / R8 / R8, 1), 'steps': len(steps)}
     w['smrclimb'] = climbs; w['smrmarks'] = marks
     pads = []
-    for a, b in LINKS:                                                              # off-ramp pads: where the route meets anything that is not the route
+    for a, b in LINKS + pad_links:                                                  # off-ramp pads: where the route meets anything that is not the route
         for v, o in ((a, b), (b, a)):
             if v in TRT and o not in TRT: pads.append(end_(v))
     pads = [list(p) for p in sorted({tuple(p) for p in pads})]
@@ -790,6 +792,14 @@ def merge_smr(w, layout, edges, seed=71):
             w[k_] = [t for t in w[k_] if not (x0_ - 0.2 <= t[0] <= x1_ + 0.2 and y0_ - 0.2 <= t[1] <= y1_ + 0.2)]
         report.setdefault('canyons', {})[C_['name']] = {'levels': len(levels), 'hatch': sum(len(l['hatch']) for l in levels), 'ledge_points': len(ledge), 'caves': len(caves)}
     w['smrcanyon'] = cany
+    # ---- a farm (owner, Oct 15): a top-down farmstead graphic centred on (x, y); nothing grows or stands under it
+    farms = []
+    for F_ in CL.get('farms', []):
+        x_, y_ = F_['x'], F_['y']; farms.append({'name': F_['name'], 'x': x_, 'y': y_})
+        for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):
+            w[k_] = [t for t in w[k_] if not (x_ - 2.9 <= t[0] <= x_ + 2.6 and y_ - 2.3 <= t[1] <= y_ + 2.2)]
+        report.setdefault('farms', {})[F_['name']] = {'at': [x_, y_]}
+    w['smrfarm'] = farms
     # ---- inns (owner, Oct 14): an inn graphic like the Ashen Forest Inn's, with a small label; its rooms are not drawn as road
     for inn in CL.get('inns', []):
         x, y = inn['x'], inn['y']
