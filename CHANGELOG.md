@@ -17,6 +17,8 @@
 
 - Layout editor: room 6365 (Dry foothills, Desert of Despair) added, unlocked, south-east of room 181 with the spacer 19863 between them. It is not drawn on the map until you place it and save.
 
+- Layout save of Oct 15 (00:10Z): room 6365 and its spacer 19863 are on the map, and rooms 7 to 10 (the cavern mouth, Mount Anagon and the trail east of it), 572, 109, 119, 180 to 182 and 9248 are where you moved them.
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.
