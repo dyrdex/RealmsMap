@@ -14,6 +14,8 @@
 
 - Transylvania's route notes copied to the other five places' routes: River "Safest Route", East "May encounter mobs at night (requires hide)", South "May encounter mobs (requires hide)" (15 routes).
 
+- Miden'nir rooms from your editor save (Oct 15, 18:41Z) drawn on the painted Miden'nir: 37 rooms shown, 11 hidden. Forest rooms (except 1051), the six Stuck in the Brambles rooms and the inn's 1030 + 1031: a faint, wavy dashed trail marking (36 lines, incl. 1041's up-link to room 590 in the Southern Mountains). 1060 (with its link up to 679), 1049, 1050, 1051, 22569, 22568, 22564: regular trails (6 lines, incl. 1051 to the Darkhaven spacer 22565). The old fading path from the rusted bridge into the forest is replaced by the 22568-22564 trail.
+
 ## Version 14 · The Southern Mountain Range, its Trade Route and the Darkhaven River tunnel · October 15, 2026
 
 - Canyon redrawn to read as a pit going down: 4 levels instead of 6 (rim, two wall levels, floor), east and west walls close-set so they look like steep cliffs (wider ledges only on the south side), darker toward the floor, an inner shadow around the floor, and longer hatching on the east and west walls.
