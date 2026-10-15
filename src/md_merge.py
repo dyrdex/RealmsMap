@@ -5,7 +5,8 @@ Owner's notes (Oct 15):
   - 1060 Gazing Upon Mount Doom (and its link up to 679, the Southern Mountain room beside it), 1049, 1050, 1051 and the spacers 22569, 22568, 22564:
     a regular pathway (appended to `w.fwtracks`, drawn like the Forgotten Woods' trails)
 Decided here: a link between a pathway room and a faint room is faint (the faint rooms' connections are faint); the old fading path from the bridge into
-the forest (`midlink`'s second piece, (0,15.2)->(0,16.6)) is replaced by the pathway 22568 -> 22564; the bridge room 1028 stays as the bridge."""
+the forest (`midlink`'s second piece, (0,15.2)->(0,16.6)) is replaced by the pathway 22568 -> 22564; the bridge room 1028 stays as the bridge.
+Oct 15 (owner: a double path south of the stone bridge): 1051 -> 22565 is not drawn; the old path to Miden'nir (`southpath`) already runs there and now ends at 1051."""
 import math, json, os
 import ashen_forest as AF
 
@@ -41,6 +42,7 @@ def merge_md(w, layout, edges):
     for a, b, kind in edges['edges']:
         if not ({a, b} & shown) or {a, b} & hid: continue
         if BRIDGE in (a, b): skipped.append((a, b, 'the bridge')); continue
+        if {a, b} == {1051, 22565}: skipped.append((a, b, 'the old path to Miden\'nir')); continue
         other = ({a, b} - MD)
         if other and not ({a, b} & (faint_rooms | PATHWAY)): skipped.append((a, b)); continue
         if not (a in pos and b in pos): skipped.append((a, b, 'no position')); continue
@@ -51,6 +53,9 @@ def merge_md(w, layout, edges):
     old = [L for L in ml if L[0] == [0.0, 15.2] or L[0] == [0, 15.2]]
     assert len(old) == 1, ml
     w['midlink'] = [L for L in ml if L not in old]
+    sp = [list(q) for q in w['southpath']]                                   # the old path to Miden'nir (from the stone bridge) already joins 22565 to 1051: it ends AT 1051 now
+    assert math.dist(sp[-1][:2], pos[1051]) < 0.5, sp[-1]
+    sp[-1] = [round(pos[1051][0], 3), round(pos[1051][1], 3)]; w['southpath'] = sp
     w['fwtracks'] = list(w['fwtracks']) + path
     w['mdfaint'] = list(w.get('mdfaint', [])) + faint
     return w, dict(shown=len(shown), hidden=len(MD & hid), faint_rooms=len(faint_rooms), faint_lines=len(faint), pathway_lines=len(path), skipped=skipped)

@@ -16,6 +16,14 @@
 
 - Miden'nir rooms from your editor save (Oct 15, 18:41Z) drawn on the painted Miden'nir: 37 rooms shown, 11 hidden. Forest rooms (except 1051), the six Stuck in the Brambles rooms and the inn's 1030 + 1031: a faint, wavy dashed trail marking (36 lines, incl. 1041's up-link to room 590 in the Southern Mountains). 1060 (with its link up to 679), 1049, 1050, 1051, 22569, 22568, 22564: regular trails (6 lines, incl. 1051 to the Darkhaven spacer 22565). The old fading path from the rusted bridge into the forest is replaced by the 22568-22564 trail.
 
+- Double path south of the stone bridge into Miden'nir cleaned up: the new 1051 -> 22565 trail is gone; the old path to Miden'nir already runs there and now ends at room 1051.
+
+- Suds 'n Stones is a destination: listed under Areas, with your directions (`#8 w;sw;s;#2 sw;s;#2 w;#2 sw;w;se;sw;se;sw;se;#2 sw;se;#2 s;sw;s;sw;s;se;e;ne;se;s;se;e`), which end on the road outside the inn (room 9301; the inn is `n` from there). A small dot just west of its label; the label is unchanged.
+
+- V'laresch moved to the Mobs list (its pin is now a mob pin).
+
+- A'enari added under Mobs (`#8 e;#3 ne;#3 e;ne;e;ne;#2 e;#5 n;sw;nw;w;#4 n;enter;ne;w`): the line follows the map to Markings of Possession (where the Reomyr Village pin is), then runs on through the 6 undrawn Pixie Forest rooms (placed roughly, 0.8 apart) to where your directions say `enter`; the pin is there, about 4 rooms north-west of Reomyr Village.
+
 ## Version 14 · The Southern Mountain Range, its Trade Route and the Darkhaven River tunnel · October 15, 2026
 
 - Canyon redrawn to read as a pit going down: 4 levels instead of 6 (rim, two wall levels, floor), east and west walls close-set so they look like steep cliffs (wider ledges only on the south side), darker toward the floor, an inner shadow around the floor, and longer hatching on the east and west walls.
