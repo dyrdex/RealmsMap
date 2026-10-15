@@ -841,7 +841,8 @@ def merge_smr(w, layout, edges, seed=71):
     # ---- inns (owner, Oct 14): an inn graphic like the Ashen Forest Inn's, with a small label; its rooms are not drawn as road
     for inn in CL.get('inns', []):
         x, y = inn['x'], inn['y']
-        w['gfx'] = list(w['gfx']) + [{'k': 'inn', 'at': 'xy', 'x': x, 'y': y, 'w': 2.3, 'h': 2.0}, {'k': 'text', 'at': 'xy', 'x': x, 'y': round(y + inn.get('label_dy', 2.9), 2), 'text': inn['name']}]
+        w['gfx'] = list(w['gfx']) + [{'k': 'inn', 'at': 'xy', 'x': x, 'y': y, 'w': 2.3, 'h': 2.0}]
+        if inn.get('label', True): w['gfx'] = list(w['gfx']) + [{'k': 'text', 'at': 'xy', 'x': x, 'y': round(y + inn.get('label_dy', 2.9), 2), 'text': inn['name']}]   # (an inn that is a destination has a marker and the usual place name instead: 'label': false)
         for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):         # nothing grows under it
             w[k_] = [t for t in w[k_] if not (abs(t[0] - x) < 1.5 and abs(t[1] - y) < 1.4)]
         report.setdefault('inns', {})[inn['name']] = {'at': [x, y], 'rooms_not_drawn_as_road': inn['rooms']}

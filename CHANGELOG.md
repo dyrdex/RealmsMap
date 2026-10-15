@@ -32,6 +32,8 @@
 
 - The Wolf's Den marker moved: your directions leave the Northern Trade Route at room 4065 with a final `e`, but the marker sat north of the road. It now sits 1.4 rooms east of 4065, just south of the road (8.3, -22.9), with its short link running east from 4065; its name sits below-right of it, clear of every road and trail (the old spot to its left would touch the road).
 
+- Suds 'n Stones: the separate small inn label is gone; it now has the usual place name (same size and style as the others) beside a regular-size marker just above the inn.
+
 ## Version 14 · The Southern Mountain Range, its Trade Route and the Darkhaven River tunnel · October 15, 2026
 
 - Canyon redrawn to read as a pit going down: 4 levels instead of 6 (rim, two wall levels, floor), east and west walls close-set so they look like steep cliffs (wider ledges only on the south side), darker toward the floor, an inner shadow around the floor, and longer hatching on the east and west walls.

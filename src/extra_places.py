@@ -11,7 +11,7 @@ import ashen_forest as AF
 from route_fix import make_tracer
 
 SUDS_ROUTE = 'w;w;w;w;w;w;w;w;sw;s;sw;sw;s;w;w;sw;sw;w;se;sw;se;sw;se;sw;sw;se;s;s;sw;s;sw;s;se;e;ne;se;s;se;e'
-SUDS_DOT = (-13.75, 51.47)                                                        # just west of the label 'Suds 'n Stones' (centred -12.06, 51.6)
+SUDS_DOT = (-12.06, 51.75)                                                        # just above the inn graphic (owner, Oct 15: the usual place name, no separate inn label)
 AEN_ROUTE = 'n;n;n;n;n;n;n;n;ne;w;n;ne;nw;e;ne;n;e;ne;n;n;ne;ne;e;e;n;ne;nw;w;n;n;n;n;enter;ne;w'   # (owner's new directions, Oct 15)
 STEP = 0.8
 
@@ -39,7 +39,7 @@ def add_extra_places(w, layouts):
     assert t[-1] == 9301, t[-1]
     segs = segments([at(v) for v in t])
     w['places'].append(dict(name="Suds 'n Stones", route=numbered(SUDS_ROUTE), room=rooms[9301]['name'], dir='n', path=[q for s in segs for q in s], segs=segs,
-                            group='af', where='on the Southern Mountain Trade Route', at=list(SUDS_DOT), small=True, nolabel=True,
+                            group='af', where='on the Southern Mountain Trade Route', at=list(SUDS_DOT),
                             note=None if len(segs) == 1 else "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."))
     report['suds'] = dict(end=t[-1], pieces=len(segs), dot=SUDS_DOT)
     # V'laresch -> Mobs
