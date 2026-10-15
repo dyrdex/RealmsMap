@@ -27,6 +27,9 @@ def add_route_options(w, layouts, text):
         opts = wanted.get(p['name'])
         if not opts: continue
         end = p['path'][-1]; kept = []
+        tail = []
+        if len(p['path']) > 1 and not any(math.dist(q, end) < 0.02 for q in p['path'][:-1]):   # a marker set off its room (an OFFSET): trace to the room, then on to the marker
+            tail = [end]; end = p['path'][-2]
         for o in opts:
             if o['route'].startswith(OFCOL): report['dropped'].append((p['name'], o['dir'], 'Ofcol Shortcut not handled')); continue
             pts = []
@@ -40,6 +43,7 @@ def add_route_options(w, layouts, text):
                     if cur: segs.append(cur); cur = []
                 else: cur.append(q)
             if cur: segs.append(cur)
+            if tail: segs[-1] = segs[-1] + tail
             kept.append(dict(o, segs=segs, gap=GAP_SENTENCE if len(segs) > 1 else None))
         if not kept or not kept[0]['default']:
             report['dropped'].append((p['name'], 'all', 'default route not traced')); continue

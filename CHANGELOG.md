@@ -6,6 +6,12 @@
 
 - Transylvania: River (37 rooms, Safest Route) is now the default; East (28 rooms) and South (36 rooms) are its alternates. All three end in room 688. River and East draw without a break; South keeps its gap through undrawn areas.
 
+- Route options for 5 more places, River the default, East and South the alternates (your room counts): The Von Deusen Mausoleum (40 / 22 / 30), The Wilds (37 / 24 / 27), The Ruins of T'man (39 / 21 / 29), Old Pottswort's Fields (37 / 28 / 35), Emerald Hills (34 / 28 / 35). River and East draw without a break for all five; South has a gap through undrawn areas for all five.
+
+- `pull branch` added before the last `n` in all three Von Deusen Mausoleum routes, as in its earlier directions.
+
+- All route options (Transylvania's too) written in numbered form (`#8 e;#2 se;...`).
+
 ## Version 14 · The Southern Mountain Range, its Trade Route and the Darkhaven River tunnel · October 15, 2026
 
 - Canyon redrawn to read as a pit going down: 4 levels instead of 6 (rim, two wall levels, floor), east and west walls close-set so they look like steep cliffs (wider ledges only on the south side), darker toward the floor, an inner shadow around the floor, and longer hatching on the east and west walls.
