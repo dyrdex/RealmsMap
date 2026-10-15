@@ -802,20 +802,20 @@ def merge_smr(w, layout, edges, seed=71):
     for H_ in CL.get('hamlets', []):
         if not all(v in pos for v in H_['road']): continue
         (xa, ya), (xb, yb) = pos[H_['road'][0]], pos[H_['road'][1]]; hrng = random.Random(seed * 23 + 11)
-        xs_ = [-16.9, -15.2, -13.5]; ym = (ya + yb) / 2
-        kinds = [('cottage', 1.05, 0.8), ('longhouse', 1.3, 0.7), ('hut', 0.7, 0.7), ('shop', 1.0, 0.85), ('cottage', 0.9, 0.75), ('barnhouse', 1.15, 0.9)]
+        xs_ = [-16.9, -15.2, -13.5, -11.8]; ym = (ya + yb) / 2
+        kinds = [('cottage', 1.05, 0.8), ('longhouse', 1.3, 0.7), ('hut', 0.8, 0.75), ('shop', 1.0, 0.85), ('townhouse', 0.95, 0.85), ('stone', 1.05, 0.8), ('cottage', 0.9, 0.75)]
         roofs = ['#7A4638', '#86503C', '#6B4A36', '#5F4B3A', '#7E5A40', '#704034', '#5E5B55', '#A58B55', '#4E5A3E']
         n_ = 0
         for side in (-1, 1):
             for i, x_ in enumerate(xs_):
                 if side == -1 and i == 0: continue                                  # the north-west spot: the great tree
                 k_, w_, h_ = kinds[n_ % len(kinds)]; n_ += 1
-                yy = ya + (yb - ya) * (x_ - xa) / (xb - xa) + side * (1.25 + 0.1 * hrng.uniform(-1, 1))
-                houses.append({'x': round(x_ + hrng.uniform(-0.12, 0.12), 2), 'y': round(yy, 2), 'w': round(w_ * hrng.uniform(0.92, 1.08), 2), 'h': round(h_ * hrng.uniform(0.92, 1.08), 2), 'k': k_, 'roof': roofs[(n_ * 5 + i) % len(roofs)], 'rot': round(hrng.uniform(-7, 7), 1)})
+                yy = ya + (yb - ya) * (x_ - xa) / (xb - xa) + side * (1.3 + 0.05 * hrng.uniform(-1, 1))
+                houses.append({'x': round(x_ + hrng.uniform(-0.12, 0.12), 2), 'y': round(yy, 2), 'w': round(w_ * hrng.uniform(0.92, 1.08), 2), 'h': round(h_ * hrng.uniform(0.92, 1.08), 2), 'k': k_, 'roof': roofs[(n_ * 5 + i) % len(roofs)], 'rot': 0})
         tw_, th_ = H_.get('tree_w', 3.0), H_.get('tree_h', 3.2); base = ym - 0.85
         tx_ = xs_[0] + 0.05; ty_ = base - th_ * 0.49
         w['gfx'] = list(w['gfx']) + [{'k': 'hideout', 'at': 'xy', 'x': round(tx_, 2), 'y': round(ty_, 2), 'w': tw_, 'h': th_}]
-        w['tags'] = list(w['tags']) + [[round(tx_, 2), round(ty_ - th_ / 2 - 0.75, 2), H_['name'], 0.45]]
+        w['tags'] = list(w['tags']) + [[round(tx_, 2), round(ty_ - th_ / 2 - 1.1, 2), H_['name'], 0.45]]
         for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):
             w[k_] = [t for t in w[k_] if not (-19.6 <= t[0] <= -11.9 and ty_ - th_ / 2 - 0.5 <= t[1] <= ym + 2.3)]
         report.setdefault('hamlets', {})[H_['name']] = {'houses': len(houses), 'tree_at': [round(tx_, 2), round(ty_, 2)]}

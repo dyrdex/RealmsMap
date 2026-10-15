@@ -33,6 +33,9 @@
 - The Ruins of T'man: smaller marker and smaller name. The Von Deusen Mausoleum's name is centred above its marker.
 - Along the path from room 72 to room 73: five small medieval homes (cottages, a longhouse, a hut, a shop, a barn-house) north and south of the road, and in the north-west spot the Forestmen's Hideout: a great gnarled tree with a tree house in its branches, a rope ladder and a log palisade round its base (side view), with a small label.
 
+- The hamlet by room 72 to 73: the homes are now drawn in front view (timber cottage, longhouse, thatched hut, shop with awning, two-storey townhouse, stone cottage), with one more home east on both sides (3 north, 4 south).
+- Forestmen's Hideout redrawn as a secret fortress: a huge dark tree with several major limbs, four wooden archery platforms with hooded archers, a plank room with glowing arrow slits, rope bridges and a ladder, a double log palisade with an iron-banded gate, torches, skulls on stakes and ground spikes, and a glint of eyes in the trunk hollow.
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.
