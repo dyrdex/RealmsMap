@@ -12,7 +12,8 @@ DIRS = {'n', 'e', 's', 'w', 'ne', 'nw', 'se', 'sw', 'u', 'd'}
 PORTAL = {4222}
 
 
-def fix_routes(w, layouts):
+def make_tracer(w, layouts):
+    """walk(route) -> the rooms the directions pass through (from Darkhaven Square); at(room) -> its place on the map (or None)."""
     rooms, exits = AF._world()
     isspacer = lambda v: bool(rooms[v]['flags'] & 8) and rooms[v]['area'] == ''
     pos = {}
@@ -37,6 +38,11 @@ def fix_routes(w, layouts):
                     if not c: break
                     v = c[0]; trail.append(v); k += 1
         return trail
+    return rooms, walk, at
+
+
+def fix_routes(w, layouts):
+    rooms, walk, at = make_tracer(w, layouts)
     report = dict(retraced=0, joined=[], ofcol=[], kept=0, skipped=[])
     for p in w['places']:
         route = (p.get('route') or '').strip()

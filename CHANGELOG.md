@@ -1,5 +1,39 @@
 # Realm Map changelog
 
+## Version 15 · Route options, Miden'nir and the Pixie Forest · October 15, 2026
+
+- Route options: a place can now have a default route plus alternate routes, each with your direction word, room count and note. The pop-up shows the default, then "Alternate routes:"; tick one to draw it on the map instead. Routes and counts come only from your list (`ROUTE_OPTIONS` in `src/data.py`).
+
+- Transylvania: River (37 rooms, Safest Route) is now the default; East (28 rooms) and South (36 rooms) are its alternates. All three end in room 688. River and East draw without a break; South keeps its gap through undrawn areas.
+
+- Route options for 5 more places, River the default, East and South the alternates (your room counts): The Von Deusen Mausoleum (40 / 22 / 30), The Wilds (37 / 24 / 27), The Ruins of T'man (39 / 21 / 29), Old Pottswort's Fields (37 / 28 / 35), Emerald Hills (34 / 28 / 35). River and East draw without a break for all five; South has a gap through undrawn areas for all five.
+
+- `pull branch` added before the last `n` in all three Von Deusen Mausoleum routes, as in its earlier directions.
+
+- All route options (Transylvania's too) written in numbered form (`#8 e;#2 se;...`).
+
+- Transylvania's route notes copied to the other five places' routes: River "Safest Route", East "May encounter mobs at night (requires hide)", South "May encounter mobs (requires hide)" (15 routes).
+
+- Miden'nir rooms from your editor save (Oct 15, 18:41Z) drawn on the painted Miden'nir: 37 rooms shown, 11 hidden. Forest rooms (except 1051), the six Stuck in the Brambles rooms and the inn's 1030 + 1031: a faint, wavy dashed trail marking (36 lines, incl. 1041's up-link to room 590 in the Southern Mountains). 1060 (with its link up to 679), 1049, 1050, 1051, 22569, 22568, 22564: regular trails (6 lines, incl. 1051 to the Darkhaven spacer 22565). The old fading path from the rusted bridge into the forest is replaced by the 22568-22564 trail.
+
+- Double path south of the stone bridge into Miden'nir cleaned up: the new 1051 -> 22565 trail is gone; the old path to Miden'nir already runs there and now ends at room 1051.
+
+- Suds 'n Stones is a destination: listed under Areas, with your directions (`#8 w;sw;s;#2 sw;s;#2 w;#2 sw;w;se;sw;se;sw;se;#2 sw;se;#2 s;sw;s;sw;s;se;e;ne;se;s;se;e`), which end on the road outside the inn (room 9301; the inn is `n` from there). A small dot just west of its label; the label is unchanged.
+
+- V'laresch moved to the Mobs list (its pin is now a mob pin).
+
+- A'enari added under Mobs (`#8 e;#3 ne;#3 e;ne;e;ne;#2 e;#5 n;sw;nw;w;#4 n;enter;ne;w`): the line follows the map to Markings of Possession (where the Reomyr Village pin is), then runs on through the 6 undrawn Pixie Forest rooms (placed roughly, 0.8 apart) to where your directions say `enter`; the pin is there, about 4 rooms north-west of Reomyr Village.
+
+- Pixie Forest rooms from your editor save (Oct 15, 21:26Z): the 14 Pixie Forest / Asgard Nexus rooms drawn only as a very faint dashed trail (15 lines, fainter than Miden'nir's). Forgotten Woods rooms 4017, 4018, 4019 moved to your spots (4019 by 7 rooms) and still the usual pathway: the Woods trail bends through them on to 4084 (10 trees cleared off its new course).
+
+- Routes through the Pixie Forest now follow your layout in full: A'enari's line runs to Serenity (pin there, no more rough placement); Reomyr Village's line runs on to 5004, the room it is up (u) from, and its pin moved there; Nevermore's line follows the moved Woods rooms.
+
+- New directions: Pixie Forest (`#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;nw;n`): the line runs into the Pixie Forest at 4993 and ends at 4994 A Grassy Clearing, where its pin now sits (was beside Bleeding Wildflowers). A'enari (`#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;#2 e;n;ne;nw;w;#4 n;enter;ne;w`): now through the Woods and 4017-4019; pin unchanged at Serenity. Reomyr Village: your directions were already the ones on the map. All three lines unbroken.
+
+- The Wolf's Den marker moved: your directions leave the Northern Trade Route at room 4065 with a final `e`, but the marker sat north of the road. It now sits 1.4 rooms east of 4065, just south of the road (8.3, -22.9), with its short link running east from 4065; its name sits below-right of it, clear of every road and trail (the old spot to its left would touch the road).
+
+- Suds 'n Stones: the separate small inn label is gone; it now has the usual place name (same size and style as the others) beside a regular-size marker just above the inn.
+
 ## Version 14 · The Southern Mountain Range, its Trade Route and the Darkhaven River tunnel · October 15, 2026
 
 - Canyon redrawn to read as a pit going down: 4 levels instead of 6 (rim, two wall levels, floor), east and west walls close-set so they look like steep cliffs (wider ledges only on the south side), darker toward the floor, an inner shadow around the floor, and longer hatching on the east and west walls.

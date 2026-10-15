@@ -91,7 +91,7 @@ Old Pottswort's Fields|#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#4 s;#2 se;#2 ne;n;se
 Old Thalos|#41 w;#7 n;#2 w
 Olympus|#8 u;n;finditem pearl-wand;unlock n;open n;n;track Juna (say will you take me to olympus?)
 Otherland|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s;sw;w;sw;d;nw;s;#2 e;#2 se;w
-Pixie Forest|#6 n;#6 e;se;e;#2 ne;e;nw;#2 n;#2 ne;nw
+Pixie Forest|#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;nw;n
 Raven Tor|#6 n;#3 nw;w;n;#4 e;s;w;sw;nw;n;ne;u;#2 ne;u;ne;u;ne;nw;w;u;#2 ne;u;w;u;ne;se;#2 e;#2 se;e;d;ne
 Realm of Worship|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;ne;n;ne;#5 n
 Redferne's Residence|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se;s;#3 sw;u;#3 w;s;sw;d;#3 w;#3 n;w;#2 s;#2 sw;#2 w;sw;#2 nw;sw;w;sw;#2 s;sw;tree;#2 e;#3 se;#4 s;#3 e;s;#2 w;open w;w
@@ -193,4 +193,27 @@ Gnarlwood Forest|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#2 e;n
 # A second way in that you gave for a place that already had directions
 ALT_DIRECTIONS = '''
 Old Thalos|#9 w;#2 nw;n;w;nw;w;#2 nw;#8 w;nw;#3 w;nw;w;#2 nw;#2 w;#2 sw;w;sw;#5 w
+'''
+# Places you gave more than one route to (Oct 15). One line per route: name|default or alt|general direction|rooms (your count)|note|directions.
+# Exactly one 'default' per place: it is drawn when the place is picked (and replaces the place's directions above); the 'alt' routes are
+# listed under 'Alternate routes' on its card, in this order, and can be picked instead.
+ROUTE_OPTIONS = '''
+Transylvania|default|River|37|Safest Route|#8 w;sw;s;#2 sw;s;#2 w;#2 sw;w;se;sw;se;sw;se;e;se;e;ne;#2 e;se;e;se;s;se;w;#2 n
+Transylvania|alt|East|28|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;s;e;se;e;ne;nw;n;u;#2 n
+Transylvania|alt|South|36|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;#4 se;e;se;e;ne;nw;n;u;#2 n
+The Von Deusen Mausoleum|default|River|40|Safest Route|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;ne;nw;ne;e;d;ne;nw;ne;e;ne;#2 e;#3 se;d;s;se;e;se;e;n;nw;pull branch;n
+The Von Deusen Mausoleum|alt|East|22|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;#2 n;nw;pull branch;n
+The Von Deusen Mausoleum|alt|South|30|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;se;e;se;e;n;nw;pull branch;n
+The Wilds|default|River|37|Safest Route|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;ne;nw;ne;e;d;ne;nw;ne;e;ne;#2 e;#3 se;d;s;se;u;sw;nw
+The Wilds|alt|East|24|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;w;#2 nw;u;sw;nw
+The Wilds|alt|South|27|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;se;u;sw;nw
+The Ruins of T'man|default|River|39|Safest Route|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;ne;nw;ne;e;d;ne;nw;ne;e;ne;#2 e;#3 se;d;s;se;e;se;#2 e;n
+The Ruins of T'man|alt|East|21|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;n;e;n
+The Ruins of T'man|alt|South|29|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;se;e;se;#2 e;n
+Old Pottswort's Fields|default|River|37|Safest Route|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;#2 ne;e;#2 ne;e;n;ne;#3 n;ne;n;se
+Old Pottswort's Fields|alt|East|28|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#2 se;#2 ne;n;se
+Old Pottswort's Fields|alt|South|35|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#4 s;#2 se;#2 ne;n;se
+Emerald Hills|default|River|34|Safest Route|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;ne;nw;#2 n;ne;n;e;#3 ne;e
+Emerald Hills|alt|East|28|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;s;sw;#2 s;se;u;se;e
+Emerald Hills|alt|South|35|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#3 s;sw;#2 s;se;u;se;e
 '''

@@ -46,7 +46,7 @@ def add_ntr_subareas(w, layout, routes, seed=9):
     # where the two places sit
     SALBURG = (43.2, -44.6)                                                       # east of the Maze of Trees, in the forest (a little north of where it was)
     s4112 = pos[4112]; BELIAL = (s4112[0] - 1.0, s4112[1] + 1.0)                  # the Belial room lies south-west of the last spacer room of the stub
-    WOLF = (7.5, -25.75)                                                           # just north of the road at the turn-off, in clear ground (its name sits to the left)
+    WOLF = (8.3, -22.9)                                                            # east of the turn-off room 4065, the way the directions' last step ('e') goes, just south of the road (owner, Oct 15: it sat north of the road before)
     sites = {'City of Salburg': SALBURG, 'Keep of Belial': BELIAL, "The Wolf's Den": WOLF}
     links = {}
     r4098 = pos[4098]
@@ -58,7 +58,7 @@ def add_ntr_subareas(w, layout, routes, seed=9):
         u = k / 24.0; a_, b_, c_, d_ = (1 - u) ** 3, 3 * u * (1 - u) ** 2, 3 * u * u * (1 - u), u ** 3
         bez.append([round(a_ * P[0] + b_ * P1[0] + c_ * P2[0] + d_ * SALBURG[0], 2), round(a_ * P[1] + b_ * P1[1] + c_ * P2[1] + d_ * SALBURG[1], 2)])
     links['City of Salburg'] = bez
-    links["The Wolf's Den"] = _smooth([pos[4065], (7.15, -24.7), WOLF], 0.7)
+    links["The Wolf's Den"] = _smooth([pos[4065], (7.6, -23.15), WOLF], 0.7)
     stub = [pos[4104], pos[19637], pos[5297], pos[4112], BELIAL]
     links['Keep of Belial'] = _smooth(stub, 0.9)
     # the coast: it comes straight down from the Forgotten Woods' north-east coast past the City of Salburg, then bends in to a small bay for Ocean Keep.
