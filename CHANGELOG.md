@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress
+## Version 15 · Route options, Miden'nir and the Pixie Forest · October 15, 2026
 
 - Route options: a place can now have a default route plus alternate routes, each with your direction word, room count and note. The pop-up shows the default, then "Alternate routes:"; tick one to draw it on the map instead. Routes and counts come only from your list (`ROUTE_OPTIONS` in `src/data.py`).
 
