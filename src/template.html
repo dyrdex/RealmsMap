@@ -247,7 +247,8 @@ const CANYON=L=>(L||[]).map(C=>{let s='';const P=a=>'M'+a.map(q=>q[0]+' '+q[1]).
   const bx=C.levels[0].poly;s+=`<path d="${P(bx)}" fill="none" stroke="#1d1812" stroke-width=".4" stroke-linejoin="round" opacity=".35"/>`;
   C.levels.forEach((l,i)=>{s+=`<path d="${P(l.poly)}" fill="${l.fill}" stroke="#1d1812" stroke-width="${i?.07:.1}" stroke-linejoin="round"/>`;
     s+=`<g stroke="#1a150f" stroke-width=".035" stroke-linecap="round" opacity="${.35+i*.04}">`+l.hatch.map(h=>`<line x1="${h[0]}" y1="${h[1]}" x2="${h[2]}" y2="${h[3]}"/>`).join('')+`</g>`;
-    s+=`<path d="${P(l.poly)}" fill="none" stroke="#c9b48f" stroke-width=".03" opacity=".3" transform="translate(0 -.05)"/>`});   /* terraced walls: each level lower than the last, hachured downhill */
+    if(i===0)s+=`<path d="${P(l.poly)}" fill="none" stroke="#d8c6a0" stroke-width=".05" opacity=".45" transform="translate(0 -.04)"/>`;else s+=`<path d="${P(l.poly)}" fill="none" stroke="#0a0705" stroke-width=".16" opacity=".4" stroke-linejoin="round"/>`;
+    if(i===C.levels.length-1)s+=`<clipPath id="cyF"><path d="${P(l.poly)}"/></clipPath><path d="${P(l.poly)}" fill="none" stroke="#000" stroke-width=".9" opacity=".4" clip-path="url(#cyF)"/>`});   /* terraced walls: each level lower than the last, hachured downhill */
   s+=C.rocks.map(r=>`<circle cx="${r[0]}" cy="${r[1]}" r="${r[2]}" fill="#9a8460" opacity=".7"/><circle cx="${r[0]+.02}" cy="${r[1]+.03}" r="${r[2]*.6}" fill="#4a3e30" opacity=".6"/>`).join('');
   const sg=(w1,w2)=>C.ledge.map(g=>`<path d="${'M'+g.pts.map(q=>q.join(' ')).join('L')}" stroke-width="${g.thin?w2:w1}" ${g.thin?'stroke-dasharray=".22 .1"':''} fill="none"/>`).join('');
   s+=`<g stroke="#0f0c09" stroke-linecap="round" stroke-linejoin="round" opacity=".7" transform="translate(.04 .07)">${sg(.2,.14)}</g><g stroke="#bda884" stroke-linecap="round" stroke-linejoin="round">${sg(.12,.07)}</g>`;   /* the ledge path: hairpins, with thin, broken narrows; its shadow below */

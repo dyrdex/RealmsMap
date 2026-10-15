@@ -774,8 +774,8 @@ def merge_smr(w, layout, edges, seed=71):
                 t = 2 * math.pi * k / n; ct, st = math.cos(t), math.sin(t); f = 1 + amp * (math.sin(5 * t + ph[0]) * .5 + math.sin(9 * t + ph[1]) * .3 + math.sin(14 * t + ph[2]) * .2)
                 out.append([round(cx + a_ * f * math.copysign(abs(ct) ** (2 / pw), ct), 2), round(cy + b_ * f * math.copysign(abs(st) ** (2 / pw), st), 2)])
             return out
-        ins = [(0.05, 0.0, 0.05), (0.5, 0.1, 1.0), (1.0, 0.2, 1.6), (1.5, 0.3, 2.2), (2.0, 0.4, 2.8), (2.5, 0.5, 3.4)]      # (west/east, north, south) insets: the walls close in toward a narrow floor in the north
-        cols = ['#7A6347', '#8B7455', '#75604A', '#5E4F3E', '#483D31', '#352D25']
+        ins = [(0.05, 0.0, 0.05), (0.3, 0.1, 1.0), (0.6, 0.2, 1.9), (0.95, 0.35, 2.9)]      # (west/east, north, south) insets: three levels only; the east and west walls are close together (steep cliffs), the south side has the wider ledges the path climbs
+        cols = ['#8B7455', '#6E5A44', '#4E4034', '#2A2219']
         levels = []
         for k, (dw, dn, ds) in enumerate(ins):
             poly = rrect(x0_ + dw, y0_ + dn - (0.25 if k == 0 else 0), x1_ - dw, y1_ - ds, 0.045 + 0.01 * k)
@@ -783,13 +783,13 @@ def merge_smr(w, layout, edges, seed=71):
             for (a, b) in zip(poly, poly[1:] + poly[:1]):
                 L_ = math.dist(a, b)
                 for sx in np.arange(0.1, L_, 0.21):
-                    q = (a[0] + (b[0] - a[0]) * sx / L_, a[1] + (b[1] - a[1]) * sx / L_); d_ = np.array([cxm - q[0], cym - q[1]]); d_ /= (np.linalg.norm(d_) or 1); ln = crng.uniform(0.14, 0.3)
+                    q = (a[0] + (b[0] - a[0]) * sx / L_, a[1] + (b[1] - a[1]) * sx / L_); d_ = np.array([cxm - q[0], cym - q[1]]); d_ /= (np.linalg.norm(d_) or 1); ln = crng.uniform(0.16, 0.34) * (1.5 if min(abs(q[0] - x0_), abs(x1_ - q[0])) < 1.3 else 1.0)
                     hatch.append([round(q[0], 2), round(q[1], 2), round(q[0] + d_[0] * ln, 2), round(q[1] + d_[1] * ln, 2)])
             levels.append({'poly': poly, 'fill': cols[k], 'hatch': hatch})
         fx_ = (x0_ + x1_) / 2 + 0.1                                                  # the floor: a shadowed slot that runs out of the canyon at the base entrance (north)
         floor = [[fx_ - 0.75, 25.4], [fx_ - 0.6, 24.5], [fx_ - 0.42, 23.6], [fx_ - 0.4, 22.6], [fx_ + 0.4, 22.6], [fx_ + 0.45, 23.5], [fx_ + 0.7, 24.5], [fx_ + 0.85, 25.4], [fx_ + 0.4, 25.85], [fx_ - 0.4, 25.85]]
         lo, hi = pos[C_['low']], pos[C_['high']]
-        ledge = [[round(hi[0], 2), round(hi[1], 2)], [fx_ + 1.65, 27.8], [fx_ - 1.45, 27.4], [fx_ + 1.3, 26.95], [fx_ - 1.3, 26.55], [fx_ + 0.8, 26.2], [fx_ - 0.7, 25.9], [fx_ + 0.05, 25.55]]
+        ledge = [[round(hi[0], 2), round(hi[1], 2)], [fx_ + 1.5, 27.75], [fx_ - 1.4, 27.45], [fx_ + 1.2, 27.1], [fx_ - 1.2, 26.8], [fx_ + 0.6, 26.55], [fx_ - 0.2, 26.35]]
         ledge = [[round(a, 2), round(b, 2)] for a, b in ledge]
         segs = []                                                                    # the ledge, a wandering line per stretch; the narrowest stretches are thin and broken
         for i, (a, b) in enumerate(zip(ledge, ledge[1:])):
