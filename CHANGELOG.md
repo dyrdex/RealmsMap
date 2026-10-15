@@ -24,6 +24,10 @@
 
 - A'enari added under Mobs (`#8 e;#3 ne;#3 e;ne;e;ne;#2 e;#5 n;sw;nw;w;#4 n;enter;ne;w`): the line follows the map to Markings of Possession (where the Reomyr Village pin is), then runs on through the 6 undrawn Pixie Forest rooms (placed roughly, 0.8 apart) to where your directions say `enter`; the pin is there, about 4 rooms north-west of Reomyr Village.
 
+- Pixie Forest rooms from your editor save (Oct 15, 21:26Z): the 14 Pixie Forest / Asgard Nexus rooms drawn only as a very faint dashed trail (15 lines, fainter than Miden'nir's). Forgotten Woods rooms 4017, 4018, 4019 moved to your spots (4019 by 7 rooms) and still the usual pathway: the Woods trail bends through them on to 4084 (10 trees cleared off its new course).
+
+- Routes through the Pixie Forest now follow your layout in full: A'enari's line runs to Serenity (pin there, no more rough placement); Reomyr Village's line runs on to 5004, the room it is up (u) from, and its pin moved there; Nevermore's line follows the moved Woods rooms.
+
 ## Version 14 · The Southern Mountain Range, its Trade Route and the Darkhaven River tunnel · October 15, 2026
 
 - Canyon redrawn to read as a pit going down: 4 levels instead of 6 (rim, two wall levels, floor), east and west walls close-set so they look like steep cliffs (wider ledges only on the south side), darker toward the floor, an inner shadow around the floor, and longer hatching on the east and west walls.

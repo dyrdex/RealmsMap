@@ -45,7 +45,27 @@ def add_extra_places(w, layouts):
     # V'laresch -> Mobs
     v = [p for p in w['places'] if p['name'] == "V'laresch"]; assert len(v) == 1
     v[0]['kind'] = 'mob'; report['vlaresch'] = 'mob'
-    # A'enari
+    # A'enari: in full over the Pixie Forest layout (owner's save, Oct 15) when every room has a spot; otherwise the rough guess below
+    t = walk(AEN_ROUTE)
+    if t[-1] == 12232 and all(at(x) for x in t):
+        segs = segments([at(x) for x in t])
+        w['places'].append(dict(name="A'enari", route=numbered(AEN_ROUTE), room=rooms[12232]['name'], dir='here', kind='mob',
+                                path=[q for s in segs for q in s], segs=segs, group='af', where='in the Asgard Nexus, past the Pixie Forest', note=None))
+        report['aenari'] = dict(full=True, marker=segs[-1][-1], pieces=len(segs))
+    else:
+        w, report['aenari'] = _aenari_rough(w, rooms, walk, at, exits)
+    # Reomyr Village: its line now runs on through the Pixie Forest to 5004, the room it is 'u' from; the pin goes there
+    p = next(p for p in w['places'] if p['name'] == 'Reomyr Village')
+    t = walk(p['route'])
+    if 5004 in t and all(at(x) for x in t[:t.index(5004) + 1]):
+        segs = segments([at(x) for x in t[:t.index(5004) + 1]])
+        p.update(path=[q for s in segs for q in s], segs=segs, dir='here', room=rooms[5004]['name'],
+                 note="Reomyr Village is up (u) from this room of the Pixie Forest.")
+        report['reomyr'] = dict(marker=segs[-1][-1], pieces=len(segs))
+    return w, report
+
+
+def _aenari_rough(w, rooms, walk, at, exits):
     toks = AEN_ROUTE.split(';'); k = toks.index('enter')
     t = walk(';'.join(toks[:k]))
     known = max(i for i, x in enumerate(t) if at(x))
@@ -58,5 +78,4 @@ def add_extra_places(w, layouts):
     w['places'].append(dict(name="A'enari", route=numbered(AEN_ROUTE), room=rooms[12232]['name'] if 12232 in rooms else 'Serenity', dir='here', kind='mob',
                             path=[q for s in segs for q in s], segs=segs, group='af', where='in the Asgard Nexus, past the Pixie Forest',
                             note="The Pixie Forest isn't drawn yet: the end of the line and this pin are placed roughly, where your directions say 'enter'."))
-    report['aenari'] = dict(last_mapped=t[known], unmapped=unmapped, marker=[round(x0, 2), round(y0, 2)], pieces=len(segs))
-    return w, report
+    return w, dict(last_mapped=t[known], unmapped=unmapped, marker=[round(x0, 2), round(y0, 2)], pieces=len(segs))
