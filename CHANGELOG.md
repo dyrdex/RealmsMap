@@ -36,6 +36,10 @@
 - The hamlet by room 72 to 73: the homes are now drawn in front view (timber cottage, longhouse, thatched hut, shop with awning, two-storey townhouse, stone cottage), with one more home east on both sides (3 north, 4 south).
 - Forestmen's Hideout redrawn as a secret fortress: a huge dark tree with several major limbs, four wooden archery platforms with hooded archers, a plank room with glowing arrow slits, rope bridges and a ladder, a double log palisade with an iron-banded gate, torches, skulls on stakes and ground spikes, and a glint of eyes in the trunk hollow.
 
+- Around room 9248: the Trade Route's road now runs exactly through the rooms that have an off-ramp (it was smoothed 1.3 rooms away from 9248, so the link to room 181 ended on empty ground). All the other lines there match edges in your layout; the two long diagonals are real edges (571 to 572, which you moved far south-east, and 181 through spacer 19863 to room 6365).
+- The Forestmen's Hideout is 60% of its size; the MacMillan Family Farm barn is 0.3 further north.
+- The links from the southern mountain rooms to the Sparse Woodlands trail are now thin dashed lines in the path colour that end on the trail itself (`smrdash`).
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.

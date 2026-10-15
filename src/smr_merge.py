@@ -289,7 +289,7 @@ def merge_smr(w, layout, edges, seed=71):
     dwide &= ~rwide                                                                 # (a road patch lies on top of any dirt patch)
     dT = trails(GS, dwide | rwide); rT = trails(GT, rwide)
     dirt_lines = _chains(dT, pos, set(), 0.8) if dT else []
-    road_lines = _chains(rT, pos, set(), 0.8, exact=set(CL.get('exact_road_rooms', []))) if rT else []
+    road_lines = _chains(rT, pos, set(), 0.8, exact=set(CL.get('exact_road_rooms', [])) | {v for a, b in LINKS + pad_links for v in (a, b) if v in TRT and ((a in TRT) != (b in TRT))}) if rT else []
     # the links between the range, the route, the moved Sparse Woodlands trail and fixed rooms: small dirt lines
     link_lines = []; far = []
     snap = {}; offs = []                                                       # off-ramps lie ON the drawn road: a Trade Route room's pad (and the end of the line that joins it) goes to the nearest point of the road
@@ -298,8 +298,17 @@ def merge_smr(w, layout, edges, seed=71):
             if v in TRT and o not in TRT and road_lines and v not in snap:
                 q_ = _nearest_on([_drawn(l) for l in road_lines], pos[v]); snap[v] = [round(q_[0], 2), round(q_[1], 2)]; offs.append(round(math.dist(q_, pos[v]), 2))
     end_ = lambda v: snap.get(v) or [round(pos[v][0], 2), round(pos[v][1], 2)]
+    dash_lines = []                                                                # the links to the Sparse Woodlands trail: thin dashed lines that end ON the drawn trail (owner, Oct 15)
+    ft_near = [l for l in w['fwtracks'] if any(grp(v) == 'ft' and v in pos and any(math.dist(q, pos[v]) < 0.4 for q in l) for v in {u for e_ in LINKS for u in e_ if grp(u) == 'ft'})]
+    ft_drawn = [_drawn(l) for l in ft_near]
+    def ft_end(v):
+        if not ft_drawn: return [round(pos[v][0], 2), round(pos[v][1], 2)]
+        q_ = _nearest_on(ft_drawn, pos[v])
+        return [round(q_[0], 2), round(q_[1], 2)] if math.dist(q_, pos[v]) < 1.6 else [round(pos[v][0], 2), round(pos[v][1], 2)]
     for a, b in LINKS + UDL:
         d = math.dist(pos[a], pos[b])
+        if (a, b) in LINKS and (grp(a) == 'ft') != (grp(b) == 'ft') and d <= 30:
+            dash_lines.append([ft_end(v) if grp(v) == 'ft' else end_(v) for v in (a, b)]); continue
         if d > 30: far.append((a, b, round(d, 1)))
         elif sorted((a, b)) in [sorted(x) for x in CL.get('bent_links', [])]:         # a long link drawn with a bend, like the other trails (owner, Oct 15: 7 to 8)
             A_, B_ = np.array(end_(a), float), np.array(end_(b), float); dv_ = B_ - A_; nv_ = np.array([-dv_[1], dv_[0]]) / (np.linalg.norm(dv_) or 1)
@@ -347,7 +356,7 @@ def merge_smr(w, layout, edges, seed=71):
                 l2 = [[round(x, 2), round(y, 2)] for x, y in th]
                 if len(l2) >= 2 and math.dist(l2[0], l2[-1]) >= 0.04: out.append(l2)
         return out, cut, ext
-    dirt_lines, cut1, e1 = clip(dirt_lines); link_lines, cut2, e2 = clip(link_lines); vis_c, cut3, e3 = clip([vis]) if vis else ([], 0, 0)
+    dash_lines, cutd, ed_ = clip(dash_lines); dirt_lines, cut1, e1 = clip(dirt_lines); link_lines, cut2, e2 = clip(link_lines); vis_c, cut3, e3 = clip([vis]) if vis else ([], 0, 0)
     report['lines_stopped_at_a_clearing'] = {'trails': cut1, 'links': cut2, 'connection_to_670': cut3, 'paths_that_would_vanish_kept': (e1 + e2 + e3)}
     # ---- the hand-made clearings' extras: their inner paths very lightly, rough-terrain marks between them
     faint_lines = _chains(faintG, pos, set(), 0.6) if faintG else []
@@ -508,6 +517,7 @@ def merge_smr(w, layout, edges, seed=71):
             if v in TRT and o not in TRT: pads.append(end_(v))
     pads = [list(p) for p in sorted({tuple(p) for p in pads})]
     w['smrpatch'] = dpatch; w['roadpatch'] = rpatch
+    w['smrdash'] = dash_lines
     w['fwtracks'] = list(w['fwtracks']) + dirt_lines + link_lines + vis_c
     w['etrtracks'] = list(w['etrtracks']) + road_lines
     w['ntrjoins'] = list(w['ntrjoins']) + pads
@@ -815,7 +825,7 @@ def merge_smr(w, layout, edges, seed=71):
         tw_, th_ = H_.get('tree_w', 3.0), H_.get('tree_h', 3.2); base = ym - 0.85
         tx_ = xs_[0] + 0.05; ty_ = base - th_ * 0.49
         w['gfx'] = list(w['gfx']) + [{'k': 'hideout', 'at': 'xy', 'x': round(tx_, 2), 'y': round(ty_, 2), 'w': tw_, 'h': th_}]
-        w['tags'] = list(w['tags']) + [[round(tx_, 2), round(ty_ - th_ / 2 - 1.1, 2), H_['name'], 0.45]]
+        w['tags'] = list(w['tags']) + [[round(tx_, 2), round(ty_ - th_ / 2 - 0.8, 2), H_['name'], 0.45]]
         for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):
             w[k_] = [t for t in w[k_] if not (-19.6 <= t[0] <= -11.9 and ty_ - th_ / 2 - 0.5 <= t[1] <= ym + 2.3)]
         report.setdefault('hamlets', {})[H_['name']] = {'houses': len(houses), 'tree_at': [round(tx_, 2), round(ty_, 2)]}
