@@ -15,6 +15,8 @@
 - A new path from room 3422 (Miden'nir, Stuck in the Brambles) to the Moria marker, drawn from your description: east across the brambles, a bend south-east, rounding out and north round the east side of the Mountains of Desolation (slightly east of the Moria marker), then north-west into the marker. Drawn as a dirt path; no rooms are mapped for it (`OWNER_PATHS` in `src/owner_edits.py`).
 - Markers and traced routes for the 16 areas that open off the Southern Mountain Range and its Trade Route: Desert of Despair, Dragon's Pass, Elemental Canyon, Emerald Hills, Lamech's Abandoned Manor, MacMillan Family Farm, Mithril Hall, The Mire, Seth's Fortress, Steading of the Hill Giants, The Castle of Rol Na Feinne, The Ruins of T'man, The Von Deusen Mausoleum, The Wilds, Transylvania, Wastelands. Each sits on the range room where your directions step out (three with no directions in your list sit on the room they open from). Areas that already have a marker or are drawn (Azure Sea, Bartok Grove, Forest of Tears, Miden'nir, New Darkhaven, The Ashen Forest) and World Housing are not added again.
 
+- Layout editor: room 6365 (Dry foothills, Desert of Despair) added, unlocked, south-east of room 181 with the spacer 19863 between them. It is not drawn on the map until you place it and save.
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.

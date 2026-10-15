@@ -184,6 +184,12 @@ start[AF_ROOM] = list(AFPOS[AF_ROOM]); start[FICT] = [(_p559[0] + AFPOS[AF_ROOM]
 for v in (AF_ROOM, FICT): raw[v] = list(start[v]); lvl[v] = 0
 piece[AF_ROOM] = piece[FICT] = _np; _np += 1
 S = S | {AF_ROOM, FICT}; SP = SP | {FICT}
+EXTRA = {6365: 181}                                                                  # rooms added on request (owner, Oct 15): 6365 'Dry foothills' (Desert of Despair), reached from 181 through spacer 19863; unlocked, starts south-east of 181
+for _v, _nb181 in EXTRA.items():
+    _b = _svp.get(_nb181) or start[_nb181]; start[_v] = [round(_b[0] + 2.2, 2), round(_b[1] + 2.2, 2)]; raw[_v] = list(start[_v]); lvl[_v] = 0; piece[_v] = _np; _np += 1
+    S = S | {_v}
+    _sp = 19863                                                                      # the spacer between them (181 se -> 19863 se -> 6365), halfway
+    start[_sp] = [round(_b[0] + 1.1, 2), round(_b[1] + 1.1, 2)]; raw[_sp] = list(start[_sp]); lvl[_sp] = 0; piece[_sp] = piece[_v]; S = S | {_sp}; SP = SP | {_sp}
 xy = {v: list(p) for v, p in start.items()}
 for Pz in (xy, raw):
     cells = defaultdict(list)
@@ -199,7 +205,7 @@ def exlist(v):
         if not r: continue
         res.append(f"{DN.get(e['dir'], '?')} → {r['name'] or 'spacer room'}" + (f" ({r['area']})" if r['area'] and r['area'] != SA else ''))
     return res
-GROUP = {v: ('af' if v in (AF_ROOM, FICT) else 'ft' if v in UL else 'tr' if v in TR or (v in SP and v not in S0) else 'ug' if rooms[v]['terrain'] == 'Underground' else 'sm') for v in S}
+GROUP = {v: ('af' if v in (AF_ROOM, FICT) else 'ft' if v in UL else 'tr' if v in TR or (v in SP and v not in S0 and v != 19863) else 'ug' if rooms[v]['terrain'] == 'Underground' else 'sm') for v in S}
 R = []
 for v in sorted(CTX):
     r = rooms[v]
