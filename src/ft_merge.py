@@ -213,10 +213,10 @@ def merge_ft(w, layout, edges, seed=53):
     fp_old = next((t for t in w['swtracks'] if abs(t[0][0] + 13.183) < 0.01 and abs(t[0][1] - 5.633) < 0.01), None)
     FP_HEAD = [[-21.0, 3.9], [-18.3, 5.5], [-15.9, 6.9]]
     fp_new = []
-    if fp_old and all(v in pos for v in (820, 836, 834)):
-        fp_new = [[round(pos[v][0], 3), round(pos[v][1], 3)] for v in (820, 836, 834)] + FP_HEAD + [list(q) for q in fp_old[1:]]     # (the old trail's far end, on to (-9, 17), is where it was)
-        w['swtracks'] = [fp_new if t is fp_old else t for t in w['swtracks']]
-    report['forest_path'] = (len(fp_new), fp_new[:3])
+    if fp_old and all(v in pos for v in (820, 836, 834)):                        # the 'Along the Forest Path' trail is not drawn (owner, Oct 14); it was fp_old, and then this redrawn line
+        w['swtracks'] = [t for t in w['swtracks'] if t is not fp_old]
+        fp_new = [[round(pos[v][0], 3), round(pos[v][1], 3)] for v in (820, 836, 834)]
+    report['forest_path'] = ('trail removed', len(fp_new))
     # ---------------------------------------------------------------- geometry on a sub-grid
     allpts = np.array([pos[v] for v in (FT | LK | RD)])
     lo, hi = allpts.min(0) - 16, allpts.max(0) + 16
@@ -474,8 +474,8 @@ def merge_ft(w, layout, edges, seed=53):
     pfp = next((p for p in w['places'] if p['name'] == 'Along the Forest Path'), None)
     if pfp and fp_new:
         tr_, fl_ = walk(pfp['route']); upto = tr_[:tr_.index(834) + 1] if 834 in tr_ else []
-        pts = [[round(P(v)[0], 3), round(P(v)[1], 3)] for v in upto if P(v)] + FP_HEAD + [[-14.406, 8.063], [-13.783, 9.6], [-13.183, 11.267]]
-        pfp['segs'] = [pts]; pfp['path'] = pts; pfp['note'] = "Placed roughly: the path runs between the Forest of Tears and the Shattered Refuge."
+        pts = [[round(P(v)[0], 3), round(P(v)[1], 3)] for v in upto if P(v)]      # the route ends at 833 (not on the map): the marker is on 834, the last room of it that is (owner, Oct 14: where its directions lead)
+        pfp['segs'] = [pts]; pfp['path'] = pts; pfp.pop('note', None)
     fnt = next((p for p in w['places'] if p['name'] == "Falcon's Nest Tavern"), None)
     # the tavern graphic sits west of the road, across it from the marker dot (owner, Oct 13): the nearest clear spot to the marker whose way to the marker crosses the road
     tav = None

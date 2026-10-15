@@ -1,0 +1,299 @@
+{
+  "_doc": "Hand-made clearings on the Southern Mountain Range (smr_merge.py). 'boxes': a rectangle [x0, y0, x1, y1] (upper-left and bottom-right corners) drawn as one dirt clearing; every connection with BOTH ends inside it is not drawn (with 'faint_paths' they are drawn very lightly instead; with 'rough_marks' crags and boulders are scattered between them). 'add_rooms': {'room': id, 'to': a room (or rooms) already in the clearing it joins, 'mode': 'stem' (default: the room's square plus a band to the nearest part of that clearing) or 'hull' (everything between the room and the 'to' rooms is filled)}; a bare number joins the nearest clearing. Hidden rooms may be named. 'climbs': a rocky path up a mountain through the four rooms [a, b, c, d] (corners in order); the thin lines between those rooms are not drawn. Every thin path stops at the edge of a clearing it runs into (smr_merge.py). 'towns': a box [x0, y0, x1, y1] drawn as a top-down village instead of paths: the streets come from its street rooms, buildings from its rooms (inside rooms, shrine, church, inn, shop), a plaza at the well, a few filler houses and trees; nothing else is drawn inside it, paths stop at its edge, and it gets a name label. 'faint_links' (on a box): [a, b] pairs whose path is shown in the clearing's light style where it runs inside the box (the part outside stops at the edge as usual). 'gate' (on a town): rooms [outside room, spacer, street room] joined by a grand paved road with a town gate where it crosses the town's north edge. 'inns': a Trade Route room drawn as an inn graphic with a small label; the rooms listed are its interior and are not drawn as road. 'undergrounds': the Darkhaven River's tunnel: [path] lists the rooms from the mouth (room 1) to the far end (the waterfall room); drawn as a ghosted, blurred dark band with dashed walls and a faded river over the surface, with a cave mouth at the start, rapids, a downpour, a lake with mist, a grotto, stalactites and a twin waterfall with its mist and tunnel mouth; none of these rooms is drawn as a path. The rooms named (bend, rapids, rain, lake, grotto, stalactites, fall) place those features.",
+  "boxes": [
+    {
+      "name": "Rough Terrain",
+      "box": [
+        -26.5,
+        11.5,
+        -16.4,
+        17.5
+      ],
+      "faint_paths": true,
+      "rough_marks": true,
+      "faint_links": [
+        [
+          593,
+          591
+        ]
+      ]
+    }
+  ],
+  "add_rooms": [
+    {
+      "room": 157,
+      "to": [
+        152,
+        153
+      ],
+      "mode": "hull"
+    },
+    {
+      "room": 681,
+      "to": 680
+    },
+    {
+      "room": 353,
+      "to": 680
+    },
+    {
+      "room": 19998,
+      "to": 680
+    },
+    {
+      "room": 19989,
+      "to": 680
+    },
+    {
+      "room": 366,
+      "to": 680
+    },
+    {
+      "room": 354,
+      "to": 680
+    },
+    {
+      "room": 355,
+      "to": 680
+    },
+    {
+      "room": 356,
+      "to": 680
+    },
+    {
+      "room": 358,
+      "to": 680
+    },
+    {
+      "room": 365,
+      "to": 680
+    },
+    {
+      "room": 686,
+      "to": 314,
+      "mode": "hull"
+    },
+    {
+      "room": 310,
+      "to": 299,
+      "mode": "hull"
+    },
+    {
+      "room": 167,
+      "to": [
+        164,
+        168
+      ],
+      "mode": "hull"
+    },
+    {
+      "room": 174,
+      "to": [
+        171,
+        173
+      ],
+      "mode": "hull"
+    },
+    {
+      "room": 19997,
+      "to": [
+        309,
+        311
+      ],
+      "mode": "hull"
+    }
+  ],
+  "climbs": [
+    {
+      "name": "Mesa climb",
+      "rooms": [
+        153,
+        152,
+        149,
+        150
+      ]
+    }
+  ],
+  "towns": [
+    {
+      "name": "Edel",
+      "box": [
+        -19.9,
+        68,
+        -9.0,
+        74
+      ],
+      "label": [
+        -14.45,
+        67.35
+      ],
+      "gate": {
+        "rooms": [
+          81,
+          134,
+          82
+        ],
+        "width": 0.95
+      },
+      "gate_s": {
+        "room": 108,
+        "street_room": 106,
+        "bridge": {
+          "y0": 74.85,
+          "y1": 76.9,
+          "w": 1.0
+        }
+      }
+    }
+  ],
+  "inns": [
+    {
+      "name": "Suds 'n Stones",
+      "room": 9303,
+      "rooms": [
+        9303,
+        9304,
+        9305
+      ],
+      "x": -12.06,
+      "y": 53.3,
+      "label_dy": -1.7
+    }
+  ],
+  "undergrounds": [
+    {
+      "name": "Darkhaven River tunnel",
+      "mouth_room": 1,
+      "path": [
+        1,
+        22559,
+        22560,
+        22561,
+        22562,
+        22563,
+        2,
+        3,
+        4,
+        5,
+        11,
+        12,
+        13
+      ],
+      "bend": 2,
+      "rapids": 3,
+      "rain": 4,
+      "lake": 5,
+      "grotto": 6,
+      "surface_exit": 7,
+      "stalactites": [
+        11,
+        12
+      ],
+      "fall": 13,
+      "branches": [
+        {
+          "rooms": [
+            5,
+            6
+          ],
+          "kind": "water",
+          "width": 0.5
+        },
+        {
+          "rooms": [
+            6,
+            7
+          ],
+          "kind": "dry",
+          "width": 0.9,
+          "mouth": 7
+        }
+      ]
+    }
+  ],
+  "river": {
+    "name": "Foothills river",
+    "rooms": [
+      13,
+      18,
+      16,
+      28,
+      27,
+      31,
+      44,
+      41,
+      14899,
+      14897,
+      14898,
+      14900,
+      124,
+      119,
+      123,
+      120,
+      20697,
+      125
+    ],
+    "pool": 120,
+    "flood": 125,
+    "marsh": 126,
+    "width": 0.5,
+    "widen_from": 119
+  },
+  "canyons": [
+    {
+      "name": "The Enormous Canyon",
+      "box": [
+        -25.2,
+        23.0,
+        -17.9,
+        29.3
+      ],
+      "low": 118,
+      "high": 348
+    }
+  ],
+  "bent_links": [
+    [
+      7,
+      8
+    ]
+  ],
+  "exact_road_rooms": [
+    9282,
+    9283,
+    9284,
+    9285,
+    9286
+  ],
+  "farms": [],
+  "gfx_extra": [
+    {
+      "k": "barn",
+      "at": "xy",
+      "x": -26.4,
+      "y": 77.8,
+      "w": 2.9,
+      "h": 2.3
+    }
+  ],
+  "hamlets": [
+    {
+      "name": "Forestmen's Hideout",
+      "road": [
+        72,
+        73
+      ],
+      "tree_w": 1.8,
+      "tree_h": 1.92
+    }
+  ],
+  "link_rooms": [
+    20002
+  ],
+  "unclipped_links": [
+    [
+      181,
+      9248
+    ]
+  ]
+}

@@ -9,7 +9,7 @@ from scipy import ndimage as ndi
 from scipy.spatial import cKDTree
 
 
-def _chains(G, pos, pinned, sigma):
+def _chains(G, pos, pinned, sigma, exact=()):
     chains = []; seen = set()
     for v in [v for v in G if len(G[v]) != 2 or v in pinned] + list(G):
         for u in G[v]:
@@ -26,7 +26,10 @@ def _chains(G, pos, pinned, sigma):
         p = [[pos[v][0], pos[v][1]] for v in ch]
         if len(p) >= 4:
             xs = ndi.gaussian_filter1d(np.array([q[0] for q in p]), sigma, mode='nearest'); ys = ndi.gaussian_filter1d(np.array([q[1] for q in p]), sigma, mode='nearest')
-            q = [[float(a), float(b)] for a, b in zip(xs, ys)]; q[0] = p[0]; q[-1] = p[-1]; p = q
+            q = [[float(a), float(b)] for a, b in zip(xs, ys)]; q[0] = p[0]; q[-1] = p[-1]
+            for i_, v_ in enumerate(ch):
+                if v_ in exact: q[i_] = p[i_]                    # (rooms the owner wants the road to run through exactly)
+            p = q
         out.append([[round(a, 2), round(b, 2)] for a, b in p])
     return out
 

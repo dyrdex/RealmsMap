@@ -59,11 +59,14 @@ if os.environ.get('ASHEN_DUMP'):                                 # (used to buil
 import json as _json
 from ashen_forest import merge_saved_layout
 _here=os.path.dirname(os.path.abspath(__file__))
+def _ASHL():                                                       # the Ashen Forest layout as the owner saved it (room 670's move is applied by smr_merge, not here: moving it inside the Ashen merge re-rolled ~2,300 random trees)
+    import json as _j
+    return _j.load(open(os.path.join(_here,'ashen_layout_final.json')))
 from visual_nudges import NUDGES
-w,_ash=merge_saved_layout(w,_json.load(open(os.path.join(_here,'ashen_layout_final.json'))),_json.load(open(os.path.join(_here,'ashen_editor_edges.json'))),nudges=NUDGES)
+w,_ash=merge_saved_layout(w,_ASHL(),_json.load(open(os.path.join(_here,'ashen_editor_edges.json'))),nudges=NUDGES)
 print('Ashen Forest, Eastern Trade Route and the added rooms merged from your layout:',_ash)
 from af_markers import add_af_markers
-w,_afm=add_af_markers(w,_json.load(open(os.path.join(_here,'ashen_layout_final.json'))),_json.load(open(os.path.join(_here,'af_marker_routes.json'))))
+w,_afm=add_af_markers(w,_ASHL(),_json.load(open(os.path.join(_here,'af_marker_routes.json'))))
 print('Ashen Forest sub-area markers:',_afm)
 def _ntr_layout():                                              # the Northern Trade Route layout, with the long bridge (4133-4135) where the Barren Peaks layout put it
     L=_json.load(open(os.path.join(_here,'ntr_layout_final.json'))); B=_json.load(open(os.path.join(_here,'bp_layout_final.json')))
@@ -81,16 +84,16 @@ from dh_paths import add_darkhaven_paths
 w,_dp=add_darkhaven_paths(w)
 print('Darkhaven paths drawn:',_dp)
 from east_shore import add_east_beach
-w,_eb=add_east_beach(w,_json.load(open(os.path.join(_here,'ashen_layout_final.json'))),_json.load(open(os.path.join(_here,'ashen_editor_edges.json'))))
+w,_eb=add_east_beach(w,_ASHL(),_json.load(open(os.path.join(_here,'ashen_editor_edges.json'))))
 print('east beach and ocean:',_eb)
 from scenery import add_drawings, add_north_coast, add_dread, remove_retired_buildings, add_ashen_label
 w,_rb=remove_retired_buildings(w)
 print('buildings removed:',_rb)
 w,_nc=add_north_coast(w)
 print('ocean keep headland and north coast water:',_nc)
-w,_dr=add_dread(w,_json.load(open(os.path.join(_here,'ashen_layout_final.json'))))
+w,_dr=add_dread(w,_ASHL())
 print('darker, denser ground:',_dr)
-w,_sc=add_drawings(w,_json.load(open(os.path.join(_here,'ashen_layout_final.json'))))
+w,_sc=add_drawings(w,_ASHL())
 print('drawings added:',_sc)
 w,_al=add_ashen_label(w)
 print('Ashen Forest label:',_al)
@@ -126,14 +129,27 @@ print('Azure Sea Coast merged:',_az)
 from ft_merge import merge_ft                                    # the Forest of Tears, Lake of Tich'Pyga and Western Trade Route from the owner's layout (Oct 13)
 import json as _jft
 _FTL=_jft.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'ft_layout_final.json'))); _FTE=_jft.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'fot_editor_edges.json')))
+_SML=_jft.load(open(os.path.join(_here,'smr_layout_final.json'))); _SME=_jft.load(open(os.path.join(_here,'smr_editor_edges.json')))   # the Southern Mountain Range layout (Oct 14)
+_sp=dict(zip(_SML['ids'],zip(_SML['xs'],_SML['ys']))); _ftx=dict(zip(_FTL['ids'],range(len(_FTL['ids']))))
+for _r in _SME['rooms']:                                          # the Sparse Woodlands trail (Forest of Tears rooms) was moved in that editor: the forest is drawn from its new positions
+    if _r.get('grp')=='ft' and _r['id'] in _ftx and _r['id'] in _sp: _FTL['xs'][_ftx[_r['id']]],_FTL['ys'][_ftx[_r['id']]]=_sp[_r['id']]
 w,_ft=merge_ft(w,_FTL,_FTE)
+from smr_merge import merge_smr                                    # the Southern Mountain Range, its Trade Route and links to the moved trail (Oct 14)
+w,_sm=merge_smr(w,_SML,_SME)
+print('Southern Mountain Range merged:',_sm)
+from smr_markers import add_smr_subareas                          # markers + traced routes for the areas that open off the range and its trade route (Oct 14)
+w,_ssa=add_smr_subareas(w,_SML,_json.load(open(os.path.join(_here,'smr_marker_routes.json'))),extra_layout=_ASHL())
+print('Southern Mountain Range sub-areas:',_ssa)
 print('Forest of Tears, Lake of Tich\'Pyga and Western Trade Route merged:',{k:v for k,v in _ft.items() if not k.startswith('_')})
 from west_sea import add_west_sea                                # the sea along the whole west coast + the small marina on it (Oct 13)
 w,_wsea=add_west_sea(w)
 print('west sea and marina:',_wsea)
 from route_fix import fix_routes                                 # routes along the trade routes drawn unbroken; the Ofcol Shortcut portal (owner, Oct 13)
-w,_rf=fix_routes(w,[_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_json.load(open(os.path.join(_here,'ashen_layout_final.json')))])
+w,_rf=fix_routes(w,[_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL()])
 print('routes traced again:',_rf)
+from owner_edits import apply_edits                              # lines and places the owner asked to take out (Oct 14)
+w,_oe=apply_edits(w)
+print('owner edits:',_oe)
 for _p in w['places']:                                          # owner's renames: the place keeps its old name as its key for the label tweaks
     if _p['name']=='Ofcol': _p['key']='Ofcol'; _p['name']='New Ofcol'
 w['places']=[_p for _p in w['places'] if not (_p['name']=='New Ofcol' and _p.get('key')!='Ofcol')]   # the Woods' own New Ofcol marker removed (owner, Oct 10)

@@ -1,5 +1,61 @@
 # Realm Map changelog
 
+## Version 14 · The Southern Mountain Range, its Trade Route and the Darkhaven River tunnel · October 15, 2026
+
+- Canyon redrawn to read as a pit going down: 4 levels instead of 6 (rim, two wall levels, floor), east and west walls close-set so they look like steep cliffs (wider ledges only on the south side), darker toward the floor, an inner shadow around the floor, and longer hatching on the east and west walls.
+
+- All sub-area directions are now in numbered form (`#N dir`; repeated moves merged, e.g. `sw;sw` -> `#2 sw`); 60 routes tidied. Commands like `open n` or `look painting` are kept as they are.
+
+- Black Dagger Outlaws Hideout directions updated to your new route (`#7 w;sw;s;w;#2 sw;...`; I read the commas in your first group as semicolons).
+
+- The Darkhaven River now ends at room 1 and turns south into a cave mouth. Its tunnel (rooms 1 to 13) is drawn as a faded, see-through ghost layer with dashed walls and flow arrows toward the mouth. Per room: a lake (5) with a grotto (6) joined to it and a dashed surface exit, rapids (3), a downpour (4), stalactites (11, 12), a bend (2), and a twin-fork waterfall with a tunnel mouth beyond room 13. The tunnel rooms are no longer drawn as dirt paths. Config: `undergrounds` in `src/smr_clearings.json`.
+
+- Edel's new south gate: a gatehouse with two round towers in the town's south wall, a paved road from the street to it, and a stone bridge (paved deck, parapets, corner posts) leading south over a short stream (the river rooms 119/124 run under it; the trail pieces under the bridge are not drawn). Rooms from your save of Oct 14 22:44Z (rooms 108 to 116, 14898, 14900, 19374, 124, 9282 moved; 108, 109, 110 unhidden).
+
+- The Darkhaven River continues beyond the waterfall (room 13) as a stream, a little wider than a path, through rooms 18, 16, 28, 27, 31, 44, 41, 124, 119 and the spacer rooms between them (14899, 14897, 14898, 14900, 123, 20697), down past Edel, under its bridge (the short stream drawn for the bridge is replaced by this). From 119 it widens into a still pool at 120, then spreads into a wide flooded area at 125 and is lost in a marsh (126: puddles, reeds, dark wet ground). Config: `river` in `src/smr_clearings.json`.
+
+- Darkhaven tunnel: the passage from room 5 to the grotto at 6 is now part of the underground river (same faded blue ghost layer; the grotto graphic stays); from 6 to room 7 a dry, brown underground cavern (dashed pale-brown walls, loose rocks, a cave mouth at 7); 7 to 8 stays a normal pathway. The open ground round the lake, grotto and cavern is filled with the area's hills and ground (it was a gap), and the underground rooms no longer set the terrain above them.
+- The Enormous Canyon (box -25.2,23.0 to -17.9,29.3): drawn from above as terraced, hachured rock walls closing in to a shadowed floor, with the innermost layer as the floor and a narrow ledge path of hairpins (thin, broken stretches) from the top entrance at room 348 (south) down to the base entrance at 118 (north), and small caves in the walls. The hidden rooms are not drawn; sprites inside the box are cleared.
+
+- Darkhaven tunnel exit: the cavern mouth after room 12 moved down-southwest so it touches the little waterfall at room 13 (the river now runs on unbroken).
+- A new path from room 3422 (Miden'nir, Stuck in the Brambles) to the Moria marker, drawn from your description: east across the brambles, a bend south-east, rounding out and north round the east side of the Mountains of Desolation (slightly east of the Moria marker), then north-west into the marker. Drawn as a dirt path; no rooms are mapped for it (`OWNER_PATHS` in `src/owner_edits.py`).
+- Markers and traced routes for the 16 areas that open off the Southern Mountain Range and its Trade Route: Desert of Despair, Dragon's Pass, Elemental Canyon, Emerald Hills, Lamech's Abandoned Manor, MacMillan Family Farm, Mithril Hall, The Mire, Seth's Fortress, Steading of the Hill Giants, The Castle of Rol Na Feinne, The Ruins of T'man, The Von Deusen Mausoleum, The Wilds, Transylvania, Wastelands. Each sits on the range room where your directions step out (three with no directions in your list sit on the room they open from). Areas that already have a marker or are drawn (Azure Sea, Bartok Grove, Forest of Tears, Miden'nir, New Darkhaven, The Ashen Forest) and World Housing are not added again.
+
+- Layout editor: room 6365 (Dry foothills, Desert of Despair) added, unlocked, south-east of room 181 with the spacer 19863 between them. It is not drawn on the map until you place it and save.
+
+- Layout save of Oct 15 (00:10Z): room 6365 and its spacer 19863 are on the map, and rooms 7 to 10 (the cavern mouth, Mount Anagon and the trail east of it), 572, 109, 119, 180 to 182 and 9248 are where you moved them.
+
+- The 7 to 8 path (cavern mouth to Mount Anagon) now winds with a few bends like the other trails (`bent_links` in `src/smr_clearings.json`).
+
+- The gap in the land under the Miden'nir-to-Moria path is filled (ground and eight trees).
+- Directions added for Lamech's Abandoned Manor, The Castle of Rol Na Feinne and The Ruins of T'man (condensed with `#N dir`); they now have traced routes. New markers with routes for Old Pottswort's Fields, Black Dagger Outlaws Hideout, The Curse of Prosperity and Dawn to Dusk (areas that open off Trade Route rooms 9249, 9315, 9320, 9321). The Old Pottswort's Fields directions stop short at their last step (`n`), so its route ends at room 9248, beside the door 9249.
+- Marker names: Southern Plains, Shattered Refuge and Intrigues of the Miden'nir on the left of their dots; Lamech's Abandoned Manor and Emerald Hills to the right; Seth's Fortress centred above; The Castle of Rol Na Feinne and The Ruins of T'man to the left. The Desert of Despair marker and name moved to room 6365. A plain text label "Elemental Canyon" (not a marker) just north of room 172.
+- Southern Mountain Trade Route: the road now runs exactly through rooms 9282 to 9286 (it was smoothed away from them, round the bottom of the Rough Terrain), and there are off-ramps at 9282 (to 327) and at 9285 (into the Rough Terrain, to 615 and 622).
+- A farm graphic (fenced holding, three crop fields, barn, house, silo, hay, pond) centred on -26.4, 78.4 (`farms` in `src/smr_clearings.json`).
+
+- Layout save of Oct 15 (00:48Z): rooms 9282 and 9283 moved; the Trade Route's road runs through rooms 9282 to 9286 without the spike, with off-ramps at 9282 and at 9285 (into the Rough Terrain).
+- MacMillan Family Farm: the top-down farm is replaced by the usual side-view graphic, a red barn with a silo.
+- Old Pottswort's Fields: your new directions (`#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#4 s;#2 se;#2 ne;n;se`) trace cleanly; its marker sits south-east of the roadway with its name on the right.
+- The Ruins of T'man: smaller marker and smaller name. The Von Deusen Mausoleum's name is centred above its marker.
+- Along the path from room 72 to room 73: five small medieval homes (cottages, a longhouse, a hut, a shop, a barn-house) north and south of the road, and in the north-west spot the Forestmen's Hideout: a great gnarled tree with a tree house in its branches, a rope ladder and a log palisade round its base (side view), with a small label.
+
+- The hamlet by room 72 to 73: the homes are now drawn in front view (timber cottage, longhouse, thatched hut, shop with awning, two-storey townhouse, stone cottage), with one more home east on both sides (3 north, 4 south).
+- Forestmen's Hideout redrawn as a secret fortress: a huge dark tree with several major limbs, four wooden archery platforms with hooded archers, a plank room with glowing arrow slits, rope bridges and a ladder, a double log palisade with an iron-banded gate, torches, skulls on stakes and ground spikes, and a glint of eyes in the trunk hollow.
+
+- Around room 9248: the Trade Route's road now runs exactly through the rooms that have an off-ramp (it was smoothed 1.3 rooms away from 9248, so the link to room 181 ended on empty ground). All the other lines there match edges in your layout; the two long diagonals are real edges (571 to 572, which you moved far south-east, and 181 through spacer 19863 to room 6365).
+- The Forestmen's Hideout is 60% of its size; the MacMillan Family Farm barn is 0.3 further north.
+- The links from the southern mountain rooms to the Sparse Woodlands trail are now thin dashed lines in the path colour that end on the trail itself (`smrdash`).
+
+- The last Sparse Woodlands link (the path from room 366 to room 20002, which sits on the trail) is a thin dashed line like the others.
+- The Southern Mountain Trade Route no longer has the dark semi-transparent verge and shadow round it (the other trade routes keep theirs).
+- The link from room 181 to the off-ramp at 9248 is drawn whole (it was cut short at the clearing, leaving a gap).
+- No sea along the west of the Southern Mountain Range, its Trade Route, or the west end of the Sparse Woodlands trail (`west_sea.py`: nothing at x -75 to -20 below y 4).
+
+- Room 181: the path through it now runs exactly through the room (it was smoothed past it, leaving a gap before the link to 9248).
+- MacMillan Family Farm barn nudged a little further north.
+- The homes by the Forestmen's Hideout are now medieval: a little castle, a tower, a wooden fort, an English cottage, a rustic stone cottage with a turf roof, a Renaissance house with a stepped gable, and a fantasy tower-house.
+- Selected routes that cross the Ashen Forest to the southern mountains (The Von Deusen Mausoleum and others) no longer break there: the lines now run through the Ashen rooms at the positions of your Ashen layout (they had no position in the route tracer, so it dropped them).
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.
@@ -18,6 +74,19 @@
 - A short path from the Fog Cliffs' north end (room 1661) into the field at 1648.
 - Third pass: room 1891 hidden; a short link from the Lost Between Woods thread to the lake's south shore (1124 to 839); the connector from the road to Darkhaven's gate is road; the Along the Forest Path trail now leaves the Darkhaven path at room 820; a new off-ramp pad at room 2319; the field is one terrain (the different strip between x -49 and -40 is gone).
 - Second pass from your new save: the path west out of Darkhaven stops at room 822 where the field begins; short dirt links run from the Lost Between Woods path into the field at 1754 and 1736; the Western Trade Route near Darkhaven follows the rooms you moved.
+
+## Earlier in progress · Southern Mountain Range
+- Southern Mountain Range, its Southern Mountain Trade Route and the moved Sparse Woodlands trail are on the map from your saved layout: wide paths and clearings follow your rooms (neighbouring rooms widen the path; a clump of touching rooms is one open dirt patch), the Trade Route is a formal road with off-ramps, the Forest of Tears redrawn round the moved trail, sea along the range's west coast, the map now reaches y 113.
+- New layout editor for the Southern Mountain Range (597 rooms + 99 spacers, anchored to the Forest of Tears); nothing drawn on the map yet.
+- Edel has a grand paved road and a town gate where room 134 joins it to the cartyard; the Shattered Refuge cabins and path moved east beside its dot; the trail through rooms 588-590 is back; room 558's path shows; the path 593-591 shows faintly inside Rough Terrain; room 19997 joins its clearing; Suds 'n Stones is an inn with a label at room 9303.
+- Edel is drawn as a small top-down village (streets, plaza and well, church, inn, houses) in its box, with its name; the climb is a plain wide path with faint stair steps; the river south of Darkhaven ends further east and curves north into a thread; Shattered Refuge's paths are gone and its name sits beside its dot; the Southern Mountain Range marker, name and sidebar entry are removed.
+- Paths stop at the edge of any clearing they run into (they only show that the path leads in); Rough Terrain shows its inner paths faintly with crags and boulders; a rocky climb joins rooms 153/152 to 150/149; clearings extended: canyon-rim strip (rooms 681 ... 365), 686, 310, 167, 174, 157.
+- Rough Terrain (-26.5,11.5 to -16.4,17.5) is one dirt clearing, only the Sparse Woodlands trail paths into it are drawn; room 157 joins the clearing south of it. Hand-made clearings are listed in `src/smr_clearings.json`.
+- 'Along the Forest Path': trail removed, marker moved to the end of its directions (the Southern Trail room, -22.4, 2.0).
+- Southern Mountain Trade Route off-ramps all sit on the drawn road.
+- Up/down exits between shown rooms are drawn as small dirt lines (11), except 291 - 292.
+- The visual-only connection from room 559 up to Ashen Forest room 670 is on the map: a standard dirt path through standard forest (the Ashen trail follows 670 to its new spot).
+- Editor: the Sparse Woodlands trail of the Forest of Tears (38 rooms incl. spacers) unlocked; the Southern Mountain Trade Route (126 rooms) added.
 
 ## Earlier in progress · Forest of Tears + Lake of Tich'Pyga editor
 - New layout editor for the Forest of Tears (683 rooms) and the Lake of Tich'Pyga (276 rooms) together, with the spacer rooms that join them (`tools/forest_of_tears_editor`, October 12). Nothing on the map changes until you save an arrangement.

@@ -20,6 +20,7 @@ DOCK_AT = (-94.3, -16.4)                     # owner: the small wooden marina
 
 def add_west_sea(w, seed=61):
     nrng = np.random.default_rng(seed)
+    HN = int((max(GF.Y1, w['bounds'][3]) - YN) * R8)                    # (the grid reaches the map's south edge: the Southern Mountain Range's west coast gets its sea too)
     land = AA._raster(w['geo']['land'], X0, YN, W, HN)
     water = AA._raster(w['geo']['water'], X0, YN, W, HN)
     xs = (np.arange(W) + .5) / R8 + X0; ys = (np.arange(HN) + .5) / R8 + YN
@@ -55,7 +56,9 @@ def add_west_sea(w, seed=61):
             rr = int(r * R8) + 1; y0, y1, x0, x1 = max(0, cy - rr), min(HN, cy + rr + 1), max(0, cx - rr), min(W, cx + rr + 1)
             yy, xx = np.ogrid[y0:y1, x0:x1]; blocked[y0:y1, x0:x1] |= ((yy - cy) ** 2 + (xx - cx) ** 2) <= rr * rr
     stamp(pts, 1.3); stamp(_samples(lines, 0.35), 0.7) if lines else None
+    SY = np.broadcast_to(ys[:, None], (HN, W))
     sea &= ~blocked
+    sea &= ~((SX > -75.0) & (SX < -20.0) & (SY > 4.0))                              # no sea along the Southern Mountain Range's west side, nor at the west end of the Sparse Woodlands trail (owner, Oct 15)
     sea = (ndi.gaussian_filter(sea.astype(float), 0.8 * R8) > 0.5) & ext & (d >= 0.15) & ~blocked
     lab2, n2 = ndi.label(sea)
     if n2:                                                                    # one sea along the coast: no stray pools (a piece stays if it is big or touches the water already there)
