@@ -87,7 +87,7 @@ Ockwater Fens|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se;s;#3 s
 Octopus Garden|#6 s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;#3 e;s;s;se;e;ne;d
 Ofcol|#6 n;#3 nw;w;n
 Old Marsh|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se;s;#3 sw;u;#3 w;s;sw;d;#3 w;#3 n;w;#2 s;#2 sw;#2 w;sw;#2 nw;sw;w;sw;#2 s;sw;tree;#2 e;#3 se
-Old Pottswort's Fields|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;#2 ne;e;ne;ne;e;n;ne;n;n;n;n;ne;n;se
+Old Pottswort's Fields|#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#4 s;#2 se;#2 ne;n;se
 Old Thalos|#41 w;#7 n;w;w
 Olympus|#8 u;n;finditem pearl-wand;unlock n;open n;n;track Juna (say will you take me to olympus?)
 Otherland|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s;sw;w;sw;d;nw;s;#2 e;#2 se;w

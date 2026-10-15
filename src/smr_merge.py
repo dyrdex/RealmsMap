@@ -792,14 +792,34 @@ def merge_smr(w, layout, edges, seed=71):
             w[k_] = [t for t in w[k_] if not (x0_ - 0.2 <= t[0] <= x1_ + 0.2 and y0_ - 0.2 <= t[1] <= y1_ + 0.2)]
         report.setdefault('canyons', {})[C_['name']] = {'levels': len(levels), 'hatch': sum(len(l['hatch']) for l in levels), 'ledge_points': len(ledge), 'caves': len(caves)}
     w['smrcanyon'] = cany
-    # ---- a farm (owner, Oct 15): a top-down farmstead graphic centred on (x, y); nothing grows or stands under it
-    farms = []
-    for F_ in CL.get('farms', []):
-        x_, y_ = F_['x'], F_['y']; farms.append({'name': F_['name'], 'x': x_, 'y': y_})
+    # ---- a barn and silo for the MacMillan Family Farm (owner, Oct 15): the usual side-view graphic, like the castles and inns
+    for g_ in CL.get('gfx_extra', []):
+        w['gfx'] = list(w['gfx']) + [dict(g_)]
         for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):
-            w[k_] = [t for t in w[k_] if not (x_ - 2.9 <= t[0] <= x_ + 2.6 and y_ - 2.3 <= t[1] <= y_ + 2.2)]
-        report.setdefault('farms', {})[F_['name']] = {'at': [x_, y_]}
-    w['smrfarm'] = farms
+            w[k_] = [t for t in w[k_] if not (abs(t[0] - g_['x']) < 1.5 and abs(t[1] - g_['y']) < 1.3)]
+    # ---- a hamlet along a path (owner, Oct 15): small medieval homes seen from above, north and south of the road; the north-west spot is the Forestmen's Hideout, a great tree with a tree house (side view)
+    houses = []
+    for H_ in CL.get('hamlets', []):
+        if not all(v in pos for v in H_['road']): continue
+        (xa, ya), (xb, yb) = pos[H_['road'][0]], pos[H_['road'][1]]; hrng = random.Random(seed * 23 + 11)
+        xs_ = [-16.9, -15.2, -13.5]; ym = (ya + yb) / 2
+        kinds = [('cottage', 1.05, 0.8), ('longhouse', 1.3, 0.7), ('hut', 0.7, 0.7), ('shop', 1.0, 0.85), ('cottage', 0.9, 0.75), ('barnhouse', 1.15, 0.9)]
+        roofs = ['#7A4638', '#86503C', '#6B4A36', '#5F4B3A', '#7E5A40', '#704034', '#5E5B55', '#A58B55', '#4E5A3E']
+        n_ = 0
+        for side in (-1, 1):
+            for i, x_ in enumerate(xs_):
+                if side == -1 and i == 0: continue                                  # the north-west spot: the great tree
+                k_, w_, h_ = kinds[n_ % len(kinds)]; n_ += 1
+                yy = ya + (yb - ya) * (x_ - xa) / (xb - xa) + side * (1.25 + 0.1 * hrng.uniform(-1, 1))
+                houses.append({'x': round(x_ + hrng.uniform(-0.12, 0.12), 2), 'y': round(yy, 2), 'w': round(w_ * hrng.uniform(0.92, 1.08), 2), 'h': round(h_ * hrng.uniform(0.92, 1.08), 2), 'k': k_, 'roof': roofs[(n_ * 5 + i) % len(roofs)], 'rot': round(hrng.uniform(-7, 7), 1)})
+        tw_, th_ = H_.get('tree_w', 3.0), H_.get('tree_h', 3.2); base = ym - 0.85
+        tx_ = xs_[0] + 0.05; ty_ = base - th_ * 0.49
+        w['gfx'] = list(w['gfx']) + [{'k': 'hideout', 'at': 'xy', 'x': round(tx_, 2), 'y': round(ty_, 2), 'w': tw_, 'h': th_}]
+        w['tags'] = list(w['tags']) + [[round(tx_, 2), round(ty_ - th_ / 2 - 0.75, 2), H_['name'], 0.45]]
+        for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):
+            w[k_] = [t for t in w[k_] if not (-19.6 <= t[0] <= -11.9 and ty_ - th_ / 2 - 0.5 <= t[1] <= ym + 2.3)]
+        report.setdefault('hamlets', {})[H_['name']] = {'houses': len(houses), 'tree_at': [round(tx_, 2), round(ty_, 2)]}
+    w['smrhouses'] = houses
     # ---- inns (owner, Oct 14): an inn graphic like the Ashen Forest Inn's, with a small label; its rooms are not drawn as road
     for inn in CL.get('inns', []):
         x, y = inn['x'], inn['y']

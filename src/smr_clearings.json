@@ -265,11 +265,26 @@
     9285,
     9286
   ],
-  "farms": [
+  "farms": [],
+  "gfx_extra": [
     {
-      "name": "MacMillan Family Farm",
+      "k": "barn",
+      "at": "xy",
       "x": -26.4,
-      "y": 78.4
+      "y": 78.4,
+      "w": 2.9,
+      "h": 2.3
+    }
+  ],
+  "hamlets": [
+    {
+      "name": "Forestmen's Hideout",
+      "road": [
+        72,
+        73
+      ],
+      "tree_w": 3.0,
+      "tree_h": 3.2
     }
   ]
 }

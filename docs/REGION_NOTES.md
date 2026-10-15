@@ -195,3 +195,6 @@ Not yet built (backlog, in this order): an automatic QA report script; a "tweaks
 
 ### Oct 15 batch
 `exact_road_rooms` (smr_clearings.json -> `_chains(..., exact=)`) keeps the road on those rooms; `pad_links` give off-ramps to Trade Route rooms inside a clearing box; `FILL_HOLES`, `OWNER_TAGS` in owner_edits.py (a land hole removed and planted; a plain text tag); `farms` -> `w['smrfarm']` -> FARM() in template.html (drawn after the river so it sits over the marsh); `EXTEND` in smr_markers.py (Desert of Despair marker moved on to 19863, 6365); labels pinned in template.html LBL/PINNED; `smr_marker_routes.py` also looks at exits INTO the range from an area (the four Trade Route areas).
+
+### Oct 15 (later)
+`gfx_extra` (barn at the farm) and `hamlets` (houses along rooms 72-73 + the 'hideout' gfx sprite and a tag) in smr_clearings.json -> smr_merge.py; HOUSES() in template.html; new SPRITE kinds `barn`, `hideout`. Marker options in smr_markers.py: OFFSET, SMALL (`p.small`).

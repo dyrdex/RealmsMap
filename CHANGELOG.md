@@ -27,6 +27,12 @@
 - Southern Mountain Trade Route: the road now runs exactly through rooms 9282 to 9286 (it was smoothed away from them, round the bottom of the Rough Terrain), and there are off-ramps at 9282 (to 327) and at 9285 (into the Rough Terrain, to 615 and 622).
 - A farm graphic (fenced holding, three crop fields, barn, house, silo, hay, pond) centred on -26.4, 78.4 (`farms` in `src/smr_clearings.json`).
 
+- Layout save of Oct 15 (00:48Z): rooms 9282 and 9283 moved; the Trade Route's road runs through rooms 9282 to 9286 without the spike, with off-ramps at 9282 and at 9285 (into the Rough Terrain).
+- MacMillan Family Farm: the top-down farm is replaced by the usual side-view graphic, a red barn with a silo.
+- Old Pottswort's Fields: your new directions (`#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#4 s;#2 se;#2 ne;n;se`) trace cleanly; its marker sits south-east of the roadway with its name on the right.
+- The Ruins of T'man: smaller marker and smaller name. The Von Deusen Mausoleum's name is centred above its marker.
+- Along the path from room 72 to room 73: five small medieval homes (cottages, a longhouse, a hut, a shop, a barn-house) north and south of the road, and in the north-west spot the Forestmen's Hideout: a great gnarled tree with a tree house in its branches, a rope ladder and a log palisade round its base (side view), with a small label.
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.

@@ -9,6 +9,8 @@ DROP = set()                                                   # removed on requ
 PORTAL = set()             # 'Before the Graveyard', where the painting in Alms for the Poor (783) sets you down, one step from the range's first room
                             # (4221): the traced line jumps there, which is not a gap in the map (owner, Oct 12)
 EXTEND = {'Desert of Despair': [19863, 6365]}               # the marker moved on to these rooms (owner, Oct 15: down to room 6365)
+OFFSET = {"Old Pottswort's Fields": (1.3, 1.3)}            # the marker sits south-east of the roadway (owner, Oct 15)
+SMALL = {"The Ruins of T'man"}                          # a small, insignificant area: a smaller marker and name (owner, Oct 15)
 GAP_NOTE = "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."
 
 
@@ -36,6 +38,7 @@ def add_smr_subareas(w, smr_layout, routes):
                 elif cur:
                     segs.append(cur); cur = []
                     if v not in PORTAL: gaps += 1
+            if name in OFFSET: site = (site[0] + OFFSET[name][0], site[1] + OFFSET[name][1])
             for v_ in EXTEND.get(name, []):
                 if v_ in pos: cur.append([round(pos[v_][0], 3), round(pos[v_][1], 3)]); site = pos[v_]
             cur.append([round(site[0], 3), round(site[1], 3)]); segs.append(cur)
@@ -48,5 +51,6 @@ def add_smr_subareas(w, smr_layout, routes):
             q = [round(site[0], 3), round(site[1], 3)]
             pl = dict(name=name, route=r.get('other_way') or '', room='the Southern Mountain Range', dir='here', path=[q], segs=[[q]],
                       group='af', where='off the Southern Mountain Range', noroute=True, note=OTHER_WAY if r.get('other_way') else NO_ROUTE)
+        if name in SMALL: pl['small'] = True
         w['places'].append(pl); placed.append((name, round(site[0], 1), round(site[1], 1)))
     return w, placed
