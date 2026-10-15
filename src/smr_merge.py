@@ -299,6 +299,10 @@ def merge_smr(w, layout, edges, seed=71):
     for a, b in LINKS + UDL:
         d = math.dist(pos[a], pos[b])
         if d > 30: far.append((a, b, round(d, 1)))
+        elif sorted((a, b)) in [sorted(x) for x in CL.get('bent_links', [])]:         # a long link drawn with a bend, like the other trails (owner, Oct 15: 7 to 8)
+            A_, B_ = np.array(end_(a), float), np.array(end_(b), float); dv_ = B_ - A_; nv_ = np.array([-dv_[1], dv_[0]]) / (np.linalg.norm(dv_) or 1)
+            pts_ = [A_] + [A_ + dv_ * f_ + nv_ * amp_ for f_, amp_ in ((0.25, 1.6), (0.5, -1.1), (0.78, 1.0))] + [B_]
+            link_lines.append([[round(float(q[0]), 2), round(float(q[1]), 2)] for q in pts_])
         else: link_lines.append([end_(a), end_(b)])
     dpatch = AA._contours(dwide, wx0, wy0, sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
     rpatch = AA._contours(rwide, wx0, wy0, sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
