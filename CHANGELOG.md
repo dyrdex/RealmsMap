@@ -12,6 +12,8 @@
 
 - All route options (Transylvania's too) written in numbered form (`#8 e;#2 se;...`).
 
+- Transylvania's route notes copied to the other five places' routes: River "Safest Route", East "May encounter mobs at night (requires hide)", South "May encounter mobs (requires hide)" (15 routes).
+
 ## Version 14 · The Southern Mountain Range, its Trade Route and the Darkhaven River tunnel · October 15, 2026
 
 - Canyon redrawn to read as a pit going down: 4 levels instead of 6 (rim, two wall levels, floor), east and west walls close-set so they look like steep cliffs (wider ledges only on the south side), darker toward the floor, an inner shadow around the floor, and longer hatching on the east and west walls.

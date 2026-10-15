@@ -201,19 +201,19 @@ ROUTE_OPTIONS = '''
 Transylvania|default|River|37|Safest Route|#8 w;sw;s;#2 sw;s;#2 w;#2 sw;w;se;sw;se;sw;se;e;se;e;ne;#2 e;se;e;se;s;se;w;#2 n
 Transylvania|alt|East|28|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;s;e;se;e;ne;nw;n;u;#2 n
 Transylvania|alt|South|36|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;#4 se;e;se;e;ne;nw;n;u;#2 n
-The Von Deusen Mausoleum|default|River|40||#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;ne;nw;ne;e;d;ne;nw;ne;e;ne;#2 e;#3 se;d;s;se;e;se;e;n;nw;pull branch;n
-The Von Deusen Mausoleum|alt|East|22||#8 e;#2 se;s;#4 se;#2 s;sw;#2 n;nw;pull branch;n
-The Von Deusen Mausoleum|alt|South|30||#13 s;#2 e;#2 u;e;#3 se;d;s;se;e;se;e;n;nw;pull branch;n
-The Wilds|default|River|37||#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;ne;nw;ne;e;d;ne;nw;ne;e;ne;#2 e;#3 se;d;s;se;u;sw;nw
-The Wilds|alt|East|24||#8 e;#2 se;s;#4 se;#2 s;sw;w;#2 nw;u;sw;nw
-The Wilds|alt|South|27||#13 s;#2 e;#2 u;e;#3 se;d;s;se;u;sw;nw
-The Ruins of T'man|default|River|39||#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;ne;nw;ne;e;d;ne;nw;ne;e;ne;#2 e;#3 se;d;s;se;e;se;#2 e;n
-The Ruins of T'man|alt|East|21||#8 e;#2 se;s;#4 se;#2 s;sw;n;e;n
-The Ruins of T'man|alt|South|29||#13 s;#2 e;#2 u;e;#3 se;d;s;se;e;se;#2 e;n
-Old Pottswort's Fields|default|River|37||#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;#2 ne;e;#2 ne;e;n;ne;#3 n;ne;n;se
-Old Pottswort's Fields|alt|East|28||#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#2 se;#2 ne;n;se
-Old Pottswort's Fields|alt|South|35||#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#4 s;#2 se;#2 ne;n;se
-Emerald Hills|default|River|34||#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;ne;nw;#2 n;ne;n;e;#3 ne;e
-Emerald Hills|alt|East|28||#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;s;sw;#2 s;se;u;se;e
-Emerald Hills|alt|South|35||#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#3 s;sw;#2 s;se;u;se;e
+The Von Deusen Mausoleum|default|River|40|Safest Route|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;ne;nw;ne;e;d;ne;nw;ne;e;ne;#2 e;#3 se;d;s;se;e;se;e;n;nw;pull branch;n
+The Von Deusen Mausoleum|alt|East|22|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;#2 n;nw;pull branch;n
+The Von Deusen Mausoleum|alt|South|30|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;se;e;se;e;n;nw;pull branch;n
+The Wilds|default|River|37|Safest Route|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;ne;nw;ne;e;d;ne;nw;ne;e;ne;#2 e;#3 se;d;s;se;u;sw;nw
+The Wilds|alt|East|24|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;w;#2 nw;u;sw;nw
+The Wilds|alt|South|27|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;se;u;sw;nw
+The Ruins of T'man|default|River|39|Safest Route|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;ne;nw;ne;e;d;ne;nw;ne;e;ne;#2 e;#3 se;d;s;se;e;se;#2 e;n
+The Ruins of T'man|alt|East|21|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;n;e;n
+The Ruins of T'man|alt|South|29|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;se;e;se;#2 e;n
+Old Pottswort's Fields|default|River|37|Safest Route|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;#2 ne;e;#2 ne;e;n;ne;#3 n;ne;n;se
+Old Pottswort's Fields|alt|East|28|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#2 se;#2 ne;n;se
+Old Pottswort's Fields|alt|South|35|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#4 s;#2 se;#2 ne;n;se
+Emerald Hills|default|River|34|Safest Route|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;ne;nw;#2 n;ne;n;e;#3 ne;e
+Emerald Hills|alt|East|28|May encounter mobs at night (requires hide)|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;s;sw;#2 s;se;u;se;e
+Emerald Hills|alt|South|35|May encounter mobs (requires hide)|#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#3 s;sw;#2 s;se;u;se;e
 '''
