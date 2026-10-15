@@ -79,12 +79,15 @@ def merge_smr(w, layout, edges, seed=71):
     report = {}
 
     # ---------------------------------------------------------------- the graphs
+    import json as _j0, os as _o0
+    LINKR = set(_j0.load(open(_o0.path.join(_o0.path.dirname(_o0.path.abspath(__file__)), 'smr_clearings.json'))).get('link_rooms', []))
     GS = defaultdict(set); GT = defaultdict(set); links = []; uds = []
     NO_UD = {frozenset((291, 292))}                                    # the one up/down exit that is not drawn (owner, Oct 14)
     for a, b, k in edges['edges']:
         if a not in pos or b not in pos: continue
         if grp(a) == 'af' or grp(b) == 'af': continue                    # the visual-only link to the Ashen Forest (room 670): not drawn yet (owner, Oct 14)
         ina, inb = a in DOM, b in DOM
+        if ina and inb and ((a in LINKR) != (b in LINKR)): links.append((a, b)); continue           # (a path whose end room is the Sparse Woodlands trail's own spot is a link: drawn thin and dashed)
         if not (ina or inb): continue
         if (a in mov and a in hidden) or (b in mov and b in hidden): continue
         if k == 'ud':                                                  # up/down exits (owner, Oct 14): small dirt lines; they join different levels, so they make no wide path or clearing
@@ -298,8 +301,10 @@ def merge_smr(w, layout, edges, seed=71):
             if v in TRT and o not in TRT and road_lines and v not in snap:
                 q_ = _nearest_on([_drawn(l) for l in road_lines], pos[v]); snap[v] = [round(q_[0], 2), round(q_[1], 2)]; offs.append(round(math.dist(q_, pos[v]), 2))
     end_ = lambda v: snap.get(v) or [round(pos[v][0], 2), round(pos[v][1], 2)]
+    unclipped = []
     dash_lines = []                                                                # the links to the Sparse Woodlands trail: thin dashed lines that end ON the drawn trail (owner, Oct 15)
-    ft_near = [l for l in w['fwtracks'] if any(grp(v) == 'ft' and v in pos and any(math.dist(q, pos[v]) < 0.4 for q in l) for v in {u for e_ in LINKS for u in e_ if grp(u) == 'ft'})]
+    isft = lambda v: grp(v) == 'ft' or v in LINKR
+    ft_near = [l for l in w['fwtracks'] if any(isft(v) and v in pos and any(math.dist(q, pos[v]) < 0.4 for q in l) for v in {u for e_ in LINKS for u in e_ if isft(u)})]
     ft_drawn = [_drawn(l) for l in ft_near]
     def ft_end(v):
         if not ft_drawn: return [round(pos[v][0], 2), round(pos[v][1], 2)]
@@ -307,8 +312,10 @@ def merge_smr(w, layout, edges, seed=71):
         return [round(q_[0], 2), round(q_[1], 2)] if math.dist(q_, pos[v]) < 1.6 else [round(pos[v][0], 2), round(pos[v][1], 2)]
     for a, b in LINKS + UDL:
         d = math.dist(pos[a], pos[b])
-        if (a, b) in LINKS and (grp(a) == 'ft') != (grp(b) == 'ft') and d <= 30:
-            dash_lines.append([ft_end(v) if grp(v) == 'ft' else end_(v) for v in (a, b)]); continue
+        if (a, b) in LINKS and isft(a) and isft(b): continue                                  # (both ends are the trail's own spot: nothing to draw)
+        if (a, b) in LINKS and isft(a) != isft(b) and d <= 30:
+            dash_lines.append([ft_end(v) if isft(v) else end_(v) for v in (a, b)]); continue
+        if sorted((a, b)) in [sorted(x) for x in CL.get('unclipped_links', [])]: unclipped.append([end_(a), end_(b)]); continue      # (a short link that is drawn whole, even over a clearing: it must reach the road's off-ramp)
         if d > 30: far.append((a, b, round(d, 1)))
         elif sorted((a, b)) in [sorted(x) for x in CL.get('bent_links', [])]:         # a long link drawn with a bend, like the other trails (owner, Oct 15: 7 to 8)
             A_, B_ = np.array(end_(a), float), np.array(end_(b), float); dv_ = B_ - A_; nv_ = np.array([-dv_[1], dv_[0]]) / (np.linalg.norm(dv_) or 1)
@@ -356,7 +363,7 @@ def merge_smr(w, layout, edges, seed=71):
                 l2 = [[round(x, 2), round(y, 2)] for x, y in th]
                 if len(l2) >= 2 and math.dist(l2[0], l2[-1]) >= 0.04: out.append(l2)
         return out, cut, ext
-    dash_lines, cutd, ed_ = clip(dash_lines); dirt_lines, cut1, e1 = clip(dirt_lines); link_lines, cut2, e2 = clip(link_lines); vis_c, cut3, e3 = clip([vis]) if vis else ([], 0, 0)
+    dash_lines, cutd, ed_ = clip(dash_lines); dirt_lines, cut1, e1 = clip(dirt_lines); link_lines, cut2, e2 = clip(link_lines); link_lines = link_lines + unclipped; vis_c, cut3, e3 = clip([vis]) if vis else ([], 0, 0)
     report['lines_stopped_at_a_clearing'] = {'trails': cut1, 'links': cut2, 'connection_to_670': cut3, 'paths_that_would_vanish_kept': (e1 + e2 + e3)}
     # ---- the hand-made clearings' extras: their inner paths very lightly, rough-terrain marks between them
     faint_lines = _chains(faintG, pos, set(), 0.6) if faintG else []
@@ -519,6 +526,7 @@ def merge_smr(w, layout, edges, seed=71):
     w['smrpatch'] = dpatch; w['roadpatch'] = rpatch
     w['smrdash'] = dash_lines
     w['fwtracks'] = list(w['fwtracks']) + dirt_lines + link_lines + vis_c
+    w['smrroad'] = [list(l) for l in road_lines]
     w['etrtracks'] = list(w['etrtracks']) + road_lines
     w['ntrjoins'] = list(w['ntrjoins']) + pads
     report['dirt'] = {'cells': len(dadj), 'patches': len(dpatch), 'patch_sq': round(float(dwide.sum()) / R8 / R8, 1), 'trail_lines': len(dirt_lines)}

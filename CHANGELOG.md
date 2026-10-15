@@ -40,6 +40,11 @@
 - The Forestmen's Hideout is 60% of its size; the MacMillan Family Farm barn is 0.3 further north.
 - The links from the southern mountain rooms to the Sparse Woodlands trail are now thin dashed lines in the path colour that end on the trail itself (`smrdash`).
 
+- The last Sparse Woodlands link (the path from room 366 to room 20002, which sits on the trail) is a thin dashed line like the others.
+- The Southern Mountain Trade Route no longer has the dark semi-transparent verge and shadow round it (the other trade routes keep theirs).
+- The link from room 181 to the off-ramp at 9248 is drawn whole (it was cut short at the clearing, leaving a gap).
+- No sea along the west of the Southern Mountain Range, its Trade Route, or the west end of the Sparse Woodlands trail (`west_sea.py`: nothing at x -75 to -20 below y 4).
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.

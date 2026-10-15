@@ -286,5 +286,14 @@
       "tree_w": 1.8,
       "tree_h": 1.92
     }
+  ],
+  "link_rooms": [
+    20002
+  ],
+  "unclipped_links": [
+    [
+      181,
+      9248
+    ]
   ]
 }
