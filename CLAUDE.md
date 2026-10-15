@@ -32,6 +32,7 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 
 ## Snapshots
 - An official version = edit `src/VERSION`, retitle the CHANGELOG's in-progress section, rebuild twice (realm_map.html must match), commit, then an annotated git tag `vN` pushed to GitHub (replaces the old zip + artifact snapshots).
+- Always merge into `main` (owner, Oct 15): when work is saved/released, open a PR from the session branch to `main` and merge it. Cloud sessions can't push tags (the push is cut off): the owner adds the `vN` tag on GitHub (Releases -> new tag on the release commit).
 
 ## Conventions (owner preferences)
 - Dark mode only: no light palette, no `prefers-color-scheme`, no theme toggle.
