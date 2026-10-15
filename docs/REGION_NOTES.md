@@ -147,6 +147,7 @@ Not yet built (backlog, in this order): an automatic QA report script; a "tweaks
 
 ### Routes along trade routes + Ofcol Shortcut (Oct 13, 2026)
 - `route_fix.py` (runs after `add_west_sea`): re-traces each place's route over the final layouts (ft, np, bp, ntr, az, ashen, then `cx` tracks); replaces `segs` only when the trace ends at the marker and has fewer breaks. Routes starting `#6 n;#3 nw;w;n;#4 e;s;w;sw` skip the unmapped Ofcol rooms (portal, like 4222); markers off the trail get the join only.
+- `route_options.py` (runs right after `route_fix`, Oct 15): owner's `ROUTE_OPTIONS` in `data.py` (`name|default or alt|direction|rooms|note|directions`). Room counts are the owner's own, never computed. Each route is traced with `route_fix.make_tracer` (layouts ft, np, bp, ntr, az, ashen, smr) and cut at the marker. A route that doesn't reach the marker is dropped and reported. The default replaces the place's route/segs; the gap sentence moves from the place note to each route with a break. Site: text in `places.json` `opts`, lines in `routes.json` `opts`. Transylvania's South trace = its old line (minus a repeated end point).
 - Cause of the 'hidden' routes was missing road rooms in old traces (a break at the gate), not layering.
 
 ### Southern Mountain Range layout editor (Oct 13, 2026): published, waiting for the owner's arrangement

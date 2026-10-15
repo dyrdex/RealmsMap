@@ -122,8 +122,9 @@ def main():
         p = q['p']
         c = {k: p[k] for k in CARD_KEYS if k in p and p[k] not in (None, '', [], False)}
         c.update(i=p['i'], mx=round(p['mx'], 3), my=round(p['my'], 3), shape=q['shape'], label=q['label'])
+        if p.get('opts'): c['opts'] = [{k: v for k, v in o.items() if k != 'segs' and v not in (None, '', False)} for o in p['opts']]   # route options: text on the card, lines in routes.json
         places.append(c)
-        routes.append({'path': r2(p['path']), **({'segs': r2(p['segs'])} if p.get('segs') else {})})
+        routes.append({'path': r2(p['path']), **({'segs': r2(p['segs'])} if p.get('segs') else {}), **({'opts': [r2(o['segs']) for o in p['opts']]} if p.get('opts') else {})})
     J = lambda o: json.dumps(o, separators=(',', ':'), ensure_ascii=False)
     files = {'places.json': J({'bounds': live['bounds'], 'zmin': ZMIN, 'zmax': ZMAX, 'tile': TS, 'places': places, 'extras': live['extras']}),
              'areanames.json': J({'areas': live['areas'], 'defs': live['defs']}),

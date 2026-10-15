@@ -1,5 +1,11 @@
 # Realm Map changelog
 
+## In progress
+
+- Route options: a place can now have a default route plus alternate routes, each with your direction word, room count and note. The pop-up shows the default, then "Alternate routes:"; tick one to draw it on the map instead. Routes and counts come only from your list (`ROUTE_OPTIONS` in `src/data.py`).
+
+- Transylvania: River (37 rooms, Safest Route) is now the default; East (28 rooms) and South (36 rooms) are its alternates. All three end in room 688. River and East draw without a break; South keeps its gap through undrawn areas.
+
 ## Version 14 · The Southern Mountain Range, its Trade Route and the Darkhaven River tunnel · October 15, 2026
 
 - Canyon redrawn to read as a pit going down: 4 levels instead of 6 (rim, two wall levels, floor), east and west walls close-set so they look like steep cliffs (wider ledges only on the south side), darker toward the floor, an inner shadow around the floor, and longer hatching on the east and west walls.

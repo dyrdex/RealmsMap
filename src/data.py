@@ -194,3 +194,11 @@ Gnarlwood Forest|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#2 e;n
 ALT_DIRECTIONS = '''
 Old Thalos|#9 w;#2 nw;n;w;nw;w;#2 nw;#8 w;nw;#3 w;nw;w;#2 nw;#2 w;#2 sw;w;sw;#5 w
 '''
+# Places you gave more than one route to (Oct 15). One line per route: name|default or alt|general direction|rooms (your count)|note|directions.
+# Exactly one 'default' per place: it is drawn when the place is picked (and replaces the place's directions above); the 'alt' routes are
+# listed under 'Alternate routes' on its card, in this order, and can be picked instead.
+ROUTE_OPTIONS = '''
+Transylvania|default|River|37|Safest Route|w;w;w;w;w;w;w;w;sw;s;sw;sw;s;w;w;sw;sw;w;se;sw;se;sw;se;e;se;e;ne;e;e;se;e;se;s;se;w;n;n
+Transylvania|alt|East|28|May encounter mobs at night (requires hide)|e;e;e;e;e;e;e;e;se;se;s;se;se;se;se;s;s;sw;s;e;se;e;ne;nw;n;u;n;n
+Transylvania|alt|South|36|May encounter mobs (requires hide)|s;s;s;s;s;s;s;s;s;s;s;s;s;e;e;u;u;e;se;se;se;d;s;se;se;se;se;e;se;e;ne;nw;n;u;n;n
+'''
