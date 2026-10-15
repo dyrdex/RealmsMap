@@ -291,7 +291,7 @@ def merge_smr(w, layout, edges, seed=71):
     dwide &= ~townmask                                                              # (a town replaces any clearing under it)
     dwide &= ~rwide                                                                 # (a road patch lies on top of any dirt patch)
     dT = trails(GS, dwide | rwide); rT = trails(GT, rwide)
-    dirt_lines = _chains(dT, pos, set(), 0.8) if dT else []
+    dirt_lines = _chains(dT, pos, set(), 0.8, exact={v for e_ in LINKS + pad_links for v in e_}) if dT else []      # (a path runs exactly through the room a link leaves from)
     road_lines = _chains(rT, pos, set(), 0.8, exact=set(CL.get('exact_road_rooms', [])) | {v for a, b in LINKS + pad_links for v in (a, b) if v in TRT and ((a in TRT) != (b in TRT))}) if rT else []
     # the links between the range, the route, the moved Sparse Woodlands trail and fixed rooms: small dirt lines
     link_lines = []; far = []
@@ -821,14 +821,14 @@ def merge_smr(w, layout, edges, seed=71):
         if not all(v in pos for v in H_['road']): continue
         (xa, ya), (xb, yb) = pos[H_['road'][0]], pos[H_['road'][1]]; hrng = random.Random(seed * 23 + 11)
         xs_ = [-16.9, -15.2, -13.5, -11.8]; ym = (ya + yb) / 2
-        kinds = [('cottage', 1.05, 0.8), ('longhouse', 1.3, 0.7), ('hut', 0.8, 0.75), ('shop', 1.0, 0.85), ('townhouse', 0.95, 0.85), ('stone', 1.05, 0.8), ('cottage', 0.9, 0.75)]
+        kinds = [('castle', 1.3, 1.15), ('tower', 0.85, 1.35), ('fort', 1.25, 1.0), ('english', 1.1, 0.95), ('rustic', 1.0, 0.85), ('renaissance', 1.0, 1.15), ('fantasy', 0.95, 0.85)]
         roofs = ['#7A4638', '#86503C', '#6B4A36', '#5F4B3A', '#7E5A40', '#704034', '#5E5B55', '#A58B55', '#4E5A3E']
         n_ = 0
         for side in (-1, 1):
             for i, x_ in enumerate(xs_):
                 if side == -1 and i == 0: continue                                  # the north-west spot: the great tree
                 k_, w_, h_ = kinds[n_ % len(kinds)]; n_ += 1
-                yy = ya + (yb - ya) * (x_ - xa) / (xb - xa) + side * (1.3 + 0.05 * hrng.uniform(-1, 1))
+                yr_ = ya + (yb - ya) * (x_ - xa) / (xb - xa); yy = (yr_ - 0.85 if side == -1 else yr_ + 1.75) - h_ / 2                 # (the baseline of the front view sits at a fixed distance from the road)
                 houses.append({'x': round(x_ + hrng.uniform(-0.12, 0.12), 2), 'y': round(yy, 2), 'w': round(w_ * hrng.uniform(0.92, 1.08), 2), 'h': round(h_ * hrng.uniform(0.92, 1.08), 2), 'k': k_, 'roof': roofs[(n_ * 5 + i) % len(roofs)], 'rot': 0})
         tw_, th_ = H_.get('tree_w', 3.0), H_.get('tree_h', 3.2); base = ym - 0.85
         tx_ = xs_[0] + 0.05; ty_ = base - th_ * 0.49

@@ -138,7 +138,7 @@ from smr_merge import merge_smr                                    # the Souther
 w,_sm=merge_smr(w,_SML,_SME)
 print('Southern Mountain Range merged:',_sm)
 from smr_markers import add_smr_subareas                          # markers + traced routes for the areas that open off the range and its trade route (Oct 14)
-w,_ssa=add_smr_subareas(w,_SML,_json.load(open(os.path.join(_here,'smr_marker_routes.json'))))
+w,_ssa=add_smr_subareas(w,_SML,_json.load(open(os.path.join(_here,'smr_marker_routes.json'))),extra_layout=_ASHL())
 print('Southern Mountain Range sub-areas:',_ssa)
 print('Forest of Tears, Lake of Tich\'Pyga and Western Trade Route merged:',{k:v for k,v in _ft.items() if not k.startswith('_')})
 from west_sea import add_west_sea                                # the sea along the whole west coast + the small marina on it (Oct 13)

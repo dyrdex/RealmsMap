@@ -45,6 +45,11 @@
 - The link from room 181 to the off-ramp at 9248 is drawn whole (it was cut short at the clearing, leaving a gap).
 - No sea along the west of the Southern Mountain Range, its Trade Route, or the west end of the Sparse Woodlands trail (`west_sea.py`: nothing at x -75 to -20 below y 4).
 
+- Room 181: the path through it now runs exactly through the room (it was smoothed past it, leaving a gap before the link to 9248).
+- MacMillan Family Farm barn nudged a little further north.
+- The homes by the Forestmen's Hideout are now medieval: a little castle, a tower, a wooden fort, an English cottage, a rustic stone cottage with a turf roof, a Renaissance house with a stepped gable, and a fantasy tower-house.
+- Selected routes that cross the Ashen Forest to the southern mountains (The Von Deusen Mausoleum and others) no longer break there: the lines now run through the Ashen rooms at the positions of your Ashen layout (they had no position in the route tracer, so it dropped them).
+
 ## Version 13 · The Forest of Tears, Lake of Tich'Pyga and Western Trade Route · October 13, 2026
 
 - Selected routes that run along the trade routes are drawn unbroken (they were cut at the Darkhaven gate because the road rooms were missing from the old traces): `route_fix.py` traces every route again over the final layouts.

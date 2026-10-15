@@ -14,13 +14,16 @@ SMALL = {"The Ruins of T'man"}                          # a small, insignificant
 GAP_NOTE = "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."
 
 
-def add_smr_subareas(w, smr_layout, routes):
+def add_smr_subareas(w, smr_layout, routes, extra_layout=None):
     hidden = set(smr_layout['hidden'])
     pos = dict(zip(smr_layout['ids'], zip(smr_layout['xs'], smr_layout['ys'])))
     track = w.get('track') or {}
+    xpos = dict(zip(extra_layout['ids'], zip(extra_layout['xs'], extra_layout['ys']))) if extra_layout else {}                  # (the Ashen Forest's rooms, where your Ashen layout puts them: the traced lines run through them too)
+    xhid = set(extra_layout.get('hidden', [])) if extra_layout else set()
     shown = [v for v in pos if v not in hidden]
     def at(v):
         if v in pos: return pos[v]                                   # (the rooms you hid keep their place: the line runs through them)
+        if v in xpos and v not in xhid: return xpos[v]
         t = track.get('cx' + str(v)); return tuple(t[:2]) if t else None
     def site_of(v):
         return pos[v] if v not in hidden else min((pos[u] for u in shown), key=lambda p: math.dist(p, pos[v]))
