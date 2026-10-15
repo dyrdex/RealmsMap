@@ -12,7 +12,7 @@ from route_fix import make_tracer
 
 SUDS_ROUTE = 'w;w;w;w;w;w;w;w;sw;s;sw;sw;s;w;w;sw;sw;w;se;sw;se;sw;se;sw;sw;se;s;s;sw;s;sw;s;se;e;ne;se;s;se;e'
 SUDS_DOT = (-13.75, 51.47)                                                        # just west of the label 'Suds 'n Stones' (centred -12.06, 51.6)
-AEN_ROUTE = 'e;e;e;e;e;e;e;e;ne;ne;ne;e;e;e;ne;e;ne;e;e;n;n;n;n;n;sw;nw;w;n;n;n;n;enter;ne;w'
+AEN_ROUTE = 'n;n;n;n;n;n;n;n;ne;w;n;ne;nw;e;ne;n;e;ne;n;n;ne;ne;e;e;n;ne;nw;w;n;n;n;n;enter;ne;w'   # (owner's new directions, Oct 15)
 STEP = 0.8
 
 
@@ -62,6 +62,13 @@ def add_extra_places(w, layouts):
         p.update(path=[q for s in segs for q in s], segs=segs, dir='here', room=rooms[5004]['name'],
                  note="Reomyr Village is up (u) from this room of the Pixie Forest.")
         report['reomyr'] = dict(marker=segs[-1][-1], pieces=len(segs))
+    # Pixie Forest (owner's new directions, Oct 15): they run into the Pixie Forest at 4993 and end at 4994; its rooms have spots now, so the line runs there and so does the pin
+    p = next(p for p in w['places'] if p['name'] == 'Pixie Forest')
+    t = walk(p['route'])
+    if t[-1] == 4994 and all(at(x) for x in t):
+        segs = segments([at(x) for x in t])
+        p.update(path=[q for s in segs for q in s], segs=segs, dir='here', room=rooms[4994]['name'], note=None)
+        report['pixie'] = dict(marker=segs[-1][-1], pieces=len(segs))
     return w, report
 
 

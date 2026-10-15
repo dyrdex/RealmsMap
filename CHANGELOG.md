@@ -28,6 +28,8 @@
 
 - Routes through the Pixie Forest now follow your layout in full: A'enari's line runs to Serenity (pin there, no more rough placement); Reomyr Village's line runs on to 5004, the room it is up (u) from, and its pin moved there; Nevermore's line follows the moved Woods rooms.
 
+- New directions: Pixie Forest (`#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;nw;n`): the line runs into the Pixie Forest at 4993 and ends at 4994 A Grassy Clearing, where its pin now sits (was beside Bleeding Wildflowers). A'enari (`#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;#2 e;n;ne;nw;w;#4 n;enter;ne;w`): now through the Woods and 4017-4019; pin unchanged at Serenity. Reomyr Village: your directions were already the ones on the map. All three lines unbroken.
+
 ## Version 14 · The Southern Mountain Range, its Trade Route and the Darkhaven River tunnel · October 15, 2026
 
 - Canyon redrawn to read as a pit going down: 4 levels instead of 6 (rim, two wall levels, floor), east and west walls close-set so they look like steep cliffs (wider ledges only on the south side), darker toward the floor, an inner shadow around the floor, and longer hatching on the east and west walls.
