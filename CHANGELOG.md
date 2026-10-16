@@ -2,6 +2,11 @@
 
 ## In progress
 
+- Coral Depths: your new directions (#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;ne;#2 e); the marker is now at room 2517, A grassy path, where they end.
+- 'The Ashen Forest' marker and sidebar entry removed.
+- Forestmen's Hideout: the great tree moved a little west, clear of the castle beside it.
+- The open ground between the cliff top, the Ashen Forest and the Southern Mountains: the Ashen ground fades out in patches, groves of trees thin out southward, meadow and sparse patches, grass, and a few hills toward the mountains and the cliff.
+
 - Coral Depths: the grey cliff top now starts where the cliff face starts (569), at almost no width, and widens evenly to its full width at 572.
 - New destinations: Coral Depths (marker at room 2528, Heading into the depths, where your directions end) and Octopus Garden (marker at room 12599, Afloat on the Azure Sea; it's down from there).
 - The Beach Shoppe at room 2526: a small weathered wooden seaside inn with a fishing net and crates, and a small 'Beach Shoppe' label just south of it.

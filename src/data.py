@@ -17,7 +17,7 @@ Blasted Lands|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se;sw;#2 w;sw;#2 s;e;
 Blood Sea|#52 w
 City of Salburg|#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;w;#2 nw;#3 n;ne;e;
 Cold Comfort|#4 s;w;#2 n;give 5k coins receptionist;unlock n;open n;#3 n;ne;n;ne;n;enter;d;e;#2 n (wander, scry for se exit, go se)
-Coral Depths|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;ne;#3 e;s;se;s;#2 e;s;#2 e;
+Coral Depths|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;ne;#2 e
 Corruption of Anciastra|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;s;e
 Crystalmir Lake|nw;#2 w;#4 n;e;look painting;open n;n;#28 w;#2 s;w;sw;#2 s;#4 w;#2 nw;#3 w;#5 sw;n
 Curse of Prosperity|#7 w;sw;s;w;#2 sw;s;#2 w;se;#3 w;sw;se;sw;se;#2 sw;se;#2 s;sw;s;sw;s;se;s;sw;#2 s;sw;s;sw;#3 s;e

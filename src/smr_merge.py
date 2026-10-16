@@ -832,7 +832,7 @@ def merge_smr(w, layout, edges, seed=71, land_edit=None):
                 yr_ = ya + (yb - ya) * (x_ - xa) / (xb - xa); yy = (yr_ - 0.85 if side == -1 else yr_ + 1.75) - h_ / 2                 # (the baseline of the front view sits at a fixed distance from the road)
                 houses.append({'x': round(x_ + hrng.uniform(-0.12, 0.12), 2), 'y': round(yy, 2), 'w': round(w_ * hrng.uniform(0.92, 1.08), 2), 'h': round(h_ * hrng.uniform(0.92, 1.08), 2), 'k': k_, 'roof': roofs[(n_ * 5 + i) % len(roofs)], 'rot': 0})
         tw_, th_ = H_.get('tree_w', 3.0), H_.get('tree_h', 3.2); base = ym - 0.85
-        tx_ = xs_[0] + 0.05; ty_ = base - th_ * 0.49
+        tx_ = xs_[0] + 0.05 + H_.get('tree_dx', 0.0); ty_ = base - th_ * 0.49          # (tree_dx: the tree moved west, clear of the castle east of it: owner, Oct 16)
         w['gfx'] = list(w['gfx']) + [{'k': 'hideout', 'at': 'xy', 'x': round(tx_, 2), 'y': round(ty_, 2), 'w': tw_, 'h': th_}]
         w['tags'] = list(w['tags']) + [[round(tx_, 2), round(ty_ - th_ / 2 - 0.8, 2), H_['name'], 0.45]]
         for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):

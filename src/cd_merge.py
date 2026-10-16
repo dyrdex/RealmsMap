@@ -306,31 +306,43 @@ def merge_cd(w, layout, edges, smr_layout, seed=SEED):
     w['boulders'] = list(w.get('boulders') or []) + [[x, y, round(0.45 + 0.35 * float(_hash(x, y, 8)), 2)] for x, y in rocks]
     rep['cliff_top'] = dict(sq=round(float(top.sum()) / R8 / R8, 1), crags=len(crags), boulders=len(rocks), sprites_replaced=gone)
 
-    # ---- the rest of the new ground north-west of the cliff: the ground of the old land nearest to it (its ground tints and what grows there)
+    # ---- the rest of the new ground north-west of the cliff (owner, Oct 16: one open space where the Ashen Forest, the Southern Mountains and the cliff
+    #      top meet; varied, and blending into its neighbours): the Ashen ground fades out from the north in patches, groves of the Ashen Forest's
+    #      trees thin out southward with clumps scattered further on, meadow and sparse-ground patches, grass, a few hills toward the mountains and the cliff
     land0 = M['land0']
     rest = landm & ~land0 & ~top & ~face & (M['sc'] < 0)
-    d0, (iy, ix) = ndi.distance_transform_edt(~land0, return_indices=True)
-    copied = {}
-    for k in [k for k in w['geo'] if k not in ('land', 'water', 'cliff', 'clifftop', 'clifftop2', 'sand', 'shallows', 'barren', 'barren2')]:   # (no brown: owner, Oct 16)
-        polys = [p for p in (w['geo'].get(k) or []) if any(BOX[0] <= q[0] < BOX[2] and BOX[1] <= q[1] < BOX[3] for q in p)]
-        if not polys: continue
-        r_ = AA._raster(polys, BOX[0], BOX[1], bw, bh)
-        m_ = rest & r_[iy, ix]
-        if m_.sum() > 8:
-            w['geo'][k] = list(w['geo'][k]) + AA._contours(m_, BOX[0], BOX[1], sigma=1.5, minarea=0.2); copied[k] = round(float(m_.sum()) / R8 / R8, 1)
-    SPACE = {'trees': 0.95, 'tufts': 0.9, 'hills': 1.7, 'peaks': 2.0, 'brush': 1.0, 'wheattufts': 0.9, 'crags': 2.3, 'boulders': 1.2}
-    old = [(k, q) for k in SPACE for q in (w.get(k) or []) if inmask(land0, q) and not inmask(top, q)]
-    otree = cKDTree(np.array([q[:2] for _, q in old]))
-    cand = place(rest & (d_path > 0.6), 0.9, 47)
+    near = lambda m: ndi.distance_transform_edt(~m) / R8
+    def field(sigma, salt):
+        f_ = ndi.gaussian_filter(np.random.default_rng(seed + salt).normal(size=(bh, bw)), sigma * R8); return (f_ - f_.min()) / (f_.max() - f_.min())
+    ashr = AA._raster([p for p in (w['geo'].get('ash') or []) if any(BOX[0] <= q[0] < BOX[2] and BOX[1] <= q[1] < BOX[3] for q in p)], BOX[0], BOX[1], bw, bh)
+    dA = near(land0 & ashr & (Y < 22))                                            # from the Ashen Forest's ground
+    dW = near(land0 & (X < 36) & (Y > 14) & ~ashr)                                # from the Southern Mountains' side
+    dT = near(top)
+    n1, n2, n3, n4, n5 = field(1.6, 1), field(2.2, 2), field(1.3, 3), field(1.8, 4), field(1.1, 5)
+    tints = {'ash': rest & (0.75 * n1 + np.exp(-dA / 6.0) > 1.0),
+             'meadow1': rest & (n2 > 0.6) & (dA > 3), 'meadow2': rest & (n3 > 0.66) & (dA > 2), 'sparse': rest & (n4 > 0.64)}
+    for k, m_ in tints.items():
+        m_ = ndi.gaussian_filter(m_.astype(float), 0.4 * R8) > 0.5
+        w['geo'][k] = list(w['geo'].get(k) or []) + AA._contours(m_, BOX[0], BOX[1], sigma=1.5, minarea=0.3); tints[k] = round(float(m_.sum()) / R8 / R8, 1)
+    SPACE = {'trees': 0.95, 'hills': 1.7, 'tufts': 1.0}
+    cand = place(rest & (d_path > 0.6), 0.8, 47)
     made = defaultdict(list); grid = defaultdict(list)
+    at_ = lambda m, x, y: float(m[int((y - BOX[1]) * R8), int((x - BOX[0]) * R8)])
     for x, y in cand:
-        dd, j = otree.query([x, y]); k, q = old[j]
-        if dd > d0[int((y - BOX[1]) * R8), int((x - BOX[0]) * R8)] / R8 + 1.2: continue        # (the old ground nearest it is bare there)
+        pa = math.exp(-at_(dA, x, y) / 6.0); gr = max(0.0, (at_(n5, x, y) - 0.55) / 0.45)
+        p_tree = min(0.9, 0.85 * pa + 0.8 * gr)
+        p_hill = 0.25 * math.exp(-at_(dW, x, y) / 8.0) + 0.15 * math.exp(-at_(dT, x, y) / 3.0)
+        u = float(_hash(x, y, 51))
+        k = 'trees' if u < p_tree else 'hills' if u < p_tree + p_hill else 'tufts' if u < p_tree + p_hill + 0.3 else None
+        if not k: continue
         sp = SPACE[k]; gk = (k, int(x // sp), int(y // sp))
         if any(math.dist(p_, (x, y)) < sp for dx in (-1, 0, 1) for dy in (-1, 0, 1) for p_ in grid[(k, gk[1] + dx, gk[2] + dy)]): continue
-        grid[gk].append((x, y)); made[k].append([x, y] + list(q[2:]))
+        grid[gk].append((x, y)); h2, h3 = float(_hash(x, y, 52)), float(_hash(x, y, 53))
+        if k == 'trees': made[k].append([x, y, round(0.85 + 0.3 * h2, 2), 'w' if h3 < 0.4 else 'd', int(float(_hash(x, y, 54)) * 3)])
+        elif k == 'hills': made[k].append([x, y, round(0.85 + 0.3 * h2, 2), 'h', int(h3 * 3)])
+        else: made[k].append([x, y, round(0.8 + 0.3 * h2, 2), 'g', int(h3 * 3)])
     for k, L in made.items(): w[k] = list(w.get(k) or []) + L
-    rep['ground_nw'] = dict(sq=round(float(rest.sum()) / R8 / R8, 1), tints=copied, sprites={k: len(L) for k, L in made.items()})
+    rep['ground_nw'] = dict(sq=round(float(rest.sum()) / R8 / R8, 1), tints=tints, sprites={k: len(L) for k, L in made.items()})
 
     # ---- the Beach Shoppe (owner, Oct 16): a small, weathered wooden seaside inn at room 2526 (nets, crates), its small label just south;
     #      room 2528's secret way down into the sea: a small round pool with a shaft going down under the surface
