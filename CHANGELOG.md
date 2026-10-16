@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## In progress (after version 16)
+
+- New layout editor for three areas (`tools/new_areas_editor`, October 16): Angel's Landing (22 rooms, plus Blood Sea room 16226 shown only with its links ne to 5667 and nw to 21135), the Village of Edo (77 rooms, off 7746) and The Grimdog Port Authority (29 rooms, plus Western Trade Route room 21076, the way in from the road), with 15 joining spacer rooms. Nothing on the map changes until you save it.
+
 ## Version 16 · The Coral Depths · October 16, 2026
 
 - Coral Depths: your new directions (#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;ne;#2 e); the marker is now at room 2517, A grassy path, where they end.
