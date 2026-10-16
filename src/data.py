@@ -190,6 +190,7 @@ Blackcoggle Manor|#9 w;nw;#2 w;nw;w;#2 n;#3 nw;w;#2 sw;se
 The Grimdog Port Authority|#9 w;#2 nw;n;w;nw;w;#2 nw;#8 w;nw;#3 w;nw;w;#2 nw;#2 w;#2 sw;w;sw;#4 w;#2 nw;n;nw
 Northern Trade Route|#6 n;nw
 Gnarlwood Forest|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#2 e;n
+Sailing the Seas|#9 w;#2 nw;n;w;nw;w;#2 nw;#8 w;nw;#3 w;nw;w;#2 nw;#2 w;#2 sw;w;sw;#4 w;#2 nw;n;nw;n;#13 w
 '''
 # A second way in that you gave for a place that already had directions
 ALT_DIRECTIONS = '''

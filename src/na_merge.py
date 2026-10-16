@@ -21,6 +21,8 @@ from ntr_merge import _chains, _samples
 from smr_merge import _drawn, _hash
 
 R8 = GF.R8
+INN = 21139                                     # The Old Angel Inn: a small pirate inn + its label (owner, Oct 16)
+GATE = (-66.2, -79.88, 3.8, 3.64)               # watchtower, archway, guardhouse: left -68.1, right -64.3, top -81.7, bottom -78.06 (arch centred at -65.9) (owner, Oct 16)
 PARKED = {21144, 21151}                         # (Angel's Landing rooms with no exit to the rest: parked by the editor, not placed by the owner)
 TEMPLE = [7777, 7779, 7780, 7781]               # 'Temple' / 'Rune' rooms: one temple graphic over them (+ spacer 7783 between them)
 TEMPLE_SPACER = 7783
@@ -174,6 +176,15 @@ def merge_na(w, layout, edges, seed=SEED):
     tufts = _place(isl_a & ~sand_a & ~barren & (d_path > 0.4), AX, AY, 0.85, 62)
     w['boulders'] = list(w.get('boulders') or []) + [[x, y, round(0.4 + 0.3 * float(_hash(x, y, 63)), 2)] for x, y in rocks]
     w['tufts'] = list(w.get('tufts') or []) + [[x, y, round(0.75 + 0.3 * float(_hash(x, y, 64)), 2), 'g', int(float(_hash(x, y, 65)) * 3)] for x, y in tufts]
+    ix, iy = pos[INN]                                                             # the inn and the old town's gate (owner, Oct 16); nothing grows under them
+    w['gfx'] = list(w['gfx']) + [{'k': 'pirateinn', 'at': 'xy', 'x': round(ix, 2), 'y': round(iy - 0.1, 2), 'w': 1.5, 'h': 1.26},
+                                 {'k': 'text', 'at': 'xy', 'x': round(ix, 2), 'y': round(iy + 1.0, 2), 'text': 'The Old Angel Inn'},
+                                 {'k': 'gatetower', 'at': 'xy', 'x': GATE[0], 'y': GATE[1], 'w': GATE[2], 'h': GATE[3]}]
+    under = lambda q: (abs(q[0] - ix) < 0.85 and abs(q[1] - iy + 0.1) < 0.7) or (abs(q[0] - GATE[0]) < GATE[2] / 2 + 0.1 and abs(q[1] - GATE[1]) < GATE[3] / 2 + 0.1)
+    n0 = len(w['tufts']) + len(w['boulders'])
+    w['tufts'] = [q for q in w['tufts'] if not under(q)]; w['boulders'] = [q for q in w['boulders'] if not under(q)]
+    tufts = [q for q in tufts if not under(q)]; rocks = [q for q in rocks if not under(q)]
+    rep['angels_gfx'] = dict(inn=[round(ix, 2), round(iy - 0.1, 2)], gate=list(GATE), sprites_cleared=n0 - len(w['tufts']) - len(w['boulders']))
     on = lambda m, box, v: bool(m[int((pos[v][1] - box[1]) * R8), int((pos[v][0] - box[0]) * R8)])
     rep['angels'] = dict(rooms_on_island=len(al_dry), hidden_on_island=len(al_dry & hidden), island_sq=round(float(isl_a.sum()) / R8 / R8, 1),
                          water_to_mainland=round(float(min(math.dist(pos[v], pos[5667]) for v in al_dry)), 1), faint_lines=len(faint),
@@ -253,7 +264,7 @@ def merge_na(w, layout, edges, seed=SEED):
     # the temple: one graphic over 7777, 7779, 7780 and 7781
     tx = [pos[v][0] for v in TEMPLE]; ty = [pos[v][1] for v in TEMPLE]
     cx, cy = (min(tx) + max(tx)) / 2, (min(ty) + max(ty)) / 2
-    tw, th = max(tx) - min(tx) + 1.3, max(ty) - min(ty) + 0.75
+    th = max(ty) - min(ty) + 0.75; tw = th * 1.1 / 1.6                          # (the pagoda, owner Oct 16: as tall as the temple area, its own proportions)
     w['gfx'] = list(w['gfx']) + [{'k': 'jtemple', 'at': 'xy', 'x': round(cx, 2), 'y': round(cy, 2), 'w': round(tw, 2), 'h': round(th, 2)}]
     # the ground: a thin sand rim, a few trees by the forest path, grass elsewhere; nothing on paths, huts, the temple or the rice
     sand_e = _shore(isl_e, sea_e, 0.28)
@@ -297,6 +308,15 @@ def add_na_places(w, layouts):
     w['places'].append(dict(name=name, route=route, room=rooms[upto[-1]]['name'], dir='here' if last == len(t) - 1 else route.split(';')[-1],
                             path=[q for s in segs for q in s], segs=segs, group='af', where='an island off the Forgotten Beach',
                             note=None if len(segs) == 1 else "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."))
+    rep[name] = dict(end_room=upto[-1], rooms=len(t), pieces=len(segs), marker=segs[-1][-1])
+    name = 'Sailing the Seas'                                                   # (owner, Oct 16: through the hidden Grimdog rooms to 21099, Within the Green Shed;
+    assert not any(p['name'] == name for p in w['places'])                      #  its name out at sea north of the marker: template LBL / PINNED)
+    route = next(l.split('|', 1)[1].strip().rstrip(';') for l in lines if l.startswith(name + '|'))
+    t = walk(route); last = max(i for i, v in enumerate(t) if at(v))
+    upto = t[:last + 1]; segs = segments([at(v) for v in upto])
+    assert last == len(t) - 1 and len(segs) == 1, (last, len(t), len(segs))
+    w['places'].append(dict(name=name, route=route, room=rooms[upto[-1]]['name'], dir='here', path=[q for s in segs for q in s], segs=segs,
+                            group='af', where='off The Grimdog Port Authority', note=None))
     rep[name] = dict(end_room=upto[-1], rooms=len(t), pieces=len(segs), marker=segs[-1][-1])
     return w, rep
 

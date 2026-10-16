@@ -8,6 +8,10 @@
 - Angel's Landing in the sidebar with your directions; the marker is at 21135, A Break in the Coast Line, where they end. The line breaks once, through the Vale of Nidaros / Valley of Mysts rooms, which aren't drawn.
 - The Village of Edo: an island north of the old map edge (about 77 sq rooms) round the 31 shown land rooms, with an even border of about 1.25 rooms between the water and the paths; dirt paths, the dark blue water route from 7746 across 7747-7753 to the dock, six tiny Japanese huts on the Inside rooms, one Japanese temple (main hall, five-storey pagoda, torii at the east gate) over 7777, 7779, 7780 and 7781, a small rice field (flooded paddies with dikes and rows of rice) over 7788-7792, a few trees by the forest path, a thin beach. The map now reaches y -230.
 - The small island by the Village of Edo marker is gone (water there now). Side effect: the sea's edge just south-west of it, at the map's north edge, moved about 1.5 rooms east over a 4 sq strip.
+- Edo's temple (your review): one temple, the five-storey pagoda, now as tall as the whole temple area (4.6 rooms, over 7777, 7779, 7780 and 7781); the main hall, torii and lanterns are gone.
+- Angel's Landing: The Old Angel Inn at room 21139, a small weathered pirate tavern with a Jolly Roger, and a small 'The Old Angel Inn' label below it.
+- Angel's Landing: the old town's gate: a tall stone watchtower on the left, a stone archway (centred at -65.9, bottom at -78.06), a small wooden guardhouse on the right; from x -68.1 to -64.3, top of the tower at -81.7.
+- New destination: Sailing the Seas, with your directions; they run through the hidden Grimdog rooms and end at 21099, Within the Green Shed, where the marker is. Its name sits out at sea, north of the marker.
 - The Grimdog Port Authority: none of its rooms are drawn. Its route now runs on to 21076, where your directions end (3.4 rooms north of where it stopped), so the marker moved there with it.
 
 ## Version 16 · The Coral Depths · October 16, 2026
