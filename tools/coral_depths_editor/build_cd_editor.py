@@ -1,8 +1,8 @@
 # The layout editor for the rooms the owner calls "Coral Depths" (Oct 16): 47 listed rooms (Azure Sea, Coral Depths, and 2522 of the Asgard Nexus) that tie
-# the Ashen Forest and the Southern Mountains together, plus Southern Mountain Range rooms 7, 8, 9, 10, 572 and 6365 unlocked so they can be moved.
+# the Ashen Forest and the Southern Mountains together, plus rooms on the map unlocked so they can be moved: Southern Mountain Range 7, 8, 9, 10, 572, 6365, 19863 and Ashen Forest 14360 (Oct 16).
 #   python3 build_cd_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with cd_editor_template.html beside it)
 # Movable (area 'CD'): exactly the listed rooms, grp 'cd' (game area kept in 'ga'), plus the spacer rooms that join two of them or one of them to a fixed
-# room (dead-end spacer stubs left off), and grp 'sm' (the unlocked rooms, starting at their spots in the Southern Mountain save). The others start where
+# room (dead-end spacer stubs left off), and grp 'un' (the unlocked rooms, starting at their spots in the Southern Mountain or Ashen save). The others start where
 # TinTin's exits put them, one room apart, from rooms 10 and 572; a room on another level is offset LV diagonally (up = north-east).
 # Fixed: every room already on the finished map near enough to matter (as the Pixie Forest editor).
 import sys, os, json
@@ -16,7 +16,7 @@ DN = {1: 'n', 2: 'e', 4: 's', 8: 'w', 3: 'ne', 9: 'nw', 6: 'se', 12: 'sw', 16: '
 isspacer = lambda v: v in rooms and bool(rooms[v]['flags'] & 8) and rooms[v]['area'] == ''
 CD = [669, 6302, 6286, 6287, 6303, 6288, 6289, 6290, 6291, 6292, 6329, 12984, 12983, 12982, 12956, 12598, 12599, 12597, 1494, 1495, 2516, 2806, 2807, 2808,
       2809, 2810, 2811, 2814, 2815, 2816, 2817, 2818, 2517, 2518, 2519, 2520, 2521, 2522, 2523, 2524, 2525, 2526, 2527, 2528, 2529, 2530, 2531]
-UN = [7, 8, 9, 10, 572, 6365]
+UN = [7, 8, 9, 10, 572, 6365, 19863, 14360]
 LV = 0.55
 J = lambda f: json.load(open(os.path.join(here, f)))
 assert len(set(CD)) == 47 and all(v in rooms for v in CD + UN)
@@ -40,7 +40,7 @@ for v, x, y in zip(AL['ids'], AL['xs'], AL['ys']):
     if v not in AHID: fix(v, 'AF', (x, y))
 for v, g in SGRP.items():
     if g in ('sm', 'ug', 'tr') and v in SPOS and v not in SHID: fix(v, 'SM', SPOS[v])
-assert all(CTX.get(v) == 'SM' for v in UN), [CTX.get(v) for v in UN]
+assert all(CTX.get(v) == ('AF' if v == 14360 else 'SM') for v in UN), [CTX.get(v) for v in UN]
 assert not set(CD) & set(CTX), set(CD) & set(CTX)
 start = {v: [cpos[v][0], cpos[v][1]] for v in UN}
 for v in UN: CTX.pop(v); cpos.pop(v)
@@ -91,7 +91,7 @@ cells = defaultdict(list)
 for v in sorted(start): cells[(round(start[v][0] / 0.3), round(start[v][1] / 0.3))].append(v)
 for vs in cells.values():
     for k, v in enumerate(vs[1:], 1): start[v][0] += 0.42 * k; start[v][1] += 0.42 * k
-GRP = {**{v: 'cd' for v in CD}, **{v: 'cd' for v in keep}, **{v: 'sm' for v in UN}}
+GRP = {**{v: 'cd' for v in CD}, **{v: 'cd' for v in keep}, **{v: 'un' for v in UN}}
 
 # ---- rooms and exits ----
 def exlist(v):
@@ -107,7 +107,7 @@ for v in sorted(CTX):
     R.append(dict(id=v, name=r['name'], terrain='', void=isspacer(v), lvl=0, x=round(cpos[v][0], 2), y=round(cpos[v][1], 2), x0=round(cpos[v][0], 2), y0=round(cpos[v][1], 2), fixed=True, src=CTX[v]))
 for v in sorted(S):
     r = rooms[v]
-    R.append(dict(id=v, name=r['name'], terrain='' if v in keep else r['terrain'], void=v in keep, lvl=0, area='CD', grp=GRP[v], piece=0, ga=r['area'],
+    R.append(dict(id=v, name=r['name'], terrain='' if isspacer(v) else r['terrain'], void=isspacer(v), lvl=0, area='CD', grp=GRP[v], piece=0, ga=r['area'],
                   x=round(start[v][0], 2), y=round(start[v][1], 2), x0=round(start[v][0], 2), y0=round(start[v][1], 2), ex=exlist(v)))
 V = {r['id'] for r in R}
 pair = defaultdict(lambda: [False, False, False])
@@ -120,7 +120,7 @@ for v in V:
 EDG = [[a, b, 'two' if (f and r and flat) else ('one' if flat else 'ud')] for (a, b), (f, r, flat) in sorted(pair.items())]
 lk = sorted(k for k in pair if (k[0] in S) != (k[1] in S))
 cnt = Counter(CTX.values()); ga = Counter(rooms[v]['area'] for v in CD)
-audit = dict(cd=len(CD), az=ga['Azure Sea'], cdp=ga['Coral Depths'], an=ga['Asgard Nexus'], spc=len(keep), sm=len(UN),
+audit = dict(cd=len(CD), az=ga['Azure Sea'], cdp=ga['Coral Depths'], an=ga['Asgard Nexus'], spc=len(keep), sm=len(UN), smu=sum(v != 14360 for v in UN), afu=1,
              exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk),
              dh=cnt['DH'], grove=cnt['Grove'], fwfix=cnt['FW'], ft=cnt['FT'], lake=cnt['LK'], wtr=cnt['WT'], af=cnt['AF'], smfix=cnt['SM'])
 rd = lambda poly: [[round(x, 2), round(y, 2)] for x, y in poly]

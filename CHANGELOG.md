@@ -2,7 +2,7 @@
 
 ## In progress
 
-- Coral Depths layout editor (https://claude.ai/artifact/79LKix1gF8uJHU2GhiEY4r): the 47 rooms you listed (32 Azure Sea, 14 Coral Depths, 1 Asgard Nexus: 2522) plus the 10 spacer rooms that join them, all movable; Southern Mountain Range rooms 7, 8, 9, 10, 572 and 6365 unlocked. Nothing on the map changes until your save.
+- Coral Depths layout editor (https://claude.ai/artifact/79LKix1gF8uJHU2GhiEY4r): the 47 rooms you listed (32 Azure Sea, 14 Coral Depths, 1 Asgard Nexus: 2522) plus the 10 spacer rooms that join them, all movable; Southern Mountain Range rooms 7, 8, 9, 10, 572, 6365 and 19863 and Ashen Forest room 14360 unlocked (19863 and 14360 are spacer rooms). Nothing on the map changes until your save.
 
 ## Version 15 · Route options, Miden'nir and the Pixie Forest · October 15, 2026
 

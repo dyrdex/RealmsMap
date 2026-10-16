@@ -61,7 +61,7 @@ svg.names-on .nd .lbl,svg.names-zoom.zoomed .nd .lbl{display:block}
 .nd.ntr rect,.nd.ntr circle.shape{stroke:#B3541E;stroke-width:.17}
 .nd.rd rect,.nd.rd circle.shape{stroke:#D4B44A}
 .nd.cd rect,.nd.cd circle.shape{stroke:#E58A6B}
-.nd.sm rect,.nd.sm circle.shape{stroke:#E0C04A}
+.nd.un rect,.nd.un circle.shape{stroke:#E0C04A}
 
 
 .nd .hx{display:none}.nd.hid .hx{display:block}.nd.hid{opacity:.32}.nd.hid .shape,.nd.hid rect{stroke-dasharray:.16 .12}
@@ -82,7 +82,7 @@ svg line.cxe{pointer-events:none}
     <li><b>Scroll</b> to zoom, drag empty space to pan.</li>
   </ul>
   <p id="audit" class="stat" style="color:var(--ink)"></p>
-  <p id="ntrNote" style="margin:4px 0 8px">The rooms you listed as <b>Coral Depths</b> (<b style="color:#E58A6B">coral outline</b>): 47 rooms of the Azure Sea and Coral Depths areas that tie the Ashen Forest and the Southern Mountains together, plus the spacer rooms that join two of them (or one of them to a room on the map). Unlocked from the Southern Mountain Range: rooms <b>7, 8, 9, 10, 572, 6365</b> (<b style="color:#E0C04A">gold outline</b>; they start where the map has them). The Coral Depths rooms start where TinTin's exits put them, one room apart, from rooms 10 and 572; rooms on another level are offset diagonally. Hide any room you don't want on the map. <b>Select the whole piece</b> grabs every room in the same piece as the rooms you have selected; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms back to their starting spots.</p>
+  <p id="ntrNote" style="margin:4px 0 8px">The rooms you listed as <b>Coral Depths</b> (<b style="color:#E58A6B">coral outline</b>): 47 rooms of the Azure Sea and Coral Depths areas that tie the Ashen Forest and the Southern Mountains together, plus the spacer rooms that join two of them (or one of them to a room on the map). Unlocked: Southern Mountain Range rooms <b>7, 8, 9, 10, 572, 6365, 19863</b> and Ashen Forest room <b>14360</b> (<b style="color:#E0C04A">gold outline</b>; they start where the map has them). The Coral Depths rooms start where TinTin's exits put them, one room apart, from rooms 10 and 572; rooms on another level are offset diagonally. Hide any room you don't want on the map. <b>Select the whole piece</b> grabs every room in the same piece as the rooms you have selected; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms back to their starting spots.</p>
   <p><b>The fixed rooms</b> (small round dots: grey-blue for Darkhaven, violet for the Shadow Grove, green for the Forgotten Woods, olive for the Forest of Tears, blue for the Lake of Tich'Pyga, gold for the Western Trade Route, brown for the Ashen Forest, copper for the Southern Mountain Range and its trade route) are the rooms already on the finished map, exactly where they are. They can't be moved. Hover one to see its name. The faint lines between them are the exits between those rooms. The finished map (land, lake, trails) is faintly behind.</p>
   <p style="color:var(--soft)">North is up. Up and down exits are dashed purple lines.</p>
 
@@ -104,7 +104,7 @@ svg line.cxe{pointer-events:none}
   <label class="l"><input type="checkbox" id="snap"> Snap to grid</label>
   <div class="row"><select id="snapStep"><option value=".25">¼ room</option><option value=".5" selected>½ room</option><option value="1">1 room</option></select></div>
   <div class="row">
-    <button id="selPiece">Select the whole piece</button><button id="selNtr">Select the Coral Depths rooms</button><button id="selSm">Select rooms 7-10, 572, 6365</button>
+    <button id="selPiece">Select the whole piece</button><button id="selNtr">Select the Coral Depths rooms</button><button id="selSm">Select the unlocked map rooms</button>
   </div>
   <div class="row">
     <button id="rawSel">Selected → where TinTin's exits suggest</button>
@@ -126,7 +126,7 @@ svg line.cxe{pointer-events:none}
     <select id="names"><option value="zoom" selected>when zoomed in</option><option value="on">always</option><option value="off">never</option></select></div>
   <div class="legend">
     <i style="background:var(--t-Swimming);border:2px solid #E58A6B"></i><span>Coral Depths room (movable)</span>
-    <i style="background:var(--t-Hills);border:2px solid #E0C04A"></i><span>Southern Mountain Range room 7, 8, 9, 10, 572 or 6365 (unlocked, movable)</span>
+    <i style="background:var(--t-Hills);border:2px solid #E0C04A"></i><span>Unlocked map room: 7-10, 572, 6365, 19863 (Southern Mountain Range) or 14360 (Ashen Forest) (movable)</span>
     <i style="background:var(--t-other);border-radius:50%;width:8px;height:8px;border:1px solid #B3541E"></i><span>Spacer room (invisible in the game, free to move)</span>
     <i style="background:var(--cx-DH);border-radius:50%"></i><span>Fixed room in Darkhaven</span>
     <i style="background:var(--cx-Grove);border-radius:50%"></i><span>Fixed room in the Shadow Grove</span>
@@ -235,7 +235,7 @@ function placeEntrance(){}
   for(const t of C.tracks)el('path',{d:'M'+t.map(q=>q[0]+' '+q[1]).join('L'),fill:'none',stroke:'var(--dirt)','stroke-width':.26,opacity:.8,'stroke-linecap':'round','stroke-linejoin':'round'},gCtx);
   el('rect',{x:C.town[0],y:C.town[1],width:C.town[2]-C.town[0],height:C.town[3]-C.town[1],fill:'var(--panel)',stroke:'var(--ink)','stroke-width':.12,opacity:.92,rx:.4},gCtx);
   (C.labels||[]).forEach(l=>{const t=el('text',{x:l[0],y:l[1],'text-anchor':'middle','font-size':l[3]||1.5,'font-style':'italic',fill:'var(--soft)',style:'font-family:var(--serif);paint-order:stroke;stroke:var(--paper);stroke-width:.3px'},gCtx);t.textContent=l[2]})})();
-(function(){const a=D.audit;if(!a)return;$('audit').innerHTML=`<b>Import check against your TinTin map:</b><br>Coral Depths rooms you listed: ${a.cd} (Azure Sea ${a.az}, Coral Depths ${a.cdp}, Asgard Nexus ${a.an})<br>Spacer rooms joining them: ${a.spc}<br>Southern Mountain Range rooms unlocked: ${a.sm}<br>Exits between these rooms: ${a.exits}<br>Exits to rooms on the map: ${a.links}<br><br><b>Fixed rooms already on the finished map:</b><br>Darkhaven ${a.dh} · Shadow Grove ${a.grove} · Forgotten Woods ${a.fwfix}<br>Forest of Tears ${a.ft} · Lake of Tich'Pyga ${a.lake} · Western Trade Route ${a.wtr}<br>Ashen Forest ${a.af} · Southern Mountain Range and its trade route ${a.smfix}<br><br>Only the rooms you listed; the rest of the Azure Sea and the Coral Depths stay off.`})();
+(function(){const a=D.audit;if(!a)return;$('audit').innerHTML=`<b>Import check against your TinTin map:</b><br>Coral Depths rooms you listed: ${a.cd} (Azure Sea ${a.az}, Coral Depths ${a.cdp}, Asgard Nexus ${a.an})<br>Spacer rooms joining them: ${a.spc}<br>Map rooms unlocked: ${a.sm} (Southern Mountain Range ${a.smu}, Ashen Forest ${a.afu})<br>Exits between these rooms: ${a.exits}<br>Exits to rooms on the map: ${a.links}<br><br><b>Fixed rooms already on the finished map:</b><br>Darkhaven ${a.dh} · Shadow Grove ${a.grove} · Forgotten Woods ${a.fwfix}<br>Forest of Tears ${a.ft} · Lake of Tich'Pyga ${a.lake} · Western Trade Route ${a.wtr}<br>Ashen Forest ${a.af} · Southern Mountain Range and its trade route ${a.smfix}<br><br>Only the rooms you listed; the rest of the Azure Sea and the Coral Depths stay off.`})();
 
 /* ---------- moving things ---------- */
 function setNode(id,x,y){
@@ -364,7 +364,7 @@ $('zin').onclick=()=>{cam.k=Math.min(140,cam.k*1.5);applyCam()};$('zout').onclic
 function hover(e){const nd=e.target.closest&&e.target.closest('.nd');
   if(!nd){tip.style.display='none';return}
   const r=byId.get(+nd.dataset.id),p=pos.get(r.id),s=stage.getBoundingClientRect();
-  tip.innerHTML=`<b>${esc(r.name||'(spacer room)')}</b><br>Room ${r.id} · ${esc(r.terrain||'-')}${r.area==='CD'?' · '+({cd:'Coral Depths',sm:'Southern Mountain Range (unlocked)'})[r.grp]+(r.ga?' (game area: '+esc(r.ga)+')':'')+(r.void?' (spacer room)':''):(r.src?' · '+({DH:'Darkhaven',Grove:'Shadow Grove',FW:'Forgotten Woods',AF:'Ashen Forest',FT:'Forest of Tears',LK:"Lake of Tich'Pyga",WT:'Western Trade Route',SM:'Southern Mountain Range'})[r.src]+' (fixed)':'')}${r.piece!=null?' · piece '+(r.piece+1):''}${r.lvl?` · level ${r.lvl>0?'+':''}${r.lvl} in TinTin`:''}${locked.has(r.id)?' · locked':''}${hidden.has(r.id)?' · <b style="color:#C23B22">hidden on the map</b>':''}<br>at ${p[0].toFixed(2)}, ${p[1].toFixed(2)}<br>${(r.ex||[]).map(esc).join('<br>')}`;
+  tip.innerHTML=`<b>${esc(r.name||'(spacer room)')}</b><br>Room ${r.id} · ${esc(r.terrain||'-')}${r.area==='CD'?' · '+({cd:'Coral Depths',un:'unlocked map room'})[r.grp]+(r.ga?' (game area: '+esc(r.ga)+')':'')+(r.void?' (spacer room)':''):(r.src?' · '+({DH:'Darkhaven',Grove:'Shadow Grove',FW:'Forgotten Woods',AF:'Ashen Forest',FT:'Forest of Tears',LK:"Lake of Tich'Pyga",WT:'Western Trade Route',SM:'Southern Mountain Range'})[r.src]+' (fixed)':'')}${r.piece!=null?' · piece '+(r.piece+1):''}${r.lvl?` · level ${r.lvl>0?'+':''}${r.lvl} in TinTin`:''}${locked.has(r.id)?' · locked':''}${hidden.has(r.id)?' · <b style="color:#C23B22">hidden on the map</b>':''}<br>at ${p[0].toFixed(2)}, ${p[1].toFixed(2)}<br>${(r.ex||[]).map(esc).join('<br>')}`;
   tip.style.display='block';let x=e.clientX-s.left+14,y=e.clientY-s.top+12;if(x>s.width-350)x-=360;if(y>s.height-160)y-=150;tip.style.left=x+'px';tip.style.top=y+'px'}
 window.addEventListener('keydown',e=>{
   if(['INPUT','TEXTAREA','SELECT'].includes((e.target.tagName||''))&&e.target.id!=='snap')return;
@@ -384,7 +384,7 @@ $('unlock').onclick=()=>{sel.forEach(id=>{if(!byId.get(id).fixed)locked.delete(i
 $('selnone').onclick=()=>{sel.clear();refreshSel()};
 $('baseSel').onclick=()=>setTo([...sel],base);$('rawSel').onclick=()=>setTo([...sel],raw);
 $('selNtr').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='cd')sel.add(r.id)});refreshSel()};
-$('selSm').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='sm')sel.add(r.id)});refreshSel()};
+$('selSm').onclick=()=>{sel.clear();rooms.forEach(r=>{if(r.grp==='un')sel.add(r.id)});refreshSel()};
 $('selPiece').onclick=()=>{const ps=new Set([...sel].map(id=>byId.get(id).piece).filter(p=>p!=null));if(!ps.size){toast('Select a room of the piece first');return}rooms.forEach(r=>{if(ps.has(r.piece))sel.add(r.id)});refreshSel()};
 let armed=null;$('baseAll').onclick=function(){if(!armed){this.textContent='Click again to confirm';armed=setTimeout(()=>{armed=null;this.textContent='Undo all my changes…'},4000);return}
   clearTimeout(armed);armed=null;this.textContent='Undo all my changes…';setTo([...pos.keys()],base);toast('Back to the starting layout')};
