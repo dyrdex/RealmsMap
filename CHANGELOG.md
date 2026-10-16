@@ -2,6 +2,8 @@
 
 ## In progress
 
+- Coral Depths: the path from 572 meets the cliff trail exactly at room 2810 instead of running past it (the trail now runs through 2810; the same for 2808 and 2809).
+
 - Coral Depths, your review (Oct 16): the brown high ground is gone. The top of the cliff is now grey rocky ground with rocks and boulders, about 4 rooms deep behind the cliff edge from 569 to 2817, reaching back over the path from 572 to 2810.
 - The rest of the new ground north-west of the cliff takes the ground next to it: Ashen forest to the north, the Southern Mountains' grass and hills to the west.
 - The small inlet of sea where the Coral Depths meets the Ashen Forest is land now (cliff top and forest).
