@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress (after version 16)
+## Version 17 · Angel's Landing and the Village of Edo · October 16, 2026
 
 - New layout editor for three areas (`tools/new_areas_editor`, October 16): Angel's Landing (22 rooms, plus Blood Sea room 16226 shown only with its links ne to 5667 and nw to 21135), the Village of Edo (77 rooms, off 7746) and The Grimdog Port Authority (29 rooms, plus Western Trade Route room 21076, the way in from the road), with 15 joining spacer rooms.
 - Drawn from your save of Oct 16 (19:54):
