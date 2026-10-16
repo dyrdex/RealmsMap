@@ -1,5 +1,13 @@
 # Realm Map changelog
 
+## In progress
+
+- The Coral Depths on the map, from your save of Oct 16 (16:50): beach, dock and forest rooms on new land; dirt paths on land and the dark blue water route between the swimming rooms; up/down exits drawn (7 to 8, 2808 to 2809, 2810 to 572 with a bend). Rooms 7-10, 569-572, 6365, 19863 and 14360 moved to your spots (the Desert of Despair marker moved with 6365).
+- The cliff: 569, 570, 571, 572 and 2806 to 2818 drawn as one high cliff (dark face and strokes down the slope to the south-east). High ground (barren, hills) fills the gap north-west of it, joining the Southern Mountains to the Ashen Forest.
+- The east coast's sea carried on south to about y 70, over everything east of the new land (the bay included). Black sand beaches in ash grey, the other beaches in sand, trees in the Coral Depths' forest.
+
+- Coral Depths layout editor (https://claude.ai/artifact/79LKix1gF8uJHU2GhiEY4r): the 47 rooms you listed (32 Azure Sea, 14 Coral Depths, 1 Asgard Nexus: 2522) plus the 10 spacer rooms that join them, all movable; Southern Mountain Range rooms 7, 8, 9, 10, 569, 570, 571, 572, 6365 and 19863 and Ashen Forest room 14360 unlocked (19863 and 14360 are spacer rooms; 569-571 added after your 16:25 save, which still loads with them free to move). Nothing on the map changes until your save.
+
 ## Version 15 · Route options, Miden'nir and the Pixie Forest · October 15, 2026
 
 - Route options: a place can now have a default route plus alternate routes, each with your direction word, room count and note. The pop-up shows the default, then "Alternate routes:"; tick one to draw it on the map instead. Routes and counts come only from your list (`ROUTE_OPTIONS` in `src/data.py`).
