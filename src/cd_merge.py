@@ -3,9 +3,11 @@ cd_layout_final.json, cd_editor_edges.json (the owner's layout from tools/coral_
   - up/down exits are drawn (7 to 8, 2808 to 2809, 2810 to 572, ...)
   - 569, 570, 571, 572 and the ledge 2806 ... 2818 are upon cliffs that overlook the area south and east of them: the whole path is a high cliff over
     the land south-east of it (high ground on its north-west side)
-  - the empty area these rooms lie in is built from the rooms: the swimming rooms are sea, the beach, dock and forest rooms land, high ground fills the
-    gap north-west of the cliff (joining the Southern Mountains to the Ashen Forest); the land first, then the east coast's sea is simply carried on
-    south to about y 70
+  - the empty area these rooms lie in is built from the rooms: the beach, dock and forest rooms are land, the land fills the gap north-west of the
+    cliff (joining the Southern Mountains to the Ashen Forest); the land first, then the east coast's sea is simply carried on south to about y 70
+  - (later, Oct 16) no brown high ground: the top of the cliff is grey rocky ground with rocks and boulders, about 4 rooms deep from 569 to 2817 and
+    over the up/down path 572 - 2810; the rest of the new ground north-west of the cliff takes the ground of the old land next to it; the little
+    inlet of the old sea there is land; where a water route meets a dirt path (1495) both run exactly through the room
   - room 6365 stays where the owner moved it
 The Southern Mountain Range rooms the owner moved here (7-10, 569-572, 6365, 19863) are drawn by smr_merge at their new spots (build.py gives it them);
 their land change is made inside smr_merge's own land trace (`land_edit`), so the land is traced once. This module draws the rest: paths (dirt on land,
@@ -27,6 +29,9 @@ SM_DRAWN = {7, 8, 9, 10, 569, 570, 571, 572, 6365, 19863}       # smr_merge draw
 CLIFF = [569, 570, 571, 572, 2806, 2807, 2808, 2809, 2810, 2811, 2814, 2815, 2816, 2817, 2818]
 LAND_R = 3.4                                    # land reaches this far from a land room or path
 SEA_X, SEA_E, SEA_N, SEA_S = 44.0, 78.0, 12.0, 70.0   # the east coast's sea is carried on south: from y 12 (where it ends now) down to y 70, east of x 44, out to its east edge
+TOP_END = 2817                                  # the top of the cliff: from 569 to here (owner, Oct 16)
+TOP_W = 4.0                                     # ... about this deep behind the cliff edge
+TOP_PAST = 1.3                                  # ... and this far past the up/down path 572 - 2810
 FACE = 0.8                                      # the cliff's face (dark band) on its south-east side
 PLATEAU = (24.0, 8.0, 67.0, 41.5)               # the high ground NW of the cliff lies in this box (it fills the gap up to the old coast)
 BLACK = {669, 6302, 1495, 6288}                 # 'Black Sand Beach(es)': dark ash-grey sand
@@ -110,7 +115,8 @@ def masks(layout, edges, land0, water0, smr_layout=None):
     wob = ndi.gaussian_filter(nrng.normal(size=(bh, bw)), 1.6 * R8); wob = (wob - wob.min()) / (wob.max() - wob.min())
     wob2 = ndi.gaussian_filter(nrng.normal(size=(bh, bw)), 1.1 * R8); wob2 = (wob2 - wob2.min()) / (wob2.max() - wob2.min())
     inplat = (X >= PLATEAU[0]) & (X <= PLATEAU[2]) & (Y >= PLATEAU[1]) & (Y <= PLATEAU[3])
-    plateau = inplat & (sc < 0) & ~water0                                       # the high ground, north-west of the cliff
+    lobe = water0 & (sc < 0) & inplat & (X > 50) & (Y < 20)                     # the little inlet of the old sea north-west of the cliff: land now (owner, Oct 16)
+    plateau = inplat & (sc < 0) & (~water0 | lobe)                              # the ground north-west of the cliff, up to the old coast
     face = (sc > 0) & (dc <= FACE * (0.8 + 0.4 * wob2))                         # the cliff's face
     land = ((d_l <= LAND_R * (0.75 + 0.5 * wob)) & (d_l < d_w)) | plateau | face   # (the swimming rooms stay off the land)
     land = ndi.gaussian_filter(land.astype(float), 0.5 * R8) > 0.5
@@ -119,7 +125,7 @@ def masks(layout, edges, land0, water0, smr_layout=None):
     sea = (X >= SEA_X) & (X <= east + 2.0 * (wob2 - 0.5)) & (Y >= SEA_N) & (Y <= SEA_S + 3.0 * (wob - 0.5)) & ~land & ~land0 & ~water0
     sea = ndi.gaussian_filter(sea.astype(float), 0.4 * R8) > 0.5
     sea &= ~(land | land0 | water0)
-    S['masks'] = dict(land=land, sea=sea, plateau=plateau & ~land0, face=face & land, X=X, Y=Y, dc=dc, sc=sc, bw=bw, bh=bh)
+    S['masks'] = dict(land=land, sea=sea, plateau=plateau & ~land0, face=face & land, lobe=lobe, land0=land0, X=X, Y=Y, dc=dc, sc=sc, bw=bw, bh=bh)
     return S['masks']
 
 
@@ -158,9 +164,14 @@ def merge_cd(w, layout, edges, smr_layout, seed=SEED):
     gx1, gy1 = math.ceil(max(max(xs), BOX[2])) + 2, math.ceil(max(max(ys), BOX[3])) + 2
     G = AA._raster([p], gx0, gy0, int((gx1 - gx0) * R8), int((gy1 - gy0) * R8))
     c0, r0 = int(round((BOX[0] - gx0) * R8)), int(round((BOX[1] - gy0) * R8))
+    G[r0:r0 + bh, c0:c0 + bw] &= ~M['lobe']
+    gb = G[r0:r0 + bh, c0:c0 + bw]; lab_, n_ = ndi.label(gb)                     # (scraps of the inlet left cut off from the sea go too)
+    for i_ in range(1, n_ + 1):
+        if (lab_ == i_).sum() < 6 * R8 * R8: gb[lab_ == i_] = False; M['lobe'] |= lab_ == i_
     G[r0:r0 + bh, c0:c0 + bw] |= sea
     w['geo']['water'] = [q for i, q in enumerate(water) if i != hit[0]] + AA._contours(G, gx0, gy0, sigma=1.0)
     after = AA._raster(w['geo']['water'], BOX[0], BOX[1], bw, bh)
+    rep['inlet_made_land_sq'] = round(float(M['lobe'].sum()) / R8 / R8, 1)
     rep['sea_added_sq'] = round(float(sea.sum()) / R8 / R8, 1); rep['sea_drawn_sq'] = round(float((after & sea).sum()) / R8 / R8, 1)
 
     # ---- what stood where the sea now is goes (gotcha 2): ground tints clipped (a polygon over a tint, drawn even-odd, is a hole), sprites removed
@@ -181,7 +192,7 @@ def merge_cd(w, layout, edges, smr_layout, seed=SEED):
         if k == 'ud': uds.append((a, b)); continue
         G = GW if (a in wet or b in wet) else GD
         G[a].add(b); G[b].add(a)
-    pinned = {v for v in pos if v not in CD} | {2806}
+    pinned = {v for v in pos if v not in CD} | {2806} | (set(GW) & set(GD))   # (where a water route meets a dirt path both run exactly through the room)
     dirt = _chains(GD, pos, pinned, 0.5)
     seaw = _chains(GW, pos, pinned, 0.6)
     udl = []
@@ -244,13 +255,68 @@ def merge_cd(w, layout, edges, smr_layout, seed=SEED):
         n0 = len(w[k]); w[k] = [q for q in w[k] if not bad(q, clear)]; removed[k] = n0 - len(w[k])
     rep['sprites_removed'] = removed
 
-    # ---- ground: the high ground (barren, hills), beaches (black sand: ash grey; the others: sand), the Coral Depths' forest (trees)
+    # ---- the top of the cliff (owner, Oct 16): grey rocky ground with rocks and boulders, about 4 rooms deep behind the cliff from 569 to 2817;
+    #      between 572 and 2810 it reaches back over the up/down path between them and a little beyond
     landm = AA._raster(w['geo']['land'], BOX[0], BOX[1], bw, bh) & ~after
-    plat = M['plateau'] & landm & ~face
-    nz = ndi.gaussian_filter(rng.normal(size=(bh, bw)), 1.4 * R8); nz = (nz - nz.min()) / (nz.max() - nz.min())
-    bar = ndi.gaussian_filter(plat.astype(float), 0.6 * R8) > 0.5
-    w['geo']['barren'] = list(w['geo'].get('barren') or []) + AA._contours(bar, BOX[0], BOX[1], sigma=2.0)
-    w['geo']['barren2'] = list(w['geo'].get('barren2') or []) + AA._contours(bar & (nz > 0.58), BOX[0], BOX[1], sigma=2.0)
+    P = np.c_[X.ravel(), Y.ravel()]
+    topl = _drawn([list(pos[v]) for v in CLIFF[:CLIFF.index(TOP_END) + 1]], 10)
+    d2, s2 = _side(topl, P); d2 = d2.reshape(bh, bw); s2 = s2.reshape(bh, bw)
+    ud = next(l for l in udl if {tuple(l[0]), tuple(l[-1])} == {tuple(map(lambda c: round(c, 2), pos[572])), tuple(map(lambda c: round(c, 2), pos[2810]))})
+    udd = _drawn(ud, 10); d_ud = cKDTree(_samples([udd], 0.1)).query(P)[0].reshape(bh, bw)
+    ring = [list(pos[v]) for v in CLIFF[CLIFF.index(572):CLIFF.index(2810) + 1]] + udd[::-1]
+    between = AA._raster([ring], BOX[0], BOX[1], bw, bh)
+    wt = ndi.gaussian_filter(rng.normal(size=(bh, bw)), 1.2 * R8); wt = (wt - wt.min()) / (wt.max() - wt.min())
+    top = ((s2 <= 0) & (d2 <= TOP_W * (0.8 + 0.4 * wt))) | between | ((s2 <= 0) & (d_ud <= TOP_PAST * (0.7 + 0.6 * wt)))
+    top = ndi.gaussian_filter(top.astype(float), 0.5 * R8) > 0.5
+    top &= landm & ~face
+    nz = ndi.gaussian_filter(rng.normal(size=(bh, bw)), 0.7 * R8); nz = (nz - nz.min()) / (nz.max() - nz.min())
+    w['geo']['clifftop'] = list(w['geo'].get('clifftop') or []) + AA._contours(top, BOX[0], BOX[1], sigma=1.5)
+    w['geo']['clifftop2'] = list(w['geo'].get('clifftop2') or []) + AA._contours(top & (nz > 0.6), BOX[0], BOX[1], sigma=1.5, minarea=0.1)
+    def place(mask, spacing, salt):
+        ys, xs = np.nonzero(mask); placed = []; grid = {}
+        for i in np.argsort(_hash(X[ys, xs], Y[ys, xs], salt), kind='stable'):
+            x, y = X[ys[i], xs[i]], Y[ys[i], xs[i]]; gk = (int(x // spacing), int(y // spacing))
+            if any(math.dist(q, (x, y)) < spacing for dx in (-1, 0, 1) for dy in (-1, 0, 1) for q in grid.get((gk[0] + dx, gk[1] + dy), ())): continue
+            grid.setdefault(gk, []).append((x, y)); placed.append((round(float(x), 3), round(float(y), 3)))
+        return placed
+    inmask = lambda m, q: 0 <= int((q[1] - BOX[1]) * R8) < bh and 0 <= int((q[0] - BOX[0]) * R8) < bw and bool(m[int((q[1] - BOX[1]) * R8), int((q[0] - BOX[0]) * R8)])
+    gone = {}
+    for k in ('trees', 'tufts', 'peaks', 'hills', 'crags', 'boulders', 'brush', 'wheattufts'):     # what grew there gives way to the rock
+        if k in w: n0 = len(w[k]); w[k] = [q for q in w[k] if not inmask(top, q)]; gone[k] = n0 - len(w[k])
+    rz = top & (d_path > 0.55) & (d2 > 0.35)
+    crags = place(rz, 2.3, 41)
+    rocks = place(rz & ~ndi.binary_dilation(AA._raster([[[x - .5, y - .5], [x + .5, y - .5], [x + .5, y + .5], [x - .5, y + .5]] for x, y in crags], BOX[0], BOX[1], bw, bh), iterations=2), 1.15, 43)
+    w['crags'] = list(w.get('crags') or []) + [[x, y, round(0.7 + 0.4 * float(_hash(x, y, 6)), 2), int(float(_hash(x, y, 7)) * 3)] for x, y in crags]
+    w['boulders'] = list(w.get('boulders') or []) + [[x, y, round(0.45 + 0.35 * float(_hash(x, y, 8)), 2)] for x, y in rocks]
+    rep['cliff_top'] = dict(sq=round(float(top.sum()) / R8 / R8, 1), crags=len(crags), boulders=len(rocks), sprites_replaced=gone)
+
+    # ---- the rest of the new ground north-west of the cliff: the ground of the old land nearest to it (its ground tints and what grows there)
+    land0 = M['land0']
+    rest = landm & ~land0 & ~top & ~face & (M['sc'] < 0)
+    d0, (iy, ix) = ndi.distance_transform_edt(~land0, return_indices=True)
+    copied = {}
+    for k in [k for k in w['geo'] if k not in ('land', 'water', 'cliff', 'clifftop', 'clifftop2', 'sand', 'shallows', 'barren', 'barren2')]:   # (no brown: owner, Oct 16)
+        polys = [p for p in (w['geo'].get(k) or []) if any(BOX[0] <= q[0] < BOX[2] and BOX[1] <= q[1] < BOX[3] for q in p)]
+        if not polys: continue
+        r_ = AA._raster(polys, BOX[0], BOX[1], bw, bh)
+        m_ = rest & r_[iy, ix]
+        if m_.sum() > 8:
+            w['geo'][k] = list(w['geo'][k]) + AA._contours(m_, BOX[0], BOX[1], sigma=1.5, minarea=0.2); copied[k] = round(float(m_.sum()) / R8 / R8, 1)
+    SPACE = {'trees': 0.95, 'tufts': 0.9, 'hills': 1.7, 'peaks': 2.0, 'brush': 1.0, 'wheattufts': 0.9, 'crags': 2.3, 'boulders': 1.2}
+    old = [(k, q) for k in SPACE for q in (w.get(k) or []) if inmask(land0, q) and not inmask(top, q)]
+    otree = cKDTree(np.array([q[:2] for _, q in old]))
+    cand = place(rest & (d_path > 0.6), 0.9, 47)
+    made = defaultdict(list); grid = defaultdict(list)
+    for x, y in cand:
+        dd, j = otree.query([x, y]); k, q = old[j]
+        if dd > d0[int((y - BOX[1]) * R8), int((x - BOX[0]) * R8)] / R8 + 1.2: continue        # (the old ground nearest it is bare there)
+        sp = SPACE[k]; gk = (k, int(x // sp), int(y // sp))
+        if any(math.dist(p_, (x, y)) < sp for dx in (-1, 0, 1) for dy in (-1, 0, 1) for p_ in grid[(k, gk[1] + dx, gk[2] + dy)]): continue
+        grid[gk].append((x, y)); made[k].append([x, y] + list(q[2:]))
+    for k, L in made.items(): w[k] = list(w.get(k) or []) + L
+    rep['ground_nw'] = dict(sq=round(float(rest.sum()) / R8 / R8, 1), tints=copied, sprites={k: len(L) for k, L in made.items()})
+
+    # ---- the low ground: beaches (black sand: ash grey; the others: sand), the Coral Depths' forest (trees)
     P = np.c_[X.ravel(), Y.ravel()]
     def near_rooms(vs, r):
         vs = [v for v in vs if v in pos]
@@ -264,20 +330,10 @@ def merge_cd(w, layout, edges, smr_layout, seed=SEED):
     w['geo']['ash'] = list(w['geo'].get('ash') or []) + AA._contours(black, BOX[0], BOX[1], sigma=1.0, minarea=0.2)
     w['geo']['sand'] = list(w['geo'].get('sand') or []) + AA._contours(sandy, BOX[0], BOX[1], sigma=1.0, minarea=0.2)
     forest = [v for v in CD if (info[v].get('terrain') or '') == 'Forest']
-    fz = landm & near_rooms(forest, 2.6) & ~black & ~sandy & (d_sea > 0.6) & (d_path > 0.55) & ~M['plateau']
-    hz = plat & (d_path > 1.0) & (M['dc'] > 1.3)
-    def place(mask, spacing, salt):
-        ys, xs = np.nonzero(mask); placed = []; grid = {}
-        for i in np.argsort(_hash(X[ys, xs], Y[ys, xs], salt), kind='stable'):
-            x, y = X[ys[i], xs[i]], Y[ys[i], xs[i]]; gk = (int(x // spacing), int(y // spacing))
-            if any(math.dist(q, (x, y)) < spacing for dx in (-1, 0, 1) for dy in (-1, 0, 1) for q in grid.get((gk[0] + dx, gk[1] + dy), ())): continue
-            grid.setdefault(gk, []).append((x, y)); placed.append((round(float(x), 3), round(float(y), 3)))
-        return placed
-    trees = place(fz, 0.95, 31); hills = place(hz, 1.7, 33)
+    fz = landm & near_rooms(forest, 2.6) & ~black & ~sandy & (d_sea > 0.6) & (d_path > 0.55) & (M['sc'] > 0) & ~top
+    trees = place(fz, 0.95, 31)
     w['trees'] = list(w['trees']) + [[x, y, round(0.85 + 0.3 * float(_hash(x, y, 2)), 2), 'd', int(float(_hash(x, y, 3)) * 3)] for x, y in trees]
-    w['hills'] = list(w['hills']) + [[x, y, round(0.85 + 0.35 * float(_hash(x, y, 2)), 2), 'h', int(float(_hash(x, y, 3)) * 3)] for x, y in hills]
-    rep['ground'] = dict(high_ground_sq=round(float(bar.sum()) / R8 / R8, 1), black_sand_sq=round(float(black.sum()) / R8 / R8, 1),
-                         sand_sq=round(float(sandy.sum()) / R8 / R8, 1), trees=len(trees), hills=len(hills))
+    rep['ground_low'] = dict(black_sand_sq=round(float(black.sum()) / R8 / R8, 1), sand_sq=round(float(sandy.sum()) / R8 / R8, 1), trees=len(trees))
     on_land = lambda v: bool(landm[int((pos[v][1] - BOX[1]) * R8), int((pos[v][0] - BOX[0]) * R8)])
     in_sea = lambda v: bool(after[int((pos[v][1] - BOX[1]) * R8), int((pos[v][0] - BOX[0]) * R8)])
     rep['rooms_check'] = dict(dry_rooms_in_sea=sorted(v for v in S['dry'] if v in CD and in_sea(v)),

@@ -2,6 +2,11 @@
 
 ## In progress
 
+- Coral Depths, your review (Oct 16): the brown high ground is gone. The top of the cliff is now grey rocky ground with rocks and boulders, about 4 rooms deep behind the cliff edge from 569 to 2817, reaching back over the path from 572 to 2810.
+- The rest of the new ground north-west of the cliff takes the ground next to it: Ashen forest to the north, the Southern Mountains' grass and hills to the west.
+- The small inlet of sea where the Coral Depths meets the Ashen Forest is land now (cliff top and forest).
+- Room 1495: the water route and the dirt path now meet exactly at the room.
+
 - The Coral Depths on the map, from your save of Oct 16 (16:50): beach, dock and forest rooms on new land; dirt paths on land and the dark blue water route between the swimming rooms; up/down exits drawn (7 to 8, 2808 to 2809, 2810 to 572 with a bend). Rooms 7-10, 569-572, 6365, 19863 and 14360 moved to your spots (the Desert of Despair marker moved with 6365).
 - The cliff: 569, 570, 571, 572 and 2806 to 2818 drawn as one high cliff (dark face and strokes down the slope to the south-east). High ground (barren, hills) fills the gap north-west of it, joining the Southern Mountains to the Ashen Forest.
 - The east coast's sea carried on south to about y 70, over everything east of the new land (the bay included). Black sand beaches in ash grey, the other beaches in sand, trees in the Coral Depths' forest.
