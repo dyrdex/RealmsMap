@@ -192,7 +192,7 @@ def merge_cd(w, layout, edges, smr_layout, seed=SEED):
         if k == 'ud': uds.append((a, b)); continue
         G = GW if (a in wet or b in wet) else GD
         G[a].add(b); G[b].add(a)
-    pinned = {v for v in pos if v not in CD} | {2806} | (set(GW) & set(GD))   # (where a water route meets a dirt path both run exactly through the room)
+    pinned = {v for v in pos if v not in CD} | {2806} | (set(GW) & set(GD)) | {v for e in uds for v in e}   # (where a water route meets a dirt path, or an up/down path joins a trail, the lines run exactly through the room)
     dirt = _chains(GD, pos, pinned, 0.5)
     seaw = _chains(GW, pos, pinned, 0.6)
     udl = []
