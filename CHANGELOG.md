@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress
+## Version 16 · The Coral Depths · October 16, 2026
 
 - Coral Depths: your new directions (#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;ne;#2 e); the marker is now at room 2517, A grassy path, where they end.
 - 'The Ashen Forest' marker and sidebar entry removed.
