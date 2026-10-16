@@ -1,5 +1,5 @@
 # The layout editor for the rooms the owner calls "Coral Depths" (Oct 16): 47 listed rooms (Azure Sea, Coral Depths, and 2522 of the Asgard Nexus) that tie
-# the Ashen Forest and the Southern Mountains together, plus rooms on the map unlocked so they can be moved: Southern Mountain Range 7, 8, 9, 10, 572, 6365, 19863 and Ashen Forest 14360 (Oct 16).
+# the Ashen Forest and the Southern Mountains together, plus rooms on the map unlocked so they can be moved: Southern Mountain Range 7, 8, 9, 10, 572, 6365, 19863, then 569-571, and Ashen Forest 14360 (Oct 16).
 #   python3 build_cd_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with cd_editor_template.html beside it)
 # Movable (area 'CD'): exactly the listed rooms, grp 'cd' (game area kept in 'ga'), plus the spacer rooms that join two of them or one of them to a fixed
 # room (dead-end spacer stubs left off), and grp 'un' (the unlocked rooms, starting at their spots in the Southern Mountain or Ashen save). The others start where
@@ -16,7 +16,8 @@ DN = {1: 'n', 2: 'e', 4: 's', 8: 'w', 3: 'ne', 9: 'nw', 6: 'se', 12: 'sw', 16: '
 isspacer = lambda v: v in rooms and bool(rooms[v]['flags'] & 8) and rooms[v]['area'] == ''
 CD = [669, 6302, 6286, 6287, 6303, 6288, 6289, 6290, 6291, 6292, 6329, 12984, 12983, 12982, 12956, 12598, 12599, 12597, 1494, 1495, 2516, 2806, 2807, 2808,
       2809, 2810, 2811, 2814, 2815, 2816, 2817, 2818, 2517, 2518, 2519, 2520, 2521, 2522, 2523, 2524, 2525, 2526, 2527, 2528, 2529, 2530, 2531]
-UN = [7, 8, 9, 10, 572, 6365, 19863, 14360]
+UN = [7, 8, 9, 10, 572, 6365, 19863, 14360, 569, 570, 571]
+NEWLY, NEWLY_AT = [569, 570, 571], '2026-10-16T16:30:02Z'                     # (unlocked after the owner's save of 16:25Z: its lock on them is dropped)
 LV = 0.55
 J = lambda f: json.load(open(os.path.join(here, f)))
 assert len(set(CD)) == 47 and all(v in rooms for v in CD + UN)
@@ -129,7 +130,7 @@ trk = list(w['fwtracks']) + list(w['swtracks']) + [w['road'], w['southpath'], w[
 ctx = dict(land=[rd(p) for p in w['geo']['land']], water=[rd(p) for p in w['geo']['water']],
            tracks=[rd(t) for t in trk if len(t) > 1], mazes=[dict(poly=rd(m['poly'])) for m in w['fwmazes']], town=[-7.4, -9.4, 7.4, 9.4],
            labels=[[0, 0.4, 'Darkhaven', 2.4], [3, -14.2, 'Shadow Grove', 1.5], [1, -47.3, 'Forgotten Woods', 2.4]])
-D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=UN)
+D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=UN, newly=NEWLY, newlyAt=NEWLY_AT)
 t = open(os.path.join(here, 'cd_editor_template.html'), encoding='utf-8').read()
 open(out, 'w', encoding='utf-8').write(t.replace('__DATA__', json.dumps(D, separators=(',', ':'))))
 json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed', 'src', 'area', 'grp', 'piece', 'ga') if k in r} for r in R], edges=EDG),

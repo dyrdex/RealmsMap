@@ -82,7 +82,7 @@ svg line.cxe{pointer-events:none}
     <li><b>Scroll</b> to zoom, drag empty space to pan.</li>
   </ul>
   <p id="audit" class="stat" style="color:var(--ink)"></p>
-  <p id="ntrNote" style="margin:4px 0 8px">The rooms you listed as <b>Coral Depths</b> (<b style="color:#E58A6B">coral outline</b>): 47 rooms of the Azure Sea and Coral Depths areas that tie the Ashen Forest and the Southern Mountains together, plus the spacer rooms that join two of them (or one of them to a room on the map). Unlocked: Southern Mountain Range rooms <b>7, 8, 9, 10, 572, 6365, 19863</b> and Ashen Forest room <b>14360</b> (<b style="color:#E0C04A">gold outline</b>; they start where the map has them). The Coral Depths rooms start where TinTin's exits put them, one room apart, from rooms 10 and 572; rooms on another level are offset diagonally. Hide any room you don't want on the map. <b>Select the whole piece</b> grabs every room in the same piece as the rooms you have selected; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms back to their starting spots.</p>
+  <p id="ntrNote" style="margin:4px 0 8px">The rooms you listed as <b>Coral Depths</b> (<b style="color:#E58A6B">coral outline</b>): 47 rooms of the Azure Sea and Coral Depths areas that tie the Ashen Forest and the Southern Mountains together, plus the spacer rooms that join two of them (or one of them to a room on the map). Unlocked: Southern Mountain Range rooms <b>7, 8, 9, 10, 569, 570, 571, 572, 6365, 19863</b> and Ashen Forest room <b>14360</b> (<b style="color:#E0C04A">gold outline</b>; they start where the map has them). The Coral Depths rooms start where TinTin's exits put them, one room apart, from rooms 10 and 572; rooms on another level are offset diagonally. Hide any room you don't want on the map. <b>Select the whole piece</b> grabs every room in the same piece as the rooms you have selected; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms back to their starting spots.</p>
   <p><b>The fixed rooms</b> (small round dots: grey-blue for Darkhaven, violet for the Shadow Grove, green for the Forgotten Woods, olive for the Forest of Tears, blue for the Lake of Tich'Pyga, gold for the Western Trade Route, brown for the Ashen Forest, copper for the Southern Mountain Range and its trade route) are the rooms already on the finished map, exactly where they are. They can't be moved. Hover one to see its name. The faint lines between them are the exits between those rooms. The finished map (land, lake, trails) is faintly behind.</p>
   <p style="color:var(--soft)">North is up. Up and down exits are dashed purple lines.</p>
 
@@ -126,7 +126,7 @@ svg line.cxe{pointer-events:none}
     <select id="names"><option value="zoom" selected>when zoomed in</option><option value="on">always</option><option value="off">never</option></select></div>
   <div class="legend">
     <i style="background:var(--t-Swimming);border:2px solid #E58A6B"></i><span>Coral Depths room (movable)</span>
-    <i style="background:var(--t-Hills);border:2px solid #E0C04A"></i><span>Unlocked map room: 7-10, 572, 6365, 19863 (Southern Mountain Range) or 14360 (Ashen Forest) (movable)</span>
+    <i style="background:var(--t-Hills);border:2px solid #E0C04A"></i><span>Unlocked map room: 7-10, 569-572, 6365, 19863 (Southern Mountain Range) or 14360 (Ashen Forest) (movable)</span>
     <i style="background:var(--t-other);border-radius:50%;width:8px;height:8px;border:1px solid #B3541E"></i><span>Spacer room (invisible in the game, free to move)</span>
     <i style="background:var(--cx-DH);border-radius:50%"></i><span>Fixed room in Darkhaven</span>
     <i style="background:var(--cx-Grove);border-radius:50%"></i><span>Fixed room in the Shadow Grove</span>
@@ -410,7 +410,7 @@ function loadLayout(o,note){
   if(!o||o.format!==FORMAT||!o.ids||!o.xs||!o.ys)throw new Error('That is not a layout from this editor.');
   const list=[];for(let i=0;i<o.ids.length;i++){const id=o.ids[i];if(pos.has(id)&&!byId.get(id).fixed)list.push([id,[o.xs[i],o.ys[i]]])}
   const ch=list.map(([id,p])=>[id,pos.get(id).slice(),p]);applyPositions(list);
-  (o.locked||[]).forEach(id=>{if(pos.has(id)&&true)locked.add(id)});refreshLocks();
+  (o.locked||[]).forEach(id=>{if(pos.has(id)&&!((D.newly||[]).includes(id)&&(o.savedAt||'')<(D.newlyAt||'')))locked.add(id)});refreshLocks();
   if(o.hidden){hidden.clear();o.hidden.forEach(id=>{if(pos.has(id))hidden.add(id)});refreshHidden()}
   commit(ch);afterChange();
   if(note)toast(note)}
