@@ -2,12 +2,12 @@
 # (34-36) and the Southern Mountain Trade Route (9339, 9346). Its exits into the Blood Sea, the Sea of Sorrows and the other areas it leads to are left off.
 #   python3 build_wl_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with wl_editor_template.html beside it)
 # Movable (area 'WL', grp 'wl'): the Wastelands rooms plus the spacer rooms that join two of them or one of them to a fixed room (dead-end spacer stubs
-# and spacer branches that only lead off to the seas left off). They start where TinTin's exits put them, one room apart, from the anchors; a room on
-# another level is offset LV diagonally (up = north-east). Fixed: the rooms on the finished map within NEAR rooms of these starts.
+# and spacer branches that only lead off to the seas left off). Starting spots: editor_spread.spread_clear (TinTin's exits, STEP rooms apart, spread
+# so no rooms overlap, the whole area then moved next to its anchors clear of the map). Fixed: the rooms on the finished map within NEAR rooms of these.
 import sys, os, json, math
 from collections import defaultdict, Counter, deque
 here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here)
-import ashen_forest as AF
+import ashen_forest as AF, editor_spread as ES
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]
 rooms, exits = AF._world(); DV = AF.DV
@@ -17,6 +17,7 @@ AREAS = {'wl': 'Wastelands'}
 GRP = {v: g for g, a in AREAS.items() for v, r in rooms.items() if r['area'] == a}
 ANCHORS = [35, 34, 36, 9339, 9346]
 LV, NEAR = 0.55, 30
+STEP = float(os.environ.get('STEP', 2.0))                    # one exit = STEP map rooms in the starting layout (spread out to read it; editor_spread.py)
 J = lambda f: json.load(open(os.path.join(here, f)))
 cnt0 = Counter(GRP.values()); assert cnt0 == {'wl': 351}, cnt0
 
@@ -89,29 +90,13 @@ def links(v):
         for e in exits.get(u, []):
             if e['to'] == v and e['dir'] in DV and u != v: d = DV[e['dir']]; res.append((u, (-d[0], -d[1], -d[2])))
     return res
-step = lambda p, d: [p[0] + d[0] + LV * d[2], p[1] + d[1] - LV * d[2]]
-start = {}
-for a in ANCHORS:
-    q = deque([a]); P = {a: list(POS[a])}
-    while q:
-        x = q.popleft()
-        for t, d in links(x):
-            if t in S and t not in start: start[t] = step(P[x], d); P[t] = start[t]; q.append(t)
-parked = []
-while S - set(start):                                                                    # (no compass exit: 'enter' only and the like)
-    for v in sorted(S - set(start)):
-        t = next((t for t in sorted(nbs(v)) if t in start or t in POS), None)
-        if t is not None: p = start.get(t) or list(POS[t]); start[v] = [p[0] + 1, p[1] - 1]
-    rest = sorted(S - set(start))
-    if rest and all(next((t for t in nbs(v) if t in start or t in POS), None) is None for v in rest):
-        v = rest[0]; mine = [start[u] for u in start if GRP[u] == GRP[v]]                # a piece with no exit to the rest: parked just east of its area
-        start[v] = [max(p[0] for p in mine) + 2, min(p[1] for p in mine) + 1.5 * len(parked)]; parked.append(v)
+def links2(v):                                                                           # + a link north-east/south-west for 'enter'-only pairs
+    res = links(v); have = {u for u, _ in res}
+    return res + [(u, (1, -1, 0) if v < u else (-1, 1, 0)) for u in sorted(nbs(v)) if u not in have and u != v and (u in S or u in POS)]
+start = ES.spread_clear(S, links2, POS, ANCHORS, step=STEP)
 assert set(start) == S, S - set(start)
-cells = defaultdict(list)
-for v in sorted(start): cells[(round(start[v][0] / 0.3), round(start[v][1] / 0.3))].append(v)
-for vs in cells.values():
-    for k, v in enumerate(vs[1:], 1): start[v][0] += 0.42 * k; start[v][1] += 0.42 * k
-
+lone = sorted(v for v in K if not any(u in S or u in POS for u, _ in links2(v)))                                     # rooms with no exit at all
+close, far, wrong, thru = ES.report(start, POS, links2, step=STEP)
 # ---- fixed rooms: those near the new rooms ----
 pts = [start[v] for v in S]
 CTX = {v: SRC[v] for v, p in POS.items() if min(math.hypot(p[0] - a[0], p[1] - a[1]) for a in pts) <= NEAR}
@@ -164,7 +149,8 @@ json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed'
           open(os.path.join(here, 'wl_editor_edges.json'), 'w'), separators=(',', ':'))
 print('AUDIT', audit)
 print('spacers kept', sorted(keep), '| stubs left off', sorted(stubs))
-print('links to the map', [(a, b) for a, b in lk], '| parked', parked)
+print('links to the map', [(a, b) for a, b in lk], '| no exit at all', lone)
+print('start: rooms closer than 0.8 (not neighbours)', close, '| exits stretched past 2 steps', far, '| exits pointing the wrong way', wrong, '| exit lines through another room', thru)
 for gg in AREAS:
     xs = [start[v][0] for v in S if GRP[v] == gg]; ys = [start[v][1] for v in S if GRP[v] == gg]
     print(gg, 'start box x %.1f..%.1f y %.1f..%.1f' % (min(xs), max(xs), min(ys), max(ys)))
