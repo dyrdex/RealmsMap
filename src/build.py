@@ -134,9 +134,19 @@ _sp=dict(zip(_SML['ids'],zip(_SML['xs'],_SML['ys']))); _ftx=dict(zip(_FTL['ids']
 for _r in _SME['rooms']:                                          # the Sparse Woodlands trail (Forest of Tears rooms) was moved in that editor: the forest is drawn from its new positions
     if _r.get('grp')=='ft' and _r['id'] in _ftx and _r['id'] in _sp: _FTL['xs'][_ftx[_r['id']]],_FTL['ys'][_ftx[_r['id']]]=_sp[_r['id']]
 w,_ft=merge_ft(w,_FTL,_FTE)
+_CDL=_json.load(open(os.path.join(_here,'cd_layout_final.json'))); _CDE=_json.load(open(os.path.join(_here,'cd_editor_edges.json')))   # the Coral Depths layout (Oct 16)
+import cd_merge as _cdm
+_cdp=dict(zip(_CDL['ids'],zip(_CDL['xs'],_CDL['ys'])))
+for _i,_v in enumerate(_SML['ids']):                              # the Southern Mountain Range rooms the owner moved in the Coral Depths editor
+    if _v in _cdm.SM_DRAWN: _SML['xs'][_i],_SML['ys'][_i]=_cdp[_v]
+_cdr={}
 from smr_merge import merge_smr                                    # the Southern Mountain Range, its Trade Route and links to the moved trail (Oct 14)
-w,_sm=merge_smr(w,_SML,_SME)
+w,_sm=merge_smr(w,_SML,_SME,land_edit=_cdm.land_edit(_CDL,_CDE,_SML,_cdr))
 print('Southern Mountain Range merged:',_sm)
+w,_cd=_cdm.merge_cd(w,_CDL,_CDE,_SML)                              # the Coral Depths: its paths, the cliff, the sea, the ground (Oct 16)
+print('Coral Depths merged:',{**_cdr,**_cd})
+_cdm_ids={r['id'] for r in _CDE['rooms'] if r.get('area')=='CD'}   # (only the rooms moved in that editor: they come first for the route tracers)
+_CDLm={k:[v for v,i in zip(_CDL[k],_CDL['ids']) if i in _cdm_ids] if k in ('ids','xs','ys') else _CDL[k] for k in _CDL}
 from smr_markers import add_smr_subareas                          # markers + traced routes for the areas that open off the range and its trade route (Oct 14)
 w,_ssa=add_smr_subareas(w,_SML,_json.load(open(os.path.join(_here,'smr_marker_routes.json'))),extra_layout=_ASHL())
 print('Southern Mountain Range sub-areas:',_ssa)
@@ -151,13 +161,13 @@ _PFL={k:[v for v,i in zip(_PFL[k],_PFL['ids']) if i in _pfm] if k in ('ids','xs'
 w,_pf=merge_pf(w,_PFL,_json.load(open(os.path.join(_here,'pf_editor_edges.json'))))
 print('Pixie Forest:',_pf)
 from route_fix import fix_routes                                 # routes along the trade routes drawn unbroken; the Ofcol Shortcut portal (owner, Oct 13)
-w,_rf=fix_routes(w,[_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL()])
+w,_rf=fix_routes(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL()])
 print('routes traced again:',_rf)
 from route_options import add_route_options                       # places with a default and alternate routes you gave (Oct 15)
-w,_ro=add_route_options(w,[_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML],_data.ROUTE_OPTIONS)
+w,_ro=add_route_options(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML],_data.ROUTE_OPTIONS)
 print('route options:',_ro)
 from extra_places import add_extra_places                       # Suds 'n Stones, V'laresch under Mobs, A'enari (owner, Oct 15)
-w,_ep=add_extra_places(w,[_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML])
+w,_ep=add_extra_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML])
 print('extra places:',_ep)
 from md_merge import merge_md                                     # Miden'nir rooms on the painting, from the owner's save (Oct 15)
 w,_md=merge_md(w,_json.load(open(os.path.join(_here,'md_layout_final.json'))),_json.load(open(os.path.join(_here,'md_editor_edges.json'))))

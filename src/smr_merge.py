@@ -65,7 +65,7 @@ def _paint(img, a, b, win, wpx):
     ImageDraw.Draw(img).line([a, b], fill=255, width=wpx)
 
 
-def merge_smr(w, layout, edges, seed=71):
+def merge_smr(w, layout, edges, seed=71, land_edit=None):
     rng = random.Random(seed); nrng = np.random.default_rng(seed)
     pos = dict(zip(layout['ids'], zip(layout['xs'], layout['ys'])))
     hidden = set(layout.get('hidden', []))
@@ -569,6 +569,7 @@ def merge_smr(w, layout, edges, seed=71):
     added = land_n & ~land0
     lab, n = ndi.label(added)
     report['land_new_sq'] = round(float(added.sum()) / R8 / R8, 1); report['land_new_pieces'] = int(n)
+    if land_edit: land_n = land_edit(land_n, water0, X0, YN)              # (the Coral Depths' land and sea, Oct 16: traced with the rest)
     nland = AA._contours(land_n, X0, YN)
     # (land beyond the traced rows is kept as it was)
     keep = []
