@@ -3,6 +3,7 @@ Abbatoir Asylum|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#2 s;se;#6 e;#3 se;#3
 Abishai's Morgue|#9 w;sw;#4 w;s;sw;#2 w;open s;#2 s;sw;s;window
 Along the Forest Path|#7 w;sw;#2 s
 City of Aurora|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#2 sw;s;#2 sw;s;sw;#5 s;#3 e;#2 s
+Angel's Landing|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#4 e;n;nw;#2 n;sw;e;#2 sw;#2 w;nw;ne;e;sw;#2 nw;#2 u;sw;nw;w;d;sw;#2 w;nw
 Antall, the Lost Harbor|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#2 s;se;#6 e;#3 se;#3 s;sw;#2 s;se
 Ashen Forest|#13 e
 Astral Plane|#8 u;n

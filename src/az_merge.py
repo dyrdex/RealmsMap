@@ -35,7 +35,7 @@ GAP_NOTE = "Part of your directions passes through areas that aren't drawn yet, 
 PORTAL = {4222}
 NORTH_X, NORTH_Y, NORTH_TOP, NORTH_W = (-30.0, 24.0), -185.0, -215.0, 11.0   # the band (NORTH_W rooms wide, off the coast) north of the Plains that joins the two seas
 EAST_X, EAST_Y, EAST_W, EAST_END = (45.0, 80.0), (-50.0, 26.0), 9.0, 18.0   # the band of sea down the Ashen Forest's east coast, fading out by y EAST_END
-ISLAND = (2.0, 1.4)                 # half-widths of the island north of the Village of Edo marker
+ISLAND = None                       # (was (2.0, 1.4): a small island north of the Village of Edo marker; removed on the owner's request, Oct 16: na_merge draws Edo's island)
 LABEL_Y, LABEL_OFF, LABEL_SIZE = -143.0, 2.4, 1.25   # the route's name: beside the stretch 14285 -> 14286 at this y, this far toward the mainland
 
 
@@ -137,7 +137,8 @@ def merge_az(w, layout, edges, np_layout, seed=91):
     iy_, ix_ = np.mgrid[int((ey - 3 - Y0) * R8):int((ey + 3 - Y0) * R8), int((ex - 4 - X0) * R8):int((ex + 4 - X0) * R8)]
     ixx, iyy = (ix_ + .5) / R8 + X0, (iy_ + .5) / R8 + Y0
     wob = 1 + 0.08 * np.sin(2.3 * ixx + 1.1) + 0.07 * np.sin(2.9 * iyy + 0.3)
-    island = np.zeros((H, W), bool); island[iy_, ix_] = ((ixx - ex) / (ISLAND[0] * wob)) ** 2 + ((iyy - ey) / (ISLAND[1] * wob)) ** 2 < 1
+    island = np.zeros((H, W), bool)
+    if ISLAND: island[iy_, ix_] = ((ixx - ex) / (ISLAND[0] * wob)) ** 2 + ((iyy - ey) / (ISLAND[1] * wob)) ** 2 < 1
     old_sh = AA._raster(w['geo'].get('shallows', []), X0, Y0, W, H) & ~newland   # (all of the old shallows' water is sea now too)
     sand_ = AA._raster(w['geo'].get('sand', []), X0, Y0, W, H)         # the beach stays (owner, Oct 12)
     allsea = (sea | baysea | north | east | old_n | old_sh) & ~island & ~sand_
