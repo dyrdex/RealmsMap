@@ -160,8 +160,16 @@ _pfm={r['id'] for r in _json.load(open(os.path.join(_here,'pf_editor_edges.json'
 _PFL={k:[v for v,i in zip(_PFL[k],_PFL['ids']) if i in _pfm] if k in ('ids','xs','ys') else _PFL[k] for k in _PFL}
 w,_pf=merge_pf(w,_PFL,_json.load(open(os.path.join(_here,'pf_editor_edges.json'))))
 print('Pixie Forest:',_pf)
+from na_merge import merge_na, add_na_places                     # Angel's Landing, the Village of Edo, The Grimdog Port Authority, from the owner's save (Oct 16)
+_NAL=_json.load(open(os.path.join(_here,'na_layout_final.json'))); _NAE=_json.load(open(os.path.join(_here,'na_editor_edges.json')))
+w,_na=merge_na(w,_NAL,_NAE)
+print('Angel\'s Landing, Edo, Grimdog:',_na)
+_nam={r['id'] for r in _NAE['rooms'] if r.get('area')=='NA'}        # (only the rooms of that editor, hidden ones included: routes run through them)
+_NALm={k:[v for v,i in zip(_NAL[k],_NAL['ids']) if i in _nam] if k in ('ids','xs','ys') else _NAL[k] for k in _NAL}
+w,_napl=add_na_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_NALm])   # Angel's Landing (owner, Oct 16)
+print('Angel\'s Landing place:',_napl)
 from route_fix import fix_routes                                 # routes along the trade routes drawn unbroken; the Ofcol Shortcut portal (owner, Oct 13)
-w,_rf=fix_routes(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL()])
+w,_rf=fix_routes(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_NALm])
 print('routes traced again:',_rf)
 from route_options import add_route_options                       # places with a default and alternate routes you gave (Oct 15)
 w,_ro=add_route_options(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML],_data.ROUTE_OPTIONS)
@@ -171,6 +179,9 @@ w,_ep=add_extra_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_js
 print('extra places:',_ep)
 w,_cdpl=_cdm.add_cd_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML])   # Coral Depths, Octopus Garden (owner, Oct 16)
 print('Coral Depths places:',_cdpl)
+from na_merge import grimdog_route
+w,_ngr=grimdog_route(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_NALm])   # Grimdog's route on to 21076, through the hidden port rooms (owner, Oct 16)
+print('Grimdog route:',_ngr)
 from md_merge import merge_md                                     # Miden'nir rooms on the painting, from the owner's save (Oct 15)
 w,_md=merge_md(w,_json.load(open(os.path.join(_here,'md_layout_final.json'))),_json.load(open(os.path.join(_here,'md_editor_edges.json'))))
 print('Miden\'nir rooms:',_md)

@@ -3,6 +3,7 @@ Abbatoir Asylum|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#2 s;se;#6 e;#3 se;#3
 Abishai's Morgue|#9 w;sw;#4 w;s;sw;#2 w;open s;#2 s;sw;s;window
 Along the Forest Path|#7 w;sw;#2 s
 City of Aurora|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#2 sw;s;#2 sw;s;sw;#5 s;#3 e;#2 s
+Angel's Landing|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#4 e;n;nw;#2 n;sw;e;#2 sw;#2 w;nw;ne;e;sw;#2 nw;#2 u;sw;nw;w;d;sw;#2 w;nw
 Antall, the Lost Harbor|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#2 s;se;#6 e;#3 se;#3 s;sw;#2 s;se
 Ashen Forest|#13 e
 Astral Plane|#8 u;n
@@ -189,6 +190,7 @@ Blackcoggle Manor|#9 w;nw;#2 w;nw;w;#2 n;#3 nw;w;#2 sw;se
 The Grimdog Port Authority|#9 w;#2 nw;n;w;nw;w;#2 nw;#8 w;nw;#3 w;nw;w;#2 nw;#2 w;#2 sw;w;sw;#4 w;#2 nw;n;nw
 Northern Trade Route|#6 n;nw
 Gnarlwood Forest|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#2 e;n
+Sailing the Seas|#9 w;#2 nw;n;w;nw;w;#2 nw;#8 w;nw;#3 w;nw;w;#2 nw;#2 w;#2 sw;w;sw;#4 w;#2 nw;n;nw;n;#13 w
 '''
 # A second way in that you gave for a place that already had directions
 ALT_DIRECTIONS = '''
