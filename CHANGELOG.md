@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## In progress · The Wastelands
+
+- New layout editor for the Wastelands (`tools/wastelands_editor`, October 16): all 351 rooms (the 13 underwater and 6 tunnel rooms included) with 132 joining spacer rooms; 671 exits between them, 6 to the Southern Mountain Range (34-36) and its Trade Route (9339, 9346). Its 24 exits to the Blood Sea, 3 to the Sea of Sorrows and 30 to other areas are left off. https://claude.ai/artifact/2yna7daYADcMC8Sh9xcsin
+
 ## Version 17 · Angel's Landing and the Village of Edo · October 16, 2026
 
 - New layout editor for three areas (`tools/new_areas_editor`, October 16): Angel's Landing (22 rooms, plus Blood Sea room 16226 shown only with its links ne to 5667 and nw to 21135), the Village of Edo (77 rooms, off 7746) and The Grimdog Port Authority (29 rooms, plus Western Trade Route room 21076, the way in from the road), with 15 joining spacer rooms.
