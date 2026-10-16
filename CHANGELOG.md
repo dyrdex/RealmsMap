@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## In progress
+
+- Coral Depths layout editor (https://claude.ai/artifact/79LKix1gF8uJHU2GhiEY4r): the 47 rooms you listed (32 Azure Sea, 14 Coral Depths, 1 Asgard Nexus: 2522) plus the 10 spacer rooms that join them, all movable; Southern Mountain Range rooms 7, 8, 9, 10, 572 and 6365 unlocked. Nothing on the map changes until your save.
+
 ## Version 15 · Route options, Miden'nir and the Pixie Forest · October 15, 2026
 
 - Route options: a place can now have a default route plus alternate routes, each with your direction word, room count and note. The pop-up shows the default, then "Alternate routes:"; tick one to draw it on the map instead. Routes and counts come only from your list (`ROUTE_OPTIONS` in `src/data.py`).
