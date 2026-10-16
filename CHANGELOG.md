@@ -2,6 +2,11 @@
 
 ## In progress
 
+- Coral Depths: the grey cliff top now starts where the cliff face starts (569), at almost no width, and widens evenly to its full width at 572.
+- New destinations: Coral Depths (marker at room 2528, Heading into the depths, where your directions end) and Octopus Garden (marker at room 12599, Afloat on the Azure Sea; it's down from there).
+- The Beach Shoppe at room 2526: a small weathered wooden seaside inn with a fishing net and crates, and a small 'Beach Shoppe' label just south of it.
+- Room 2528's secret way down: a small round pool on the water route with a dark shaft going down.
+
 - Coral Depths: the path from 572 meets the cliff trail exactly at room 2810 instead of running past it (the trail now runs through 2810; the same for 2808 and 2809).
 
 - Coral Depths, your review (Oct 16): the brown high ground is gone. The top of the cliff is now grey rocky ground with rocks and boulders, about 4 rooms deep behind the cliff edge from 569 to 2817, reaching back over the path from 572 to 2810.
