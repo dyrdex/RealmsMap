@@ -32,6 +32,7 @@ SEA_X, SEA_E, SEA_N, SEA_S = 44.0, 78.0, 12.0, 70.0   # the east coast's sea is 
 TOP_END = 2817                                  # the top of the cliff: from 569 to here (owner, Oct 16)
 TOP_W = 4.0                                     # ... about this deep behind the cliff edge
 TOP_PAST = 1.3                                  # ... and this far past the up/down path 572 - 2810
+INN, SEAHOLE = 2526, 2528                       # the Beach Shoppe (inn graphic) and the secret way down into the sea (owner, Oct 16)
 FACE = 0.8                                      # the cliff's face (dark band) on its south-east side
 PLATEAU = (24.0, 8.0, 67.0, 41.5)               # the high ground NW of the cliff lies in this box (it fills the gap up to the old coast)
 BLACK = {669, 6302, 1495, 6288}                 # 'Black Sand Beach(es)': dark ash-grey sand
@@ -97,6 +98,19 @@ def _side(line, P):
         n = _se_normal(A[i], B[i]); cr = (P[:, 0] - Q[:, 0]) * n[0] + (P[:, 1] - Q[:, 1]) * n[1]
         better = d < best; best[better] = d[better]; sgn[better] = np.sign(cr[better])
     return best, sgn
+
+
+def _along(line, P):
+    """for points P: distance to the polyline, side (as _side) and how far along the line (from its start) the nearest point lies"""
+    L = np.array(line, float); A = L[:-1]; B = L[1:]; D = B - A; L2 = (D ** 2).sum(1); L2[L2 == 0] = 1e-9
+    cum = np.r_[0, np.cumsum(np.sqrt((D ** 2).sum(1)))]
+    best = np.full(len(P), np.inf); sgn = np.zeros(len(P)); s = np.zeros(len(P))
+    for i in range(len(A)):
+        t = np.clip(((P - A[i]) * D[i]).sum(1) / L2[i], 0, 1)
+        Q = A[i] + t[:, None] * D[i]; d = np.hypot(*(P - Q).T)
+        n = _se_normal(A[i], B[i]); cr = (P[:, 0] - Q[:, 0]) * n[0] + (P[:, 1] - Q[:, 1]) * n[1]
+        better = d < best; best[better] = d[better]; sgn[better] = np.sign(cr[better]); s[better] = cum[i] + t[better] * (cum[i + 1] - cum[i])
+    return best, sgn, s, cum
 
 
 def masks(layout, edges, land0, water0, smr_layout=None):
@@ -260,15 +274,17 @@ def merge_cd(w, layout, edges, smr_layout, seed=SEED):
     landm = AA._raster(w['geo']['land'], BOX[0], BOX[1], bw, bh) & ~after
     P = np.c_[X.ravel(), Y.ravel()]
     topl = _drawn([list(pos[v]) for v in CLIFF[:CLIFF.index(TOP_END) + 1]], 10)
-    d2, s2 = _side(topl, P); d2 = d2.reshape(bh, bw); s2 = s2.reshape(bh, bw)
+    d2, s2, al, cum = _along(topl, P); d2 = d2.reshape(bh, bw); s2 = s2.reshape(bh, bw); al = al.reshape(bh, bw)
+    s572 = float(cum[np.argmin([math.dist(q, pos[572]) for q in topl])])           # (from 569 the top starts at nothing and widens evenly to full width at 572)
+    ramp = np.clip(al / s572, 0, 1); ramp[al <= 1e-6] = 0
     ud = next(l for l in udl if {tuple(l[0]), tuple(l[-1])} == {tuple(map(lambda c: round(c, 2), pos[572])), tuple(map(lambda c: round(c, 2), pos[2810]))})
     udd = _drawn(ud, 10); d_ud = cKDTree(_samples([udd], 0.1)).query(P)[0].reshape(bh, bw)
     ring = [list(pos[v]) for v in CLIFF[CLIFF.index(572):CLIFF.index(2810) + 1]] + udd[::-1]
     between = AA._raster([ring], BOX[0], BOX[1], bw, bh)
     wt = ndi.gaussian_filter(rng.normal(size=(bh, bw)), 1.2 * R8); wt = (wt - wt.min()) / (wt.max() - wt.min())
-    top = ((s2 <= 0) & (d2 <= TOP_W * (0.8 + 0.4 * wt))) | between | ((s2 <= 0) & (d_ud <= TOP_PAST * (0.7 + 0.6 * wt)))
+    top = ((s2 <= 0) & (d2 <= TOP_W * (0.8 + 0.4 * wt) * ramp)) | between | ((s2 <= 0) & (d_ud <= TOP_PAST * (0.7 + 0.6 * wt)))
     top = ndi.gaussian_filter(top.astype(float), 0.5 * R8) > 0.5
-    top &= landm & ~face
+    top &= landm & ~face & (al > 1e-6)
     nz = ndi.gaussian_filter(rng.normal(size=(bh, bw)), 0.7 * R8); nz = (nz - nz.min()) / (nz.max() - nz.min())
     w['geo']['clifftop'] = list(w['geo'].get('clifftop') or []) + AA._contours(top, BOX[0], BOX[1], sigma=1.5)
     w['geo']['clifftop2'] = list(w['geo'].get('clifftop2') or []) + AA._contours(top & (nz > 0.6), BOX[0], BOX[1], sigma=1.5, minarea=0.1)
@@ -290,31 +306,54 @@ def merge_cd(w, layout, edges, smr_layout, seed=SEED):
     w['boulders'] = list(w.get('boulders') or []) + [[x, y, round(0.45 + 0.35 * float(_hash(x, y, 8)), 2)] for x, y in rocks]
     rep['cliff_top'] = dict(sq=round(float(top.sum()) / R8 / R8, 1), crags=len(crags), boulders=len(rocks), sprites_replaced=gone)
 
-    # ---- the rest of the new ground north-west of the cliff: the ground of the old land nearest to it (its ground tints and what grows there)
+    # ---- the rest of the new ground north-west of the cliff (owner, Oct 16: one open space where the Ashen Forest, the Southern Mountains and the cliff
+    #      top meet; varied, and blending into its neighbours): the Ashen ground fades out from the north in patches, groves of the Ashen Forest's
+    #      trees thin out southward with clumps scattered further on, meadow and sparse-ground patches, grass, a few hills toward the mountains and the cliff
     land0 = M['land0']
     rest = landm & ~land0 & ~top & ~face & (M['sc'] < 0)
-    d0, (iy, ix) = ndi.distance_transform_edt(~land0, return_indices=True)
-    copied = {}
-    for k in [k for k in w['geo'] if k not in ('land', 'water', 'cliff', 'clifftop', 'clifftop2', 'sand', 'shallows', 'barren', 'barren2')]:   # (no brown: owner, Oct 16)
-        polys = [p for p in (w['geo'].get(k) or []) if any(BOX[0] <= q[0] < BOX[2] and BOX[1] <= q[1] < BOX[3] for q in p)]
-        if not polys: continue
-        r_ = AA._raster(polys, BOX[0], BOX[1], bw, bh)
-        m_ = rest & r_[iy, ix]
-        if m_.sum() > 8:
-            w['geo'][k] = list(w['geo'][k]) + AA._contours(m_, BOX[0], BOX[1], sigma=1.5, minarea=0.2); copied[k] = round(float(m_.sum()) / R8 / R8, 1)
-    SPACE = {'trees': 0.95, 'tufts': 0.9, 'hills': 1.7, 'peaks': 2.0, 'brush': 1.0, 'wheattufts': 0.9, 'crags': 2.3, 'boulders': 1.2}
-    old = [(k, q) for k in SPACE for q in (w.get(k) or []) if inmask(land0, q) and not inmask(top, q)]
-    otree = cKDTree(np.array([q[:2] for _, q in old]))
-    cand = place(rest & (d_path > 0.6), 0.9, 47)
+    near = lambda m: ndi.distance_transform_edt(~m) / R8
+    def field(sigma, salt):
+        f_ = ndi.gaussian_filter(np.random.default_rng(seed + salt).normal(size=(bh, bw)), sigma * R8); return (f_ - f_.min()) / (f_.max() - f_.min())
+    ashr = AA._raster([p for p in (w['geo'].get('ash') or []) if any(BOX[0] <= q[0] < BOX[2] and BOX[1] <= q[1] < BOX[3] for q in p)], BOX[0], BOX[1], bw, bh)
+    dA = near(land0 & ashr & (Y < 22))                                            # from the Ashen Forest's ground
+    dW = near(land0 & (X < 36) & (Y > 14) & ~ashr)                                # from the Southern Mountains' side
+    dT = near(top)
+    n1, n2, n3, n4, n5 = field(1.6, 1), field(2.2, 2), field(1.3, 3), field(1.8, 4), field(1.1, 5)
+    tints = {'ash': rest & (0.75 * n1 + np.exp(-dA / 6.0) > 1.0),
+             'meadow1': rest & (n2 > 0.6) & (dA > 3), 'meadow2': rest & (n3 > 0.66) & (dA > 2), 'sparse': rest & (n4 > 0.64)}
+    for k, m_ in tints.items():
+        m_ = ndi.gaussian_filter(m_.astype(float), 0.4 * R8) > 0.5
+        w['geo'][k] = list(w['geo'].get(k) or []) + AA._contours(m_, BOX[0], BOX[1], sigma=1.5, minarea=0.3); tints[k] = round(float(m_.sum()) / R8 / R8, 1)
+    SPACE = {'trees': 0.95, 'hills': 1.7, 'tufts': 1.0}
+    cand = place(rest & (d_path > 0.6), 0.8, 47)
     made = defaultdict(list); grid = defaultdict(list)
+    at_ = lambda m, x, y: float(m[int((y - BOX[1]) * R8), int((x - BOX[0]) * R8)])
     for x, y in cand:
-        dd, j = otree.query([x, y]); k, q = old[j]
-        if dd > d0[int((y - BOX[1]) * R8), int((x - BOX[0]) * R8)] / R8 + 1.2: continue        # (the old ground nearest it is bare there)
+        pa = math.exp(-at_(dA, x, y) / 6.0); gr = max(0.0, (at_(n5, x, y) - 0.55) / 0.45)
+        p_tree = min(0.9, 0.85 * pa + 0.8 * gr)
+        p_hill = 0.25 * math.exp(-at_(dW, x, y) / 8.0) + 0.15 * math.exp(-at_(dT, x, y) / 3.0)
+        u = float(_hash(x, y, 51))
+        k = 'trees' if u < p_tree else 'hills' if u < p_tree + p_hill else 'tufts' if u < p_tree + p_hill + 0.3 else None
+        if not k: continue
         sp = SPACE[k]; gk = (k, int(x // sp), int(y // sp))
         if any(math.dist(p_, (x, y)) < sp for dx in (-1, 0, 1) for dy in (-1, 0, 1) for p_ in grid[(k, gk[1] + dx, gk[2] + dy)]): continue
-        grid[gk].append((x, y)); made[k].append([x, y] + list(q[2:]))
+        grid[gk].append((x, y)); h2, h3 = float(_hash(x, y, 52)), float(_hash(x, y, 53))
+        if k == 'trees': made[k].append([x, y, round(0.85 + 0.3 * h2, 2), 'w' if h3 < 0.4 else 'd', int(float(_hash(x, y, 54)) * 3)])
+        elif k == 'hills': made[k].append([x, y, round(0.85 + 0.3 * h2, 2), 'h', int(h3 * 3)])
+        else: made[k].append([x, y, round(0.8 + 0.3 * h2, 2), 'g', int(h3 * 3)])
     for k, L in made.items(): w[k] = list(w.get(k) or []) + L
-    rep['ground_nw'] = dict(sq=round(float(rest.sum()) / R8 / R8, 1), tints=copied, sprites={k: len(L) for k, L in made.items()})
+    rep['ground_nw'] = dict(sq=round(float(rest.sum()) / R8 / R8, 1), tints=tints, sprites={k: len(L) for k, L in made.items()})
+
+    # ---- the Beach Shoppe (owner, Oct 16): a small, weathered wooden seaside inn at room 2526 (nets, crates), its small label just south;
+    #      room 2528's secret way down into the sea: a small round pool with a shaft going down under the surface
+    ix_, iy_ = pos[INN]
+    w['gfx'] = list(w['gfx']) + [{'k': 'seainn', 'at': 'xy', 'x': round(ix_, 2), 'y': round(iy_ - 0.35, 2), 'w': 2.0, 'h': 1.7},
+                                 {'k': 'text', 'at': 'xy', 'x': round(ix_, 2), 'y': round(iy_ + 1.05, 2), 'text': 'Beach Shoppe'}]
+    hx_, hy_ = pos[SEAHOLE]
+    w['gfx'] = list(w['gfx']) + [{'k': 'seahole', 'at': 'xy', 'x': round(hx_, 2), 'y': round(hy_, 2), 'w': 1.1, 'h': 1.1}]
+    for k_ in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags'):         # nothing grows under the inn
+        if k_ in w: w[k_] = [t for t in w[k_] if not (abs(t[0] - ix_) < 1.3 and abs(t[1] - iy_ + 0.35) < 1.1)]
+    rep['gfx'] = dict(inn=[round(ix_, 2), round(iy_ - 0.35, 2)], sea_hole=[round(hx_, 2), round(hy_, 2)])
 
     # ---- the low ground: beaches (black sand: ash grey; the others: sand), the Coral Depths' forest (trees)
     P = np.c_[X.ravel(), Y.ravel()]
@@ -340,4 +379,27 @@ def merge_cd(w, layout, edges, smr_layout, seed=SEED):
                               swimming_rooms_on_land=sorted(v for v in wet if not in_sea(v)))
     xs_ = [q[0] for k in ('land', 'water') for p in w['geo'][k] for q in p]; ys_ = [q[1] for k in ('land', 'water') for p in w['geo'][k] for q in p]
     w['bounds'] = [min(w['bounds'][0], int(min(xs_)) - 2), w['bounds'][1], max(w['bounds'][2], int(max(xs_)) + 2), max(w['bounds'][3], int(max(ys_)) + 2)]
+    return w, rep
+
+
+def add_cd_places(w, layouts):
+    """the Coral Depths' sub-area destinations (owner, Oct 16), traced from the owner's directions in data.py: Coral Depths (its directions end at 2528,
+    'Heading into the depths', where the way down is) and Octopus Garden (down from 12599: the marker is there, where the route leaves the map)"""
+    import data as DT
+    from route_fix import make_tracer
+    from extra_places import segments
+    rooms, walk, at = make_tracer(w, layouts)
+    lines = (DT.AREAS + '\n' + DT.MORE_DIRECTIONS).split('\n')
+    rep = {}
+    for name in ('Coral Depths', 'Octopus Garden'):
+        assert not any(p['name'] == name for p in w['places']), name
+        route = next(l.split('|', 1)[1].strip().rstrip(';') for l in lines if l.startswith(name + '|'))
+        t = walk(route)
+        last = max(i for i, v in enumerate(t) if at(v))
+        upto = t[:last + 1]; segs = segments([at(v) for v in upto])
+        d = 'here' if last == len(t) - 1 else route.split(';')[-1]
+        w['places'].append(dict(name=name, route=route, room=rooms[upto[-1]]['name'], dir=d, path=[q for s in segs for q in s], segs=segs,
+                                group='af', where='in the Coral Depths' if name == 'Coral Depths' else 'off the Coral Depths',
+                                note=None if len(segs) == 1 else "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."))
+        rep[name] = dict(end_room=upto[-1], dir=d, pieces=len(segs), marker=segs[-1][-1])
     return w, rep

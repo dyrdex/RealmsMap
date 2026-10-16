@@ -14,7 +14,7 @@ OWNER_PATHS = [                                   # paths the owner describes in
 ]
 FILL_HOLES = [(12.3, 8.8, 17.8, 18.0)]            # a gap in the land (no ground, no coast) under the 3422-to-Moria path (owner, Oct 15): its land polygon (a hole) is removed so the ground fills in
 OWNER_TAGS = [[7.94, 43.55, 'Elemental Canyon', 0.5]]       # a plain text label on the map (not a marker), just north of room 172 (owner, Oct 15)
-DROP_PLACES = {'Southern Mountain Range'}        # the marker, its text and its sidebar entry (owner, Oct 14: "Southern Mountain Rage" is the owner's typo)
+DROP_PLACES = {'Southern Mountain Range', 'The Ashen Forest'}   # (The Ashen Forest: owner, Oct 16)        # the marker, its text and its sidebar entry (owner, Oct 14: "Southern Mountain Rage" is the owner's typo)
 
 
 SLIDE_NORTH = -0.4                                # ... and 0.4 north, so the lowest cabin clears the 'Intrigues of the Miden'nir' label
