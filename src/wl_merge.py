@@ -604,5 +604,9 @@ def add_wl_places(w, layouts):
         if q: g.append({'k': 'stonecity', 'at': 'xy', 'x': round(q[0], 2), 'y': round(q[1] + 0.55 + 2.15 / 2, 2), 'w': 2.6, 'h': 2.15})
     q = pin('Shattered Temple of Naetrelle')                                         # the shattered temple north of its marker (owner, Oct 17)
     if q: g.append({'k': 'shatteredtemple', 'at': 'xy', 'x': round(q[0], 2), 'y': round(q[1] - 0.55 - 1.6 / 2, 2), 'w': 2.4, 'h': 1.6})
+    th = next((x for x in g if x['k'] == 'stonecity' and abs(x['x'] - (pin('Thalos') or (1e9,))[0]) < 0.01), None)
+    inn = next((x for x in w['gfx'] if x.get('k') == 'saloon'), None)
+    if th and inn:                                                                   # the inn centred between the Thalos city's east edge and the street east of it (8750-8752, x 28.5) (owner, Oct 17)
+        inn['x'] = round(((th['x'] + th['w'] / 2) + (28.5 - 0.3)) / 2, 2); rep['inn_x'] = inn['x']
     w['gfx'] = list(w['gfx']) + g; rep['gfx'] = g
     return w, rep
