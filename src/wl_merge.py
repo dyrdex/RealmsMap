@@ -30,8 +30,10 @@ UN = list(range(9327, 9347))                    # the Southern Mountain Trade Ro
 FOOT = {664, 665} | set(range(8548, 8564))      # the foothill rooms drawn as part of the range's clearing (owner, Oct 17)
 FOOT_JOIN = (34, 35)                            # ... the range rooms whose clearing they continue
 NO_LINK = {frozenset((8557, 8645)), frozenset((8722, 8889))} | {frozenset((a, b)) for a in (8731, 8732, 8733, 8723) for b in (8731, 8732, 8733, 8723) if a < b}             # not drawn (owner, Oct 17)
-EXTRA_HIDDEN = {7854: (9.0, 90.5)}               # Gateway to Aurora, one north of 7853: on the map for routes, hidden (owner, Oct 17)
+EXTRA_HIDDEN = {7854: (9.0, 92.5)}               # Gateway to Aurora, one south of 7853 (its south exit): on the map for routes, hidden (owner, Oct 17)
 PASS = [36, 663, 7840, 7841, 7842, 7843, 7844, 7845, 7846]   # the pass from range room 36 down to 7846: a wide path that looks like the clearings (owner, Oct 17)
+VOLCANO = (14965, 14966, 14967)                 # one volcano graphic over these three rooms (owner, Oct 17)
+VOLC_TOP = (-10.0, 102.42)                       # the Volcanic Plains clearing north of 8684-8687's line: only the strip down 8615-8616-8617 and 8616-8684 (owner, Oct 17)
 TOWN = {8726, 18259} | set(range(8743, 8770))   # Camden
 SEA_AREAS = ('The Blood Sea', 'Sea of Sorrows')
 LAND_R, SEA_R, TERR_R = 4.2, 8.0, 3.2
@@ -257,6 +259,11 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     saltm = ndi.distance_transform_edt(~saltm) / R8 <= 0.15 + 0.5 * _wb                # (wavy edges: owner, Oct 17)
     volcm = ndi.binary_fill_holes(ndi.binary_closing(volcm, structure=disk(2 * R8))) & ~ndi.binary_dilation(saltm, iterations=2) & (X >= SWX)   # (one piece)
     _sp = [pos[v] for v in SPIRE if shown(v)]
+    _ne = np.array(pos[8684]) - np.array(pos[8616]); _ne = _ne / np.hypot(*_ne); _pp = np.array([_ne[1], -_ne[0]]) * PAD   # (the diagonal 8616-8684, PAD to its north-east)
+    _a = np.array(pos[8616]) + _pp; _b = np.array(pos[8684]) + _pp
+    _side = (X - _a[0]) * (_b[1] - _a[1]) - (Y - _a[1]) * (_b[0] - _a[0])           # (< 0: south-west of the diagonal)
+    _keep = (Y >= VOLC_TOP[1]) | (X <= pos[8616][0] + PAD) | ((_side <= 0) & (Y >= pos[8616][1] - PAD))
+    volcm &= _keep
     if _sp: volcm &= cKDTree(_samples([_sp], 0.1)).query(np.c_[X.ravel(), Y.ravel()])[0].reshape(bh, bw) > 0.9   # (a hole for 8705, 8706: owner, Oct 17)
     _im = Image.new('L', (bw, bh), 0); ImageDraw.Draw(_im).rectangle([px((16.5 - SQ / 2, 110.5 - SQ / 2)), px((19 + SQ / 2, 116 + SQ / 2))], fill=255)   # (16.5,110.5 - 19,116 all clearing: owner, Oct 17)
     stepm = roompatch(STEPPE) | np.array(_im, bool); stepm = ndi.binary_fill_holes(ndi.binary_closing(stepm, structure=disk(R8)))
@@ -335,7 +342,7 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     for v in [v for v in GD if not GD[v]]: del GD[v]
 
     # ---------------------------------------------------------------- lines: trails, the wide road, links
-    blocked = patchm | townm | saltm | volcm
+    blocked = patchm | townm | ndi.binary_dilation(saltm, iterations=int(0.35 * R8)) | volcm   # (the salt as drawn reaches a little past its mask)
     def trails(G):
         Tg = defaultdict(set)
         for a in G:
@@ -361,7 +368,9 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     stream = _chains(GS_, pos, set(), 0.8) if GS_ else []
     road_ext = []; pads = []
     smr_road = [_drawn(l) for l in (w.get('smrroad') or [])]
+    _pe = {frozenset(e) for e in zip(PASS[:-1], PASS[1:])}
     for a, b in links:
+        if frozenset((a, b)) in _pe: continue                                       # (inside the pass's wide path)
         o, f = (a, b) if a in WL else (b, a)
         q = pos[f]
         if f in UN and smr_road:                                                    # (a link to the trade route ends on its drawn road, with an off-ramp)
@@ -474,7 +483,10 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     rep['tints_sq'] = tints
 
     # ---------------------------------------------------------------- sprites (clear of paths, clearings, the town, the sea)
-    onway = (d_path <= 0.55) | patchm | townm | sea | saltm | volcm                                 # (the range's sprites, placed before these paths existed, give way to them)
+    _vr = [pos[v] for v in VOLCANO if v in pos]
+    VB = (min(p[0] for p in _vr) - 1.0, min(p[1] for p in _vr) - 0.9, max(p[0] for p in _vr) + 1.0, max(p[1] for p in _vr) + 0.6) if _vr else None
+    volm = ((X >= VB[0]) & (X <= VB[2]) & (Y >= VB[1]) & (Y <= VB[3])) if VB else np.zeros((bh, bw), bool)
+    onway = volm | (d_path <= 0.55) | patchm | townm | sea | saltm | volcm                                 # (the range's sprites, placed before these paths existed, give way to them)
     def off(q):
         c, r = int((q[0] - box[0]) * R8), int((q[1] - box[1]) * R8)
         return 0 <= r < bh and 0 <= c < bw and bool(onway[r, c])
@@ -485,7 +497,7 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     rep['old_sprites_cleared'] = cl
     old = [q[:2] for k in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples') for q in (w.get(k) or [])
            if box[0] <= q[0] <= box[2] and box[1] <= q[1] <= box[3]]
-    free = land_wl & (d_path > 0.6) & ~townm & ~patchm & ~saltm & ~volcm & own
+    free = land_wl & ~volm & (d_path > 0.6) & ~townm & ~patchm & ~saltm & ~volcm & own
     spr = {}
     hillz = free & zone('hills') & ~swm & (d_path > 1.0)                                  # (the bigger sprites first, then the grass between them)
     hills = _place(hillz, X, Y, 1.8, 87, old)
@@ -501,11 +513,9 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     w['brush'] = sorted(list(w.get('brush') or []) + [[x, y, round(0.7 + 0.3 * float(_hash(x, y, 85)), 2), int(float(_hash(x, y, 86)) * 2)] for x, y in brush], key=lambda b: b[1])
     tufts = _place(free & fieldz & (nz > 0.25), X, Y, 1.0, 81, old + hills + crags + rocks + brush)
     w['wheattufts'] = sorted(list(w.get('wheattufts') or []) + [[x, y, round(0.75 + 0.3 * float(_hash(x, y, 82)), 2), int(float(_hash(x, y, 83)) * 2)] for x, y in tufts], key=lambda b: b[1])
-    vr = [v for v in WL if shown(v) and sec[v] == 'volcano']                         # the volcano: a peak over its top rooms
-    if vr:
-        cx = sum(pos[v][0] for v in vr) / len(vr); cy = sum(pos[v][1] for v in vr) / len(vr)
-        w['peaks'] = list(w['peaks']) + [[round(cx, 2), round(cy - 0.6, 2), 1.6, 'm', 2]]
-        spr['volcano_peak'] = [round(cx, 2), round(cy - 0.6, 2)]
+    if VB:                                                                           # the volcano graphic over its three rooms (owner, Oct 17)
+        g = {'k': 'volcano', 'at': 'xy', 'x': round((VB[0] + VB[2]) / 2, 2), 'y': round((VB[1] + VB[3]) / 2, 2), 'w': round(VB[2] - VB[0], 2), 'h': round(VB[3] - VB[1], 2)}
+        w['gfx'] = list(w['gfx']) + [g]; spr['volcano'] = g
     spr.update(wheattufts=len(tufts), brush=len(brush), hills=len(hills), crags=len(crags), boulders=len(rocks), dune_ripples=len(rip))
     rep['sprites'] = spr
 
