@@ -51,7 +51,7 @@ def _setup(layout, edges):
     rooms, _ = AF._world()
     pos = dict(zip(layout['ids'], zip(layout['xs'], layout['ys'])))
     info = {r['id']: r for r in edges['rooms']}
-    hidden = set(layout.get('hidden', []))
+    hidden = set(layout.get('hidden', [])) | {8700}                                 # (8700 hidden too: owner, Oct 17)
     WL = {v for v, r in info.items() if r.get('area') == 'WL' and r.get('grp') == 'wl' and v in pos}
     shown = lambda v: v in pos and v not in hidden
     void = lambda v: bool(info.get(v, {}).get('void'))
@@ -59,7 +59,7 @@ def _setup(layout, edges):
     sec = {v: section(rooms[v]['name'], terr(v)) for v in WL}
     for v in WL:                                                                     # (a spacer takes its neighbours' section below)
         if void(v): sec[v] = None
-    UW = {v for v in WL if terr(v) == 'Underwater'}
+    UW = {v for v in WL if terr(v) == 'Underwater' or re.search(r'Wasted Shores of Ahtborne|Beaches of Sorrow', rooms[v]['name'])}   # the coast path: land, a dashed blue line (owner, Oct 17)
     return rooms, pos, info, hidden, WL, shown, void, terr, sec, UW
 
 
@@ -77,7 +77,9 @@ def _graphs(layout, edges):
                 if s: sec[v] = max(sorted(set(s)), key=s.count)
     for v in WL:
         if sec.get(v) is None: sec[v] = 'field'
-    road = {v for v in WL if sec[v] == 'road'}
+    for v in WL:                                                                     # (a spacer between coast rooms is coast)
+        if void(v) and nb[v] and all(u in UW for u in nb[v] if u in WL and not void(u)) and any(u in UW for u in nb[v]): UW.add(v)
+    road = {v for v in WL if sec[v] == 'road'} - {8754}                             # (8754: no stub of wide road there: owner, Oct 17)
     under = {v for v in WL if sec[v] == 'under' or terr(v) == 'Underground'}
     return rooms, pos, info, hidden, WL, shown, void, terr, sec, UW, E, road, under
 
@@ -85,23 +87,17 @@ def _graphs(layout, edges):
 def wl_land(layout, edges, store, seed=SEED):
     """land_edit for smr_merge: the Wastelands' land added to the grid, the sea kept out of it (and remembered in store for merge_wl)"""
     rooms, pos, info, hidden, WL, shown, void, terr, sec, UW, E, road, under = _graphs(layout, edges)
-    dry = [v for v in WL if shown(v) and v not in UW]
-    land_lines = []; sea_pts = [pos[v] for v in UW if v in pos]
-    for a, b, k in E:
-        if k == 'ud': continue
-        wa, wb = a in UW, b in UW
-        if not wa and not wb: land_lines.append([pos[a], pos[b]])
-        elif wa != wb:
-            m = ((pos[a][0] + pos[b][0]) / 2, (pos[a][1] + pos[b][1]) / 2); d_ = b if wa else a
-            land_lines.append([m, pos[d_]])
+    dry = [v for v in WL if shown(v)]                                                # (the coast path is land too: owner, Oct 17)
+    land_lines = [[pos[a], pos[b]] for a, b, k in E if k != 'ud']; sea_pts = []
     for v in WL:                                                                     # the exits into the seas (not drawn): the sea lies that way
         if not shown(v): continue
         for e in AF._world()[1].get(v, []):
             t = e['to']
             if t in rooms and (rooms[t]['area'] in SEA_AREAS or (void(t) and t not in pos)) and e['dir'] in AF.DV:
                 d = AF.DV[e['dir']]
-                if d[2] or not (rooms[t]['area'] in SEA_AREAS or any(rooms.get(e2['to'], {}).get('area') in SEA_AREAS for e2 in AF._world()[1].get(t, []))): continue
-                sea_pts.append((pos[v][0] + 2.2 * d[0], pos[v][1] + 2.2 * d[1]))
+                if d[2] or d[1] <= 0 or not (rooms[t]['area'] in SEA_AREAS or any(rooms.get(e2['to'], {}).get('area') in SEA_AREAS for e2 in AF._world()[1].get(t, []))): continue
+                sea_pts.append((pos[v][0] + 1.0 * d[0], pos[v][1] + 1.8))                # (the sea starts just south of the coast path)
+    sea_pts += [(pos[v][0], pos[v][1] + 1.8) for v in UW if shown(v)]                # (the sea just south of the whole coast path: owner, Oct 17)
     xs = [pos[v][0] for v in dry] + [p[0] for p in sea_pts]; ys = [pos[v][1] for v in dry] + [p[1] for p in sea_pts]
     box = (math.floor(min(xs)) - 14, math.floor(min(ys)) - 10, math.ceil(max(xs)) + 14, math.ceil(max(ys)) + 14)
     bw, bh = int((box[2] - box[0]) * R8), int((box[3] - box[1]) * R8)
@@ -168,7 +164,7 @@ def merge_wl(w, layout, edges, store, seed=SEED):
         if a in FOOT and b in FOOT: continue                                         # (inside the foothill clearing)
         if {a, b} & FOOT and {a, b} & set(FOOT_JOIN): continue                       # (34/35 - 664/665: the clearing joins them)
         if a in UW or b in UW:
-            if k != 'ud' or (a in UW) == (b in UW): sdash.append((a, b))
+            sdash.append((a, b))                                                     # (up/down exits included: owner, Oct 17)
             continue
         if a in under or b in under: dash.append((a, b)); continue
         if not (a in WL and b in WL): links.append((a, b)); continue                 # to the range / the trade route
@@ -239,7 +235,8 @@ def merge_wl(w, layout, edges, store, seed=SEED):
         for a, b, k in E:
             if a in S_ and b in S_ and k != 'ud': dr.line([px(pos[a]), px(pos[b])], fill=255, width=s_)
         return ndi.gaussian_filter(ndi.binary_fill_holes(np.array(im, bool)).astype(float), 0.3 * R8) > 0.5
-    STEPPE = withsp({v for v in WL if shown(v) and (nm(v) == 'Arid Steppes' or sec[v] == 'road')})   # all the Arid Steppes one clearing, the Ancient Road drawn over it (owner, Oct 17)
+    WCAM = {v for v in WL if shown(v) and 14 <= pos[v][0] <= 25 and 107 <= pos[v][1] <= 114.5}   # (west of Camden, north of the shore path: owner, Oct 17)
+    STEPPE = withsp({v for v in WL if shown(v) and (nm(v) == 'Arid Steppes' or sec[v] == 'road')} | WCAM)   # all the Arid Steppes one clearing, the Ancient Road drawn over it (owner, Oct 17)
     SALTR = withsp({v for v in WL if shown(v) and sec[v] == 'salt'})                 # the Salt Flats: a salt field on exactly its rooms (owner, Oct 17)
     SW = {v for v in WL if shown(v) and not void(v) and pos[v][0] <= 1 and pos[v][1] >= 96 and sec[v] not in ('road', 'salt') and nm(v) != 'Arid Steppes'}
     SPIRE = {8705, 8706}                                                             # a path on top of the south-west clearing (owner, Oct 17)
@@ -247,7 +244,11 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     salt_cells = [c for c in cells if c & (SALTR | VOLC)]
     dirt_cells = [c for c in cells if c not in salt_cells]
     saltm = roompatch(SALTR); volcm = roompatch(VOLC)
+    _rg = np.random.default_rng(seed + 7); _wb = ndi.gaussian_filter(_rg.normal(size=(bh, bw)), 0.7 * R8); _wb = (_wb - _wb.min()) / (_wb.max() - _wb.min())
+    saltm = ndi.distance_transform_edt(~saltm) / R8 <= 0.15 + 0.5 * _wb                # (wavy edges: owner, Oct 17)
     volcm = ndi.binary_fill_holes(ndi.binary_closing(volcm, structure=disk(2 * R8))) & ~ndi.binary_dilation(saltm, iterations=2)   # (one piece)
+    _sp = [pos[v] for v in SPIRE if shown(v)]
+    if _sp: volcm &= cKDTree(_samples([_sp], 0.1)).query(np.c_[X.ravel(), Y.ravel()])[0].reshape(bh, bw) > 0.9   # (a hole for 8705, 8706: owner, Oct 17)
     stepm = roompatch(STEPPE); stepm = ndi.binary_fill_holes(ndi.binary_closing(stepm, structure=disk(R8)))
     clear = (cellmask(dirt_cells) | stepm) & ~volcm & ~saltm
     lab, n = ndi.label(clear); keep = np.zeros_like(clear)
@@ -271,11 +272,9 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     footc = [c for c in cells if c <= FOOT]
     footm |= cellmask(footc) if footc else False
     footm = ndi.gaussian_filter(ndi.binary_dilation(footm, iterations=2).astype(float), 0.45 * R8) > 0.5
-    old = [p for p in (w.get('smrpatch') or []) if (AA._raster([p], box[0], box[1], bw, bh) & ndi.binary_dilation(footm, iterations=3)).any()]
-    allm = clear | footm
-    if old:
-        allm |= AA._raster(old, box[0], box[1], bw, bh)
-        w['smrpatch'] = [p for p in w['smrpatch'] if p not in old]
+    old = [p for p in (w.get('smrpatch') or []) if any(box[0] <= q[0] < box[2] and box[1] <= q[1] < box[3] for q in p)]
+    oldm = AA._raster(old, box[0], box[1], bw, bh) if old else np.zeros((bh, bw), bool)
+    allm = (clear | footm) & ~oldm                                                   # (the range's own clearings are left exactly as they are; ours only meet them)
     patches = AA._contours(allm, box[0], box[1], sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
     w['smrpatch'] = list(w.get('smrpatch') or []) + patches
     w['wlash'] = AA._contours(volcm & ~sea, box[0], box[1], sigma=1.0, tol=0.35, minarea=0.5)
@@ -405,7 +404,10 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     S = np.array([sec[v] for v in rs])[idx].reshape(bh, bw); dist = dist.reshape(bh, bw)
     inSW = np.array([v in SW for v in rs])[idx].reshape(bh, bw)
     on = land_wl & (dist <= TERR_R) & ~sand
-    own = land_wl & (dist <= LAND_R + 3)                                            # (the Wastelands' own ground: not the range's)
+    fx = [pos[v] for v, r in info.items() if r.get('fixed') and v in pos]
+    d_fix = cKDTree(np.array(fx)).query(P)[0].reshape(bh, bw) if fx else np.full((bh, bw), np.inf)
+    own = land_wl & (dist <= LAND_R + 3) & (dist < d_fix)                         # (the Wastelands' own ground: nearer its rooms than the range's: owner, Oct 17)
+    on &= own
     rng = np.random.default_rng(seed + 3)
     nz = ndi.gaussian_filter(rng.normal(size=(bh, bw)), 1.4 * R8); nz = (nz - nz.min()) / (nz.max() - nz.min())
     sm = lambda m, s=0.6: ndi.gaussian_filter(m.astype(float), s * R8) > 0.5
@@ -418,6 +420,9 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     tints['wheat2'] = _put(w, 'wheat2', blob(fieldz & (nz > 0.6)), box, sigma=2.5, minarea=1.5)
     tints['wheat3'] = _put(w, 'wheat3', blob(fieldz & (nz < 0.35)), box, sigma=2.5, minarea=1.5)
     tints['salt'] = _put(w, 'salt', saltm & land_wl, box, sigma=1.0)
+    gr = _place(saltm & land_wl, X, Y, 0.28, 99)                                    # (a granular crust: owner, Oct 17)
+    w['wlgrain'] = [[x, y, round(0.035 + 0.04 * float(_hash(x, y, 98)), 3), int(float(_hash(x, y, 97)) * 2)] for x, y in gr]
+    rep['salt_grains'] = len(gr)
     volc = swm
     tints['ash'] = _put(w, 'ash', swm, box, sigma=2.0)
     des = zone('desert') & ~swm

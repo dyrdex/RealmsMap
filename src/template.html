@@ -171,6 +171,7 @@ WILD+=`<path d="${blobs(GEO.dread||[])}" fill="var(--dread)" fill-rule="evenodd"
 WILD+=`<path d="${blobs(GEO.barren||[])}" fill="var(--barren)" fill-rule="evenodd" opacity=".8"/><path d="${blobs(GEO.barren2||[])}" fill="var(--barren2)" fill-rule="evenodd" opacity=".55"/>`;
 WILD+=`<path d="${blobs(GEO.wheat||[])}" fill="var(--wheat)" fill-rule="evenodd" opacity=".85"/><path d="${blobs(GEO.wheat2||[])}" fill="var(--wheat2)" fill-rule="evenodd" opacity=".5"/><path d="${blobs(GEO.wheat3||[])}" fill="var(--wheat3)" fill-rule="evenodd" opacity=".55"/><path d="${blobs(GEO.thicket||[])}" fill="var(--thicket)" fill-rule="evenodd" opacity=".85"/><path d="${blobs(GEO.crags||[])}" fill="var(--crag)" fill-rule="evenodd" opacity=".88"/><path d="${blobs(GEO.dunes||[])}" fill="var(--dune)" fill-rule="evenodd" opacity=".8"/>`;
 WILD+=`<path d="${blobs(GEO.salt||[])}" fill="var(--salt)" fill-rule="evenodd" opacity=".55"/>`;   /* the Salt Flats, Wastelands (Oct 17): a pale salt crust */
+WILD+=`<g>`+(WD.wlgrain||[]).map(r=>`<circle cx="${r[0]}" cy="${r[1]}" r="${r[2]}" fill="${r[3]?'var(--salt2)':'#5F5C52'}" opacity=".55"/>`).join('')+`</g>`;   /* its grains */
 WILD+=(WD.ripples||[]).map(r=>`<use href="#dn${r[3]}" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
 WILD+=(WD.crags||[]).map(r=>`<use href="#cg${r[3]}" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
 WILD+=(WD.wheattufts||[]).map(r=>`<use href="#wt${r[3]?2:''}" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
