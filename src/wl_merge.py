@@ -219,7 +219,19 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     nbs = defaultdict(set)
     for a, b, k in E:
         if k != 'ud': nbs[a].add(b); nbs[b].add(a)
-    withsp = lambda core: core | {v for v in WL if void(v) and shown(v) and sum(1 for u in nbs[v] if u in core) >= 2}
+    def withsp(core):                                                                # spacers are what the rooms they join are (owner, Oct 17): a run of spacers whose real ends are all in core
+        out = set(core); seen = set()
+        for s in [v for v in WL if void(v) and shown(v)]:
+            if s in seen: continue
+            comp = {s}; st = [s]
+            while st:
+                x = st.pop()
+                for u in nbs[x]:
+                    if u not in comp and void(u) and shown(u): comp.add(u); st.append(u)
+            seen |= comp
+            ends = {u for x in comp for u in nbs[x] if not void(u)}
+            if ends and ends <= core: out |= comp
+        return out
     def roompatch(S_):                                                               # (owner, Oct 17: exactly the rooms and the exits between them, holes filled)
         im = Image.new('L', (bw, bh), 0); dr = ImageDraw.Draw(im); s_ = int(SQ * R8)
         for v in S_:
@@ -227,14 +239,17 @@ def merge_wl(w, layout, edges, store, seed=SEED):
         for a, b, k in E:
             if a in S_ and b in S_ and k != 'ud': dr.line([px(pos[a]), px(pos[b])], fill=255, width=s_)
         return ndi.gaussian_filter(ndi.binary_fill_holes(np.array(im, bool)).astype(float), 0.3 * R8) > 0.5
-    STEPPE = withsp({v for v in WL if shown(v) and nm(v) == 'Arid Steppes'})        # every Arid Steppes room a clearing (owner, Oct 17)
+    STEPPE = withsp({v for v in WL if shown(v) and (nm(v) == 'Arid Steppes' or sec[v] == 'road')})   # all the Arid Steppes one clearing, the Ancient Road drawn over it (owner, Oct 17)
     SALTR = withsp({v for v in WL if shown(v) and sec[v] == 'salt'})                 # the Salt Flats: a salt field on exactly its rooms (owner, Oct 17)
-    VOLC = withsp({v for v in WL if shown(v) and sec[v] == 'volc'})                  # the Volcanic Plains rooms: an ash-coloured clearing (owner, Oct 17)
     SW = {v for v in WL if shown(v) and not void(v) and pos[v][0] <= 1 and pos[v][1] >= 96 and sec[v] not in ('road', 'salt') and nm(v) != 'Arid Steppes'}
+    SPIRE = {8705, 8706}                                                             # a path on top of the south-west clearing (owner, Oct 17)
+    VOLC = withsp(SW - SPIRE)                                                        # the whole south-west: one ash-coloured clearing (owner, Oct 17)
     salt_cells = [c for c in cells if c & (SALTR | VOLC)]
     dirt_cells = [c for c in cells if c not in salt_cells]
     saltm = roompatch(SALTR); volcm = roompatch(VOLC)
-    clear = (cellmask(dirt_cells) | roompatch(STEPPE)) & ~volcm & ~saltm
+    volcm = ndi.binary_fill_holes(ndi.binary_closing(volcm, structure=disk(2 * R8))) & ~ndi.binary_dilation(saltm, iterations=2)   # (one piece)
+    stepm = roompatch(STEPPE); stepm = ndi.binary_fill_holes(ndi.binary_closing(stepm, structure=disk(R8)))
+    clear = (cellmask(dirt_cells) | stepm) & ~volcm & ~saltm
     lab, n = ndi.label(clear); keep = np.zeros_like(clear)
     for i in range(1, n + 1):
         comp = lab == i
@@ -310,6 +325,7 @@ def merge_wl(w, layout, edges, store, seed=SEED):
         for a in G:
             for b in G[a]:
                 if a >= b: continue
+                if {a, b} & SPIRE: Tg[a].add(b); Tg[b].add(a); continue          # (drawn on top of the clearing)
                 n_ = max(2, int(math.dist(pos[a], pos[b]) * 3)); inside = True
                 for i in range(n_ + 1):
                     x = pos[a][0] + (pos[b][0] - pos[a][0]) * i / n_; y = pos[a][1] + (pos[b][1] - pos[a][1]) * i / n_
@@ -358,7 +374,8 @@ def merge_wl(w, layout, edges, store, seed=SEED):
                     run = []
                 else: run.append(pt)
         return out
-    dirt = clip(dirt, blocked)
+    spire = [l for l in dirt if any(math.dist(q, pos[v]) < 0.05 for v in SPIRE for q in (l[0], l[-1]))]
+    dirt = clip([l for l in dirt if l not in spire], blocked) + spire
     roadl = roadl + road_ext
     w['fwtracks'] = list(w['fwtracks']) + dirt
     w['dirtroads'] = list(w.get('dirtroads') or []) + roadl
