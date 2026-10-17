@@ -7,6 +7,7 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 ## Build, review, deploy
 - `cd src && python3 build.py` (~1 min pipeline + ~50 s tiles). `NO_TILES=1` skips tiles. Packages: `requirements.txt` (pinned; playwright 1.56.0 = Chromium 1194, which cloud sessions have pre-installed).
 - The pipeline is deterministic: `realm_map.html` is committed as the reference; a rebuild must not change it unless intended. `git diff --stat realm_map.html` after each build.
+- Speed (Oct 17): `AF._world()` parses the world file once per build (copies after); `site_build` reuses encoded tiles by pixel hash from `.tile_cache/` (kept between Actions runs by actions/cache). Never parse the world file in a loop.
 - Build outputs are NOT committed (`site/`, `realm_map_preview.html`, `src/nd2.json`, `src/fot.json`).
 - GitHub Actions (`.github/workflows/pages.yml`) rebuilds and deploys `site/` to GitHub Pages on every push to `main` or `claude/**`. The owner reviews there.
 - Old artifact links (working map, preview, snapshots, editors) are listed in `docs/REGION_NOTES.md`.

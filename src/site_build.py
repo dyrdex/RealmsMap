@@ -16,6 +16,9 @@ K = 2 ** ZMAX
 SRC = os.path.abspath('../realm_map.html')
 SITE = os.path.abspath('../site')
 PREVIEW = os.path.abspath('../realm_map_preview.html')
+# encoded tiles from earlier builds, by a hash of their pixels: a tile whose pixels are unchanged is copied, not encoded again
+# (GitHub Actions keeps this folder between runs; TILE_CACHE= turns it off)
+TILE_CACHE = os.environ.get('TILE_CACHE', os.path.abspath('../.tile_cache'))
 # big area and maze names: kept live (sharp at every zoom), not baked into tiles
 AREA_NAMES = ["The Forgotten Woods", "Shadow Grove", "Miden'nir", "The Maze of Trees",
               "Lost in the Swamp", "The Hidden Grove", "Ashen", "Forest", "Forest of Tears"]
@@ -95,6 +98,10 @@ def render():
 
 def write_tiles(mosaic, root):
     stats, img = {}, mosaic
+    opts = {'quality': TILE_QUALITY, 'method': 6} if TILE_QUALITY else {'lossless': True, 'quality': 60, 'method': 4}
+    salt = json.dumps(opts, sort_keys=True).encode()
+    if TILE_CACHE: os.makedirs(TILE_CACHE, exist_ok=True)
+    used, reused = set(), 0
     for z in range(ZMAX, ZMIN - 1, -1):
         if z < ZMAX:
             img = img.resize((-(-img.width // 2), -(-img.height // 2)), Image.LANCZOS)
@@ -105,9 +112,17 @@ def write_tiles(mosaic, root):
                 tile.paste(img.crop((tx * TS, ty * TS, min(img.width, (tx + 1) * TS), min(img.height, (ty + 1) * TS))), (0, 0))
                 d = os.path.join(root, str(z), str(tx)); os.makedirs(d, exist_ok=True)
                 f = os.path.join(d, f'{ty}.webp')
-                tile.save(f, 'WEBP', **({'quality': TILE_QUALITY, 'method': 6} if TILE_QUALITY else {'lossless': True, 'quality': 60, 'method': 4}))
+                if TILE_CACHE:
+                    h = hashlib.sha1(salt + tile.tobytes()).hexdigest() + '.webp'; c = os.path.join(TILE_CACHE, h); used.add(h)
+                    if os.path.exists(c): shutil.copyfile(c, f); reused += 1
+                    else: tile.save(f, 'WEBP', **opts); shutil.copyfile(f, c)
+                else: tile.save(f, 'WEBP', **opts)
                 n += 1; byt += os.path.getsize(f)
         stats[z] = (n, round(byt / 1024))
+    if TILE_CACHE:
+        for h in os.listdir(TILE_CACHE):                                         # (only this build's tiles are kept)
+            if h not in used: os.remove(os.path.join(TILE_CACHE, h))
+        print('tiles reused from the cache:', reused, 'of', sum(v[0] for v in stats.values()))
     return stats
 
 def main():

@@ -5,3 +5,4 @@ __pycache__/
 /realm_map_preview.html
 /src/nd2.json
 /src/fot.json
+/.tile_cache/
