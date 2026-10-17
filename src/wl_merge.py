@@ -34,6 +34,7 @@ EXTRA_HIDDEN = {7854: (9.0, 92.5)}               # Gateway to Aurora, one south 
 PASS = [36, 663, 7840, 7841, 7842, 7843, 7844, 7845, 7846]   # the pass from range room 36 down to 7846: a wide path that looks like the clearings (owner, Oct 17)
 VOLCANO = (14965, 14966, 14967)                 # one volcano graphic over these three rooms (owner, Oct 17)
 VOLC_TOP = (-10.0, 102.42)                       # the Volcanic Plains clearing north of 8684-8687's line: only the strip down 8615-8616-8617 and 8616-8684 (owner, Oct 17)
+PIERS = (8763, 8764)                            # Camden Piers: a wooden pier out over the coast route into the sea (owner, Oct 17)
 TOWN = {8726, 18259} | set(range(8743, 8770))   # Camden
 SEA_AREAS = ('The Blood Sea', 'Sea of Sorrows')
 LAND_R, SEA_R, TERR_R = 4.2, 8.0, 3.2
@@ -91,8 +92,9 @@ def _graphs(layout, edges):
 def wl_land(layout, edges, store, seed=SEED):
     """land_edit for smr_merge: the Wastelands' land added to the grid, the sea kept out of it (and remembered in store for merge_wl)"""
     rooms, pos, info, hidden, WL, shown, void, terr, sec, UW, E, road, under = _graphs(layout, edges)
-    dry = [v for v in WL if shown(v)]                                                # (the coast path is land too: owner, Oct 17)
-    land_lines = [[pos[a], pos[b]] for a, b, k in E if k != 'ud']; sea_pts = []
+    dry = [v for v in WL if shown(v) and v not in UW and v not in PIERS]             # (the coast path is in the sea, its north edge: owner, Oct 17)
+    land_lines = [[pos[a], pos[b]] for a, b, k in E if k != 'ud' and not ({a, b} & (UW | set(PIERS)))]; sea_pts = []
+    cpath = _samples([[pos[a], pos[b]] for a, b, k in E if a in UW and b in UW and k != 'ud'], 0.1)
     exits = AF._world()[1]                                                           # (read once: each call parses the whole world file)
     for v in WL:                                                                     # the exits into the seas (not drawn): the sea lies that way
         if not shown(v): continue
@@ -102,7 +104,7 @@ def wl_land(layout, edges, store, seed=SEED):
                 d = AF.DV[e['dir']]
                 if d[2] or d[1] <= 0 or not (rooms[t]['area'] in SEA_AREAS or any(rooms.get(e2['to'], {}).get('area') in SEA_AREAS for e2 in exits.get(t, []))): continue
                 sea_pts.append((pos[v][0] + 1.0 * d[0], pos[v][1] + 1.8))                # (the sea starts just south of the coast path)
-    sea_pts += [(pos[v][0], pos[v][1] + 1.8) for v in UW if shown(v)]                # (the sea just south of the whole coast path: owner, Oct 17)
+    sea_pts += [(pos[v][0], pos[v][1] + 1.8) for v in UW if shown(v)]                # (the sea south of the whole coast path)
     _lt = cKDTree(np.r_[np.array([pos[v] for v in dry]), _samples(land_lines, 0.15)])
     sea_pts = [p for p in sea_pts if _lt.query(p)[0] >= 1.2]                         # (not on a room or path further south: the coast path stays on land)
     xs = [pos[v][0] for v in dry] + [p[0] for p in sea_pts]; ys = [pos[v][1] for v in dry] + [p[1] for p in sea_pts]
@@ -115,7 +117,18 @@ def wl_land(layout, edges, store, seed=SEED):
     rng = np.random.default_rng(seed)
     wob = ndi.gaussian_filter(rng.normal(size=(bh, bw)), 1.8 * R8); wob = (wob - wob.min()) / (wob.max() - wob.min())
     sea = (d_s <= SEA_R * (0.8 + 0.4 * wob)) & (d_s < d_l) & (d_l > 0.9)                # (every room and path on land)
+    if len(cpath):                                                                   # the coast route is the sea's north edge: the sea south of it, a little past it for a rounded shore
+        cc = ((cpath[:, 0] - box[0]) * R8).astype(int); top = np.full(bw, np.inf)
+        np.minimum.at(top, np.clip(cc, 0, bw - 1), cpath[:, 1])
+        top = ndi.minimum_filter1d(np.where(np.isfinite(top), top, 1e9), 3)
+        south = (Y >= top[None, :]) & np.isfinite(top)[None, :] & (top[None, :] < 1e8)
+        d_c = cKDTree(cpath).query(P)[0].reshape(bh, bw)
+        cov = (top[None, :] < 1e8) & np.ones((bh, 1), bool)                         # (columns the route crosses: no sea north of it there, beyond a rounded margin)
+        sea &= ~cov | south | (d_c <= 0.45)
+        sea |= (south & (d_c <= SEA_R * (0.8 + 0.4 * wob))) | (d_c <= 0.45)
+        sea &= d_l > 0.9
     sea = ndi.gaussian_filter(sea.astype(float), 0.8 * R8) > 0.5
+    if len(cpath): sea |= d_c <= 0.35                                                # (the route itself always in the water)
     near = d_l <= LAND_R * (0.7 + 0.6 * wob)
     near = ndi.binary_closing(near, structure=np.ones((3, 3), bool), iterations=int(1.5 * R8))
     near = ndi.binary_fill_holes(near)
@@ -171,7 +184,7 @@ def merge_wl(w, layout, edges, store, seed=SEED):
         if a in FOOT and b in FOOT: continue                                         # (inside the foothill clearing)
         if {a, b} & FOOT and {a, b} & set(FOOT_JOIN): continue                       # (34/35 - 664/665: the clearing joins them)
         if a in UW and b in UW:
-            sdash.append((a, b))                                                     # (the coast path itself, up/down exits included: owner, Oct 17)
+            sdash.append((a, b, k))                                                  # (the coast route: a solid water route; its up/down exits dashed: owner, Oct 17)
             continue
         if a in under or b in under: dash.append((a, b)); continue
         if not (a in WL and b in WL): links.append((a, b)); continue                 # to the range / the trade route
@@ -307,42 +320,58 @@ def merge_wl(w, layout, edges, store, seed=SEED):
                             range_clearings_joined=len(old), salt_cells=len(salt_cells))
     patchm = AA._raster(patches, box[0], box[1], bw, bh)
 
-    # ---------------------------------------------------------------- Camden: a small town (streets, inn, church, shops, homes)
-    T = [v for v in TOWN if shown(v) and not void(v)]
-    tx = [pos[v][0] for v in T]; ty = [pos[v][1] for v in T]
-    tb = (min(tx) - 0.9, min(ty) - 0.9, max(tx) + 0.9, max(ty) + 0.9)
-    street = lambda v: re.search(r'Streets of Camden|Narrow Road|Outskirts|Camden by the Sea|Entering the Cove|Piers', nm(v))
+    # ---------------------------------------------------------------- Camden (owner, Oct 17): a soft, wavy town ground (no border), the sea its south edge; dirt streets;
+    # front-view medieval / Renaissance buildings; a western saloon for the Dancing Pony Inn; a wooden pier out over the coast route
+    T = [v for v in TOWN if shown(v) and not void(v) and v not in PIERS]
+    street = lambda v: re.search(r'Streets of Camden|Narrow Road|Outskirts|Camden by the Sea|Entering the Cove', nm(v))
     SG = defaultdict(set)
     for a, b, k in E:
-        if k != 'ud' and a in TOWN and b in TOWN and (street(a) or void(a)) and (street(b) or void(b)): SG[a].add(b); SG[b].add(a)
+        if k != 'ud' and a in TOWN and b in TOWN and not {a, b} & set(PIERS) and (street(a) or void(a)) and (street(b) or void(b)): SG[a].add(b); SG[b].add(a)
     streets = _chains(SG, pos, set(), 0.4) if SG else []
     sst = _samples(streets, 0.1) if streets else np.zeros((0, 2))
-    roofs = ['#7A4638', '#86503C', '#6B4A36', '#5F4B3A', '#7E5A40', '#704034']
-    blds = []
+    core = np.zeros((bh, bw), bool)
+    for v in T: core |= (np.abs(X - pos[v][0]) <= 1.2) & (np.abs(Y - pos[v][1]) <= 1.2)
+    if len(sst): core |= cKDTree(sst).query(P)[0].reshape(bh, bw) <= 1.0
+    core = ndi.binary_closing(core, structure=disk(int(1.5 * R8)))
+    _tw = ndi.gaussian_filter(np.random.default_rng(seed + 11).normal(size=(bh, bw)), 0.8 * R8); _tw = (_tw - _tw.min()) / (_tw.max() - _tw.min())
+    townm = (ndi.distance_transform_edt(~core) / R8 <= 0.2 + 0.7 * _tw) & landm & ~sea   # (wavy edges; the sea is its south edge)
+    townm = ndi.gaussian_filter(townm.astype(float), 0.4 * R8) > 0.5
+    w['wltown'] = AA._contours(townm, box[0], box[1], sigma=1.2, tol=0.3, minarea=0.5)
+    kinds = []
     for v in sorted(T):
         n_ = nm(v)
-        if re.search(r'Dancing Pony Inn', n_): k, bw_, bh_ = 'inn', 1.7, 1.05
-        elif re.search(r'Church', n_): k, bw_, bh_ = 'church', 1.1, 1.15
-        elif re.search(r'Mercantile|Savings|Fishery|Boatyards', n_): k, bw_, bh_ = 'shop', 0.95, 0.8
-        elif re.search(r'Home|Lofts', n_): k, bw_, bh_ = 'house', 0.8, 0.65
-        else: continue
+        if re.search(r'Church', n_): kinds.append((v, 'church', 1.3, 1.9))
+        elif re.search(r'Mercantile|Savings|Fishery|Boatyards', n_): kinds.append((v, 'renaissance', 1.3, 1.3))
+        elif re.search(r'Home|Lofts', n_): kinds.append((v, 'english', 1.15, 1.1))
+    blds = []
+    for v, k, bw_, bh_ in kinds:
         cx, cy = pos[v]
         for step in (0, 0.1, 0.2, 0.3, 0.4, 0.5):                                    # off the streets by the smallest step
-            ok = [(cx + dx, cy + dy) for dx, dy in ((0, 0), (step, 0), (-step, 0), (0, step), (0, -step))
-                  if not (len(sst) and np.any((np.abs(sst[:, 0] - cx - dx) < bw_ / 2 + 0.3) & (np.abs(sst[:, 1] - cy - dy) < bh_ / 2 + 0.3)))]
+            ok = [(cx + dx, cy + dy) for dx, dy in ((0, 0), (step, 0), (-step, 0), (0, -step), (0, step))
+                  if not (len(sst) and np.any((np.abs(sst[:, 0] - cx - dx) < bw_ / 2 + 0.25) & (np.abs(sst[:, 1] - cy - dy) < bh_ / 2 + 0.25)))]
             if ok: cx, cy = ok[0]; break
-        blds.append({'x': round(cx, 2), 'y': round(cy, 2), 'w': bw_, 'h': bh_, 'k': k, 'roof': '#5E5B55' if k == 'church' else '#6A3C30' if k == 'inn' else roofs[v % len(roofs)], 'room': v})
-    w['smrtowns'] = list(w.get('smrtowns') or []) + [{'name': 'Camden', 'ground': [round(q, 2) for q in tb], 'streets': streets, 'plaza': None, 'buildings': blds,
-                                                       'trees': [], 'road': None, 'road2': None, 'gate_s': None, 'road_w': 0.95, 'gate': None}]
-    townm = (X >= tb[0]) & (X <= tb[2]) & (Y >= tb[1]) & (Y <= tb[3])
-    rep['camden'] = dict(box=[round(q, 2) for q in tb], streets=len(streets), buildings=[(b['k'], b['room']) for b in blds])
+        blds.append({'x': round(cx, 2), 'y': round(cy, 2), 'w': bw_, 'h': bh_, 'k': k, 'roof': '', 'rot': 0, 'room': v})
+    w['smrhouses'] = list(w.get('smrhouses') or []) + [{q: b[q] for q in ('x', 'y', 'w', 'h', 'k', 'roof', 'rot')} for b in blds]
+    gfx = []
+    if 8744 in pos and shown(8744):
+        gfx.append({'k': 'saloon', 'at': 'xy', 'x': pos[8744][0], 'y': round(pos[8744][1] - 0.1, 2), 'w': 2.2, 'h': 1.7})   # (the Dancing Pony Inn)
+    pr = [pos[v] for v in PIERS if v in pos and shown(v)]
+    if pr:
+        px_ = pr[0][0]; c_ = int((px_ - box[0]) * R8); y_top = min(p[1] for p in pr)
+        for r_ in range(int((y_top - box[1]) * R8), bh):                             # (from the shore)
+            if sea[r_, c_]: y_top = (r_ + .5) / R8 + box[1]; break
+        y_top -= 0.35; y_bot = max(p[1] for p in pr) + 0.6
+        gfx.append({'k': 'pier', 'at': 'xy', 'x': round(px_, 2), 'y': round((y_top + y_bot) / 2, 2), 'w': 0.7, 'h': round(y_bot - y_top, 2)})
+    w['gfx'] = list(w['gfx']) + gfx
+    tb = (float(X[townm].min()), float(Y[townm].min()), float(X[townm].max()), float(Y[townm].max())) if townm.any() else (0, 0, 0, 0)
+    rep['camden'] = dict(box=[round(q, 2) for q in tb], ground_sq=round(float(townm.sum()) / R8 / R8, 1), streets=len(streets), buildings=[(b['k'], b['room']) for b in blds], gfx=gfx)
     for a in list(GD):                                                               # (the town's own paths are its streets)
         for b in list(GD[a]):
             if a in TOWN and b in TOWN: GD[a].discard(b); GD[b].discard(a)
     for v in [v for v in GD if not GD[v]]: del GD[v]
 
     # ---------------------------------------------------------------- lines: trails, the wide road, links
-    blocked = patchm | townm | ndi.binary_dilation(saltm, iterations=int(0.35 * R8)) | volcm   # (the salt as drawn reaches a little past its mask)
+    blocked = patchm | ndi.binary_dilation(saltm, iterations=int(0.35 * R8)) | volcm   # (the salt as drawn reaches a little past its mask)
     def trails(G):
         Tg = defaultdict(set)
         for a in G:
@@ -405,15 +434,20 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     for v in JUN: _jm |= (X - pos[v][0]) ** 2 + (Y - pos[v][1]) ** 2 <= 0.7 ** 2
     dirt = clip([l for l in dirt if l not in spire], blocked & ~_jm) + spire          # (paths reach those rooms even at a clearing's edge)
     roadl = roadl + road_ext
-    w['fwtracks'] = list(w['fwtracks']) + dirt
+    w['fwtracks'] = list(w['fwtracks']) + dirt + streets                           # (Camden's streets: dirt streets on its ground)
     w['dirtroads'] = list(w.get('dirtroads') or []) + roadl
     w['streams'] = list(w.get('streams') or []) + stream
     w['ntrjoins'] = list(w['ntrjoins']) + pads
     dl = [[[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]] for a, b in dash if math.dist(pos[a], pos[b]) <= 30]
     w['smrdash'] = list(w.get('smrdash') or []) + dl
-    sd = [[[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]] for a, b in sdash if math.dist(pos[a], pos[b]) <= 30]
+    sd = [[[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]] for a, b, k in sdash if k == 'ud' and math.dist(pos[a], pos[b]) <= 30]
     w['seadash'] = list(w.get('seadash') or []) + sd
-    rep['lines'] = dict(trails=len(dirt), road=len(roadl), stream=len(stream), underground_dashed=len(dl), underwater_dashed=len(sd), offramps=pads,
+    CG = defaultdict(set)
+    for a, b, k in sdash:
+        if k != 'ud': CG[a].add(b); CG[b].add(a)
+    sw_ = _chains(CG, pos, set(), 0.8) if CG else []
+    w['seaways'] = list(w.get('seaways') or []) + sw_
+    rep['lines'] = dict(trails=len(dirt), road=len(roadl), stream=len(stream), underground_dashed=len(dl), underwater_dashed=len(sd), coast_route=len(sw_), offramps=pads,
                         links=[(a, b) for a, b in links])
 
     # ---------------------------------------------------------------- the sea, the sand along it
