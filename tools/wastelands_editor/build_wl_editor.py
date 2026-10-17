@@ -100,6 +100,10 @@ close, far, wrong, thru = ES.report(start, POS, links2, step=STEP)
 # ---- fixed rooms: those near the new rooms ----
 pts = [start[v] for v in S]
 CTX = {v: SRC[v] for v, p in POS.items() if min(math.hypot(p[0] - a[0], p[1] - a[1]) for a in pts) <= NEAR}
+UN = list(range(9327, 9347))      # unlocked map rooms (owner, Oct 17): the Southern Mountain Trade Route 9327-9346, movable, starting at their spots on the map
+assert all(v in POS and rooms[v]['area'] == 'The Southern Mountain Trade Route' for v in UN)
+for v in UN: start[v] = list(POS[v]); GRP[v] = 'un'; CTX.pop(v, None)
+S = S | set(UN)
 
 # ---- rooms and exits ----
 def exlist(v):
@@ -133,7 +137,7 @@ for v in K:
     for e in exits.get(v, []):
         a = rooms.get(e['to'], {}).get('area', '')
         if e['to'] not in V and a not in ('', 'Wastelands'): off['bs' if a == 'The Blood Sea' else 'ss' if a == 'Sea of Sorrows' else 'oth'] += 1
-audit = dict(wl=cnt0['wl'], wls=gs['wl'], bs=off['bs'], ss=off['ss'], oth=off['oth'],
+audit = dict(wl=cnt0['wl'], wls=gs['wl'], un=len(UN), bs=off['bs'], ss=off['ss'], oth=off['oth'],
              exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), fixed=len(CTX))
 rd = lambda poly: [[round(x, 2), round(y, 2)] for x, y in poly]
 trk = list(w['fwtracks']) + list(w['swtracks']) + [w['road'], w['southpath'], w['link']] + list(w['ring']) + [t for t in w.get('etrtracks', []) if len(t) > 1] \
@@ -142,7 +146,7 @@ trk = [t for t in trk if t and isinstance(t[0], (list, tuple)) and len(t) > 1]
 ctx = dict(land=[rd(p) for p in w['geo']['land']], water=[rd(p) for p in w['geo']['water']],
            tracks=[rd(t) for t in trk], mazes=[dict(poly=rd(m['poly'])) for m in w['fwmazes']], town=[-7.4, -9.4, 7.4, 9.4],
            labels=[[0, 0.4, 'Darkhaven', 2.4], [3, -14.2, 'Shadow Grove', 1.5], [1, -47.3, 'Forgotten Woods', 2.4]])
-D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=[])
+D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, unlocked=UN)
 t = open(os.path.join(here, 'wl_editor_template.html'), encoding='utf-8').read()
 open(out, 'w', encoding='utf-8').write(t.replace('__DATA__', json.dumps(D, separators=(',', ':'))))
 json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed', 'src', 'area', 'grp', 'piece', 'ga') if k in r} for r in R], edges=EDG),

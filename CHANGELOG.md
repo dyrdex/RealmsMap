@@ -4,6 +4,7 @@
 
 - New layout editor for the Wastelands (`tools/wastelands_editor`, October 16): all 351 rooms (the 13 underwater and 6 tunnel rooms included) with 132 joining spacer rooms; 671 exits between them, 6 to the Southern Mountain Range (34-36) and its Trade Route (9339, 9346). Its 24 exits to the Blood Sea, 3 to the Sea of Sorrows and 30 to other areas are left off. https://claude.ai/artifact/2yna7daYADcMC8Sh9xcsin
 - The Wastelands editor's starting layout spread out (your request): 2 rooms per exit, no rooms on top of each other (0 overlaps, was 238), 12 stretched exits (was 410), 10 trail lines through another room (was 119); the area starts as one block next to the range, clear of the rooms already on the map. All future layout editors start this way.
+- Wastelands editor: Southern Mountain Trade Route rooms 9327-9346 unlocked (movable, blue outline, 'Select the unlocked map rooms'); they start where they are on the map.
 
 ## Version 17 · Angel's Landing and the Village of Edo · October 16, 2026
 

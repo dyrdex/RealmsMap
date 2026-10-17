@@ -9,22 +9,22 @@ def rep(a, b, count=1, regex=False):
     else: n = t.count(a); t = t.replace(a, b)
     assert n == count, (a[:60], n)
 
-WLC = '#E8C27A'                                                                  # outline: Wastelands
+WLC, UNC = '#E8C27A', '#6FC3E8'                                                     # outlines: Wastelands, unlocked map rooms
 rep("<title>Layout editor · Angel's Landing, Edo, Grimdog</title>", '<title>Layout editor · Wastelands</title>')
 rep(">Angel's Landing · Edo · Grimdog</span></h1>", '>Wastelands</span></h1>')
 rep(r'<p id="ntrNote".*?</p>', f'<p id="ntrNote" style="margin:4px 0 8px"><b style="color:{WLC}">The Wastelands</b>: all its 351 rooms (the 13 underwater rooms and the 6 tunnel rooms included) and the spacer rooms that join them. Its exits into the Blood Sea and the Sea of Sorrows are left off, and so are the other areas it leads to. The rooms start where TinTin\'s exits put them, one room apart, from the Southern Mountain Range rooms 34-36 and the Southern Mountain Trade Route rooms 9339 and 9346; rooms on another level are offset diagonally (up = north-east). Rooms with no exit to the rest are parked just east of the area. The map grows south to fit them. Hide any room you don\'t want on the map. <b>Select the whole piece</b> grabs every room in the same piece as the rooms you have selected; <b>Selected → where TinTin\'s exits suggest</b> moves the selected rooms back to their starting spots.</p>', regex=True)
 rep("<button id=\"selAl\">Angel's Landing</button><button id=\"selEdo\">Village of Edo</button><button id=\"selGp\">Grimdog Port Authority</button>",
-    '<button id="selWl">Select the Wastelands rooms</button>')
+    '<button id="selWl">Select the Wastelands rooms</button><button id="selUn">Select the unlocked map rooms</button>')
 rep(r'    <i style="background:var\(--t-Field\);border:2px solid #9FB4FF"></i>.*?Western Trade Route room 21076 \(movable\)</span>\n',
-    f'    <i style="background:var(--t-Desert);border:2px solid {WLC}"></i><span>Wastelands room (movable)</span>\n', regex=True)
+    f'    <i style="background:var(--t-Desert);border:2px solid {WLC}"></i><span>Wastelands room (movable)</span>\n    <i style="background:var(--t-Mountains);border:2px solid {UNC}"></i><span>Unlocked map room: Southern Mountain Trade Route 9327-9346 (movable, starts at its spot on the map)</span>\n', regex=True)
 rep('.nd.al rect,.nd.al circle.shape{stroke:#9FB4FF}\n.nd.edo rect,.nd.edo circle.shape{stroke:#F2A65A}\n.nd.gp rect,.nd.gp circle.shape{stroke:#5FD3B5}',
-    f'.nd.wl rect,.nd.wl circle.shape{{stroke:{WLC}}}')
+    f'.nd.wl rect,.nd.wl circle.shape{{stroke:{WLC}}}\n.nd.un rect,.nd.un circle.shape{{stroke:{UNC}}}')
 rep("(r.area==='NA'?' ntr '+r.grp:'')", "(r.area==='WL'?' ntr '+r.grp:'')")
-rep("${r.area==='NA'?' · '+({al:\"Angel's Landing\",edo:'Village of Edo',gp:'Grimdog Port Authority'})[r.grp]", "${r.area==='WL'?' · '+({wl:'Wastelands'})[r.grp]")
+rep("${r.area==='NA'?' · '+({al:\"Angel's Landing\",edo:'Village of Edo',gp:'Grimdog Port Authority'})[r.grp]", "${r.area==='WL'?' · '+({wl:'Wastelands',un:'unlocked map room'})[r.grp]")
 rep("CD:'Coral Depths'})[r.src]", "CD:'Coral Depths',NA:\"Angel's Landing, Village of Edo\"})[r.src]")
 rep(r"\$\('audit'\)\.innerHTML=`.*?`\}\)\(\);",
-    "$('audit').innerHTML=`<b>Import check against your TinTin map:</b><br>Wastelands rooms: ${a.wl} · spacers ${a.wls}<br>Exits between these rooms: ${a.exits}<br>Exits to rooms on the map: ${a.links}<br>Exits left off: Blood Sea ${a.bs}, Sea of Sorrows ${a.ss}, other areas ${a.oth}<br><br>Fixed rooms already on the finished map (near the Wastelands): ${a.fixed}`})();", regex=True)
-rep("$('selAl').onclick=()=>selGrp('al');$('selEdo').onclick=()=>selGrp('edo');$('selGp').onclick=()=>selGrp('gp');", "$('selWl').onclick=()=>selGrp('wl');")
+    "$('audit').innerHTML=`<b>Import check against your TinTin map:</b><br>Wastelands rooms: ${a.wl} · spacers ${a.wls}<br>Map rooms unlocked: ${a.un} (Southern Mountain Trade Route 9327-9346)<br>Exits between these rooms: ${a.exits}<br>Exits to rooms on the map: ${a.links}<br>Exits left off: Blood Sea ${a.bs}, Sea of Sorrows ${a.ss}, other areas ${a.oth}<br><br>Fixed rooms already on the finished map (near the Wastelands): ${a.fixed}`})();", regex=True)
+rep("$('selAl').onclick=()=>selGrp('al');$('selEdo').onclick=()=>selGrp('edo');$('selGp').onclick=()=>selGrp('gp');", "$('selWl').onclick=()=>selGrp('wl');$('selUn').onclick=()=>selGrp('un');")
 rep("'nalayout:v1'", "'wllayout:v1'", 2)
 rep("'nalayout/current'", "'wllayout/current'", 2)
 rep("'nalayout/b'", "'wllayout/b'")
