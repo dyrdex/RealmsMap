@@ -418,8 +418,22 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     sm = lambda m, s=0.6: ndi.gaussian_filter(m.astype(float), s * R8) > 0.5
     zone = lambda *ks: sm(on & np.isin(S, ks))
     swm = sm(land_wl & inSW & (dist <= TERR_R + 1.5), 0.8) & (X >= SWX)                       # the south-west corner: one ground, ash (owner, Oct 17)
-    fieldz = own & ~zone('canyon') & ~townm                                        # (two grounds only: the area's own and the brown one: owner, Oct 17)
+    fieldz = own                                                                   # (ONE ground in the Wastelands, under everything: owner, Oct 17)
     tints = {}
+    clipped = {}                                                                   # (no other tint under or over it: the range's own, cut back to where the Wastelands' ground starts)
+    inbox = lambda p: all(box[0] <= q[0] < box[2] and box[1] <= q[1] < box[3] for q in p)
+    for k in [k for k in w['geo'] if k not in ('land', 'water')]:
+        hit = [p for p in w['geo'][k] if inbox(p) and (AA._raster([p], box[0], box[1], bw, bh) & own).any()]
+        part = [p for p in w['geo'][k] if not inbox(p) and any(box[0] <= q[0] < box[2] and box[1] <= q[1] < box[3] for q in p)]
+        if part: rep.setdefault('tints_not_clipped', {})[k] = len(part)
+        if not hit: continue
+        bb = lambda p: (min(q[0] for q in p), min(q[1] for q in p), max(q[0] for q in p), max(q[1] for q in p))
+        grp = [p for p in w['geo'][k] if inbox(p) and (p in hit or any(bb(h)[0] <= bb(p)[0] and bb(h)[1] <= bb(p)[1] and bb(p)[2] <= bb(h)[2] and bb(p)[3] <= bb(h)[3] for h in hit))]   # (with their holes)
+        m = AA._raster(grp, box[0], box[1], bw, bh)
+        cut = float((m & own).sum()) / R8 / R8
+        w['geo'][k] = [p for p in w['geo'][k] if not any(p is g for g in grp)] + AA._contours(m & ~own, box[0], box[1], sigma=1.0, tol=0.3, minarea=0.15)
+        clipped[k] = round(cut, 1)
+    rep['other_tints_clipped_sq'] = clipped
     tints['wheat'] = _put(w, 'wheat', fieldz, box, sigma=2.0)
     blob = lambda m: ndi.binary_opening(m, structure=disk(R8))                     # (no thin strips)
     tints['wheat2'] = 0
@@ -437,7 +451,7 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     cliff = zone('cliff') & ~swm
     tints['clifftop'] = 0
     can = zone('canyon') & ~swm
-    tints['barren'] = _put(w, 'barren', can, box, sigma=2.0)
+    tints['barren'] = 0
     shore = (zone('shore') | sand) & ~swm
     tints['sand'] = 0
     rep['tints_sq'] = tints
