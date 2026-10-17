@@ -89,13 +89,14 @@ def wl_land(layout, edges, store, seed=SEED):
     rooms, pos, info, hidden, WL, shown, void, terr, sec, UW, E, road, under = _graphs(layout, edges)
     dry = [v for v in WL if shown(v)]                                                # (the coast path is land too: owner, Oct 17)
     land_lines = [[pos[a], pos[b]] for a, b, k in E if k != 'ud']; sea_pts = []
+    exits = AF._world()[1]                                                           # (read once: each call parses the whole world file)
     for v in WL:                                                                     # the exits into the seas (not drawn): the sea lies that way
         if not shown(v): continue
-        for e in AF._world()[1].get(v, []):
+        for e in exits.get(v, []):
             t = e['to']
             if t in rooms and (rooms[t]['area'] in SEA_AREAS or (void(t) and t not in pos)) and e['dir'] in AF.DV:
                 d = AF.DV[e['dir']]
-                if d[2] or d[1] <= 0 or not (rooms[t]['area'] in SEA_AREAS or any(rooms.get(e2['to'], {}).get('area') in SEA_AREAS for e2 in AF._world()[1].get(t, []))): continue
+                if d[2] or d[1] <= 0 or not (rooms[t]['area'] in SEA_AREAS or any(rooms.get(e2['to'], {}).get('area') in SEA_AREAS for e2 in exits.get(t, []))): continue
                 sea_pts.append((pos[v][0] + 1.0 * d[0], pos[v][1] + 1.8))                # (the sea starts just south of the coast path)
     sea_pts += [(pos[v][0], pos[v][1] + 1.8) for v in UW if shown(v)]                # (the sea just south of the whole coast path: owner, Oct 17)
     _lt = cKDTree(np.r_[np.array([pos[v] for v in dry]), _samples(land_lines, 0.15)])
