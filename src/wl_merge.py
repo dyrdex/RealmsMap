@@ -98,6 +98,8 @@ def wl_land(layout, edges, store, seed=SEED):
                 if d[2] or d[1] <= 0 or not (rooms[t]['area'] in SEA_AREAS or any(rooms.get(e2['to'], {}).get('area') in SEA_AREAS for e2 in AF._world()[1].get(t, []))): continue
                 sea_pts.append((pos[v][0] + 1.0 * d[0], pos[v][1] + 1.8))                # (the sea starts just south of the coast path)
     sea_pts += [(pos[v][0], pos[v][1] + 1.8) for v in UW if shown(v)]                # (the sea just south of the whole coast path: owner, Oct 17)
+    _lt = cKDTree(np.r_[np.array([pos[v] for v in dry]), _samples(land_lines, 0.15)])
+    sea_pts = [p for p in sea_pts if _lt.query(p)[0] >= 1.2]                         # (not on a room or path further south: the coast path stays on land)
     xs = [pos[v][0] for v in dry] + [p[0] for p in sea_pts]; ys = [pos[v][1] for v in dry] + [p[1] for p in sea_pts]
     box = (math.floor(min(xs)) - 14, math.floor(min(ys)) - 10, math.ceil(max(xs)) + 14, math.ceil(max(ys)) + 14)
     bw, bh = int((box[2] - box[0]) * R8), int((box[3] - box[1]) * R8)
@@ -107,7 +109,7 @@ def wl_land(layout, edges, store, seed=SEED):
     d_s = cKDTree(np.array(sea_pts)).query(P)[0].reshape(bh, bw) if sea_pts else np.full((bh, bw), np.inf)
     rng = np.random.default_rng(seed)
     wob = ndi.gaussian_filter(rng.normal(size=(bh, bw)), 1.8 * R8); wob = (wob - wob.min()) / (wob.max() - wob.min())
-    sea = (d_s <= SEA_R * (0.8 + 0.4 * wob)) & (d_s < d_l)
+    sea = (d_s <= SEA_R * (0.8 + 0.4 * wob)) & (d_s < d_l) & (d_l > 0.9)                # (every room and path on land)
     sea = ndi.gaussian_filter(sea.astype(float), 0.8 * R8) > 0.5
     near = d_l <= LAND_R * (0.7 + 0.6 * wob)
     near = ndi.binary_closing(near, structure=np.ones((3, 3), bool), iterations=int(1.5 * R8))
@@ -394,8 +396,10 @@ def merge_wl(w, layout, edges, store, seed=SEED):
 
     # ---------------------------------------------------------------- the sea, the sand along it
     water = w['geo']['water']
-    w['geo']['water'] = list(water) + AA._contours(sea, box[0], box[1], sigma=1.5)
+    seap = AA._contours(sea, box[0], box[1], sigma=1.5)
+    w['geo']['water'] = list(water) + seap
     rep['sea'] = dict(sq=round(float(sea.sum()) / R8 / R8, 1), seeds=store['sea_pts'], land_new_sq=store.get('land_new_sq'))
+    sea = sea | ndi.binary_dilation(AA._raster(seap, box[0], box[1], bw, bh), iterations=2)   # (the sea as drawn: no ground or sprites under it)
     land_wl = landm & ~sea
     d_sea = ndi.distance_transform_edt(~sea) / R8
     sand = land_wl & (d_sea <= 0.45) & ~townm
