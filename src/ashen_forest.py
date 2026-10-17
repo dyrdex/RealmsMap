@@ -5,7 +5,7 @@ rooms that touch Darkhaven, the Shadow Grove and the Forgotten Woods land exactl
 has put them. It is painted on the finished map: land, a grey ash tint, bare grey trees mixed with dark pines, and trails drawn from
 every real exit.
 """
-import os, math, random
+import os, math, random, pickle
 import numpy as np
 from collections import defaultdict, deque, Counter
 from PIL import Image, ImageDraw
@@ -21,11 +21,18 @@ DV = {1: (0, -1, 0), 2: (1, 0, 0), 4: (0, 1, 0), 8: (-1, 0, 0), 3: (1, -1, 0), 9
 WEST_DOOR = 1234                      # "Before the Ashen Forest", the forest's door on the Darkhaven side
 
 
+_WORLD = None
+
+
 def _world():
-    ns = {}
-    for p in ('parse_world.py', '/home/claude/parse_world.py'):
-        if os.path.exists(p): exec(open(p).read(), ns); break
-    return ns['rooms'], ns['exits']
+    """the parsed world file: parsed once per build, then a fresh copy each call (callers may change what they get)"""
+    global _WORLD
+    if _WORLD is None:
+        ns = {}
+        for p in ('parse_world.py', '/home/claude/parse_world.py'):
+            if os.path.exists(p): exec(open(p).read(), ns); break
+        _WORLD = pickle.dumps((ns['rooms'], ns['exits']), protocol=pickle.HIGHEST_PROTOCOL)
+    return pickle.loads(_WORLD)
 
 
 def layout():

@@ -65,7 +65,7 @@ def _paint(img, a, b, win, wpx):
     ImageDraw.Draw(img).line([a, b], fill=255, width=wpx)
 
 
-def merge_smr(w, layout, edges, seed=71, land_edit=None):
+def merge_smr(w, layout, edges, seed=71, land_edit=None, window_pos=None):
     rng = random.Random(seed); nrng = np.random.default_rng(seed)
     pos = dict(zip(layout['ids'], zip(layout['xs'], layout['ys'])))
     hidden = set(layout.get('hidden', []))
@@ -191,6 +191,7 @@ def merge_smr(w, layout, edges, seed=71, land_edit=None):
 
     # ---------------------------------------------------------------- the window (everything this module paints lies in it)
     allp = np.array([pos[v] for v in onmap] + ([pos[v] for v in VIS] if vis else [])); pad = 12.0
+    if window_pos: allp = np.array([window_pos.get(v, pos[v]) for v in onmap] + ([pos[v] for v in VIS] if vis else []))   # (the window as before rooms were moved in a later editor: its noise, and so the ground patterns, stay as they were)
     wx0 = math.floor(allp[:, 0].min() - pad); wx1 = math.ceil(allp[:, 0].max() + pad)
     wy0 = math.floor(allp[:, 1].min() - pad); wy1 = math.ceil(allp[:, 1].max() + pad)
     ww, hw = int((wx1 - wx0) * R8), int((wy1 - wy0) * R8)

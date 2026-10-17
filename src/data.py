@@ -2,6 +2,7 @@ AREAS = r"""
 Abbatoir Asylum|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#2 s;se;#6 e;#3 se;#3 s;sw;#2 s;scan/move to "Afloat on the ocean";east
 Abishai's Morgue|#9 w;sw;#4 w;s;sw;#2 w;open s;#2 s;sw;s;window
 Along the Forest Path|#7 w;sw;#2 s
+Camden|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#3 sw;#2 s;sw;#2 s;#4 se;#2 s;se;d;s;se;s;#3 se;#6 e;#3 s
 City of Aurora|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#2 sw;s;#2 sw;s;sw;#5 s;#3 e;#2 s
 Angel's Landing|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#4 e;n;nw;#2 n;sw;e;#2 sw;#2 w;nw;ne;e;sw;#2 nw;#2 u;sw;nw;w;d;sw;#2 w;nw
 Antall, the Lost Harbor|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#2 s;se;#6 e;#3 se;#3 s;sw;#2 s;se
@@ -78,7 +79,7 @@ Morgul Vale|nw;#2 w;#4 n;e;look painting;open n;n;#49 w;#9 s;w;sw;#2 s;u;#2 s;#2
 Moria|#8 e;#2 se;#2 s
 Mountain of Lost Souls|nw;#2 w;#4 n;e;look painting;open n;n;#49 w;#8 s;sw;#5 w;#2 sw;nw;#3 w;d;sw;#2 s;e;ne;nw;u;ne;u;n;ne;
 Mountains of Desolation|#8 e;#2 se;s;#3 se;e
-Mulciber's Forge|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#3 s;se;s;#4 se;#3 s;d;s;se;s;#3 sw;u;n;w;u;ne;nw;d
+Mulciber's Forge|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#3 sw;#2 s;sw;#2 s;#4 se;#2 s;se;d;s;se;s;#3 sw;u;w;n;u;ne;nw;d
 Nevermore|#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;#2 e;n;#3 ne;e;ne;n;
 New Hope Farm|#6 w;#2 sw;#5 w;#2 s;e;se
 New Ofcol|#6 n;#3 nw;w;#4 n;#2 e
@@ -110,14 +111,14 @@ Shadowport|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se;s;#3 sw;u
 Spectrum|godag;n;e;se;e;se;e;ne;enter
 Shai'ghool|#8 e;#3 ne;#3 e;ne;e;ne;#2 e;#2 n;e;ne;
 Shattered Refuge|#9 s;w;#3 s;w;
-Shattered Temple of Naetrelle|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se;sw;#2 w;sw;#6 w;s;ne
+Shattered Temple of Naetrelle|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;#2 s;w;nw;#3 w;sw;#2 w;sw;s;#6 w;ne
 The Shire|#9 w;nw;#2 w;nw
 Silvermoon Outpost|#51 w;#3 s;sw;#5 s;#7 sw
 The Slime Pit|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;#5 nw;#2 w;sw;w;#2 u;#3 n;nw;#2 d;nw;n;#2 w;nw;u;#3 w;nw;w;se
 Southern Mountain Range|#6 s;ne;#2 s;se;#2 e
 Southern Plains|#8 s;#2 w;say story
 Steading of the Hill Giants|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;nw;ne;#2 w;sw;#3 s;sw;n
-Tayalardian Rangelands|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se;sw;#2 w;sw;#5 w;#3 n
+Tayalardian Rangelands|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;#2 s;w;nw;#3 w;sw;#2 w;sw;#5 w;#3 n
 Temple of the Moon|nw;#2 w;#4 n;e;look painting;open n;n;#49 w;#8 s;sw;#3 w;n
 Thalos|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se;s;#3 se;#4 e;#3 s
 Castle of Rol Na Feinne|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;#5 n;ne;n;e;n;ne;#2 n

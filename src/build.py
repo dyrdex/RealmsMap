@@ -139,12 +139,24 @@ import cd_merge as _cdm
 _cdp=dict(zip(_CDL['ids'],zip(_CDL['xs'],_CDL['ys'])))
 for _i,_v in enumerate(_SML['ids']):                              # the Southern Mountain Range rooms the owner moved in the Coral Depths editor
     if _v in _cdm.SM_DRAWN: _SML['xs'][_i],_SML['ys'][_i]=_cdp[_v]
+_WLL=_json.load(open(os.path.join(_here,'wl_layout_final.json'))); _WLE=_json.load(open(os.path.join(_here,'wl_editor_edges.json')))   # the Wastelands layout (Oct 17)
+import wl_merge as _wlm
+for _v,(_x,_y) in _wlm.EXTRA_HIDDEN.items():                      # rooms kept for routes, not drawn (owner, Oct 17)
+    if _v not in _WLL['ids']: _WLL['ids'].append(_v); _WLL['xs'].append(_x); _WLL['ys'].append(_y); _WLL['hidden'].append(_v)
+_wlp=dict(zip(_WLL['ids'],zip(_WLL['xs'],_WLL['ys'])))
+_smr_win={_v:(_SML['xs'][_i],_SML['ys'][_i]) for _i,_v in enumerate(_SML['ids']) if _v in _wlm.UN}
+for _i,_v in enumerate(_SML['ids']):                              # the Southern Mountain Trade Route rooms the owner moved in the Wastelands editor
+    if _v in _wlm.UN: _SML['xs'][_i],_SML['ys'][_i]=_wlp[_v]
+_wls={}
 _cdr={}
 from smr_merge import merge_smr                                    # the Southern Mountain Range, its Trade Route and links to the moved trail (Oct 14)
-w,_sm=merge_smr(w,_SML,_SME,land_edit=_cdm.land_edit(_CDL,_CDE,_SML,_cdr))
+_cdle=_cdm.land_edit(_CDL,_CDE,_SML,_cdr); _wlle=_wlm.wl_land(_WLL,_WLE,_wls)
+w,_sm=merge_smr(w,_SML,_SME,land_edit=lambda L,W,x,y:_wlle(_cdle(L,W,x,y),W,x,y),window_pos=_smr_win)
 print('Southern Mountain Range merged:',_sm)
 w,_cd=_cdm.merge_cd(w,_CDL,_CDE,_SML)                              # the Coral Depths: its paths, the cliff, the sea, the ground (Oct 16)
 print('Coral Depths merged:',{**_cdr,**_cd})
+w,_wl=_wlm.merge_wl(w,_WLL,_WLE,_wls)                            # the Wastelands, from the owner's save (Oct 17)
+print('Wastelands merged:',_wl)
 _cdm_ids={r['id'] for r in _CDE['rooms'] if r.get('area')=='CD'}   # (only the rooms moved in that editor: they come first for the route tracers)
 _CDLm={k:[v for v,i in zip(_CDL[k],_CDL['ids']) if i in _cdm_ids] if k in ('ids','xs','ys') else _CDL[k] for k in _CDL}
 from smr_markers import add_smr_subareas                          # markers + traced routes for the areas that open off the range and its trade route (Oct 14)
@@ -179,6 +191,8 @@ w,_ep=add_extra_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_js
 print('extra places:',_ep)
 w,_cdpl=_cdm.add_cd_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML])   # Coral Depths, Octopus Garden (owner, Oct 16)
 print('Coral Depths places:',_cdpl)
+w,_wlpl=_wlm.add_wl_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_WLL])   # the Wastelands' sub-areas (owner, Oct 17)
+print('Wastelands places:',_wlpl)
 from na_merge import grimdog_route
 w,_ngr=grimdog_route(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_NALm])   # Grimdog's route on to 21076, through the hidden port rooms (owner, Oct 16)
 print('Grimdog route:',_ngr)

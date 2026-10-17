@@ -32,6 +32,13 @@ jobs:
           key: playwright-${{ hashFiles('requirements.txt') }}
       # no --with-deps: the runner image already has Chromium's system libraries (apt can take 10+ minutes when its mirrors are slow)
       - run: python -m playwright install chromium
+      # encoded tiles from the last build (unchanged tiles are copied, not encoded again); a new key each run, restored from the newest
+      - name: Restore tile cache
+        uses: actions/cache@v4
+        with:
+          path: .tile_cache
+          key: tiles-${{ github.run_id }}
+          restore-keys: tiles-
       - name: Build map and tiles
         working-directory: src
         run: python build.py
