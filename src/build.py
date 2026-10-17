@@ -141,6 +141,8 @@ for _i,_v in enumerate(_SML['ids']):                              # the Southern
     if _v in _cdm.SM_DRAWN: _SML['xs'][_i],_SML['ys'][_i]=_cdp[_v]
 _WLL=_json.load(open(os.path.join(_here,'wl_layout_final.json'))); _WLE=_json.load(open(os.path.join(_here,'wl_editor_edges.json')))   # the Wastelands layout (Oct 17)
 import wl_merge as _wlm
+for _v,(_x,_y) in _wlm.EXTRA_HIDDEN.items():                      # rooms kept for routes, not drawn (owner, Oct 17)
+    if _v not in _WLL['ids']: _WLL['ids'].append(_v); _WLL['xs'].append(_x); _WLL['ys'].append(_y); _WLL['hidden'].append(_v)
 _wlp=dict(zip(_WLL['ids'],zip(_WLL['xs'],_WLL['ys'])))
 _smr_win={_v:(_SML['xs'][_i],_SML['ys'][_i]) for _i,_v in enumerate(_SML['ids']) if _v in _wlm.UN}
 for _i,_v in enumerate(_SML['ids']):                              # the Southern Mountain Trade Route rooms the owner moved in the Wastelands editor

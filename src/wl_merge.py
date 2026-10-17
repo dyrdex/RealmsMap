@@ -30,6 +30,8 @@ UN = list(range(9327, 9347))                    # the Southern Mountain Trade Ro
 FOOT = {664, 665} | set(range(8548, 8564))      # the foothill rooms drawn as part of the range's clearing (owner, Oct 17)
 FOOT_JOIN = (34, 35)                            # ... the range rooms whose clearing they continue
 NO_LINK = {frozenset((8557, 8645)), frozenset((8722, 8889))} | {frozenset((a, b)) for a in (8731, 8732, 8733, 8723) for b in (8731, 8732, 8733, 8723) if a < b}             # not drawn (owner, Oct 17)
+EXTRA_HIDDEN = {7854: (9.0, 90.5)}               # Gateway to Aurora, one north of 7853: on the map for routes, hidden (owner, Oct 17)
+PASS = [36, 663, 7840, 7841, 7842, 7843, 7844, 7845, 7846]   # the pass from range room 36 down to 7846: a wide path that looks like the clearings (owner, Oct 17)
 TOWN = {8726, 18259} | set(range(8743, 8770))   # Camden
 SEA_AREAS = ('The Blood Sea', 'Sea of Sorrows')
 LAND_R, SEA_R, TERR_R = 4.2, 8.0, 3.2
@@ -282,6 +284,13 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     footm = ndi.gaussian_filter(ndi.binary_dilation(footm, iterations=2).astype(float), 0.45 * R8) > 0.5
     old = [p for p in (w.get('smrpatch') or []) if any(box[0] <= q[0] < box[2] and box[1] <= q[1] < box[3] for q in p)]
     oldm = AA._raster(old, box[0], box[1], bw, bh) if old else np.zeros((bh, bw), bool)
+    pim = Image.new('L', (bw, bh), 0); pd_ = ImageDraw.Draw(pim); pw = int(SQ * R8)
+    pp_ = [px(pos[v]) for v in PASS if v in pos and shown(v)]
+    pd_.line(pp_, fill=255, width=pw, joint='curve')
+    for q in pp_: pd_.ellipse([q[0] - pw / 2, q[1] - pw / 2, q[0] + pw / 2, q[1] + pw / 2], fill=255)
+    passm = ndi.gaussian_filter(np.array(pim, bool).astype(float), 0.3 * R8) > 0.5
+    rep['pass_sq'] = round(float((passm & ~oldm).sum()) / R8 / R8, 1)
+    clear = clear | passm
     allm = (clear | footm) & ~oldm                                                   # (the range's own clearings are left exactly as they are; ours only meet them)
     patches = AA._contours(allm, box[0], box[1], sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
     w['smrpatch'] = list(w.get('smrpatch') or []) + patches
@@ -346,7 +355,8 @@ def merge_wl(w, layout, edges, store, seed=SEED):
         for b in list(GD[a]):
             if a in river and b in river: GS_[a].add(b); GD[a].discard(b)
     for v in [v for v in GD if not GD[v]]: del GD[v]
-    dirt = _chains(trails(GD), pos, set(), 0.8)
+    JUN = {u for e in uds for u in e if u not in UW}                                  # (the rooms where a way down to the coast leaves a path: the path runs through them exactly)
+    dirt = _chains(trails(GD), pos, set(), 0.8, exact=JUN | {u for v in JUN for u in GD.get(v, ())})   # (and their neighbours: no kinks beside them)
     roadl = _chains(GR, pos, set(), 0.8) if GR else []
     stream = _chains(GS_, pos, set(), 0.8) if GS_ else []
     road_ext = []; pads = []
@@ -382,7 +392,9 @@ def merge_wl(w, layout, edges, store, seed=SEED):
                 else: run.append(pt)
         return out
     spire = [l for l in dirt if any(math.dist(q, pos[v]) < 0.05 for v in SPIRE | {u for e in uds for u in e if u in UW} for q in (l[0], l[-1]))]   # (and the up/down links to the coast, whole)
-    dirt = clip([l for l in dirt if l not in spire], blocked) + spire
+    _jm = np.zeros_like(blocked)
+    for v in JUN: _jm |= (X - pos[v][0]) ** 2 + (Y - pos[v][1]) ** 2 <= 0.7 ** 2
+    dirt = clip([l for l in dirt if l not in spire], blocked & ~_jm) + spire          # (paths reach those rooms even at a clearing's edge)
     roadl = roadl + road_ext
     w['fwtracks'] = list(w['fwtracks']) + dirt
     w['dirtroads'] = list(w.get('dirtroads') or []) + roadl

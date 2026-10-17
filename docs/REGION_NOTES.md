@@ -262,6 +262,7 @@ Not yet built (backlog, in this order): an automatic QA report script; a "tweaks
   7. South-west: one ash-coloured clearing (`wlash`) with a straight north-south west edge east of the river rooms; hole for 8705/8706 whose path (8703-8705-8706) is drawn on top. River rooms (incl. Crumbling Bridge 8588-8591) are plain brown paths, no streams.
   8. Coast path (Wasted Shores of Ahtborne + Beaches of Sorrow + spacers) is LAND, a dashed blue line (`seadash`) incl. its up/down exits; the sea starts just south of it. Paths from the area down to it are normal brown paths (8723/8724/8725 up/down links drawn whole).
   9. Hidden: 8700, 8754 (+ the owner's save). Not drawn: 8722-8889. Markers unchanged.
+  10. (Oct 17 late) 7854 added hidden at (9, 90.5) via `EXTRA_HIDDEN` (build.py appends it to the WL layout; not in the editor). `PASS` 36-663-7840..7846 = clearing-style band (width SQ) in the clearings layer (meets the range's clearing at 36, which stays untouched). Up/down junction rooms (`JUN`) and their path neighbours are exact points in the chains, and clips leave 0.7 round them, so the coast drops join cleanly.
 - The owner found repeated misses (Oct 17); next session: verify each rule numerically against the render before reporting.
 
 ### Wolf's Den marker (Oct 15, owner: wrong place)
