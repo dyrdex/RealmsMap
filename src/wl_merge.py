@@ -216,9 +216,25 @@ def merge_wl(w, layout, edges, store, seed=SEED):
             dr.polygon([px(p) for p in pts[hull.vertices]], fill=255, outline=255)
         m = ndi.binary_dilation(np.array(im, bool), structure=disk(int(PAD * R8)))
         return ndi.gaussian_filter(m.astype(float), 0.45 * R8) > 0.5
-    salt_cells = [c for c in cells if all(sec[v] == 'salt' for v in c)]
+    nbs = defaultdict(set)
+    for a, b, k in E:
+        if k != 'ud': nbs[a].add(b); nbs[b].add(a)
+    withsp = lambda core: core | {v for v in WL if void(v) and shown(v) and sum(1 for u in nbs[v] if u in core) >= 2}
+    def roompatch(S_):                                                               # (owner, Oct 17: exactly the rooms and the exits between them, holes filled)
+        im = Image.new('L', (bw, bh), 0); dr = ImageDraw.Draw(im); s_ = int(SQ * R8)
+        for v in S_:
+            p = px(pos[v]); dr.rectangle([p[0] - s_ / 2, p[1] - s_ / 2, p[0] + s_ / 2, p[1] + s_ / 2], fill=255)
+        for a, b, k in E:
+            if a in S_ and b in S_ and k != 'ud': dr.line([px(pos[a]), px(pos[b])], fill=255, width=s_)
+        return ndi.gaussian_filter(ndi.binary_fill_holes(np.array(im, bool)).astype(float), 0.3 * R8) > 0.5
+    STEPPE = withsp({v for v in WL if shown(v) and nm(v) == 'Arid Steppes'})        # every Arid Steppes room a clearing (owner, Oct 17)
+    SALTR = withsp({v for v in WL if shown(v) and sec[v] == 'salt'})                 # the Salt Flats: a salt field on exactly its rooms (owner, Oct 17)
+    VOLC = withsp({v for v in WL if shown(v) and sec[v] == 'volc'})                  # the Volcanic Plains rooms: an ash-coloured clearing (owner, Oct 17)
+    SW = {v for v in WL if shown(v) and not void(v) and pos[v][0] <= 1 and pos[v][1] >= 96 and sec[v] not in ('road', 'salt') and nm(v) != 'Arid Steppes'}
+    salt_cells = [c for c in cells if c & (SALTR | VOLC)]
     dirt_cells = [c for c in cells if c not in salt_cells]
-    clear = cellmask(dirt_cells); saltm = cellmask(salt_cells)
+    saltm = roompatch(SALTR); volcm = roompatch(VOLC)
+    clear = (cellmask(dirt_cells) | roompatch(STEPPE)) & ~volcm & ~saltm
     lab, n = ndi.label(clear); keep = np.zeros_like(clear)
     for i in range(1, n + 1):
         comp = lab == i
@@ -247,6 +263,8 @@ def merge_wl(w, layout, edges, store, seed=SEED):
         w['smrpatch'] = [p for p in w['smrpatch'] if p not in old]
     patches = AA._contours(allm, box[0], box[1], sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
     w['smrpatch'] = list(w.get('smrpatch') or []) + patches
+    w['wlash'] = AA._contours(volcm & ~sea, box[0], box[1], sigma=1.0, tol=0.35, minarea=0.5)
+    rep['sections'] = dict(steppe_rooms=len(STEPPE), salt_rooms=len(SALTR), volcanic_rooms=len(VOLC), south_west_rooms=len(SW), salt_sq=round(float(saltm.sum()) / R8 / R8, 1), volcanic_clearing_sq=round(float(volcm.sum()) / R8 / R8, 1))
     rep['clearings'] = dict(cells=len(dirt_cells), sq=round(float(clear.sum()) / R8 / R8, 1), foothills_sq=round(float(footm.sum()) / R8 / R8, 1),
                             range_clearings_joined=len(old), salt_cells=len(salt_cells))
     patchm = AA._raster(patches, box[0], box[1], bw, bh)
@@ -286,7 +304,7 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     for v in [v for v in GD if not GD[v]]: del GD[v]
 
     # ---------------------------------------------------------------- lines: trails, the wide road, links
-    blocked = patchm | townm
+    blocked = patchm | townm | saltm | volcm
     def trails(G):
         Tg = defaultdict(set)
         for a in G:
@@ -368,35 +386,35 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     rs = [v for v in WL if shown(v) and not void(v) and v not in UW and v not in under and (v in GD or v in GR or v in GS_ or v in TOWN or v in FOOT or any(v in e for e in links + uds))]
     tr = cKDTree(np.array([pos[v] for v in rs])); dist, idx = tr.query(P)
     S = np.array([sec[v] for v in rs])[idx].reshape(bh, bw); dist = dist.reshape(bh, bw)
+    inSW = np.array([v in SW for v in rs])[idx].reshape(bh, bw)
     on = land_wl & (dist <= TERR_R) & ~sand
     own = land_wl & (dist <= LAND_R + 3)                                            # (the Wastelands' own ground: not the range's)
     rng = np.random.default_rng(seed + 3)
     nz = ndi.gaussian_filter(rng.normal(size=(bh, bw)), 1.4 * R8); nz = (nz - nz.min()) / (nz.max() - nz.min())
     sm = lambda m, s=0.6: ndi.gaussian_filter(m.astype(float), s * R8) > 0.5
     zone = lambda *ks: sm(on & np.isin(S, ks))
-    fieldz = own & ~sand & ~zone('salt', 'volc', 'volcano', 'desert', 'cliff', 'canyon', 'shore') & ~townm
+    swm = sm(land_wl & inSW & (dist <= TERR_R + 1.5), 0.8)                        # the south-west corner: one ground, ash (owner, Oct 17)
+    fieldz = own & ~sand & ~zone('desert', 'cliff', 'canyon', 'shore') & ~townm & ~swm & ~saltm
     tints = {}
     tints['wheat'] = _put(w, 'wheat', fieldz, box, sigma=2.0)
     blob = lambda m: ndi.binary_opening(m, structure=disk(R8))                     # (no thin strips)
     tints['wheat2'] = _put(w, 'wheat2', blob(fieldz & (nz > 0.6)), box, sigma=2.5, minarea=1.5)
     tints['wheat3'] = _put(w, 'wheat3', blob(fieldz & (nz < 0.35)), box, sigma=2.5, minarea=1.5)
-    salt = (zone('salt') | saltm) & land_wl
-    tints['salt'] = _put(w, 'salt', salt, box, sigma=2.0)
-    volc = zone('volc', 'volcano')
-    tints['ash'] = _put(w, 'ash', volc, box, sigma=2.0)
-    tints['doom'] = _put(w, 'doom', sm(ndi.binary_dilation(zone('volcano'), iterations=R8) & land_wl), box, sigma=2.0)       # (darker ground round the volcano's top)
-    des = zone('desert')
+    tints['salt'] = _put(w, 'salt', saltm & land_wl, box, sigma=1.0)
+    volc = swm
+    tints['ash'] = _put(w, 'ash', swm, box, sigma=2.0)
+    des = zone('desert') & ~swm
     tints['dunes'] = _put(w, 'dunes', des, box, sigma=2.0)
-    cliff = zone('cliff')
+    cliff = zone('cliff') & ~swm
     tints['clifftop'] = _put(w, 'clifftop', cliff, box, sigma=1.5)
-    can = zone('canyon')
+    can = zone('canyon') & ~swm
     tints['barren'] = _put(w, 'barren', can, box, sigma=2.0)
-    shore = zone('shore') | sand
+    shore = (zone('shore') | sand) & ~swm
     tints['sand'] = _put(w, 'sand', shore, box, sigma=1.0)
     rep['tints_sq'] = tints
 
     # ---------------------------------------------------------------- sprites (clear of paths, clearings, the town, the sea)
-    onway = (d_path <= 0.55) | patchm | townm | sea                                 # (the range's sprites, placed before these paths existed, give way to them)
+    onway = (d_path <= 0.55) | patchm | townm | sea | saltm | volcm                                 # (the range's sprites, placed before these paths existed, give way to them)
     def off(q):
         c, r = int((q[0] - box[0]) * R8), int((q[1] - box[1]) * R8)
         return 0 <= r < bh and 0 <= c < bw and bool(onway[r, c])
@@ -407,15 +425,15 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     rep['old_sprites_cleared'] = cl
     old = [q[:2] for k in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples') for q in (w.get(k) or [])
            if box[0] <= q[0] <= box[2] and box[1] <= q[1] <= box[3]]
-    free = land_wl & (d_path > 0.6) & ~townm & ~patchm & own
+    free = land_wl & (d_path > 0.6) & ~townm & ~patchm & ~saltm & ~volcm & own
     spr = {}
-    hillz = free & zone('hills') & (d_path > 1.0)                                  # (the bigger sprites first, then the grass between them)
+    hillz = free & zone('hills') & ~swm & (d_path > 1.0)                                  # (the bigger sprites first, then the grass between them)
     hills = _place(hillz, X, Y, 1.8, 87, old)
     w['hills'] = list(w['hills']) + [[x, y, round(0.8 + 0.3 * float(_hash(x, y, 88)), 2), 'h', int(float(_hash(x, y, 89)) * 3)] for x, y in hills]
     crz = free & (volc | can) & (d_path > 0.8)
     crags = _place(crz, X, Y, 1.5, 90, old + hills)
     w['crags'] = sorted(list(w.get('crags') or []) + [[x, y, round(0.55 + 0.3 * float(_hash(x, y, 91)), 2), int(float(_hash(x, y, 92)) * 3)] for x, y in crags], key=lambda b: b[1])
-    rocks = _place(free & (cliff | zone('volcano')) & (d_path > 0.5), X, Y, 1.0, 93, old + hills + crags)
+    rocks = _place(free & cliff & (d_path > 0.5), X, Y, 1.0, 93, old + hills + crags)
     w['boulders'] = list(w.get('boulders') or []) + [[x, y, round(0.4 + 0.3 * float(_hash(x, y, 94)), 2)] for x, y in rocks]
     rip = _place(free & des & (d_path > 0.6), X, Y, 1.3, 95, old)
     w['ripples'] = sorted(list(w.get('ripples') or []) + [[x, y, round(0.6 + 0.3 * float(_hash(x, y, 96)), 2), int(float(_hash(x, y, 97)) * 3)] for x, y in rip], key=lambda b: b[1])

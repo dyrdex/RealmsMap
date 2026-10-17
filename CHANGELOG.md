@@ -6,6 +6,7 @@
 - The Wastelands editor's starting layout spread out (your request): 2 rooms per exit, no rooms on top of each other (0 overlaps, was 238), 12 stretched exits (was 410), 10 trail lines through another room (was 119); the area starts as one block next to the range, clear of the rooms already on the map. All future layout editors start this way.
 - Wastelands editor: Southern Mountain Trade Route rooms 9327-9346 unlocked (movable, blue outline, 'Select the unlocked map rooms'); they start where they are on the map.
 - The Wastelands drawn from your save of Oct 17 (first rough pass): dry field ground, dirt clearings where rooms are joined in clumps, dirt trails, An Ancient Road as a wide dirt road, the foothills (664, 665, 8548-8563) as part of the range's clearing at 34/35 (8557-8645 not drawn), Salt Flats pale, Volcanic Plains ash with a peak, desert dunes, grey cliffs, the canyon barren, sand along the shore, the river as a stream, Camden as a small town, sea south of the coast with the underwater rooms as dashed lines. Trade Route 9327-9346 drawn where you moved them. Map now reaches y 139. Markers unchanged.
+- Wastelands (your review): every Arid Steppes room is now a clearing (140 rooms incl. spacers); the Salt Flats are a salt field on exactly their rooms (26 rooms, 92 sq); the south-west corner (57 rooms: Volcanic Plains and everything joined to it down to the corner) is one ash ground, with the Volcanic Plains rooms (22) as an ash-coloured clearing (98 sq).
 
 ## Version 17 · Angel's Landing and the Village of Edo · October 16, 2026
 
