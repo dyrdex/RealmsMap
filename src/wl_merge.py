@@ -365,6 +365,9 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     if townm.any():                                                                  # its name: a small label above the town's top row of buildings (owner, Oct 17)
         top_ = min(b['y'] - b['h'] / 2 for b in blds) if blds else tb[1] + 1
         gfx.append({'k': 'text', 'at': 'xy', 'x': round(float(np.mean([pos[v][0] for v in T])), 2), 'y': round(top_ - 0.45, 2), 'text': 'Camden'})
+    for v, k, sz in ((8557, 'ladderhole', 0.95), (8645, 'ladderexit', 0.95)):          # the hidden way down 8557 -> 8645: a ladder into a hole, and where it comes out (owner, Oct 17)
+        if v in pos: gfx.append({'k': k, 'at': 'xy', 'x': pos[v][0], 'y': pos[v][1], 'w': sz, 'h': sz})
+    if 8706 in pos: gfx.append({'k': 'darktower', 'at': 'xy', 'x': pos[8706][0], 'y': round(pos[8706][1] - 1.25, 2), 'w': 1.4, 'h': 2.6})   # the Tower of Despair, standing over 8706 (owner, Oct 17)
     w['gfx'] = list(w['gfx']) + gfx
     tb = (float(X[townm].min()), float(Y[townm].min()), float(X[townm].max()), float(Y[townm].max())) if townm.any() else (0, 0, 0, 0)
     rep['camden'] = dict(box=[round(q, 2) for q in tb], ground_sq=round(float(townm.sum()) / R8 / R8, 1), streets=len(streets), buildings=[(b['k'], b['room']) for b in blds], gfx=gfx)
@@ -436,7 +439,9 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     spire = [l for l in dirt if any(math.dist(q, pos[v]) < 0.05 for v in SPIRE | {u for e in uds for u in e if u in UW} for q in (l[0], l[-1]))]   # (and the up/down links to the coast, whole)
     _jm = np.zeros_like(blocked)
     for v in JUN: _jm |= (X - pos[v][0]) ** 2 + (Y - pos[v][1]) ** 2 <= 0.7 ** 2
-    dirt = clip([l for l in dirt if l not in spire], blocked & ~(_jm & ~saltd)) + spire          # (paths reach those rooms even at a clearing's edge)
+    dirt = clip([l for l in dirt if l not in spire], blocked & ~(_jm & ~saltd)) + spire
+    _au = [pos.get(7852), pos.get(7853), EXTRA_HIDDEN.get(7854)]                       # (a regular path 7852 - 7853 - the City of Aurora marker at 7854, over the clearing: owner, Oct 17)
+    if all(_au): dirt.append([[round(q[0], 2), round(q[1], 2)] for q in _au])          # (paths reach those rooms even at a clearing's edge)
     roadl = roadl + road_ext
     w['fwtracks'] = list(w['fwtracks']) + dirt + streets                           # (Camden's streets: dirt streets on its ground)
     w['dirtroads'] = list(w.get('dirtroads') or []) + roadl

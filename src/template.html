@@ -798,6 +798,22 @@ document.getElementById('lanes').innerHTML=ln;
     for(let i=1;i<20;i++)s+=`<line x1="-.42" y1="${(-.5+i*.05).toFixed(3)}" x2=".42" y2="${(-.5+i*.05).toFixed(3)}" stroke="#4A3826" stroke-width=".008"/>`;
     for(let i=0;i<5;i++){const y=(-.4+i*.22).toFixed(3);s+=`<rect x="-.5" y="${y}" width=".1" height=".04" fill="#3E2E1E" stroke="${D}" stroke-width=".006"/><rect x=".4" y="${y}" width=".1" height=".04" fill="#3E2E1E" stroke="${D}" stroke-width=".006"/>`}
     return s};
+  SPRITE.ladderhole=()=>{const D='#14110D',WD_='#8A6A44';let s=`<circle r=".47" fill="#5C564C" stroke="${D}" stroke-width=".04"/>`+Array.from({length:8},(_,i)=>{const a=i*Math.PI/4;return `<path d="M${(Math.cos(a)*.33).toFixed(3)} ${(Math.sin(a)*.33).toFixed(3)} L${(Math.cos(a)*.47).toFixed(3)} ${(Math.sin(a)*.47).toFixed(3)}" stroke="${D}" stroke-width=".025"/>`}).join('');   /* 8557: a stone-rimmed hole with a ladder going down (the hidden way to 8645, owner Oct 17) */
+    s+=`<circle r=".33" fill="#0b0907" stroke="${D}" stroke-width=".03"/><ellipse cx="0" cy=".06" rx=".26" ry=".22" fill="#000" opacity=".6"/>`;
+    s+=`<path d="M-.12 -.55 V.22 M.12 -.55 V.22" stroke="${WD_}" stroke-width=".05" stroke-linecap="round"/>`+[-.45,-.3,-.15,0,.15].map(y=>`<path d="M-.12 ${y} H.12" stroke="${WD_}" stroke-width=".04"/>`).join('')+`<path d="M-.12 .05 V.22 M.12 .05 V.22" stroke="#000" stroke-width=".05" opacity=".55"/>`;
+    return s};
+  SPRITE.ladderexit=()=>{const D='#14110D';let s=`<circle r=".47" fill="#6F6A5C" stroke="${D}" stroke-width=".04"/>`+Array.from({length:8},(_,i)=>{const a=i*Math.PI/4+Math.PI/8;return `<path d="M${(Math.cos(a)*.33).toFixed(3)} ${(Math.sin(a)*.33).toFixed(3)} L${(Math.cos(a)*.47).toFixed(3)} ${(Math.sin(a)*.47).toFixed(3)}" stroke="${D}" stroke-width=".025"/>`}).join('');   /* 8645: where the hidden way from 8557 comes out: a stone circle marked with a grey X in a ring (owner, Oct 17) */
+    s+=`<circle r=".33" fill="#8D8776" stroke="${D}" stroke-width=".03"/><circle r=".22" fill="none" stroke="#4A4740" stroke-width=".05"/><path d="M-.14 -.14 L.14 .14 M.14 -.14 L-.14 .14" stroke="#4A4740" stroke-width=".06" stroke-linecap="round"/>`;
+    return s};
+  SPRITE.darktower=()=>{const D='#0a0808',S1='#3A3434',S2='#2A2525';let s=`<ellipse cx="0" cy="1.26" rx=".75" ry=".08" fill="#000" opacity=".4"/>`;   /* the Tower of Despair: a tall, tapering black tower, broken jagged battlements, a crooked spire, red-lit slit windows, bats (owner, Oct 17) */
+    s+=`<path d="M-.5 1.25 L-.36 -.55 H.36 L.5 1.25Z" fill="${S1}" stroke="${D}" stroke-width=".04" stroke-linejoin="round"/><path d="M0 -.55 H.36 L.5 1.25 H.08Z" fill="${S2}"/>`;
+    s+=Array.from({length:6},(_,i)=>`<path d="M${(-.48+i*.01).toFixed(2)} ${(1.0-i*.3).toFixed(2)} H${(.48-i*.01).toFixed(2)}" stroke="${D}" stroke-width=".018" opacity=".6"/>`).join('');
+    s+=`<path d="M-.46 -.55 L-.46 -.78 L-.34 -.7 L-.26 -.86 L-.14 -.72 L-.04 -.9 L.06 -.74 L.16 -.84 L.26 -.7 L.36 -.82 L.46 -.68 L.46 -.55Z" fill="${S1}" stroke="${D}" stroke-width=".035" stroke-linejoin="round"/>`;
+    s+=`<path d="M-.22 -.72 L.02 -1.32 L.06 -1.2 L.1 -1.4 L.22 -.72Z" fill="${S2}" stroke="${D}" stroke-width=".03" stroke-linejoin="round"/>`;
+    s+=[[-.12,-.3],[.14,.05],[-.16,.42],[.12,.75]].map(([x,y])=>`<rect x="${x-.035}" y="${y}" width=".07" height=".18" fill="#C0302A" opacity=".9"/><rect x="${x-.08}" y="${y-.04}" width=".16" height=".26" fill="#C0302A" opacity=".18"/>`).join('');
+    s+=`<path d="M-.14 1.25 V1.0 A.14 .14 0 0 1 .14 1.0 V1.25Z" fill="#000"/>`;
+    s+=[[-.62,-1.0,.1],[.5,-1.18,.08],[.66,-.7,.07]].map(([x,y,r])=>`<path d="M${x-r} ${y} q${r/2} ${-r*.6} ${r} 0 q${r/2} ${-r*.6} ${r} 0" fill="none" stroke="${D}" stroke-width=".035" stroke-linecap="round"/>`).join('');
+    return s};
   SPRITE.seahole=()=>`<circle r=".5" fill="#2E5A6A" stroke="var(--w-shore)" stroke-width=".05"/><circle r=".36" fill="#1A3A48"/><circle r=".22" fill="#0C1F28"/><circle r=".09" fill="#050D12"/>
       <path d="M-.36 0 A.36 .36 0 0 1 .18 -.31 M.3 .2 A.3 .3 0 0 1 -.15 .28" stroke="#5E8794" stroke-width=".03" fill="none" opacity=".8"/>`;
   let out='';
@@ -807,7 +823,7 @@ document.getElementById('lanes').innerHTML=ln;
     else if(g.at==='above-pin'){cx=p.mx+(g.dx||0);cy=p.my-.5-g.h/2+(g.dy||0)}
     else{const t=[...svg.querySelectorAll('.plabel.lbl')].find(e=>P[+e.dataset.i]===p);if(!t)continue;const bb=t.getBBox();cx=bb.x+bb.width/2+(g.dx||0);cy=(g.at==='above-text'?bb.y-g.h/2-.12:bb.y+bb.height+g.h/2+.08)+(g.dy||0)}  // at: 'above-text' or 'below-text'
     if(g.k==='text'){out+=`<text x="${g.x}" y="${g.y}" text-anchor="middle" font-size=".38" font-style="italic" fill="var(--soft)" style="paint-order:stroke;stroke:var(--halo);stroke-width:.1px;stroke-linejoin:round">${g.text}</text>`;continue}
-    const dx={hut:1.0,jtemple:1.1,pirateinn:2.5,gatetower:3.8,volcano:3.0,saloon:2.2,pier:1,seainn:3.4,seahole:1.1,barn:3.5,hideout:5.0,castle:4,windmill:2.4,town:4.4,inn:3,keep:2.6,palisade:3.3,stonecity:3.5,ruin:3.0,darkpeak:4.4,barrow:4.6,grove:1,waterway:1,graves:1}[g.k],dy={hut:.9,jtemple:1.6,pirateinn:2.1,gatetower:3.64,volcano:2.4,saloon:1.7,pier:1,seainn:2.2,seahole:1.1,barn:2.6,hideout:4.7,castle:3.3,windmill:3.2,town:2.6,inn:2.4,keep:5.3,palisade:2.5,stonecity:2.9,ruin:2.1,darkpeak:2.9,barrow:2.3,grove:1,waterway:1,graves:1}[g.k];
+    const dx={hut:1.0,jtemple:1.1,pirateinn:2.5,gatetower:3.8,volcano:3.0,saloon:2.2,pier:1,ladderhole:1,ladderexit:1,darktower:1.4,seainn:3.4,seahole:1.1,barn:3.5,hideout:5.0,castle:4,windmill:2.4,town:4.4,inn:3,keep:2.6,palisade:3.3,stonecity:3.5,ruin:3.0,darkpeak:4.4,barrow:4.6,grove:1,waterway:1,graves:1}[g.k],dy={hut:.9,jtemple:1.6,pirateinn:2.1,gatetower:3.64,volcano:2.4,saloon:1.7,pier:1,ladderhole:1,ladderexit:1,darktower:2.7,seainn:2.2,seahole:1.1,barn:2.6,hideout:4.7,castle:3.3,windmill:3.2,town:2.6,inn:2.4,keep:5.3,palisade:2.5,stonecity:2.9,ruin:2.1,darkpeak:2.9,barrow:2.3,grove:1,waterway:1,graves:1}[g.k];
     out+=`<g class="gfx-${g.k}" transform="translate(${cx.toFixed(3)},${cy.toFixed(3)}) scale(${(g.w/dx).toFixed(4)},${(g.h/dy).toFixed(4)})">${SPRITE[g.k](g)}</g>`;
   }
   layer.innerHTML=out;
