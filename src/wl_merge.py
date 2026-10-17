@@ -362,9 +362,6 @@ def merge_wl(w, layout, edges, store, seed=SEED):
             if sea[r_, c_]: y_top = (r_ + .5) / R8 + box[1]; break
         y_top -= 0.35; y_bot = max(p[1] for p in pr) + 0.6
         gfx.append({'k': 'pier', 'at': 'xy', 'x': round(px_, 2), 'y': round((y_top + y_bot) / 2, 2), 'w': 0.7, 'h': round(y_bot - y_top, 2)})
-    if townm.any():                                                                  # its name: a small label above the town's top row of buildings (owner, Oct 17)
-        top_ = min(b['y'] - b['h'] / 2 for b in blds) if blds else tb[1] + 1
-        gfx.append({'k': 'text', 'at': 'xy', 'x': round(float(np.mean([pos[v][0] for v in T])), 2), 'y': round(top_ - 0.45, 2), 'text': 'Camden'})
     for v, k, sz in ((8557, 'ladderhole', 0.95), (8645, 'ladderexit', 0.95)):          # the hidden way down 8557 -> 8645: a ladder into a hole, and where it comes out (owner, Oct 17)
         if v in pos: gfx.append({'k': k, 'at': 'xy', 'x': pos[v][0], 'y': pos[v][1], 'w': sz, 'h': sz})
     if 8706 in pos: gfx.append({'k': 'darktower', 'at': 'xy', 'x': pos[8706][0], 'y': round(pos[8706][1] - 1.25, 2), 'w': 1.4, 'h': 2.6})   # the Tower of Despair, standing over 8706 (owner, Oct 17)
@@ -562,6 +559,8 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     spr.update(wheattufts=len(tufts), brush=len(brush), hills=len(hills), crags=len(crags), boulders=len(rocks), dune_ripples=len(rip))
     rep['sprites'] = spr
 
+    w['arealabels'] = list(w.get('arealabels', [])) + [dict(x=34.0, y=96.8, lh=2.6, sag=1.0, hw=11, lines=['Wastelands'])]   # the area's name in the open steppes clearing east of the Ancient Road (owner, Oct 17)
+
     # ---------------------------------------------------------------- the map grows south
     ys_ = [q[1] for k in ('land', 'water') for p in w['geo'][k] for q in p]; xs_ = [q[0] for k in ('land', 'water') for p in w['geo'][k] for q in p]
     b0 = list(w['bounds'])
@@ -571,7 +570,7 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     return w, rep
 
 
-SUBAREAS = ("City of Aurora", "Badlands", "Mulciber's Forge", "Realm of Worship", "Shattered Temple of Naetrelle", "Tayalardian Rangelands", "Thalos",
+SUBAREAS = ("Camden", "City of Aurora", "Badlands", "Mulciber's Forge", "Realm of Worship", "Shattered Temple of Naetrelle", "Tayalardian Rangelands", "Thalos",
             "Tower of Despair")   # the Wastelands' sub-areas with directions in data.py (owner, Oct 17: not The Mire, the Desert of Despair, the Sea of Sorrows)
 
 
@@ -591,7 +590,19 @@ def add_wl_places(w, layouts):
         upto = t[:last + 1]; segs = segments([at(v) for v in upto])
         d = 'here' if last == len(t) - 1 else re.sub(r'^#\s*\d+\s*', '', route.split(';')[-1].strip())   # (the way out of the map: '#5 n' -> 'n')
         w['places'].append(dict(name=name, route=route, room=rooms[upto[-1]]['name'], dir=d, path=[q for s_ in segs for q in s_], segs=segs,
-                                group='af', where='off the Wastelands',
+                                group='af', where='in the Wastelands' if name == 'Camden' else 'off the Wastelands',
                                 note=None if len(segs) == 1 else "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."))
         rep[name] = dict(end_room=upto[-1], walked=len(t), dir=d, pieces=len(segs), marker=segs[-1][-1])
+    DV = {'n': (0, -1), 's': (0, 1), 'e': (1, 0), 'w': (-1, 0), 'ne': (.7, -.7), 'nw': (-.7, -.7), 'se': (.7, .7), 'sw': (-.7, .7)}
+    def pin(name):                                                                   # (where the template puts the pin)
+        p = next((p for p in w['places'] if p['name'] == name), None)
+        if not p: return None
+        e = p['path'][-1]; v = DV.get(p['dir'], (0, 0)); return (e[0] + v[0] * .62, e[1] + v[1] * .62)
+    g = []
+    for name in ('City of Aurora', 'Thalos'):                                        # a city south of each marker (owner, Oct 17)
+        q = pin(name)
+        if q: g.append({'k': 'stonecity', 'at': 'xy', 'x': round(q[0], 2), 'y': round(q[1] + 0.55 + 2.15 / 2, 2), 'w': 2.6, 'h': 2.15})
+    q = pin('Shattered Temple of Naetrelle')                                         # the shattered temple north of its marker (owner, Oct 17)
+    if q: g.append({'k': 'shatteredtemple', 'at': 'xy', 'x': round(q[0], 2), 'y': round(q[1] - 0.55 - 1.6 / 2, 2), 'w': 2.4, 'h': 1.6})
+    w['gfx'] = list(w['gfx']) + g; rep['gfx'] = g
     return w, rep
