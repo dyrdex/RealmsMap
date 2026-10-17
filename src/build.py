@@ -191,6 +191,8 @@ w,_ep=add_extra_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_js
 print('extra places:',_ep)
 w,_cdpl=_cdm.add_cd_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML])   # Coral Depths, Octopus Garden (owner, Oct 16)
 print('Coral Depths places:',_cdpl)
+w,_wlpl=_wlm.add_wl_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_WLL])   # the Wastelands' sub-areas (owner, Oct 17)
+print('Wastelands places:',_wlpl)
 from na_merge import grimdog_route
 w,_ngr=grimdog_route(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_NALm])   # Grimdog's route on to 21076, through the hidden port rooms (owner, Oct 16)
 print('Grimdog route:',_ngr)

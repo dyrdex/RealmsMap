@@ -362,6 +362,9 @@ def merge_wl(w, layout, edges, store, seed=SEED):
             if sea[r_, c_]: y_top = (r_ + .5) / R8 + box[1]; break
         y_top -= 0.35; y_bot = max(p[1] for p in pr) + 0.6
         gfx.append({'k': 'pier', 'at': 'xy', 'x': round(px_, 2), 'y': round((y_top + y_bot) / 2, 2), 'w': 0.7, 'h': round(y_bot - y_top, 2)})
+    if townm.any():                                                                  # its name: a small label above the town's top row of buildings (owner, Oct 17)
+        top_ = min(b['y'] - b['h'] / 2 for b in blds) if blds else tb[1] + 1
+        gfx.append({'k': 'text', 'at': 'xy', 'x': round(float(np.mean([pos[v][0] for v in T])), 2), 'y': round(top_ - 0.45, 2), 'text': 'Camden'})
     w['gfx'] = list(w['gfx']) + gfx
     tb = (float(X[townm].min()), float(Y[townm].min()), float(X[townm].max()), float(Y[townm].max())) if townm.any() else (0, 0, 0, 0)
     rep['camden'] = dict(box=[round(q, 2) for q in tb], ground_sq=round(float(townm.sum()) / R8 / R8, 1), streets=len(streets), buildings=[(b['k'], b['room']) for b in blds], gfx=gfx)
@@ -371,7 +374,8 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     for v in [v for v in GD if not GD[v]]: del GD[v]
 
     # ---------------------------------------------------------------- lines: trails, the wide road, links
-    blocked = patchm | ndi.binary_dilation(saltm, iterations=int(0.35 * R8)) | volcm   # (the salt as drawn reaches a little past its mask)
+    saltd = ndi.binary_dilation(saltm | AA._raster(AA._contours(saltm, box[0], box[1], sigma=2.0, tol=0.3, minarea=0.5), box[0], box[1], bw, bh), iterations=int(0.35 * R8))
+    blocked = patchm | ndi.binary_dilation(saltm | AA._raster(AA._contours(saltm, box[0], box[1], sigma=2.0, tol=0.3, minarea=0.5), box[0], box[1], bw, bh), iterations=int(0.35 * R8)) | volcm   # (the salt as drawn reaches a little past its mask)
     def trails(G):
         Tg = defaultdict(set)
         for a in G:
@@ -432,7 +436,7 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     spire = [l for l in dirt if any(math.dist(q, pos[v]) < 0.05 for v in SPIRE | {u for e in uds for u in e if u in UW} for q in (l[0], l[-1]))]   # (and the up/down links to the coast, whole)
     _jm = np.zeros_like(blocked)
     for v in JUN: _jm |= (X - pos[v][0]) ** 2 + (Y - pos[v][1]) ** 2 <= 0.7 ** 2
-    dirt = clip([l for l in dirt if l not in spire], blocked & ~_jm) + spire          # (paths reach those rooms even at a clearing's edge)
+    dirt = clip([l for l in dirt if l not in spire], blocked & ~(_jm & ~saltd)) + spire          # (paths reach those rooms even at a clearing's edge)
     roadl = roadl + road_ext
     w['fwtracks'] = list(w['fwtracks']) + dirt + streets                           # (Camden's streets: dirt streets on its ground)
     w['dirtroads'] = list(w.get('dirtroads') or []) + roadl
@@ -559,4 +563,30 @@ def merge_wl(w, layout, edges, store, seed=SEED):
     w['bounds'] = [b0[0], b0[1], max(b0[2], int(math.ceil(max(xs_)))), max(b0[3], int(math.ceil(max(ys_))) + 1)]
     rep['bounds'] = [b0, w['bounds']]
     rep['rooms'] = dict(shown=len([v for v in WL if shown(v) and not void(v)]), hidden=len([v for v in WL if v in hidden]), underwater=len([v for v in UW if not void(v)]))
+    return w, rep
+
+
+SUBAREAS = ("City of Aurora", "Badlands", "Mulciber's Forge", "Realm of Worship", "Shattered Temple of Naetrelle", "Tayalardian Rangelands", "Thalos",
+            "Tower of Despair")   # the Wastelands' sub-areas with directions in data.py (owner, Oct 17: not The Mire, the Desert of Despair, the Sea of Sorrows)
+
+
+def add_wl_places(w, layouts):
+    """the Wastelands' sub-area destinations, traced from the owner's directions: the marker where the route leaves the drawn rooms"""
+    import data as DT
+    from route_fix import make_tracer
+    from extra_places import segments
+    rooms, walk, at = make_tracer(w, layouts)
+    lines = (DT.AREAS + '\n' + DT.MORE_DIRECTIONS).split('\n')
+    rep = {}
+    for name in SUBAREAS:
+        if any(p['name'] == name for p in w['places']): rep[name] = 'already on the map'; continue
+        route = next(l.split('|', 1)[1].strip().rstrip(';') for l in lines if l.startswith(name + '|'))
+        t = walk(route)
+        last = max(i for i, v in enumerate(t) if at(v))
+        upto = t[:last + 1]; segs = segments([at(v) for v in upto])
+        d = 'here' if last == len(t) - 1 else re.sub(r'^#\s*\d+\s*', '', route.split(';')[-1].strip())   # (the way out of the map: '#5 n' -> 'n')
+        w['places'].append(dict(name=name, route=route, room=rooms[upto[-1]]['name'], dir=d, path=[q for s_ in segs for q in s_], segs=segs,
+                                group='af', where='off the Wastelands',
+                                note=None if len(segs) == 1 else "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."))
+        rep[name] = dict(end_room=upto[-1], walked=len(t), dir=d, pieces=len(segs), marker=segs[-1][-1])
     return w, rep
