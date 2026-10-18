@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress (after version 19)
+## Version 20 · Dragon's Pass Link · October 18, 2026
 
 - Your requests (Oct 18): a small label "(Dragon's Pass Link)" just north of The Mire (Central)'s dragon; a smaller label "(The Mire Link)" just south of the Dragon's Pass name (that name now stays where it is, so the two can't drift apart). Both in the map's small-label style (italic, soft grey), clear of markers, names and paths.
 - Your request (Oct 18): The Mire (Central)'s dragon redrawn in the map's ink style (less cartoony): a dark dragon sitting upright on a grey rock, S-curved spiny neck, horned head, ribbed wings raised (the far one behind), tail over the rock to a barb, fine hatching; a little smaller (3.7 x 2.75, was 4.25 x 3.1), still just north of its marker and clear of its name.
