@@ -26,6 +26,7 @@ R8 = GF.R8
 LAND_R, TERR_R = 4.2, 3.2
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
 INLET = 60.0                                     # (sq) narrow inlets in the Mire's coast smaller than this are filled
+SEA_Y0 = 0.0                                     # (rows south of this: the sea north of it is left as it is)
 REACH = 9.0                                      # the west-coast sea carried down the Mire's west coast: as west_sea
 PAD, SQ, CELL_MAX, MIN_PATCH = 0.55, 1.1, 6.0, 3.0
 SEED = 211
@@ -120,14 +121,16 @@ def mire_west_sea(w, store, seed=SEED):
     border = np.unique(np.r_[lab[0, :], lab[-1, :], lab[:, 0], lab[:, -1]]); ext = np.isin(lab, border[border > 0])
     d, (iy, ix) = ndi.distance_transform_edt(~land, return_indices=True); d = d / R8
     wx = np.where(land.any(1), np.argmax(land, axis=1) / R8 + box[0], -np.inf)          # (the west coast only: west of the land's westmost point in each row)
-    core = ext & (X < X[iy, ix] - 0.15) & (X < wx[:, None]) & mire[iy, ix] & (d <= REACH) & (d >= 0.15)
+    core = ext & (X < X[iy, ix] - 0.15) & (X < wx[:, None]) & (Y >= SEA_Y0) & (d <= REACH) & (d >= 0.15)   # (every west-facing coast from the Forest of Tears' corner south: one even strip)
     region = ndi.gaussian_filter(core.astype(float), 2.0 * R8) > 0.30
     bwn = ndi.gaussian_filter(np.random.default_rng(seed + 61).normal(size=(bh, bw)), 4.0 * R8); bwn = (bwn - bwn.min()) / (bwn.max() - bwn.min())
     sea = ext & region & (d >= 0.15) & (d <= REACH * (0.85 + 0.3 * bwn)) & (X < wx[:, None] + 1.0)
     marks = np.array([p['path'][-1][:2] for p in w['places']], float)
     lines = [l for k in ('fwtracks', 'swtracks', 'etrtracks', 'dirtroads', 'ashtracks') for l in (w.get(k) or []) if len(l) > 1]
     blocked = (cKDTree(marks).query(P)[0].reshape(bh, bw) <= 1.3) | (cKDTree(_samples(lines, 0.35)).query(P)[0].reshape(bh, bw) <= 0.7)
-    sea = (ndi.gaussian_filter((sea & ~blocked).astype(float), 0.8 * R8) > 0.5) & ext & (d >= 0.15) & ~blocked
+    sea = (sea | (water & ext)) & ~blocked
+    pad = 4 * R8; sea = ndi.binary_closing(np.pad(sea, pad), structure=disk(3 * R8))[pad:-pad, pad:-pad] & ext & ~land   # (no waist where it meets the old sea)
+    sea = (ndi.gaussian_filter(sea.astype(float), 1.2 * R8) > 0.5) & ext & (d >= 0.15) & ~blocked
     lab, n = ndi.label(sea)
     if n: sea = np.isin(lab, np.unique(lab[sea & ndi.binary_dilation(water, iterations=3)]))   # (only the pieces that join the west-coast sea: it is carried on, no new seas)
     new = sea & ~water
@@ -381,10 +384,10 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     if n: thick = np.isin(lab, [i + 1 for i, s in enumerate(ndi.sum(thick, lab, range(1, n + 1))) if s / R8 / R8 >= 1.5])
     tints['thicket'] = _put(w, 'thicket', thick, box, sigma=1.5)
     cand = base & ~mud & ~thick & (d_path > 1.5) & ~ndi.binary_dilation(watm, iterations=int(1.2 * R8))
-    centres = _place(cand, X, Y, 3.6, 141)
+    centres = [q for q in _place(cand, X, Y, 7.0, 141) if _hash(q[0], q[1], 144) < 0.55]   # (few, and of different sizes)
     pool = np.zeros((bh, bw), bool)
     for x, y in centres:
-        r = 0.35 + 0.75 * float(_hash(x, y, 142)); c, rr_ = int((x - box[0]) * R8), int((y - box[1]) * R8); k = int((r * 1.4 + 0.2) * R8)
+        r = 0.4 + 1.1 * float(_hash(x, y, 142)) ** 2; c, rr_ = int((x - box[0]) * R8), int((y - box[1]) * R8); k = int((r * 1.4 + 0.2) * R8)
         sl = (slice(max(0, rr_ - k), rr_ + k + 1), slice(max(0, c - k), c + k + 1))
         pool[sl] |= np.hypot(X[sl] - x, Y[sl] - y) <= r * (0.7 + 0.6 * n4[sl])
     pool = sm(pool & cand, 0.25)
@@ -405,12 +408,12 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     dead = [q for q in tp if _hash(q[0], q[1], 152) < 0.45]; shrub = [q for q in tp if _hash(q[0], q[1], 152) >= 0.45]
     tk += [[x, y, round(0.7 + 0.3 * float(_hash(x, y, 153)), 2), 'h', int(float(_hash(x, y, 154)) * 3)] for x, y in dead]
     ring = ndi.binary_dilation(watm | pool, iterations=int(0.7 * R8)) & ~ndi.binary_erosion(watm | pool, iterations=int(0.25 * R8))
-    reeds_w = _place(own & ring & (d_path > 0.45) & ~patchm & ~beach & ~thick, X, Y, 0.42, 171, hills + rocks + trees + tp)   # (round the water)
+    reeds_w = _place(own & ring & (d_path > 0.45) & ~patchm & ~beach & ~thick, X, Y, 0.75, 171, hills + rocks + trees + tp)   # (round the water)
     lone = free & ~thick & ~beach & ~ring & (d_path > 0.9)
     st = _place(lone, X, Y, 2.3, 161, hills + rocks + trees + tp + reeds_w)       # (lone swamp trees, mostly dead)
     tk += [[x, y, round(0.75 + 0.35 * float(_hash(x, y, 162)), 2), 'h' if _hash(x, y, 163) < 0.65 else 'w', int(float(_hash(x, y, 164)) * 3)] for x, y in st]
     w['trees'] = list(w['trees']) + tk
-    reeds_b = _place(free & ~thick & ~beach & ~ring & (n1 > 0.3), X, Y, 0.95, 172, hills + rocks + trees + tp + reeds_w + st)   # (reeds and sedge all over the bog)
+    reeds_b = _place(free & ~thick & ~beach & ~ring & (n1 > 0.45), X, Y, 1.7, 172, hills + rocks + trees + tp + reeds_w + st)   # (reeds and sedge all over the bog)
     w['reeds'] = list(w['reeds']) + [[x, y, round(0.75 + 0.45 * float(_hash(x, y, 173)), 2)] for x, y in reeds_w + reeds_b]
     w['brush'] = sorted(list(w.get('brush') or []) + [[x, y, round(0.8 + 0.4 * float(_hash(x, y, 155)), 2), 1] for x, y in shrub], key=lambda b: b[1])
     rep['sprites'] = dict(forest_trees=len(trees), thicket_dead_trees=len(dead), thicket_brush=len(shrub), swamp_trees=len(st), hills=len(hills), boulders=len(rocks),
