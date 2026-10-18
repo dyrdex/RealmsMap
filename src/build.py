@@ -153,6 +153,9 @@ MI_UN=list(range(110,117))                                       # Southern Moun
 for _i,_v in enumerate(_SML['ids']):
     if _v in MI_UN and _v in _mip and _mip[_v]!=(_SML['xs'][_i],_SML['ys'][_i]):
         _smr_win.setdefault(_v,(_SML['xs'][_i],_SML['ys'][_i])); _SML['xs'][_i],_SML['ys'][_i]=_mip[_v]
+WL_UN=[8606,8608,10049,8610,8611,8614,10045]                      # Wastelands rooms the owner may move in the Mire editor (Oct 18)
+for _i,_v in enumerate(_WLL['ids']):
+    if _v in WL_UN and _v in _mip: _WLL['xs'][_i],_WLL['ys'][_i]=_mip[_v]
 _MIL=_json.load(open(os.path.join(_here,'mi_layout_final.json'))); _MIE=_json.load(open(os.path.join(_here,'mi_editor_edges.json')))   # The Mire layout (Oct 18)
 import mi_merge as _mim
 _mis={}

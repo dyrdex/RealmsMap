@@ -2,6 +2,7 @@
 
 ## In progress (after version 18)
 
+- Mire editor: Wastelands rooms 8606, 8608, 8610, 8611, 8614 and spacers 10045, 10049 unlocked too (blue outline, start where they are on the map); the map moves them when you save.
 - Forest of Tears (your requests): the path 1553-1563 drawn (an up/down exit, now a normal path); Falcon's Nest Tavern moved 0.7 west, clear of the Western Trade Route as drawn.
 - The way over to Angel's Landing from the Forgotten Woods (5667) is a standard path again (the island's own trails stay faint).
 - The Mire (your requests): the three paths from the Forest of Tears gently wave instead of running straight; no path shows between the water and the clearing at (-95, 51.5) (7958/7960/7961/7962 one clearing); the river now rises at the marsh by the MacMillan farm (-20.5, 79.2) with two tiny runs from the marsh, its banks wind, and everything east of it is the Wastelands' ground (no Mire terrain on the east bank). (8057, 8030, 8031, 8056, 8054 were already in the clearing south of them.)

@@ -238,8 +238,8 @@ xcross = sum(1 for a in range(len(XL)) for b in range(a + 1, len(XL)) if segx(at
 # ---- fixed rooms near the new ones ----
 pts = [start[v] for v in S]
 CTX = {v: SRC[v] for v, p in POS.items() if min(math.hypot(p[0] - a[0], p[1] - a[1]) for a in pts) <= NEAR}
-UN = list(range(110, 117))        # unlocked map rooms (owner, Oct 18): Southern Mountain Range 110-116, movable, starting at their spots on the map
-assert all(v in POS and rooms[v]['area'] == 'Southern Mountain Range' for v in UN), [(v, rooms[v]['area'], v in POS) for v in UN]
+UN = list(range(110, 117)) + [8606, 8608, 10049, 8610, 8611, 8614, 10045]   # unlocked map rooms (owner, Oct 18): Southern Mountain Range 110-116; Wastelands east-bank rooms; movable, starting at their spots on the map
+assert all(v in POS for v in UN), [(v, rooms[v]['area'], v in POS) for v in UN]
 for v in UN: start[v] = [round(POS[v][0], 2), round(POS[v][1], 2)]; GRP[v] = 'un'; CTX.pop(v, None)
 S = S | set(UN)
 
