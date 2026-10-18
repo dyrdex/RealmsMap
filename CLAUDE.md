@@ -44,6 +44,7 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 - Never add graphics, labels or markers the owner didn't ask for. Do exactly what's asked and report numbers.
 - Big area names: italic, size 2.4, letter-spacing .55, pale halo, gentle arc. Small labels: italic .38, soft grey, pale halo.
 - Layout editors: starting spots from `src/editor_spread.py` (`spread_clear`, 2 rooms per exit, no overlaps, area moved clear of the map next to where it joins), never stacked TinTin steps. Report its numbers (close pairs, stretched, lines through rooms) with the editor (owner, Oct 16).
+- Directions always in numbered form ('#6 s', not 's;s;s;s;s;s'): convert every set the owner gives before saving it; `route_fix.condense` (build.py also condenses all routes at the end) (owner, Oct 18).
 - Trade routes are one continuous formal road with off-ramp pads where paths/sub-area links join; dirt trails elsewhere. Spacer rooms drawn only between two real rooms; dead-end spacer stubs left off.
 - Don't re-add coasts to the Barren Peaks unless the owner asks with a clear picture.
 

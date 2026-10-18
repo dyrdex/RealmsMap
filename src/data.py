@@ -15,9 +15,9 @@ Barren Wastes|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se;sw;s;#2 sw;s;se;sw;#2 s
 Barrik's Keep|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;s;e;#3 ne;se;#4 e;#2 se;#3 e;n;#5 ne;#4 nw;ne;e;#3 ne;#4 e;#4 n;#3 e;n;#2 nw;#2 w;#4 sw;#3 w;nw;#2 w;#4 sw
 Bartok Grove|#6 w;#2 sw;#5 w;s
 Black Dagger Outlaws Hideout|#7 w;sw;s;w;#2 sw;s;#2 w;#2 sw;w;se;sw;se;sw;se;#2 sw;se;#2 s;sw;s;sw;s;se;s;sw;#2 s;sw;e
-Blasted Lands|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se;sw;#2 w;sw;#2 s;e;
+Blasted Lands|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se;sw;#2 w;sw;#2 s;e
 Blood Sea|#52 w
-City of Salburg|#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;w;#2 nw;#3 n;ne;e;
+City of Salburg|#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;w;#2 nw;#3 n;ne;e
 Cold Comfort|#4 s;w;#2 n;give 5k coins receptionist;unlock n;open n;#3 n;ne;n;ne;n;enter;d;e;#2 n (wander, scry for se exit, go se)
 Coral Depths|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;ne;#2 e
 Corruption of Anciastra|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;s;e
@@ -32,14 +32,14 @@ Desert of Despair|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se
 Domain of the World Eater|#13 e;#3 s;w;s;#2 w,n,#2 w,#2 s,se,#2 e,ne,w,s,#3 d;scan/scry for "Formless Void" maze.
 Dragon Cult|#4 s;e;n;say idolizer of dragons
 Dragon Tower|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#10 sw;w;u;s;#2 e;#2 se;#2 s;sw;#2 nw;#3 w;sw;w;sw;se;sw
-Dragon's Pass|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;#5 n;ne;n;e;#2 se;
+Dragon's Pass|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;#5 n;ne;n;e;#2 se
 Dragontail Glen|nw;#2 w;#4 n;e;look painting;open n;n;#28 w;#2 s;w;sw;#2 s;#4 w;#2 nw;#3 w;#5 sw;n;d;#2 w;#2 n;#3 w;#2 n
 Drow City|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;s;e;ne;n;#2 nw;#2 w;d
 The Dungeon|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se;sw;s;#2 sw;w;#2 sw;s;sw;s;#2 se;s;#5 e;#3 n;#2 w;n;d;pick e;open e;e;d
-The Dunhill Demesnes|nw;#2 w;#4 n;e;look painting;open n;#2 n;#57 w;ne;
+The Dunhill Demesnes|nw;#2 w;#4 n;e;look painting;open n;#2 n;#57 w;ne
 Dwarven Catacombs|#8 e;#2 se;s;#3 se;e;#2 ne;n;#2 ne;n;nw;n;ne;w;push leaves;pull leaves;#2 e;#2 n;u;open u;u;open u;u;e;#2 d;#4 n;open n;n;open n;n;d
 Dylan's Area|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se;s;#3 sw;u;#3 w;s;sw;d;#3 w;#3 n;w;#2 s;#2 sw;#2 w;sw;#2 nw;sw;w;sw;#2 s;sw;tree;#2 e;#3 se;#4 s;#3 e;s;#2 w;open w;w;n;#2 u;#2 s
-Elemental Canyon|#13 s;#2 e;#2 u;w;sw;w;sw;#2 d;#2 sw;#4 s;e;#2 u;e;u;nw;
+Elemental Canyon|#13 s;#2 e;#2 u;w;sw;w;sw;#2 d;#2 sw;#4 s;e;#2 u;e;u;nw
 Emerald Hills|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#3 s;sw;se;u;se;e
 Ezard's Fields|#9 w;nw;#2 w;nw;w;#2 n;#2 nw;ne
 Fire Station|#8 e;#3 ne;#3 e;ne;se;e;ne;#3 se;ne;e;#2 ne;n;se
@@ -47,7 +47,7 @@ Florebit in Imm.|#9 w;#2 nw;n;w;nw;w;#2 nw;#8 w;nw;#16 w;n
 Forest of Tears|#7 w
 Forgotten Woods|#8 n;ne;w;n
 From The Stars|nw;#2 w;#4 n;e;l painting;open n;#2 n;#2 w;n;#37 w;n;e
-Glimwinkle's Windmill|#13 e;#3 s;#3 e;#2 ne;#3 se;e;s;e;
+Glimwinkle's Windmill|#13 e;#3 s;#3 e;#2 ne;#3 se;e;s;e
 Graveyard|#9 w;sw;#4 w;s;sw;#2 w;open s;s
 Great Eastern Desert|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se;sw;#2 w;sw;#2 s;e
 Green Forest|#6 n;#6 w;nw
@@ -62,29 +62,29 @@ Keep of Mahn-Tor (Ogre Village)|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;
 Kilgharrah's Cave|Inside KoTR, at entrance to Swirling Mist maze go: n;s;d
 King's Castle|#13 e;#3 s;#3 e;#2 ne;#3 se;e;#2 s;sw;s;se;s;se;#2 e;#2 ne;e
 Kingdom of Juargan|#6 n;#3 nw;w;n;#4 e;s;w;sw;nw;n;ne;u;#2 ne;u;ne;u;ne;nw;w;u;#2 ne;u;w;u;ne;w;#4 sw;#4 w;d;#2 nw;sw;u;#4 w;u;#2 w;n;#2 e
-Kontaur|#26 w;#5 s;
+Kontaur|#26 w;#5 s
 Knights of the Round|#4 s;w;#2 n;give 5000 coin recep;unlock n;open n;n;drop key;n;w;nw;w;nw;w;sw;w;enter
-La Chute D'eau De L'ancients|#6 n;#6 e;se;e;#2 ne;e;nw;#2 n;#2 ne;w;#2 nw;e;#2 n;ne;n;ne;#2 w;chop;se;chop;sw;chop;w;chop;w;chop;s;chop;sw;chop;w;chop;nw;chop;w;chop;w;chop;nw;ne;
-Lake of Tich'Pyga|#7 w;nw;#2 n;
-Lamechs Abandoned Mansion|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;nw;ne;#2 w;sw;#3 s;#2 se;ne;e;sw;s;ne;
+La Chute D'eau De L'ancients|#6 n;#6 e;se;e;#2 ne;e;nw;#2 n;#2 ne;w;#2 nw;e;#2 n;ne;n;ne;#2 w;chop;se;chop;sw;chop;w;chop;w;chop;s;chop;sw;chop;w;chop;nw;chop;w;chop;w;chop;nw;ne
+Lake of Tich'Pyga|#7 w;nw;#2 n
+Lamechs Abandoned Mansion|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;nw;ne;#2 w;sw;#3 s;#2 se;ne;e;sw;s;ne
 Land of the Fire Newts|#8 e;#2 se;#2 s;se;s;#4 e;#2 n;e;ne;#2 n;e;s
 Machine Dreams|#13 e;#3 s;w;s;#2 w;n;#2 w;#2 s;se;#2 e;ne;w;s;d
-MacMillan Family Farm|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#10 sw;#2 w;#2 sw;nw;
+MacMillan Family Farm|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#10 sw;#2 w;#2 sw;nw
 Major Oak|#6 w;#2 sw;#5 w;#2 nw;ne
 Miden'nir|#7 s
 The Mire|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#10 sw;w;u;s;#2 e;#2 se;#2 s;sw;#2 nw
-Mithril Hall|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;nw;ne;#2 w;sw;#3 s;#2 se;sw;#2 u;w;nw;#4 w;n;open passage;n;e;#2 n;w;d;#2 e;n;
+Mithril Hall|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;nw;ne;#2 w;sw;#3 s;#2 se;sw;#2 u;w;nw;#4 w;n;open passage;n;e;#2 n;w;d;#2 e;n
 A Moment in Nature|#3 e;s;d;open w;#3 w;open w;#6 w;enter
 Morgul Vale|nw;#2 w;#4 n;e;look painting;open n;n;#49 w;#9 s;w;sw;#2 s;u;#2 s;#2 w;#2 sw;s;se;sw
 Moria|#8 e;#2 se;#2 s
-Mountain of Lost Souls|nw;#2 w;#4 n;e;look painting;open n;n;#49 w;#8 s;sw;#5 w;#2 sw;nw;#3 w;d;sw;#2 s;e;ne;nw;u;ne;u;n;ne;
+Mountain of Lost Souls|nw;#2 w;#4 n;e;look painting;open n;n;#49 w;#8 s;sw;#5 w;#2 sw;nw;#3 w;d;sw;#2 s;e;ne;nw;u;ne;u;n;ne
 Mountains of Desolation|#8 e;#2 se;s;#3 se;e
 Mulciber's Forge|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#3 sw;#2 s;sw;#2 s;#4 se;#2 s;se;d;s;se;s;#3 sw;u;w;n;u;ne;nw;d
-Nevermore|#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;#2 e;n;#3 ne;e;ne;n;
+Nevermore|#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;#2 e;n;#3 ne;e;ne;n
 New Hope Farm|#6 w;#2 sw;#5 w;#2 s;e;se
 New Ofcol|#6 n;#3 nw;w;#4 n;#2 e
 Northern Plains|nw;#2 w;#4 n;e;look painting;open n;n
-Ocean Keep|#8 e;#3 ne;#3 e;ne;e;ne;#2 e;#5 n;ne;e;ne;e;se;e;ne;#3 n;ne;
+Ocean Keep|#8 e;#3 ne;#3 e;ne;e;ne;#2 e;#5 n;ne;e;ne;e;se;e;ne;#3 n;ne
 Ockwater Fens|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se;s;#3 sw;u;#3 w;s;sw;d;#3 w;#3 n;#2 w;sw;w;#3 n;#2 ne;nw
 Octopus Garden|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#2 s;se;e;ne;d
 Ofcol|#6 n;#3 nw;w;n
@@ -101,16 +101,16 @@ Reign of Madness|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2
 Revelation City|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;#5 nw;w;#2 n
 Scourge of Time|#8 u;n;unlock n;open n;n;track Malsangre (say back in time)
 Sea of Sorrows|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s;sw;w;sw;d
-Sentinel|#9 w;#2 nw;n;w;nw;w;nw;w;#2 s;
+Sentinel|#9 w;#2 nw;n;w;nw;w;nw;w;#2 s
 Serpentine Coils|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;s;e;#3 ne;se;#4 e;#2 se;#3 e;n;#5 ne;#4 nw;ne;e;d
 Sesuadra's Rift|#42 west;#7 n;enter;sw;enter;s;w;s;onslaught
 Seth's Fortress|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;nw;ne;#2 w;sw;#3 s;#2 se;ne;e;sw;s;#3 e;#2 u
 Shadar Logoth|#13 e;#3 s;#3 e;#2 ne;#3 se;e;#2 s;sw;s;se;s;se;#2 e;#2 ne;e;sw;se;e;#2 ne;#2 e;ne;#4 n;sw;s;w;n;ne;#2 n;#2 w
 Shadow Grove|#7 n
-Shadowport|s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;s;s;sw;s;s;sw;sw;s;sw;sw;s;sw;s;s;w;sw;s;sw;sw;s;w;s;s;sw;s;sw;se;e;ne;open wall;n;n;n;w;open w;w;w;n;w;n;n;d;d
+Shadowport|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#3 sw;#2 s;sw;#2 s;#2 sw;s;#2 sw;s;sw;#2 s;w;sw;s;#2 sw;s;w;#2 s;sw;s;sw;se;e;ne;open wall;#3 n;w;open w;#2 w;n;w;#2 n;#2 d
 Spectrum|godag;n;e;se;e;se;e;ne;enter
-Shai'ghool|#8 e;#3 ne;#3 e;ne;e;ne;#2 e;#2 n;e;ne;
-Shattered Refuge|#9 s;w;#3 s;w;
+Shai'ghool|#8 e;#3 ne;#3 e;ne;e;ne;#2 e;#2 n;e;ne
+Shattered Refuge|#9 s;w;#3 s;w
 Shattered Temple of Naetrelle|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;#2 s;w;nw;#3 w;sw;#2 w;sw;s;#6 w;ne
 The Shire|#9 w;nw;#2 w;nw
 Silvermoon Outpost|#51 w;#3 s;sw;#5 s;#7 sw
@@ -129,7 +129,7 @@ Tower of Enlightenment|#8 n;ne;w;n;nw;w;s;w;#2 nw;n;nw;#2 n;nw;w;nw;ne;#2 n;nw;n
 Tower of Zenothir|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#4 e;n;nw;#2 n;sw;e;ne;#2 s;se;s;se;s;#2 e;se;ne
 Town of Solace|nw;#2 w;#4 n;e;look painting;open n;n;#23 w;#3 n
 Transylvania|#13 s;#2 e;#2 u;e;#3 se;d;s;#4 se;e;se;e;ne;nw;n;u;#2 n
-Tree of Life|#50 w;#5 s;#3 w;
+Tree of Life|#50 w;#5 s;#3 w
 Treetops and Canopy|#9 w;#2 nw;#18 w;u
 Troll Den|#6 n;#6 e;se;e;#2 ne;#2 e;ne;e;s;w;sw
 Tullfuhrzky Manor|nw;#2 w;#4 n;w;look painting
@@ -140,7 +140,7 @@ Unholy Grounds|nw;#2 w;#4 n;e;look painting
 Valley of Crucifixion|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s;sw;w;sw;d;nw;s;#2 e;#2 se;w;nw;sw;w;s;e
 Valley of Mysts|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#4 e;n;nw;#2 n;sw
 Valley of the Elves|nw;#2 w;#4 n;e;look painting;open n;n;#30 w;#2 s;#15 w
-Village of Edo|nw;#2 w;#4 n;e;look painting;open n;n;#26 w;#2 n;ne;nw;n;nw;#2 w;#6 n;nw;n;ne;n;nw;ne;#2 n;ne;nw;w;
+Village of Edo|nw;#2 w;#4 n;e;look painting;open n;n;#26 w;#2 n;ne;nw;n;nw;#2 w;#6 n;nw;n;ne;n;nw;ne;#2 n;ne;nw;w
 Village of Tar'pa Cithm|nw;#2 w;#4 n;e;look painting;open n;n;#28 w;#3 s;#3 d;#5 w;#2 nw;#3 w;#4 sw;#3 nw;#3 w;sw;s;e
 The Von Deusen Mausoleum|#8 e;#2 se;s;#4 se;#2 s;sw;#2 n;nw;pull branch;n
 Warehouse|#4 w;#2 n;open sw;sw;open s;s;open s;s
@@ -151,7 +151,7 @@ Wild Tundra|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s
 The Wilds|#8 e;#2 se;s;#4 se;#2 s;sw;w;#2 nw;u;sw;nw
 Winterlight Island|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se;s;#3 se;#3 e;#2 s;#2 e;d;se;ne;s;d;se;s
 The Wolf's Den|#6 n;#3 nw;#2 n;#2 nw;n;ne;n;ne;#2 n;#2 ne;n;e
-Wyvern's Tower|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;sw;#3 w;ne;
+Wyvern's Tower|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;sw;#3 w;ne
 The Ziggurat|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s;sw;w;sw;d;nw;s;#2 e;#2 se;w;nw;sw;w;s
 """
 HOMETOWNS = r"""
@@ -170,8 +170,8 @@ The Sands of Teracchei (Gith)|#8 u;e
 Tribal Swamplands (Lizardmen)|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#10 sw;w;u;s;#2 e;#2 se;#2 s;sw;#2 nw;#3 w;sw;w;#4 sw;#4 s;se;s;sw;s;sw;w;#2 sw;#5 s;se;#2 e;se;e;se;s;sw;e
 Vale of Nidaros (Gnome)|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#4 e;n;nw
 """
-EAST_PAINTING = """e;e;e;e;e;e;e;e;ne;ne;ne;e;e;e;ne;e;ne;e;e;n;n;n;n;n;ne;e;ne;e;se;e;ne;n;n;n;ne;e;e;se;sw;w;ne;ne;ne;ne;nw;n;n;nw;u;nw;nw;nw;nw;nw;n;n;u;nw;w;nw;w;n;e;e;e;e;e;e;e;se;e;ne;e;ne;ne;se;se;e;e;e;se;se;e;se;s;s;se;s"""
-WEST_PAINTING = "n;n;n;n;n;n;nw;nw;nw;n;n;nw;nw;sw;n"
+EAST_PAINTING = """#8 e;#3 ne;#3 e;ne;e;ne;#2 e;#5 n;ne;e;ne;e;se;e;ne;#3 n;ne;#2 e;se;sw;w;#4 ne;nw;#2 n;nw;u;#5 nw;#2 n;u;nw;w;nw;w;n;#7 e;se;e;ne;e;#2 ne;#2 se;#3 e;#2 se;e;se;#2 s;se;s"""
+WEST_PAINTING = "#6 n;#3 nw;#2 n;#2 nw;sw;n"
 
 
 # Directions you gave for places that had none (condensed to numbered quantities)

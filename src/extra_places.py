@@ -10,9 +10,9 @@ import itertools, math
 import ashen_forest as AF
 from route_fix import make_tracer
 
-SUDS_ROUTE = 'w;w;w;w;w;w;w;w;sw;s;sw;sw;s;w;w;sw;sw;w;se;sw;se;sw;se;sw;sw;se;s;s;sw;s;sw;s;se;e;ne;se;s;se;e'
+SUDS_ROUTE = '#8 w;sw;s;#2 sw;s;#2 w;#2 sw;w;se;sw;se;sw;se;#2 sw;se;#2 s;sw;s;sw;s;se;e;ne;se;s;se;e'
 SUDS_DOT = (-12.06, 51.75)                                                        # just above the inn graphic (owner, Oct 15: the usual place name, no separate inn label)
-AEN_ROUTE = 'n;n;n;n;n;n;n;n;ne;w;n;ne;nw;e;ne;n;e;ne;n;n;ne;ne;e;e;n;ne;nw;w;n;n;n;n;enter;ne;w'   # (owner's new directions, Oct 15)
+AEN_ROUTE = '#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;#2 e;n;ne;nw;w;#4 n;enter;ne;w'   # (owner's new directions, Oct 15)
 STEP = 0.8
 
 

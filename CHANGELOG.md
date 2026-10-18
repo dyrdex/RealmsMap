@@ -2,6 +2,7 @@
 
 ## In progress (after version 19)
 
+- Your requests (Oct 18): the Tipsy Lizard Tavern's name is now a standard place label centred below its marker dot (the separate small text under the shack removed; the shack moved 0.45 north to clear the name); new destination The Mire (Central), marker at 8195 (A Path Amongst the Mossy Rocks), with a small, dull, grim old-map dragon in grey ink just north of the marker; every place's directions now in numbered form ('#6 s' rather than 's;s;s;s;s;s'): 9 routes on the map shortened (Shadowport, Tipsy Lizard Tavern, Redferne's Residence, Vaellys el Notrune, Tullfuhrzky Manor, Dobra, Catobeplas, Moria, Machine Dreams), your source lists tidied the same way (doubled steps merged, trailing ';' dropped); every traced line unchanged.
 - The Mire redrawn from your save of Oct 18 (15:43; 20 rooms moved): the Dragon's Pass rooms beside 169 (still hidden; the High Tower of Sorcery's route follows them); 8606, 8608, 10049 and the way down to Shadowport re-placed, the Shadowport marker now at 10099's new spot (-11.07, 100.92). The Mire editor also shows the Southern Mountain Range rooms round Dragon's Pass (incl. 169) as fixed rooms.
 
 ## Version 19 · The Mire · October 18, 2026
