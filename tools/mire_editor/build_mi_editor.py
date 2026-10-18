@@ -238,6 +238,10 @@ xcross = sum(1 for a in range(len(XL)) for b in range(a + 1, len(XL)) if segx(at
 # ---- fixed rooms near the new ones ----
 pts = [start[v] for v in S]
 CTX = {v: SRC[v] for v, p in POS.items() if min(math.hypot(p[0] - a[0], p[1] - a[1]) for a in pts) <= NEAR}
+UN = list(range(110, 117))        # unlocked map rooms (owner, Oct 18): Southern Mountain Range 110-116, movable, starting at their spots on the map
+assert all(v in POS and rooms[v]['area'] == 'Southern Mountain Range' for v in UN), [(v, rooms[v]['area'], v in POS) for v in UN]
+for v in UN: start[v] = [round(POS[v][0], 2), round(POS[v][1], 2)]; GRP[v] = 'un'; CTX.pop(v, None)
+S = S | set(UN)
 
 # ---- rooms and exits ----
 def exlist(v):
@@ -253,7 +257,7 @@ for v in sorted(CTX):
     R.append(dict(id=v, name=r['name'], terrain='', void=isspacer(v), lvl=0, x=round(POS[v][0], 2), y=round(POS[v][1], 2), x0=round(POS[v][0], 2), y0=round(POS[v][1], 2), fixed=True, src=CTX[v]))
 for v in sorted(S):
     r = rooms[v]
-    R.append(dict(id=v, name=r['name'], terrain='' if isspacer(v) else r['terrain'], void=isspacer(v), lvl=0, area='MI', grp=GRP[v], piece=sec[v], ga=r['area'],
+    R.append(dict(id=v, name=r['name'], terrain='' if isspacer(v) else r['terrain'], void=isspacer(v), lvl=0, area='MI', grp=GRP[v], piece=sec.get(v), ga=r['area'],
                   x=start[v][0], y=start[v][1], x0=start[v][0], y0=start[v][1], ex=exlist(v)))
 V = {r['id'] for r in R}
 pair = defaultdict(lambda: [False, False, False])

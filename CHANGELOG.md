@@ -2,6 +2,10 @@
 
 ## In progress (after version 18)
 
+- Forest of Tears (your requests): the path 1553-1563 drawn (an up/down exit, now a normal path); Falcon's Nest Tavern moved 0.7 west, clear of the Western Trade Route as drawn.
+- The way over to Angel's Landing from the Forgotten Woods (5667) is a standard path again (the island's own trails stay faint).
+- The Mire (your requests): the three paths from the Forest of Tears gently wave instead of running straight; no path shows between the water and the clearing at (-95, 51.5) (7958/7960/7961/7962 one clearing); the river now rises at the marsh by the MacMillan farm (-20.5, 79.2) with two tiny runs from the marsh, its banks wind, and everything east of it is the Wastelands' ground (no Mire terrain on the east bank). (8057, 8030, 8031, 8056, 8054 were already in the clearing south of them.)
+- Mire editor: Southern Mountain Range rooms 110-116 unlocked (blue outline, start where they are on the map); the map will move them when you save.
 - The Mire (your requests): 8057, 8030, 8031, 8056, 8054 tied into the clearing south of them; the marsh lake round 8454 now runs from 8459 down to just north of 8440/8439/8451, its links to those rooms thin dashed blue lines, only the 8459-8460 path showing at its north end.
 - The river east of the "Along the River" rooms (your request): a trickle from about (-18.8, 83.3), under the Crumbling Bridge (stone deck, one rail broken, -17.5 to -14 at y 93.5), narrow past 8606/8608/10049/8610 (0.8 rooms from 8481 and 8610), x -19 to -15 below them, fanning west at y 119 past 8490/8491 (8492, 8640 and the 8485-8487-8488 crossing on top), 37 stones in its shallow reach, on south past the land to y 140 (188.6 sq). The map's south edge is now y 143.
 - The Mire redrawn from your save of Oct 18 (04:01; 108 rooms moved, 8430 shown again).

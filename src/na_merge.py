@@ -162,7 +162,9 @@ def merge_na(w, layout, edges, seed=SEED):
         G[a].add(b); G[b].add(a)
     pinned = {v for v in G if v not in AL}
     faint = _chains(G, pos, pinned, 0.4)
-    w['pffaint'] = list(w.get('pffaint') or []) + faint
+    _ml = [l for l in faint if any(math.dist(q, pos[5667]) < 0.05 for q in (l[0], l[-1]))]   # the way over from the Forgotten Woods (5667): a standard path (owner, Oct 18)
+    w['pffaint'] = list(w.get('pffaint') or []) + [l for l in faint if l not in _ml]
+    w['fwtracks'] = list(w['fwtracks']) + _ml
     sand_a = _shore(isl_a, sea_a, 0.28)
     mtn = [pos[v] for v in AL if terr(v) == 'Mountains' and v not in PARKED]
     P = np.c_[AX.ravel(), AY.ravel()]

@@ -1,5 +1,5 @@
 # Rebuild the map: python3 build.py  ->  writes ../realm_map.html
-import subprocess, sys, os, json
+import subprocess, sys, os, json, math
 os.chdir(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, '.')
 subprocess.run([sys.executable, 'extract2.py'], check=True, stdout=subprocess.DEVNULL)      # the town (writes nd2.json)
 subprocess.run([sys.executable, 'fot_extract.py'], check=True, stdout=subprocess.DEVNULL)   # everything outside the town (writes fot.json)
@@ -148,6 +148,11 @@ _smr_win={_v:(_SML['xs'][_i],_SML['ys'][_i]) for _i,_v in enumerate(_SML['ids'])
 for _i,_v in enumerate(_SML['ids']):                              # the Southern Mountain Trade Route rooms the owner moved in the Wastelands editor
     if _v in _wlm.UN: _SML['xs'][_i],_SML['ys'][_i]=_wlp[_v]
 _wls={}
+_MIL0=_json.load(open(os.path.join(_here,'mi_layout_final.json'))); _mip=dict(zip(_MIL0['ids'],zip(_MIL0['xs'],_MIL0['ys'])))
+MI_UN=list(range(110,117))                                       # Southern Mountain Range rooms the owner may move in the Mire editor (Oct 18)
+for _i,_v in enumerate(_SML['ids']):
+    if _v in MI_UN and _v in _mip and _mip[_v]!=(_SML['xs'][_i],_SML['ys'][_i]):
+        _smr_win.setdefault(_v,(_SML['xs'][_i],_SML['ys'][_i])); _SML['xs'][_i],_SML['ys'][_i]=_mip[_v]
 _MIL=_json.load(open(os.path.join(_here,'mi_layout_final.json'))); _MIE=_json.load(open(os.path.join(_here,'mi_editor_edges.json')))   # The Mire layout (Oct 18)
 import mi_merge as _mim
 _mis={}
@@ -204,6 +209,17 @@ print('Grimdog route:',_ngr)
 from md_merge import merge_md                                     # Miden'nir rooms on the painting, from the owner's save (Oct 15)
 w,_md=merge_md(w,_json.load(open(os.path.join(_here,'md_layout_final.json'))),_json.load(open(os.path.join(_here,'md_editor_edges.json'))))
 print('Miden\'nir rooms:',_md)
+_ftp=dict(zip(_FTL['ids'],zip(_FTL['xs'],_FTL['ys'])))
+for _a,_b in ((1553,1563),):                                     # Forest of Tears paths the owner asked for (Oct 18: 1553-1563 is an up/down exit)
+    w['fwtracks']=list(w['fwtracks'])+[[[round(_ftp[_a][0],2),round(_ftp[_a][1],2)],[round(_ftp[_b][0],2),round(_ftp[_b][1],2)]]]
+from ntr_merge import _samples as _smp
+from smr_merge import _drawn as _drw
+_rp=_smp([_drw(l) for l in (w.get('etrtracks') or []) if len(l)>1],0.05)
+for _bd in w.get('buildings',[]):                                # Falcon's Nest Tavern off the Western Trade Route (owner, Oct 18): west until clear of the road as drawn (its verge: 0.95)
+    if _bd.get('name')=="Falcon's Nest Tavern":
+        _x0=_bd['x']
+        while min(math.hypot(max(abs(q[0]-_bd['x'])-_bd['w']/2,0),max(abs(q[1]-_bd['y'])-_bd['h']/2,0)) for q in _rp)<0.95 and _bd['x']>_x0-4: _bd['x']=round(_bd['x']-0.05,2)
+        print('tavern moved west',round(_x0-_bd['x'],2))
 from owner_edits import apply_edits                              # lines and places the owner asked to take out (Oct 14)
 w,_oe=apply_edits(w)
 print('owner edits:',_oe)

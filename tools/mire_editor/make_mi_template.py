@@ -17,12 +17,12 @@ rep(r'<p id="ntrNote".*?</p>', f'<p id="ntrNote" style="margin:4px 0 8px"><b sty
 rep('<button id="selWl">Select the Wastelands rooms</button><button id="selUn">Select the unlocked map rooms</button>',
     '<button id="selMi">Select the Mire rooms</button></div>\n  <div class="row"><select id="selSec" aria-label="Select a section"><option value="">Select a section…</option></select>')
 rep(r'    <i style="background:var\(--t-Desert\);border:2px solid #E8C27A"></i>.*?\(movable, starts at its spot on the map\)</span>\n',
-    f'    <i style="background:var(--t-Swamp);border:2px solid {MIC}"></i><span>Mire room (movable)</span>\n', regex=True)
+    f'    <i style="background:var(--t-Swamp);border:2px solid {MIC}"></i><span>Mire room (movable)</span>\n    <i style="background:var(--t-Hills);border:2px solid #6FC3E8"></i><span>Unlocked map room: Southern Mountain Range 110-116 (movable, starts at its spot on the map)</span>\n', regex=True)
 rep('<span>Fixed room in the Southern Mountain Range or on its trade route</span>\n',
     f'<span>Fixed room in the Southern Mountain Range or on its trade route</span>\n    <i style="background:var(--cx-WL);border-radius:50%"></i><span>Fixed room in the Wastelands</span>\n')
 rep('copper for the Southern Mountain Range and its trade route)', 'copper for the Southern Mountain Range and its trade route, tan for the Wastelands)')
 rep('--cx-SM:#C98A5B', f'--cx-SM:#C98A5B;--cx-WL:{WLX}')
-rep('.nd.wl rect,.nd.wl circle.shape{stroke:#E8C27A}\n.nd.un rect,.nd.un circle.shape{stroke:#6FC3E8}', f'.nd.mi rect,.nd.mi circle.shape{{stroke:{MIC}}}')
+rep('.nd.wl rect,.nd.wl circle.shape{stroke:#E8C27A}\n.nd.un rect,.nd.un circle.shape{stroke:#6FC3E8}', f'.nd.mi rect,.nd.mi circle.shape{{stroke:{MIC}}}\n.nd.un rect,.nd.un circle.shape{{stroke:#6FC3E8}}')
 rep("(r.area==='WL'?' ntr '+r.grp:'')", "(r.area==='MI'?' ntr '+r.grp:'')")
 rep("${r.area==='WL'?' · '+({wl:'Wastelands',un:'unlocked map room'})[r.grp]", "${r.area==='MI'?' · The Mire'")
 rep("NA:\"Angel's Landing, Village of Edo\"})[r.src]", "NA:\"Angel's Landing, Village of Edo\",WL:'Wastelands'})[r.src]")
