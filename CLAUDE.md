@@ -64,5 +64,6 @@ bakes terrain into WebP tiles -> `site/` (Leaflet CRS.Simple page with live mark
 ## Working rules (save credits)
 - Read this file; open `docs/REGION_NOTES.md`, README or CHANGELOG sections only when needed. Don't search old chats.
 - Batch the owner's requests into one build; verify with numbers; at most one screenshot per set of changes.
+- Never send images or files into the chat (owner, Oct 18): screenshots are for checking only; the owner reviews on Pages.
 - Ask before work outside the agreed plan.
 - After each batch: one line per change in CHANGELOG (owner-facing), short decisions in REGION_NOTES under the region, update "State" above.
