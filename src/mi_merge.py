@@ -25,8 +25,14 @@ from smr_merge import _hash, _drawn, X0 as SX0                  # (SX0: the west
 R8 = GF.R8
 LAND_R, TERR_R = 4.2, 3.2
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
+ISLAND_BOX, ISLAND_R, ISLAND_GAP = (-115.5, 72.0, -111.5, 78.5), 1.0, 2.2   # (owner, Oct 18) rooms 8073-8079 (+ spacers): a small island out at sea, ISLAND_GAP of water round it
+IN_SEA = (8072,)                                 # A Shallow Channel: in the water between the island and the coast (owner, Oct 18)
+THIN = {8038: 0.9, 8039: 0.9, 8040: 0.9, 8041: 0.8, 8042: 0.45, 8043: 0.45, 8044: 0.5}   # The Small Beach; The Narrow Beach and its tip 8044: a thin peninsula (owner, Oct 18)
+SHORE_GAP = 1.6                                  # (rooms) other land kept off these
+BAY, BAYWIN = 10.0, 6.0                          # the west-coast sea fills bays up to BAY rooms deep (coast's westmost point within BAYWIN rows)
 INLET = 60.0                                     # (sq) narrow inlets in the Mire's coast smaller than this are filled
-SEA_Y0 = 0.0                                     # (rows south of this: the sea north of it is left as it is)
+SEA_Y0, SEA_Y1 = 12.0, 124.0                    # (rows: from the Forest of Tears' corner down to just below the beach; not round the south coast)
+#                                    # (rows south of this: the sea north of it is left as it is)
 REACH = 9.0                                      # the west-coast sea carried down the Mire's west coast: as west_sea
 PAD, SQ, CELL_MAX, MIN_PATCH = 0.55, 1.1, 6.0, 3.0
 SEED = 211
@@ -60,9 +66,13 @@ def mi_land(layout, edges, store, seed=SEED):
     (owner, Oct 18: no sea of its own; the west-coast sea carried down its west coast instead: mire_west_sea)"""
     rooms, exits, pos, info, hidden, MI, shown, void, E, cls = _setup(layout, edges)
     dry = [v for v in MI if shown(v)]
-    land_lines = [[pos[a], pos[b]] for a, b, k in E if k != 'ud']
-    lp = np.r_[np.array([pos[v] for v in dry]), _samples(land_lines, 0.15)]
-    xs = [p[0] for p in lp]; ys = [p[1] for p in lp]
+    isl = {v for v in dry if ISLAND_BOX[0] <= pos[v][0] <= ISLAND_BOX[2] and ISLAND_BOX[1] <= pos[v][1] <= ISLAND_BOX[3]}   # (owner, Oct 18)
+    rad = {v: ISLAND_R for v in isl}; rad.update(THIN); rad.update({v: 0.0 for v in IN_SEA})
+    sp = {v for v in rad if v in pos}
+    land_lines = [[pos[a], pos[b]] for a, b, k in E if k != 'ud' and not ({a, b} & sp)]
+    lp = np.r_[np.array([pos[v] for v in dry if v not in sp]), _samples(land_lines, 0.15)]
+    thin_lines = [(pos[a], pos[b], min(rad.get(a, 9), rad.get(b, 9))) for a, b, k in E if k != 'ud' and {a, b} & sp and not ({a, b} & set(IN_SEA))]
+    xs = [p[0] for p in lp] + [pos[v][0] for v in dry]; ys = [p[1] for p in lp] + [pos[v][1] for v in dry]
     box = (max(SX0, math.floor(min(xs)) - 16), math.floor(min(ys)) - 8, math.ceil(max(xs)) + 12, math.ceil(max(ys)) + 10)
     bw, bh = int((box[2] - box[0]) * R8), int((box[3] - box[1]) * R8)
     gy, gx = np.mgrid[0:bh, 0:bw]; X = (gx + .5) / R8 + box[0]; Y = (gy + .5) / R8 + box[1]; P = np.c_[X.ravel(), Y.ravel()]
@@ -73,7 +83,19 @@ def mi_land(layout, edges, store, seed=SEED):
     near = ndi.binary_closing(near, structure=np.ones((3, 3), bool), iterations=int(1.5 * R8))
     near = ndi.binary_fill_holes(near)
     near = ndi.gaussian_filter(near.astype(float), 0.8 * R8) > 0.5
-    store.update(box=box, sea=np.zeros((bh, bw), bool), land=near)
+    thin = np.zeros((bh, bw), bool); d_sp = np.full((bh, bw), np.inf)          # the island and the beaches: their own thin land, the rest kept off them
+    for v in sp:
+        if v not in pos or rad[v] <= 0: continue
+        dv = np.hypot(X - pos[v][0], Y - pos[v][1]); thin |= dv <= rad[v] * (0.85 + 0.3 * wob); d_sp = np.minimum(d_sp, dv - rad[v])
+    for p, q, r in thin_lines:
+        if r >= 9: continue
+        dl = cKDTree(_samples([[p, q]], 0.05)).query(P)[0].reshape(bh, bw); thin |= dl <= r * (0.85 + 0.3 * wob); d_sp = np.minimum(d_sp, dl - r)
+    d_isl = np.full((bh, bw), np.inf)
+    for v in isl: d_isl = np.minimum(d_isl, np.hypot(X - pos[v][0], Y - pos[v][1]) - ISLAND_R)
+    near &= (d_sp > SHORE_GAP) | (d_l <= 1.0)                                       # (other rooms keep a little land round them)
+    near &= d_isl > ISLAND_GAP                                                      # (the island stands out at sea)
+    near = (ndi.gaussian_filter(near.astype(float), 0.4 * R8) > 0.5) | (ndi.gaussian_filter(thin.astype(float), 0.25 * R8) > 0.5)
+    store.update(box=box, sea=np.zeros((bh, bw), bool), land=near, nofill=d_sp < 6.0)
 
     def edit(land_n, water0, gx0, gy0):
         c0, r0 = int(round((box[0] - gx0) * R8)), int(round((box[1] - gy0) * R8))
@@ -88,13 +110,14 @@ def mi_land(layout, edges, store, seed=SEED):
         holes = ndi.binary_fill_holes(solid) & ~solid
         lab, n = ndi.label(holes)
         ids = np.unique(lab[ndi.binary_dilation(full, iterations=3) & holes]); ids = ids[ids > 0]
+        nf = np.zeros(land_n.shape, bool); nf[sub] = store['nofill']; ids = [i for i in ids if not ((lab == i) & nf).any()]
         gaps = np.isin(lab, ids)
         so = solid[sub] | gaps[sub]; pad = 4 * R8                                   # (+ narrow inlets in the Mire's own coast: closed by 3 rooms, smaller than INLET sq)
         cl = ndi.binary_closing(np.pad(so, pad), structure=disk(3 * R8))[pad:-pad, pad:-pad] & ~so
         lab2, n2 = ndi.label(cl)
         for i in range(1, n2 + 1):
             m_ = lab2 == i
-            if m_.sum() / R8 / R8 < INLET and (ndi.binary_dilation(m_, iterations=3) & added).any(): gaps[sub] |= m_
+            if m_.sum() / R8 / R8 < INLET and (ndi.binary_dilation(m_, iterations=3) & added).any() and not (m_ & store['nofill']).any(): gaps[sub] |= m_
         assert not (gaps & ~np.pad(np.ones((bh, bw), bool), ((r0, land_n.shape[0] - r0 - bh), (c0, land_n.shape[1] - c0 - bw)))).any(), 'a gap reaches out of the box'
         land_n |= gaps
         store['gaps'] = gaps[sub].copy()
@@ -120,14 +143,15 @@ def mire_west_sea(w, store, seed=SEED):
     lab, n = ndi.label(~land)
     border = np.unique(np.r_[lab[0, :], lab[-1, :], lab[:, 0], lab[:, -1]]); ext = np.isin(lab, border[border > 0])
     d, (iy, ix) = ndi.distance_transform_edt(~land, return_indices=True); d = d / R8
-    wx = np.where(land.any(1), np.argmax(land, axis=1) / R8 + box[0], -np.inf)          # (the west coast only: west of the land's westmost point in each row)
-    core = ext & (X < X[iy, ix] - 0.15) & (X < wx[:, None]) & (Y >= SEA_Y0) & (d <= REACH) & (d >= 0.15)   # (every west-facing coast from the Forest of Tears' corner south: one even strip)
+    wx = np.where(land.any(1), np.argmax(land, axis=1) / R8 + box[0], np.inf)
+    wx = ndi.minimum_filter1d(wx, int(2 * BAYWIN * R8) + 1)                          # (the coast's westmost point within BAYWIN rows: its bays, up to BAY deep, are sea too)
+    core = ext & (X <= wx[:, None] + BAY) & (Y >= SEA_Y0) & (Y <= SEA_Y1) & (d <= REACH) & (d >= 0.15)
     region = ndi.gaussian_filter(core.astype(float), 2.0 * R8) > 0.30
     bwn = ndi.gaussian_filter(np.random.default_rng(seed + 61).normal(size=(bh, bw)), 4.0 * R8); bwn = (bwn - bwn.min()) / (bwn.max() - bwn.min())
-    sea = ext & region & (d >= 0.15) & (d <= REACH * (0.85 + 0.3 * bwn)) & (X < wx[:, None] + 1.0)
+    sea = ext & region & (d >= 0.15) & (d <= REACH * (0.85 + 0.3 * bwn)) & (X <= wx[:, None] + BAY) & (Y >= SEA_Y0) & (Y <= SEA_Y1)
     marks = np.array([p['path'][-1][:2] for p in w['places']], float)
     lines = [l for k in ('fwtracks', 'swtracks', 'etrtracks', 'dirtroads', 'ashtracks') for l in (w.get(k) or []) if len(l) > 1]
-    blocked = (cKDTree(marks).query(P)[0].reshape(bh, bw) <= 1.3) | (cKDTree(_samples(lines, 0.35)).query(P)[0].reshape(bh, bw) <= 0.7)
+    blocked = cKDTree(marks).query(P)[0].reshape(bh, bw) <= 1.3                   # (markers only: the channel to the island is water)
     sea = (sea | (water & ext)) & ~blocked
     pad = 4 * R8; sea = ndi.binary_closing(np.pad(sea, pad), structure=disk(3 * R8))[pad:-pad, pad:-pad] & ext & ~land   # (no waist where it meets the old sea)
     sea = (ndi.gaussian_filter(sea.astype(float), 1.2 * R8) > 0.5) & ext & (d >= 0.15) & ~blocked

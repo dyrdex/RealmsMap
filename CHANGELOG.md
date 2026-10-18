@@ -2,6 +2,7 @@
 
 ## In progress (after version 18)
 
+- The Mire's west coast (your review): rooms 8073-8079 a small island out at sea (2.2 rooms of water round it; 8072 A Shallow Channel in the water); The Small Beach (8038-8041) a thin strip; The Narrow Beach (8042-8043) and its tip 8044 a very thin peninsula; the west-coast sea fills the coast's bays (up to 10 rooms deep) from the Forest of Tears down to just below the beach, one even sea.
 - The Mire (your review): far fewer stagnant pools (69, was 401) in varied sizes, lighter reeds (1,110, was ~8,900); the west-coast sea now carries on down the Mire's coast as one even strip with the same width as up north (no notch or waist where it meets the old sea).
 - The Mire (your requests): gaps against the Forest of Tears and the Southern Mountains filled (1,514 sq; Mire side bog, the rest copies the land round it); the Mire's own sea removed; the west-coast sea carried down the Mire's whole west coast (1,142 sq, one body); the bog dressed as a swamp: darker mottled bog, mud patches, 401 stagnant pools, thickets of dead trees and brush, ~8,900 reeds, 73 lone swamp trees.
 - The Mire redrawn from your save of Oct 18 (01:38; 355 rooms moved, same 38 hidden): new land 7,889 sq, bog ground 7,488 sq, marsh water 565 sq, 19 mud clearings (667 sq), 88 trail lines, sea off the west shore 673 sq, sand 134 sq; 165 trees, 71 hills, 31 rocks, 802 reeds. The map's west edge is now x -137 (was -150 in the first pass) and its south edge stays at y 136. The Wastelands' field ground cut back 109 sq at the river border.
