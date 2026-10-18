@@ -61,7 +61,7 @@ COAST_FILL = [[(-114.6, 108.8), (-114.6, 111.7), (-109.8, 111.7), (-109.4, 108.8
               [(-111.0, 112.7), (-110.0, 111.8), (-108.2, 111.8), (-107.8, 113.0), (-108.2, 114.7), (-110.6, 114.7)],   # the gap north-east of the tavern (owner, Oct 18; the sea is kept)
               [(-36.2, 124.6), (-33.5, 123.4), (-29.0, 122.8), (-29.6, 126.5), (-30.0, 130.0), (-30.6, 133.0), (-30.6, 135.0), (-36.2, 135.0)]]   # between the land east of the Old Marsh and the Mire river: standard Mire ground (owner, Oct 18)
 MANSION_DOOR_AT = 8421                           # Redferne's Residence's manor: its front door just north of this room, the trail's end (owner, Oct 18)
-DRAGON = (4.25, 3.1)                             # (w, h) The Mire (Central)'s dragon (owner, Oct 18: 2.5 times the first size)
+DRAGON = (3.7, 2.75)                             # (w, h) The Mire (Central)'s dragon (owner, Oct 18: redrawn, a little smaller than 4.25 x 3.1)
 FINGER_LAKE = [8418, 21812, 8419]                # the Old Marsh's finger lake: a narrow north-south water clearing along these rooms (owner, Oct 18)
 INLET = 60.0                                     # (sq) narrow inlets in the Mire's coast smaller than this are filled
 PAD, SQ, CELL_MAX, MIN_PATCH = 0.55, 1.1, 6.0, 3.0
@@ -595,7 +595,7 @@ def add_mi_places(w, layouts):
     mc = next((p for p in w['places'] if p['name'] == 'The Mire (Central)'), None)
     if mc:                                                                           # a small, dull, grim old-map dragon just north of its marker (owner, Oct 18)
         e = mc['path'][-1]
-        g.append({'k': 'dragon', 'at': 'xy', 'x': round(e[0], 2), 'y': round(e[1] - 0.75 - DRAGON[1] / 2, 2), 'w': DRAGON[0], 'h': DRAGON[1]})
+        g.append({'k': 'dragon', 'at': 'xy', 'x': round(e[0], 2), 'y': round(e[1] - 0.85 - DRAGON[1] / 2, 2), 'w': DRAGON[0], 'h': DRAGON[1]})
     for b in g:                                                                      # nothing grows under the new buildings
         if b['k'] in ('shack', 'mansion', 'dragon'):
             for k in SPRITES: w[k] = [s for s in (w.get(k) or []) if not (abs(s[0] - b['x']) < b['w'] / 2 + 0.2 and abs(s[1] - b['y']) < b['h'] / 2 + 0.2)]
