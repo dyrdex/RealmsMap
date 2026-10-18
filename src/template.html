@@ -840,18 +840,56 @@ document.getElementById('lanes').innerHTML=ln;
     for(const y of [-1.75,-2.0])s+=`<path d="M${(-.27*(y+2.45)/.95).toFixed(3)} ${y} l-.06 -.05 M${(.27*(y+2.45)/.95).toFixed(3)} ${y} l.06 -.05" stroke="${D}" stroke-width=".02"/>`;   /* crockets */
     s+=`<circle cx="0" cy="-2.52" r=".09" fill="${G}"/><circle cx="0" cy="-2.52" r=".2" fill="${G}" opacity=".25"/>`;
     return s};
-  SPRITE.mansion=()=>{const ink='var(--peak-line)',f='var(--peak)',sh='var(--peak-shade)';let s=`<ellipse cx="0" cy=".98" rx="1.75" ry=".09" fill="#000" opacity=".35"/>`;   /* Redferne's Residence (owner, Oct 18): a large, old, grand mansion in old-map ink: a central hall with a pediment and columns, two wings, tall chimneys, many windows */
+  SPRITE.mansion=()=>{const ink='var(--peak-line)',f='var(--peak)',sh='var(--peak-shade)';let s=`<ellipse cx="0" cy=".98" rx="1.75" ry=".09" fill="#000" opacity=".35"/>`;   /* Redferne's Residence (owner, Oct 18): an old manor house of the late Middle Ages / Renaissance in old-map ink: a steep-roofed, half-timbered hall, a round corner tower with a conical roof and pennant, a square crenellated keep, a pointed-arch door, mullioned windows */
     s+=`<g stroke="${ink}" stroke-width=".035" stroke-linejoin="round" stroke-linecap="round">`;
-    s+=`<path d="M-1.7 .95 V-.05 L-1.45 -.38 H-.62 L-.45 -.05 V.95Z M1.7 .95 V-.05 L1.45 -.38 H.62 L.45 -.05 V.95Z" fill="${f}"/>`;   /* the wings, hipped roofs */
-    s+=`<path d="M-.62 .95 V-.25 H.62 V.95Z" fill="${f}"/><path d="M-.72 -.25 L0 -.82 L.72 -.25Z" fill="${f}"/><path d="M-.42 -.36 L0 -.68 L.42 -.36Z" fill="none"/>`;   /* the hall and its pediment */
-    s+=`<circle cx="0" cy="-.47" r=".07" fill="none"/>`;
-    for(const x of [-.5,-.25,0,.25,.5])s+=`<path d="M${x} -.2 V.72"/>`;   /* columns */
-    s+=`<path d="M-.66 .72 H.66 M-.75 .84 H.75 M-.82 .95 H.82"/>`;   /* steps */
-    s+=`<path d="M-1.35 -.38 V-.62 H-1.2 V-.38 M1.2 -.38 V-.66 H1.35 V-.38 M-.85 -.38 V-.58 H-.72 V-.38 M.72 -.38 V-.58 H.85 V-.38" fill="${f}"/>`;   /* chimneys */
+    s+=`<path d="M-1.05 .95 V-.12 H1.02 V.95Z" fill="${f}"/>`;   /* the hall */
+    s+=`<path d="M-1.14 -.1 L-.86 -.78 H.8 L1.1 -.1Z" fill="${f}"/>`;   /* its steep roof */
+    s+=`<path d="M.42 -.78 V-1.0 H.58 V-.78 M-.55 -.78 V-.94 H-.42 V-.78" fill="${f}"/>`;   /* chimneys */
+    s+=`<path d="M-.32 -.1 V-.36 L-.2 -.5 L-.08 -.36 V-.1 M.18 -.1 V-.36 L.3 -.5 L.42 -.36 V-.1" fill="${f}"/>`;   /* dormers */
+    s+=`<path d="M-1.65 .95 V-.32 H-1.05 V.95Z" fill="${f}"/><path d="M-1.74 -.32 L-1.35 -1.12 L-.96 -.32Z" fill="${f}"/>`;   /* the round tower, its conical roof */
+    s+=`<path d="M-1.35 -1.12 V-1.32"/><path d="M-1.35 -1.32 L-1.08 -1.26 L-1.35 -1.2Z" fill="${f}"/>`;   /* pennant */
+    s+=`<path d="M1.02 .95 V-.52 H1.62 V.95Z" fill="${f}"/><path d="M.98 -.52 V-.7 H1.1 V-.6 H1.22 V-.7 H1.34 V-.6 H1.46 V-.7 H1.58 V-.6 H1.66 V-.52Z" fill="${f}"/>`;   /* the keep, crenellated */
     s+=`</g>`;
-    for(const sx of [-1,1])for(const [x,y] of [[1.52,.1],[1.22,.1],[.92,.1],[.62,.1],[1.52,.5],[1.22,.5],[.92,.5],[.62,.5]])s+=`<rect x="${(sx*x-.07).toFixed(2)}" y="${y}" width=".14" height=".22" fill="none" stroke="${ink}" stroke-width=".025"/>`;   /* the wings' windows */
-    s+=`<path d="M-1.7 .95 V-.05 L-1.45 -.38 H-1.1 V.95Z" fill="${sh}"/><path d="M.45 .95 V-.05 L.62 -.38 H.95 V.95Z" fill="${sh}"/>`;   /* shading */
-    for(let i=0;i<7;i++)s+=`<path d="M${(-1.68+i*.04).toFixed(2)} ${(.2+i*.1).toFixed(2)} l.18 -.12" stroke="${ink}" stroke-width=".015" opacity=".5"/>`;   /* hatching */
+    s+=`<g stroke="${ink}" stroke-width=".022" fill="none" stroke-linecap="round">`;
+    s+=`<path d="M-1.05 .3 H1.02"/>`;
+    for(const x of [-.78,-.5,-.22,.06,.34,.62,.88])s+=`<path d="M${x} -.12 V.3"/>`;   /* half-timbering upstairs */
+    for(const [x0,x1] of [[-.78,-.5],[-.22,.06],[.34,.62]])s+=`<path d="M${x0} .3 L${x1} -.12"/>`;
+    for(const [x0,x1] of [[-.5,-.22],[.06,.34]])s+=`<path d="M${x0} -.12 L${x1} .3"/>`;
+    for(let i=0;i<5;i++){const y=-.7+i*.13,o=.6*(i*.13)/.68;s+=`<path d="M${(-.86-o*.4).toFixed(2)} ${y.toFixed(2)} H${(.8+o*.44).toFixed(2)}" opacity=".55"/>`}   /* roof tiles */
+    for(let i=0;i<5;i++){const y=-.98+i*.14,h=(y+1.12)/.8*.39;s+=`<path d="M${(-1.35-h).toFixed(2)} ${y.toFixed(2)} H${(-1.35+h).toFixed(2)}" opacity=".5"/>`}
+    for(const y of [.0,.35,.7])s+=`<path d="M-1.65 ${y} Q-1.35 ${y+.06} -1.05 ${y}" opacity=".45"/>`;   /* the tower's courses */
+    for(const y of [-.3,.1,.5])s+=`<path d="M1.02 ${y} H1.62" opacity=".4"/>`;   /* the keep's courses */
+    s+=`</g>`;
+    s+=`<path d="M-.14 .95 V.62 Q-.14 .46 0 .4 Q.14 .46 .14 .62 V.95Z" fill="#1A1714" stroke="${ink}" stroke-width=".03"/>`;   /* the pointed-arch door */
+    for(const x of [-.7,.42])s+=`<rect x="${x}" y=".46" width=".26" height=".28" fill="#1A1714" stroke="${ink}" stroke-width=".025"/><path d="M${x+.13} .46 V.74 M${x} .6 H${x+.26}" stroke="${ink}" stroke-width=".02"/>`;   /* mullioned windows */
+    for(const [x,y] of [[-1.35,-.15],[-1.35,.45],[1.32,-.3],[1.32,.25]])s+=`<path d="M${x-.04} ${y+.2} V${y+.04} Q${x} ${y-.02} ${x+.04} ${y+.04} V${y+.2}Z" fill="#1A1714"/>`;   /* arrow-slit windows */
+    s+=`<path d="M-1.65 .95 V-.32 H-1.47 V.95Z M1.36 .95 V-.52 H1.62 V.95Z M.8 -.78 L1.1 -.1 H.86 Z" fill="${sh}"/>`;   /* shading */
+    for(let i=0;i<7;i++)s+=`<path d="M${(-1.64+i*.025).toFixed(2)} ${(.0+i*.13).toFixed(2)} l.14 -.1" stroke="${ink}" stroke-width=".015" opacity=".5"/>`;   /* hatching */
+    return s};
+  SPRITE.shack=()=>{const D='#2A2018',W1='#8C7556',W2='#6E5A40',R1='#8E8676',R2='#A0602E',T='#9A988A';let s=`<ellipse cx="-.05" cy="1.04" rx="1.55" ry=".1" fill="#000" opacity=".3"/><ellipse cx="-.3" cy="1.05" rx="1.3" ry=".07" fill="#B59A6A" opacity=".25"/>`;   /* the Tipsy Lizard Tavern (owner, Oct 18): a dusty old outback shack: weathered board walls, a rusty, patched corrugated-iron roof and a sagging verandah on crooked posts, a rainwater tank on a stand, a leaning tin flue, a cattle skull, a lizard sign, a barrel */
+    s+=`<path d="M-1.02 1.0 L-1.04 -.16 L.72 -.22 L.74 1.0Z" fill="${W1}" stroke="${D}" stroke-width=".035" stroke-linejoin="round"/>`;   /* the walls */
+    for(let i=1;i<15;i++){const x=-1.03+i*.118;s+=`<path d="M${x.toFixed(2)} ${(-.17-i*.004).toFixed(3)} L${(x+(i%3-1)*.01).toFixed(2)} 1.0" stroke="${D}" stroke-width=".013" opacity="${i%4?'.45':'.7'}"/>`}   /* boards */
+    s+=`<path d="M.2 -.2 L.72 -.22 L.74 1.0 H.2Z" fill="${W2}" opacity=".55"/>`;
+    s+=`<path d="M-1.28 -.08 L-1.0 -.66 L.78 -.74 L1.0 -.16Z" fill="${R1}" stroke="${D}" stroke-width=".035" stroke-linejoin="round"/>`;   /* the corrugated-iron roof */
+    for(let i=1;i<26;i++){const f=i/26;s+=`<path d="M${(-1.28+2.28*f).toFixed(3)} ${(-.08-.08*f).toFixed(3)} L${(-1.0+1.78*f).toFixed(3)} ${(-.66-.08*f).toFixed(3)}" stroke="${D}" stroke-width=".01" opacity=".4"/>`}
+    s+=`<ellipse cx="-.5" cy="-.36" rx=".26" ry=".12" fill="${R2}" opacity=".75"/><ellipse cx=".42" cy="-.5" rx=".2" ry=".09" fill="${R2}" opacity=".65"/><ellipse cx=".1" cy="-.22" rx=".14" ry=".06" fill="${R2}" opacity=".6"/>`;   /* rust */
+    s+=`<path d="M-.15 -.68 L.22 -.7 L.32 -.3 L-.06 -.27Z" fill="${T}" stroke="${D}" stroke-width=".02" transform="rotate(-4 .08 -.48)"/>`;   /* a patched sheet */
+    s+=`<path d="M-.68 -.5 L-.62 -1.0" stroke="${D}" stroke-width=".07"/><path d="M-.68 -.5 L-.62 -1.0" stroke="${T}" stroke-width=".045"/><path d="M-.72 -1.0 H-.52 L-.55 -1.05 H-.69Z" fill="${T}" stroke="${D}" stroke-width=".015"/>`;   /* the leaning flue */
+    s+=`<path d="M-.6 -1.1 q.1 -.12 0 -.22 q-.08 -.1 .04 -.22" fill="none" stroke="#C9C2B0" stroke-width=".03" opacity=".35" stroke-linecap="round"/>`;
+    s+=`<path d="M-1.36 .3 Q-.2 .16 .98 .14 L1.02 .28 Q-.2 .32 -1.38 .42Z" fill="${R1}" stroke="${D}" stroke-width=".03" stroke-linejoin="round"/>`;   /* the sagging verandah roof */
+    for(let i=1;i<20;i++){const f=i/20;s+=`<path d="M${(-1.36+2.34*f).toFixed(3)} ${(.3-.16*f+.08*Math.sin(Math.PI*f)*-1).toFixed(3)} v.12" stroke="${D}" stroke-width=".01" opacity=".4"/>`}
+    s+=`<ellipse cx=".55" cy=".22" rx=".2" ry=".05" fill="${R2}" opacity=".7"/>`;
+    s+=`<path d="M-1.3 .41 L-1.26 1.02 M-.34 .32 L-.36 1.0 M.92 .28 L.98 1.0" stroke="${D}" stroke-width=".05" stroke-linecap="round"/><path d="M-1.3 .41 L-1.26 1.02 M-.34 .32 L-.36 1.0 M.92 .28 L.98 1.0" stroke="${W2}" stroke-width=".028" stroke-linecap="round"/>`;   /* crooked posts */
+    s+=`<path d="M-.24 1.0 V.52 H.06 V1.0Z" fill="#1A1410"/><path d="M.06 .52 L.18 .56 L.18 1.02 L.06 1.0Z" fill="${W2}" stroke="${D}" stroke-width=".015"/>`;   /* the door, ajar */
+    s+=`<rect x="-.86" y=".52" width=".28" height=".22" fill="#D9A441" opacity=".8" stroke="${D}" stroke-width=".025"/><path d="M-.72 .52 V.74" stroke="${D}" stroke-width=".02"/><path d="M-.58 .5 L-.44 .56 L-.46 .8 L-.58 .76Z" fill="${W2}" stroke="${D}" stroke-width=".015"/>`;   /* a lit window, a hanging shutter */
+    s+=`<path d="M.32 .32 V.42 M.62 .3 V.4" stroke="${D}" stroke-width=".012"/><rect x=".24" y=".42" width=".46" height=".2" rx=".02" fill="${W2}" stroke="${D}" stroke-width=".02" transform="rotate(-5 .47 .52)"/><path d="M.31 .53 q.06 -.06 .12 0 t.12 0 l.08 -.04 M.36 .5 l-.03 -.04 M.36 .55 l-.03 .04 M.5 .5 l.02 -.04 M.5 .55 l.02 .04" fill="none" stroke="#C9B37A" stroke-width=".018" stroke-linecap="round" transform="rotate(-5 .47 .52)"/>`;   /* the lizard sign */
+    s+=`<path d="M-.14 .36 q-.06 -.08 -.14 -.06 q.08 .02 .1 .08 M.0 .36 q.06 -.08 .14 -.06 q-.08 .02 -.1 .08" fill="none" stroke="#E8E0CC" stroke-width=".02" stroke-linecap="round"/><path d="M-.11 .35 Q-.07 .5 -.05 .52 Q-.01 .54 .03 .52 Q.05 .5 -.02 .35Z" fill="#E8E0CC" stroke="${D}" stroke-width=".01"/>`;   /* a cattle skull over the door */
+    s+=`<path d="M1.06 1.02 L1.1 .58 M1.44 1.02 L1.4 .58 M1.08 .8 L1.42 .76 M1.1 .62 L1.42 .98" stroke="${W2}" stroke-width=".035" stroke-linecap="round"/><path d="M1.04 .58 H1.46" stroke="${D}" stroke-width=".04"/>`;   /* the tank stand */
+    s+=`<path d="M1.06 .56 V-.12 Q1.25 -.2 1.44 -.12 V.56 Q1.25 .6 1.06 .56Z" fill="${T}" stroke="${D}" stroke-width=".03"/>`;   /* the rainwater tank */
+    for(let i=0;i<7;i++){const y=-.06+i*.09;s+=`<path d="M1.06 ${y.toFixed(2)} Q1.25 ${(y+.04).toFixed(2)} 1.44 ${y.toFixed(2)}" fill="none" stroke="${D}" stroke-width=".012" opacity=".5"/>`}
+    s+=`<path d="M1.3 .56 V-.12 Q1.38 -.14 1.44 -.12 V.56Z" fill="#000" opacity=".15"/><ellipse cx="1.18" cy=".3" rx=".07" ry=".1" fill="${R2}" opacity=".6"/><path d="M.98 -.14 Q1.05 -.18 1.12 -.14" fill="none" stroke="${T}" stroke-width=".03"/>`;
+    s+=`<rect x="-1.62" y=".7" width=".22" height=".3" rx=".05" fill="${W2}" stroke="${D}" stroke-width=".025"/><path d="M-1.62 .78 H-1.4 M-1.62 .92 H-1.4" stroke="${D}" stroke-width=".015"/>`;   /* a barrel */
+    s+=`<path d="M-1.02 -.16 L-1.04 1.0 H-.92 L-.9 -.17Z" fill="#000" opacity=".12"/>`;
     return s};
   SPRITE.stonetower=()=>{const D='#1E1C18',S1='#8A857A',S2='#6E695F';let s=`<ellipse cx="0" cy="2.7" rx=".62" ry=".08" fill="#000" opacity=".4"/>`;   /* a tall grey stone tower north of Dragon Tower's gates (owner, Oct 18) */
     s+=`<path d="M-.42 2.7 L-.34 -2.2 H.34 L.42 2.7Z" fill="${S1}" stroke="${D}" stroke-width=".035" stroke-linejoin="round"/><path d="M0 -2.2 H.34 L.42 2.7 H.06Z" fill="${S2}"/>`;
@@ -890,7 +928,7 @@ document.getElementById('lanes').innerHTML=ln;
     else if(g.at==='above-pin'){cx=p.mx+(g.dx||0);cy=p.my-.5-g.h/2+(g.dy||0)}
     else{const t=[...svg.querySelectorAll('.plabel.lbl')].find(e=>P[+e.dataset.i]===p);if(!t)continue;const bb=t.getBBox();cx=bb.x+bb.width/2+(g.dx||0);cy=(g.at==='above-text'?bb.y-g.h/2-.12:bb.y+bb.height+g.h/2+.08)+(g.dy||0)}  // at: 'above-text' or 'below-text'
     if(g.k==='text'){out+=`<text x="${g.x}" y="${g.y}" text-anchor="middle" font-size=".38" font-style="italic" fill="var(--soft)" style="paint-order:stroke;stroke:var(--halo);stroke-width:.1px;stroke-linejoin:round">${g.text}</text>`;continue}
-    const dx={hut:1.0,jtemple:1.1,pirateinn:2.5,gatetower:3.8,volcano:3.0,saloon:2.2,pier:1,ladderhole:1,ladderexit:1,darktower:1.4,magetower:1.6,mansion:3.6,stonetower:1.0,shatteredtemple:2.6,seainn:3.4,seahole:1.1,barn:3.5,hideout:5.0,castle:4,windmill:2.4,town:4.4,inn:3,keep:2.6,palisade:3.3,stonecity:3.5,ruin:3.0,darkpeak:4.4,barrow:4.6,grove:1,waterway:1,graves:1}[g.k],dy={hut:.9,jtemple:1.6,pirateinn:2.1,gatetower:3.64,volcano:2.4,saloon:1.7,pier:1,ladderhole:1,ladderexit:1,darktower:2.7,magetower:5.1,mansion:2.1,stonetower:5.4,shatteredtemple:1.6,seainn:2.2,seahole:1.1,barn:2.6,hideout:4.7,castle:3.3,windmill:3.2,town:2.6,inn:2.4,keep:5.3,palisade:2.5,stonecity:2.9,ruin:2.1,darkpeak:2.9,barrow:2.3,grove:1,waterway:1,graves:1}[g.k];
+    const dx={hut:1.0,jtemple:1.1,pirateinn:2.5,gatetower:3.8,volcano:3.0,saloon:2.2,pier:1,ladderhole:1,ladderexit:1,darktower:1.4,magetower:1.6,mansion:3.6,shack:3.3,stonetower:1.0,shatteredtemple:2.6,seainn:3.4,seahole:1.1,barn:3.5,hideout:5.0,castle:4,windmill:2.4,town:4.4,inn:3,keep:2.6,palisade:3.3,stonecity:3.5,ruin:3.0,darkpeak:4.4,barrow:4.6,grove:1,waterway:1,graves:1}[g.k],dy={hut:.9,jtemple:1.6,pirateinn:2.1,gatetower:3.64,volcano:2.4,saloon:1.7,pier:1,ladderhole:1,ladderexit:1,darktower:2.7,magetower:5.1,mansion:2.6,shack:2.6,stonetower:5.4,shatteredtemple:1.6,seainn:2.2,seahole:1.1,barn:2.6,hideout:4.7,castle:3.3,windmill:3.2,town:2.6,inn:2.4,keep:5.3,palisade:2.5,stonecity:2.9,ruin:2.1,darkpeak:2.9,barrow:2.3,grove:1,waterway:1,graves:1}[g.k];
     out+=`<g class="gfx-${g.k}" transform="translate(${cx.toFixed(3)},${cy.toFixed(3)}) scale(${(g.w/dx).toFixed(4)},${(g.h/dy).toFixed(4)})">${SPRITE[g.k](g)}</g>`;
   }
   layer.innerHTML=out;

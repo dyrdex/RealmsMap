@@ -57,9 +57,11 @@ IN_SEA = (8072,)                                 # A Shallow Channel: in the wat
 THIN = {8038: 0.9, 8039: 0.9, 8040: 0.9, 8041: 0.8, 8042: 0.45, 8043: 0.45, 8044: 0.5}   # The Small Beach; The Narrow Beach and its tip 8044: a thin peninsula (owner, Oct 18)
 SHORE_GAP = 1.6                                  # (rooms) other land kept off these
 COAST_FILL = [[(-114.6, 108.8), (-114.6, 111.7), (-109.8, 111.7), (-109.4, 108.8)],      # north of the peninsula's clearing: the coast straight down to it
-              [(-114.6, 114.3), (-114.6, 117.8), (-110.3, 117.8), (-110.3, 114.3)]]     # south of it: the coast meets it just south of the clearing
-MANSION_AT = (-43.3, 128.6)                      # Redferne's Residence's mansion (owner, Oct 18)
-FINGER_LAKE = [8414, 21812, 8419]                # the Old Marsh's finger lake: a double-wide water clearing along these rooms (owner, Oct 18)
+              [(-114.6, 114.3), (-114.6, 117.8), (-110.3, 117.8), (-110.3, 114.3)],     # south of it: the coast meets it just south of the clearing
+              [(-111.0, 112.7), (-110.0, 111.8), (-108.2, 111.8), (-107.8, 113.0), (-108.2, 114.7), (-110.6, 114.7)],   # the gap north-east of the tavern (owner, Oct 18; the sea is kept)
+              [(-36.2, 124.6), (-33.5, 123.4), (-29.0, 122.8), (-29.6, 126.5), (-30.0, 130.0), (-30.6, 133.0), (-30.6, 135.0), (-36.2, 135.0)]]   # between the land east of the Old Marsh and the Mire river: standard Mire ground (owner, Oct 18)
+MANSION_EAST_OF = 8421                           # Redferne's Residence's manor: its east side just west of this room (owner, Oct 18)
+FINGER_LAKE = [8418, 21812, 8419]                # the Old Marsh's finger lake: a narrow north-south water clearing along these rooms (owner, Oct 18)
 INLET = 60.0                                     # (sq) narrow inlets in the Mire's coast smaller than this are filled
 PAD, SQ, CELL_MAX, MIN_PATCH = 0.55, 1.1, 6.0, 3.0
 SEED = 211
@@ -237,8 +239,8 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     watm |= ndi.gaussian_filter(ndi.binary_fill_holes(np.array(_lk, bool)).astype(float), 0.3 * R8) > 0.5
     _fl = [px(pos[v]) for v in FINGER_LAKE if shown(v)]
     if len(_fl) > 1:
-        _fi = Image.new('L', (bw, bh), 0); _fd = ImageDraw.Draw(_fi); _fd.line(_fl, fill=255, width=2 * s_, joint='curve')
-        for q in _fl: _fd.ellipse([q[0] - s_, q[1] - s_, q[0] + s_, q[1] + s_], fill=255)
+        _fi = Image.new('L', (bw, bh), 0); _fd = ImageDraw.Draw(_fi); _fd.line(_fl, fill=255, width=s_, joint='curve')   # (half its first width: owner, Oct 18)
+        for q in _fl: _fd.ellipse([q[0] - s_ / 2, q[1] - s_ / 2, q[0] + s_ / 2, q[1] + s_ / 2], fill=255)
         watm |= ndi.gaussian_filter(np.array(_fi, bool).astype(float), 0.3 * R8) > 0.5
     riv = np.zeros((bh, bw), bool)                                                   # the river (owner, Oct 18)
     for (xa, ya, wa), (xb, yb, wb_), hd in [s_ + (ci > 0,) for ci, ch in enumerate([RIVER] + RIVER_HEAD) for s_ in zip(ch[:-1], ch[1:])]:
@@ -461,6 +463,8 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     tints['thicket'] = _put(w, 'thicket', thick, box, sigma=1.5)
     cand = base & ~mud & ~thick & (d_path > 1.5) & ~ndi.binary_dilation(watm, iterations=int(1.2 * R8))
     centres = [q for q in _place(cand, X, Y, 7.0, 141) if _hash(q[0], q[1], 144) < 0.55]   # (few, and of different sizes)
+    from matplotlib.path import Path as _MP
+    centres = [q for q in centres if not any(_MP(poly).contains_point(q) for poly in COAST_FILL)]   # (no pools in the filled gaps: no round puddles, owner)
     pool = np.zeros((bh, bw), bool)
     for x, y in centres:
         r = 0.4 + 1.1 * float(_hash(x, y, 142)) ** 2; c, rr_ = int((x - box[0]) * R8), int((y - box[1]) * R8); k = int((r * 1.4 + 0.2) * R8)
@@ -519,6 +523,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
 
 EXTRA_PLACES = [("Tipsy Lizard Tavern", "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;sw;sw;sw;sw;sw;sw;sw;w;u;s;e;e;se;se;s;s;sw;nw;nw;w;w;w;sw;w;sw;sw;sw;sw;s;s;s;s;se;s;sw;s;sw;w;sw;sw;sw;sw;sw;sw;s;sw;sw;e", None),
                 ("Redferne's Residence", "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;sw;sw;nw;n;ne;nw;n;n;ne;n;e;se;se;e;s;se;sw;s;s;sw;s;s;sw;s;se;e;e;se;e;se;sw;se;se;s;s;se;se;e;se;sw;s;e;e;se;se;se;s;s;e;e;s;e;s;w", None),
+                ("Shadowport", None, 'onhidden'),   # the marker on the hidden room 10099 (the route's end): its route from data.py (owner, Oct 18)
                 ("Vaellys el Notrune", "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;sw;sw;sw;sw;sw;sw;sw;w;u;s;e;e;se;se;s;s;sw;nw;nw;w;w;w;sw;w;sw;sw;sw;sw;s;s;s;s;se;s;sw;s;sw;w;sw;sw;sw;sw;sw;sw;s;sw;sw;w;sw;w;n;nw;n", 'mob')]   # (owner, Oct 18)
 SUBAREAS = ("Dragon Tower", "High Tower of Sorcery", "Ockwater Fens", "Old Marsh", "Tribal Swamplands (Lizardmen)")   # the areas off the Mire with directions in data.py (owner, Oct 18;
 # not the Forest of Tears or the Wastelands; Dragon's Pass and Machine Dreams are already on the map by other routes; Asgard Nexus stays off the map)
@@ -548,6 +553,14 @@ def add_mi_places(w, layouts):
                                 group='af', where='off the Mire',
                                 note=None if len(segs) == 1 else "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."))
         rep[name] = dict(end_room=upto[-1], walked=len(t), left_at=len(upto), dir=d, pieces=len(segs), marker=segs[-1][-1])
+    mp = next((p for p in w['places'] if p['name'] == 'The Mire'), None)
+    if mp:                                                                           # the owner's new directions into the Mire (Oct 18): retraced over the Mire's rooms, the marker at the route's end
+        route = next(l.split('|', 1)[1].strip().rstrip(';') for l in lines if l.startswith('The Mire|'))
+        t = walk(route); last = max(i for i, v in enumerate(t) if at(v) and v not in hid)
+        upto = t[:last + 1]; segs = segments([at(v) for v in upto])
+        mp.update(route=route, room=rooms[upto[-1]]['name'], dir='here' if last == len(t) - 1 else mp.get('dir'), path=[q for s_ in segs for q in s_], segs=segs,
+                  note=None if len(segs) == 1 else "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there.")
+        rep['The Mire'] = dict(end_room=upto[-1], walked=len(t), left_at=len(upto), dir=mp['dir'], pieces=len(segs), marker=segs[-1][-1])
     pos = {}
     for L in layouts:
         for v, x, y in zip(L['ids'], L['xs'], L['ys']): pos.setdefault(v, (x, y))
@@ -558,7 +571,9 @@ def add_mi_places(w, layouts):
         if b.get('k') == 'barn': b['y'] = round(b['y'] - 0.5, 2); rep['barn_moved_north'] = 0.5   # the MacMillan Family Farm's barn, a little north (owner, Oct 18)
     for name, route, kind in EXTRA_PLACES:                                           # owner's places (Oct 18), traced from Darkhaven Square
         if any(p['name'] == name for p in w['places']): continue
-        t = walk(route); last = max(i for i, v in enumerate(t) if at(v) and v not in hid)
+        if route is None: route = next(l.split('|', 1)[1].strip().rstrip(';') for l in lines if l.startswith(name + '|'))
+        t = walk(route); last = max(i for i, v in enumerate(t) if at(v) and (v not in hid or kind == 'onhidden'))
+        if kind == 'onhidden': kind = None
         upto = t[:last + 1]; segs = segments([at(v) for v in upto])
         d = 'here' if last == len(t) - 1 else re.sub(r'^#\s*\d+\s*', '', route.split(';')[-1].strip())
         pl = dict(name=name, route=route, room=rooms[upto[-1]]['name'], dir=d, path=[q for s_ in segs for q in s_], segs=segs, group='af', where='in the Mire',
@@ -568,14 +583,15 @@ def add_mi_places(w, layouts):
     pin = lambda p: (p['path'][-1][0] + {'n': 0, 's': 0, 'e': .62, 'w': -.62}.get(p['dir'], 0) * (1 if p['dir'] in ('e', 'w') else 0), p['path'][-1][1] + {'n': -.62, 's': .62}.get(p['dir'], 0))
     tl = next((p for p in w['places'] if p['name'] == 'Tipsy Lizard Tavern'), None)
     if tl:                                                                           # a small inn east of its marker, its name below the inn (owner, Oct 18)
-        q = pin(tl); ix_, iy_ = q[0] + 1.25, q[1] - 0.1
-        g.append({'k': 'inn', 'at': 'xy', 'x': round(ix_, 2), 'y': round(iy_, 2), 'w': 1.6, 'h': 1.3})
+        q = pin(tl); ix_, iy_ = q[0] + 1.4, q[1] - 0.2                               # (a dusty old outback shack: owner, Oct 18)
+        g.append({'k': 'shack', 'at': 'xy', 'x': round(ix_, 2), 'y': round(iy_, 2), 'w': 2.0, 'h': 1.6})
         g.append({'k': 'text', 'at': 'xy', 'x': round(ix_, 2), 'y': round(iy_ + 0.65 + 0.42, 2), 'text': 'Tipsy Lizard Tavern'}); tl['nolabel'] = True
     rf = next((p for p in w['places'] if p['name'] == "Redferne's Residence"), None)
     if rf:                                                                           # a large, old, grand mansion above its marker, drawn like an old map's (owner, Oct 18)
-        g.append({'k': 'mansion', 'at': 'xy', 'x': MANSION_AT[0], 'y': MANSION_AT[1], 'w': 3.2, 'h': 1.8})   # (on the open ground west of the Old Marsh: above the marker it would cover the finger lake)
+        ex_, ey_ = pos[MANSION_EAST_OF]                                              # (its east side just west of 8421: owner, Oct 18)
+        g.append({'k': 'mansion', 'at': 'xy', 'x': round(ex_ - 0.35 - 3.2 / 2, 2), 'y': round(ey_ - 0.15, 2), 'w': 3.2, 'h': 2.3})
     for b in g:                                                                      # nothing grows under the new buildings
-        if b['k'] in ('inn', 'mansion'):
+        if b['k'] in ('shack', 'mansion'):
             for k in SPRITES: w[k] = [s for s in (w.get(k) or []) if not (abs(s[0] - b['x']) < b['w'] / 2 + 0.2 and abs(s[1] - b['y']) < b['h'] / 2 + 0.2)]
     ht = next((p for p in w['places'] if p['name'] == 'High Tower of Sorcery'), None)
     if ht:                                                                           # a sorcerer's tower north of its marker (owner, Oct 18)
