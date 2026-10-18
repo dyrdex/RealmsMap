@@ -72,7 +72,7 @@ Machine Dreams|#13 e;#3 s;w;s;#2 w;n;#2 w;#2 s;se;#2 e;ne;w;s;d
 MacMillan Family Farm|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#10 sw;#2 w;#2 sw;nw;
 Major Oak|#6 w;#2 sw;#5 w;#2 nw;ne
 Miden'nir|#7 s
-The Mire|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#10 sw;w;u;s;#2 e;#2 se;#2 s;sw
+The Mire|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#10 sw;w;u;s;#2 e;#2 se;#2 s;sw;#2 nw
 Mithril Hall|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;nw;ne;#2 w;sw;#3 s;#2 se;sw;#2 u;w;nw;#4 w;n;open passage;n;e;#2 n;w;d;#2 e;n;
 A Moment in Nature|#3 e;s;d;open w;#3 w;open w;#6 w;enter
 Morgul Vale|nw;#2 w;#4 n;e;look painting;open n;n;#49 w;#9 s;w;sw;#2 s;u;#2 s;#2 w;#2 sw;s;se;sw
@@ -107,7 +107,7 @@ Sesuadra's Rift|#42 west;#7 n;enter;sw;enter;s;w;s;onslaught
 Seth's Fortress|#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;nw;ne;#2 w;sw;#3 s;#2 se;ne;e;sw;s;#3 e;#2 u
 Shadar Logoth|#13 e;#3 s;#3 e;#2 ne;#3 se;e;#2 s;sw;s;se;s;se;#2 e;#2 ne;e;sw;se;e;#2 ne;#2 e;ne;#4 n;sw;s;w;n;ne;#2 n;#2 w
 Shadow Grove|#7 n
-Shadowport|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se;s;#3 sw;u;#2 w;n;nw;#2 n;sw;s;sw;se;e;ne;open wall;#3 n;w;open w;#2 w;n;w;#2 n;open d;#2 d
+Shadowport|s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;s;s;sw;s;s;sw;sw;s;sw;sw;s;sw;s;s;w;sw;s;sw;sw;s;w;s;s;sw;s;sw;se;e;ne;open wall;n;n;n;w;open w;w;w;n;w;n;n;d;d
 Spectrum|godag;n;e;se;e;se;e;ne;enter
 Shai'ghool|#8 e;#3 ne;#3 e;ne;e;ne;#2 e;#2 n;e;ne;
 Shattered Refuge|#9 s;w;#3 s;w;

@@ -1,5 +1,5 @@
 # Rebuild the map: python3 build.py  ->  writes ../realm_map.html
-import subprocess, sys, os, json
+import subprocess, sys, os, json, math
 os.chdir(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, '.')
 subprocess.run([sys.executable, 'extract2.py'], check=True, stdout=subprocess.DEVNULL)      # the town (writes nd2.json)
 subprocess.run([sys.executable, 'fot_extract.py'], check=True, stdout=subprocess.DEVNULL)   # everything outside the town (writes fot.json)
@@ -148,15 +148,31 @@ _smr_win={_v:(_SML['xs'][_i],_SML['ys'][_i]) for _i,_v in enumerate(_SML['ids'])
 for _i,_v in enumerate(_SML['ids']):                              # the Southern Mountain Trade Route rooms the owner moved in the Wastelands editor
     if _v in _wlm.UN: _SML['xs'][_i],_SML['ys'][_i]=_wlp[_v]
 _wls={}
+_MIL0=_json.load(open(os.path.join(_here,'mi_layout_final.json'))); _mip=dict(zip(_MIL0['ids'],zip(_MIL0['xs'],_MIL0['ys'])))
+MI_UN=list(range(110,117))                                       # Southern Mountain Range rooms the owner may move in the Mire editor (Oct 18)
+for _i,_v in enumerate(_SML['ids']):
+    if _v in MI_UN and _v in _mip and _mip[_v]!=(_SML['xs'][_i],_SML['ys'][_i]):
+        _smr_win.setdefault(_v,(_SML['xs'][_i],_SML['ys'][_i])); _SML['xs'][_i],_SML['ys'][_i]=_mip[_v]
+WL_UN=[8606,8608,10049,8610,8611,8614,10045]                      # Wastelands rooms the owner may move in the Mire editor (Oct 18)
+for _i,_v in enumerate(_WLL['ids']):
+    if _v in WL_UN and _v in _mip: _WLL['xs'][_i],_WLL['ys'][_i]=_mip[_v]
+_MIL=_json.load(open(os.path.join(_here,'mi_layout_final.json'))); _MIE=_json.load(open(os.path.join(_here,'mi_editor_edges.json')))   # The Mire layout (Oct 18)
+_MIX={'ids':[],'xs':[],'ys':[],'hidden':[]}                         # rooms added to the Mire editor but not saved yet: never drawn (owner, Oct 18); their starting spots only guide the route tracer
+for _r in _MIE['rooms']:
+    if _r.get('grp')=='om' and _r['id'] not in _MIL['ids']: _MIX['ids'].append(_r['id']); _MIX['xs'].append(_r['x0']); _MIX['ys'].append(_r['y0']); _MIX['hidden'].append(_r['id'])
+import mi_merge as _mim
+_mis={}
 _cdr={}
 from smr_merge import merge_smr                                    # the Southern Mountain Range, its Trade Route and links to the moved trail (Oct 14)
-_cdle=_cdm.land_edit(_CDL,_CDE,_SML,_cdr); _wlle=_wlm.wl_land(_WLL,_WLE,_wls)
-w,_sm=merge_smr(w,_SML,_SME,land_edit=lambda L,W,x,y:_wlle(_cdle(L,W,x,y),W,x,y),window_pos=_smr_win)
+_cdle=_cdm.land_edit(_CDL,_CDE,_SML,_cdr); _wlle=_wlm.wl_land(_WLL,_WLE,_wls); _mile=_mim.mi_land(_MIL,_MIE,_mis)
+w,_sm=merge_smr(w,_SML,_SME,land_edit=lambda L,W,x,y:_mile(_wlle(_cdle(L,W,x,y),W,x,y),W,x,y),window_pos=_smr_win)
 print('Southern Mountain Range merged:',_sm)
 w,_cd=_cdm.merge_cd(w,_CDL,_CDE,_SML)                              # the Coral Depths: its paths, the cliff, the sea, the ground (Oct 16)
 print('Coral Depths merged:',{**_cdr,**_cd})
 w,_wl=_wlm.merge_wl(w,_WLL,_WLE,_wls)                            # the Wastelands, from the owner's save (Oct 17)
 print('Wastelands merged:',_wl)
+w,_mi=_mim.merge_mi(w,_MIL,_MIE,_mis)                            # The Mire, from the owner's save (Oct 18)
+print('Mire merged:',_mi)
 _cdm_ids={r['id'] for r in _CDE['rooms'] if r.get('area')=='CD'}   # (only the rooms moved in that editor: they come first for the route tracers)
 _CDLm={k:[v for v,i in zip(_CDL[k],_CDL['ids']) if i in _cdm_ids] if k in ('ids','xs','ys') else _CDL[k] for k in _CDL}
 from smr_markers import add_smr_subareas                          # markers + traced routes for the areas that open off the range and its trade route (Oct 14)
@@ -164,7 +180,7 @@ w,_ssa=add_smr_subareas(w,_SML,_json.load(open(os.path.join(_here,'smr_marker_ro
 print('Southern Mountain Range sub-areas:',_ssa)
 print('Forest of Tears, Lake of Tich\'Pyga and Western Trade Route merged:',{k:v for k,v in _ft.items() if not k.startswith('_')})
 from west_sea import add_west_sea                                # the sea along the whole west coast + the small marina on it (Oct 13)
-w,_wsea=add_west_sea(w)
+w,_wsea=add_west_sea(w,avoid=_mim.avoid(_mis))
 print('west sea and marina:',_wsea)
 from pf_merge import merge_pf                                     # the Pixie Forest rooms and the moved Woods rooms 4017-4019, from the owner's save (Oct 15)
 _PFL=_json.load(open(os.path.join(_here,'pf_layout_final.json')))
@@ -193,12 +209,29 @@ w,_cdpl=_cdm.add_cd_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout()
 print('Coral Depths places:',_cdpl)
 w,_wlpl=_wlm.add_wl_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_WLL])   # the Wastelands' sub-areas (owner, Oct 17)
 print('Wastelands places:',_wlpl)
+w,_mipl=_mim.add_mi_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_WLL,_MIL,_MIX])   # the Mire's sub-areas (owner, Oct 18)
+print('Mire places:',_mipl)
 from na_merge import grimdog_route
 w,_ngr=grimdog_route(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_NALm])   # Grimdog's route on to 21076, through the hidden port rooms (owner, Oct 16)
 print('Grimdog route:',_ngr)
 from md_merge import merge_md                                     # Miden'nir rooms on the painting, from the owner's save (Oct 15)
 w,_md=merge_md(w,_json.load(open(os.path.join(_here,'md_layout_final.json'))),_json.load(open(os.path.join(_here,'md_editor_edges.json'))))
 print('Miden\'nir rooms:',_md)
+_ftp=dict(zip(_FTL['ids'],zip(_FTL['xs'],_FTL['ys'])))
+for _a,_b in ((1553,1563),):                                     # Forest of Tears paths the owner asked for (Oct 18: 1553-1563 is an up/down exit)
+    w['fwtracks']=list(w['fwtracks'])+[[[round(_ftp[_a][0],2),round(_ftp[_a][1],2)],[round(_ftp[_b][0],2),round(_ftp[_b][1],2)]]]
+from ntr_merge import _samples as _smp
+from smr_merge import _drawn as _drw
+_rp=_smp([_drw(l) for l in (w.get('etrtracks') or []) if len(l)>1],0.05)
+for _bd in w.get('buildings',[]):                                # Falcon's Nest Tavern off the Western Trade Route and its verge (owner, Oct 18)
+    if _bd.get('name')=="Falcon's Nest Tavern":
+        _x0=_bd['x']
+        _cl=lambda x,y: min(math.hypot(max(abs(q[0]-x)-_bd['w']/2,0),max(abs(q[1]-y)-_bd['h']/2,0)) for q in _rp)
+        _y0=_bd['y']; _tx,_ty=_x0-0.7,_y0+0.45                       # (owner, Oct 18: a little west, then south) the nearest spot to that clear of the road's verge (1.1)
+        _c=[(_tx+i*0.05,_ty+j*0.05) for i in range(-40,21) for j in range(-10,21)]
+        _bx,_by=min((p for p in _c if _cl(*p)>=1.1),key=lambda p:math.hypot(p[0]-_tx,p[1]-_ty))
+        _bd['x'],_bd['y']=round(_bx,2),round(_by,2)
+        print('tavern moved',round(_bd['x']-_x0,2),round(_bd['y']-_y0,2),'clearance',round(_cl(_bx,_by),2))
 from owner_edits import apply_edits                              # lines and places the owner asked to take out (Oct 14)
 w,_oe=apply_edits(w)
 print('owner edits:',_oe)

@@ -25,7 +25,7 @@ import gap_fill as GF
 from ntr_merge import _chains, _samples, _nearest_on
 
 R8 = GF.R8
-X0, X1 = GF.X0, GF.X1
+X0, X1 = GF.X0 - 20.0, GF.X1                                            # (20 rooms further west than the gap_fill grid, Oct 18: room for the Mire; aligned to its pixels)
 YN = -215.0
 W = int((X1 - X0) * R8)
 SQ = 1.1             # a room's square (rooms are 1 x 1; a little more so that neighbours merge)
