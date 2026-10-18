@@ -2,6 +2,7 @@
 
 ## In progress (after version 18)
 
+- The Mire redrawn from your save of Oct 18 (06:56; 41 rooms moved, incl. 7938-7940 and 8134-8150); the Dragon Tower marker follows 7940.
 - The Mire: Dragon Tower's gates (8155) added, two rooms north of 21879 with its path; movable in the Mire editor (orange outline).
 - The Mire redrawn from your save of Oct 18 (06:38; 67 rooms moved; 8405-8407 hidden). The Old Marsh: its central cluster (8408-8410, 8412-8417) one regular clearing, its other rooms paths (none drawn as water).
 - The Mire: the extra slivers at the river's head now really show (two small ones below the marsh, above the two that run into the river; the last round's sliver was too thin and vanished when traced, so it never appeared); the Old Marsh's 18 rooms (+ 2 spacers) and Dragon Tower room 7940 added (on the map at their starting spots next to the rooms they join; movable in the Mire editor, orange outline); 19582 and 7938 shown. The Old Marsh and Dragon Tower markers now follow their routes into those rooms.
