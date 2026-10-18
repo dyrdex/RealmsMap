@@ -218,11 +218,15 @@ for _a,_b in ((1553,1563),):                                     # Forest of Tea
 from ntr_merge import _samples as _smp
 from smr_merge import _drawn as _drw
 _rp=_smp([_drw(l) for l in (w.get('etrtracks') or []) if len(l)>1],0.05)
-for _bd in w.get('buildings',[]):                                # Falcon's Nest Tavern off the Western Trade Route (owner, Oct 18): west until clear of the road as drawn (its verge: 0.95)
+for _bd in w.get('buildings',[]):                                # Falcon's Nest Tavern off the Western Trade Route and its verge (owner, Oct 18)
     if _bd.get('name')=="Falcon's Nest Tavern":
         _x0=_bd['x']
-        while min(math.hypot(max(abs(q[0]-_bd['x'])-_bd['w']/2,0),max(abs(q[1]-_bd['y'])-_bd['h']/2,0)) for q in _rp)<0.95 and _bd['x']>_x0-4: _bd['x']=round(_bd['x']-0.05,2)
-        print('tavern moved west',round(_x0-_bd['x'],2))
+        _cl=lambda x,y: min(math.hypot(max(abs(q[0]-x)-_bd['w']/2,0),max(abs(q[1]-y)-_bd['h']/2,0)) for q in _rp)
+        _y0=_bd['y']; _tx,_ty=_x0-0.7,_y0+0.45                       # (owner, Oct 18: a little west, then south) the nearest spot to that clear of the road's verge (1.1)
+        _c=[(_tx+i*0.05,_ty+j*0.05) for i in range(-40,21) for j in range(-10,21)]
+        _bx,_by=min((p for p in _c if _cl(*p)>=1.1),key=lambda p:math.hypot(p[0]-_tx,p[1]-_ty))
+        _bd['x'],_bd['y']=round(_bx,2),round(_by,2)
+        print('tavern moved',round(_bd['x']-_x0,2),round(_bd['y']-_y0,2),'clearance',round(_cl(_bx,_by),2))
 from owner_edits import apply_edits                              # lines and places the owner asked to take out (Oct 14)
 w,_oe=apply_edits(w)
 print('owner edits:',_oe)

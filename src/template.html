@@ -347,6 +347,7 @@ for(const m of (WD.fwmazes||[])){const d=ring(m.poly);
    every link of a hidden room as a small dashed line */
 for(const p of (WD.streams||[])){const rd=p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L');
   FWPATHS+=`<path d="${rd}" fill="none" stroke="var(--stream-edge)" stroke-width=".5" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/><path d="${rd}" fill="none" stroke="var(--stream)" stroke-width=".34" stroke-linecap="round" stroke-linejoin="round"/>`;}
+FWPATHS+=(WD.milakedash||[]).map(p=>`<path d="M${p.map(q=>q.join(' ')).join('L')}" fill="none" stroke="#6F8A93" stroke-width=".06" stroke-dasharray=".16 .16" stroke-linecap="round" opacity=".45"/>`).join('');   /* links into and inside the Mire's marsh lake: very faint dull blue (owner, Oct 18) */
 for(const p of (WD.mirill||[]))FWPATHS+=`<path d="${curve(p)}" fill="none" stroke="var(--stream)" stroke-width=".14" stroke-linecap="round" opacity=".9"/>`;   /* tiny runs from the marsh to the Mire's river (owner, Oct 18) */
 for(const B of (WD.micrumble||[])){const {x0,x1,y}=B;   /* the Crumbling Bridge over the Mire's river (owner, Oct 18): a stone deck, one rail broken */
   FWPATHS+=`<rect x="${x0}" y="${y-.22}" width="${x1-x0}" height=".44" fill="#000" opacity=".3" transform="translate(.04 .08)"/><rect x="${x0}" y="${y-.26}" width="${x1-x0}" height=".52" fill="var(--stone-top)" opacity=".95"/>`;

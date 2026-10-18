@@ -2,6 +2,9 @@
 
 ## In progress (after version 18)
 
+- Mire editor save of Oct 18 (05:10): range rooms 111-116 and Wastelands rooms 8606, 8608, 8610, 8611, 8614 (+ spacers 10045, 10049) moved; the map follows.
+- Falcon's Nest Tavern: 0.7 west and 0.45 south of where it was, 1.1 rooms clear of the Western Trade Route's centre (outside its verge).
+- The Mire (your requests): the Secluded Valley's clearing (7873 and north) is now wet swamp (marsh water with sedge, 201 sq; its paths stay); a regular path 8440-8439-8438-8451-8462 along the marsh lake's south shore; every link into or inside the lake a very faint dull blue dashed line (8459-8460 stays a path); the river widens steadily from a thin head to full width, then fans out below y 121 into a delta that runs off the map's south edge (y 136), 126 stones across the fan.
 - Mire editor: Wastelands rooms 8606, 8608, 8610, 8611, 8614 and spacers 10045, 10049 unlocked too (blue outline, start where they are on the map); the map moves them when you save.
 - Forest of Tears (your requests): the path 1553-1563 drawn (an up/down exit, now a normal path); Falcon's Nest Tavern moved 0.7 west, clear of the Western Trade Route as drawn.
 - The way over to Angel's Landing from the Forgotten Woods (5667) is a standard path again (the island's own trails stay faint).
