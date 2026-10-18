@@ -38,8 +38,8 @@ RIVER = [(-19.3, 86.3, .26), (-18.4, 88.0, .3), (-17.3, 90.0, .36), (-15.9, 93.5
          (-18.2, 119.5, 2.6), (-19.2, 121.5, 3.2), (-20.5, 124.0, 4.4), (-21.5, 127.0, 5.6), (-22.0, 130.0, 6.6), (-22.0, 133.0, 7.4), (-22.0, 137.5, 8.0)]
 RIVER_END = 136.0                                # it runs off the map's south edge there, cut straight (the fan, not a round end)
 # the river east of the "Along the River" rooms (owner, Oct 18): (x, y, half width): thin at its head, widening south, a fan (delta) below y 121
-RIVER_STONES = (120.0, 134.0)
-RIVER_HEAD = [[(-22.1, 83.7, .18), (-21.0, 85.0, .21), (-19.6, 86.2, .25)], [(-20.0, 83.9, .18), (-19.7, 85.0, .2), (-19.4, 86.2, .24)], [(-21.2, 83.3, .17), (-20.9, 84.1, .18)]]   # slivers of water just below the marsh by the MacMillan farm that run together into the river (owner, Oct 18)
+RIVER_STONES = (116.0, 122.0)                    # (stones only north of the last crossing path, 8491-8492-8640: none by or beyond the coast: owner, Oct 18)
+RIVER_HEAD = [[(-22.1, 83.7, .18), (-21.0, 85.0, .21), (-19.6, 86.2, .25)], [(-20.0, 83.9, .18), (-19.7, 85.0, .2), (-19.4, 86.2, .24)], [(-21.2, 83.3, .17), (-20.9, 84.1, .18)], [(-21.7, 82.2, .16), (-21.4, 82.8, .17)]]   # slivers of water just below the marsh by the MacMillan farm that run together into the river (owner, Oct 18)
 WAVY_LINK = 8.0                                  # links to the map longer than this get a gentle wave (owner, Oct 18)                                                                # stones in its shallow, wide reach (rows)
 BRIDGE = dict(x0=-17.5, x1=-14.0, y=93.5)                                                    # the Crumbling Bridge (8591, 8612, 8590) over it                                                                 # 8060 joined to its clearing
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
@@ -474,4 +474,35 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     rep['bounds'] = [b0, w['bounds']]
     rep['rooms'] = dict(shown=len([v for v in MI if shown(v) and not void(v)]), hidden=len([v for v in MI if v in hidden]),
                         classes={k: sum(1 for v in MI if shown(v) and not void(v) and cls[v] == k) for k in sorted(set(cls.values()))})
+    return w, rep
+
+
+SUBAREAS = ("Dragon Tower", "High Tower of Sorcery", "Ockwater Fens", "Old Marsh", "Tribal Swamplands (Lizardmen)")   # the areas off the Mire with directions in data.py (owner, Oct 18;
+# not the Forest of Tears or the Wastelands; Dragon's Pass and Machine Dreams are already on the map by other routes; Asgard Nexus stays off the map)
+
+
+def add_mi_places(w, layouts):
+    """the Mire's sub-area destinations, traced from the owner's directions: the marker where the route leaves the drawn rooms (as add_wl_places)"""
+    import re
+    import data as DT
+    from route_fix import make_tracer
+    from extra_places import segments
+    rooms, walk, at = make_tracer(w, layouts)
+    exits = AF._world()[1]; hid = set(layouts[-1].get('hidden', []))              # (the Mire layout comes last)
+    lines = (DT.AREAS + '\n' + DT.HOMETOWNS + '\n' + DT.MORE_DIRECTIONS).split('\n')
+    rep = {}
+    for name in SUBAREAS:
+        if any(p['name'] == name for p in w['places']): rep[name] = 'already on the map'; continue
+        route = next(l.split('|', 1)[1].strip().rstrip(';') for l in lines if l.startswith(name + '|'))
+        t = walk(route)
+        last = max(i for i, v in enumerate(t) if at(v) and v not in hid)      # (the last drawn room: hidden rooms are not drawn)
+        upto = t[:last + 1]; segs = segments([at(v) for v in upto])
+        v_ = upto[-1]; base = name.split(' (')[0]
+        out = [e for e in exits.get(v_, []) if rooms.get(e['to'], {}).get('area', '').startswith(base)]
+        d = out[0]['name'] if out else ('here' if last == len(t) - 1 else re.sub(r'^#\s*\d+\s*', '', route.split(';')[-1].strip()))
+        if d not in ('n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'): d = 'here'
+        w['places'].append(dict(name=name, route=route, room=rooms[upto[-1]]['name'], dir=d, path=[q for s_ in segs for q in s_], segs=segs,
+                                group='af', where='off the Mire',
+                                note=None if len(segs) == 1 else "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."))
+        rep[name] = dict(end_room=upto[-1], walked=len(t), left_at=len(upto), dir=d, pieces=len(segs), marker=segs[-1][-1])
     return w, rep
