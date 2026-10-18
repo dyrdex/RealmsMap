@@ -319,7 +319,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     rs = [v for v in MI if shown(v) and not void(v)]
     dist, idx = cKDTree(np.array([pos[v] for v in rs])).query(P)
     Z = np.array([cls[v] for v in rs])[idx].reshape(bh, bw); dist = dist.reshape(bh, bw)
-    fx = [pos[v] for v, r in info.items() if r.get('fixed') and v in pos]
+    fx = [pos[v] for v, r in info.items() if (r.get('fixed') or r.get('grp') == 'un') and v in pos]   # (unlocked map rooms are map rooms)
     d_fix = cKDTree(np.array(fx)).query(P)[0].reshape(bh, bw) if fx else np.full((bh, bw), np.inf)
     gaps = store['gaps'] & land_mi
     _ry = np.array([p[1] for p in RIVER]); _rx = np.array([p[0] for p in RIVER])
