@@ -281,6 +281,7 @@ Not yet built (backlog, in this order): an automatic QA report script; a "tweaks
 - Classes by terrain: Swimming/Water = marsh water (`geo.shallows` on the room patch, wavy edge) + reeds; Forest = trees ('w'); Hills = hills; Mountains = boulders; Desert = sand; else bog. Spacers take their neighbours' class. Clumps of other rooms = mud clearings (`smrpatch`, the range's cell rule). Trails (`fwtracks`) clipped at water/clearings; links to the map drawn (all 7 <= 60).
 - Ground: one `bog` tint over the Mire's own ground (nearer its rooms than the map's fixed rooms); other tints clipped there, polygons reaching out of the box traced whole (WL wheat: 111 sq cut; retrace slivers <= 0.4 sq elsewhere).
 - Sea: one coastal strip west of the shore, rows of the Blood Sea exits +- 10, 9 rooms out, only pieces within reach of an exit (706 sq); reaches the new map edge at x -148.
+- Re-rendered from the owner's second save (01:38Z, 355 rooms moved, hidden unchanged): bounds x -137, y 136; WL wheat cut 108.8 sq.
 - Not done (not asked): markers for the areas off the Mire (Dragon Tower, Old Marsh, Tribal Swamplands, ...), the area name.
 
 ### Wolf's Den marker (Oct 15, owner: wrong place)
