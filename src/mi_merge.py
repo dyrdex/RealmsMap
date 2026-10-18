@@ -1,7 +1,8 @@
 """The Mire (owner, Oct 18): mi_layout_final.json, mi_editor_edges.json (the owner's layout from tools/mire_editor, saved Oct 18 01:03Z).
 First pass, in broad strokes (as the Wastelands' first pass; the owner reviews it):
   - land round every shown room and exit (traced with the mainland: mi_land is chained into smr_merge's land_edit, whose grid now starts 20 rooms
-    further west); the sea west of the beach and the delta, where their exits lead into the Blood Sea (bounded: SEA_R from those exits);
+    further west); the gaps it closes against the Forest of Tears and the range filled (owner, Oct 18: standard terrain, as the land round them;
+    the parts nearer the Mire are the Mire's); no sea of its own: the west-coast sea is carried down its west coast (mire_west_sea, owner Oct 18);
   - ONE ground under the whole area: the bog tint (other tints cut back to where the Mire's ground starts: nearer the Mire's rooms than the map's);
   - the rooms you wade or swim (terrain Swimming / Water: Wading amongst the Reeds, Blackpool Bog, the Dank Bog, river crossings) = shallow marsh
     water on exactly their rooms and the exits between them, wavy edges, reeds round it; clumps of mutually joined other rooms = mud clearings
@@ -22,9 +23,10 @@ from ntr_merge import _chains, _samples
 from smr_merge import _hash, _drawn, X0 as SX0                  # (SX0: the west edge of smr_merge's land grid, where the Mire's land is traced)
 
 R8 = GF.R8
-SEA_AREAS = ('The Blood Sea',)
-LAND_R, SEA_R, TERR_R = 4.2, 8.0, 3.2
-SEA_W, SEA_Y = 9.0, 10.0                         # the coastal sea: rooms out from the shore; rows past the first and last sea exit
+LAND_R, TERR_R = 4.2, 3.2
+SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
+INLET = 60.0                                     # (sq) narrow inlets in the Mire's coast smaller than this are filled
+REACH = 9.0                                      # the west-coast sea carried down the Mire's west coast: as west_sea
 PAD, SQ, CELL_MAX, MIN_PATCH = 0.55, 1.1, 6.0, 3.0
 SEED = 211
 CLASS = {'Swimming': 'water', 'Water': 'water', 'Forest': 'forest', 'Hills': 'hills', 'Mountains': 'rocks', 'Desert': 'beach'}
@@ -53,61 +55,103 @@ def _setup(layout, edges):
 
 
 def mi_land(layout, edges, store, seed=SEED):
-    """land_edit for smr_merge: the Mire's land added to the grid, its sea kept out of it (and remembered in store for merge_mi)"""
+    """land_edit for smr_merge: the Mire's land added to the grid, and the gaps it closes between itself and the map filled with land
+    (owner, Oct 18: no sea of its own; the west-coast sea carried down its west coast instead: mire_west_sea)"""
     rooms, exits, pos, info, hidden, MI, shown, void, E, cls = _setup(layout, edges)
     dry = [v for v in MI if shown(v)]
     land_lines = [[pos[a], pos[b]] for a, b, k in E if k != 'ud']
-    sea_pts = []
-    for v in dry:                                                                    # the exits into the Blood Sea (not drawn): the sea lies that way
-        for e in exits.get(v, []):
-            t = e['to']; d = AF.DV.get(e['dir'])
-            if not d or d[2] or t not in rooms: continue
-            if rooms[t]['area'] in SEA_AREAS or (void(t) and t not in pos and any(rooms.get(e2['to'], {}).get('area') in SEA_AREAS for e2 in exits.get(t, []))):
-                n = math.hypot(d[0], d[1]); sea_pts.append((pos[v][0] + 1.8 * d[0] / n, pos[v][1] + 1.8 * d[1] / n))
     lp = np.r_[np.array([pos[v] for v in dry]), _samples(land_lines, 0.15)]
-    _lt = cKDTree(lp)
-    sea_pts = [p for p in sea_pts if _lt.query(p)[0] >= 1.2]
-    xs = [p[0] for p in lp] + [p[0] for p in sea_pts]; ys = [p[1] for p in lp] + [p[1] for p in sea_pts]
+    xs = [p[0] for p in lp]; ys = [p[1] for p in lp]
     box = (max(SX0, math.floor(min(xs)) - 16), math.floor(min(ys)) - 8, math.ceil(max(xs)) + 12, math.ceil(max(ys)) + 10)
     bw, bh = int((box[2] - box[0]) * R8), int((box[3] - box[1]) * R8)
     gy, gx = np.mgrid[0:bh, 0:bw]; X = (gx + .5) / R8 + box[0]; Y = (gy + .5) / R8 + box[1]; P = np.c_[X.ravel(), Y.ravel()]
     d_l = cKDTree(lp).query(P)[0].reshape(bh, bw)
-    d_s = cKDTree(np.array(sea_pts)).query(P)[0].reshape(bh, bw) if sea_pts else np.full((bh, bw), np.inf)
     rng = np.random.default_rng(seed)
     wob = ndi.gaussian_filter(rng.normal(size=(bh, bw)), 1.8 * R8); wob = (wob - wob.min()) / (wob.max() - wob.min())
     near = d_l <= LAND_R * (0.7 + 0.6 * wob)
     near = ndi.binary_closing(near, structure=np.ones((3, 3), bool), iterations=int(1.5 * R8))
     near = ndi.binary_fill_holes(near)
     near = ndi.gaussian_filter(near.astype(float), 0.8 * R8) > 0.5
-    sea = np.zeros((bh, bw), bool)
-    if sea_pts:                                                                      # one coastal sea off the west shore (bounded: the rows of the sea exits +- SEA_Y, SEA_W rooms out)
-        sy = [p[1] for p in sea_pts]; dn, (iy, ix) = ndi.distance_transform_edt(~near, return_indices=True); dn = dn / R8
-        west = X < X[iy, ix] - 0.1
-        sea = ~near & west & (dn <= SEA_W * (0.8 + 0.4 * wob)) & (Y >= min(sy) - SEA_Y) & (Y <= max(sy) + SEA_Y)
-        sea |= ~near & (d_s <= SEA_R * (0.8 + 0.4 * wob)) & (d_s < d_l)
-        sea = (ndi.gaussian_filter(sea.astype(float), 1.5 * R8) > 0.5) & (d_l > 0.9)
-        lab, n = ndi.label(sea)                                                      # (the pieces that hold a sea exit)
-        sea = np.isin(lab, np.unique(lab[sea & (d_s <= LAND_R * 1.3 + 2.0)]))       # (seeds lie on the land's margin: pieces within reach of them)
-    near &= ~sea
-    store.update(box=box, sea=sea, land=near, sea_pts=len(sea_pts))
+    store.update(box=box, sea=np.zeros((bh, bw), bool), land=near)
 
     def edit(land_n, water0, gx0, gy0):
         c0, r0 = int(round((box[0] - gx0) * R8)), int(round((box[1] - gy0) * R8))
         assert c0 >= 0 and r0 >= 0 and r0 + bh <= land_n.shape[0] and c0 + bw <= land_n.shape[1], (box, land_n.shape, gx0, gy0)
         sub = (slice(r0, r0 + bh), slice(c0, c0 + bw))
         old = land_n[sub].copy()
-        store['sea'] = sea & ~old & ~water0[sub]                                    # (the sea only where there was no land or water)
-        add = near & ~water0[sub] & ~store['sea']
+        add = near & ~water0[sub]
         land_n[sub] = old | add
-        store['land_new_sq'] = round(float((add & ~old).sum()) / R8 / R8, 1); store['added'] = add & ~old
+        added = add & ~old
+        full = np.zeros(land_n.shape, bool); full[sub] = added
+        solid = land_n | water0                                                      # gaps (owner, Oct 18): ground enclosed by the Mire and the map, next to the Mire's new land
+        holes = ndi.binary_fill_holes(solid) & ~solid
+        lab, n = ndi.label(holes)
+        ids = np.unique(lab[ndi.binary_dilation(full, iterations=3) & holes]); ids = ids[ids > 0]
+        gaps = np.isin(lab, ids)
+        so = solid[sub] | gaps[sub]; pad = 4 * R8                                   # (+ narrow inlets in the Mire's own coast: closed by 3 rooms, smaller than INLET sq)
+        cl = ndi.binary_closing(np.pad(so, pad), structure=disk(3 * R8))[pad:-pad, pad:-pad] & ~so
+        lab2, n2 = ndi.label(cl)
+        for i in range(1, n2 + 1):
+            m_ = lab2 == i
+            if m_.sum() / R8 / R8 < INLET and (ndi.binary_dilation(m_, iterations=3) & added).any(): gaps[sub] |= m_
+        assert not (gaps & ~np.pad(np.ones((bh, bw), bool), ((r0, land_n.shape[0] - r0 - bh), (c0, land_n.shape[1] - c0 - bw)))).any(), 'a gap reaches out of the box'
+        land_n |= gaps
+        store['gaps'] = gaps[sub].copy()
+        store['gap_pieces'] = [round(float((lab == i).sum()) / R8 / R8, 1) for i in ids]
+        store['land_new_sq'] = round(float(added.sum()) / R8 / R8, 1); store['added'] = added | store['gaps']
         store['land'] = land_n[sub].copy()
         return land_n
     return edit
 
 
 def avoid(store):
-    """for add_west_sea: the land the Mire added (no west sea off its coasts: it has its own sea, merge_mi)"""
+    """for add_west_sea: the land the Mire added (its west coast gets its sea from mire_west_sea, worked out against the Mire's land)"""
     return store['box'], store['added']
+
+
+def mire_west_sea(w, store, seed=SEED):
+    """the west-coast sea carried south down the Mire's west coast (owner, Oct 18), drawn as add_west_sea draws it (REACH rooms off the land, west of
+    the nearest land point, smoothed, clear of markers and paths) where the nearest land is the Mire's; united with the sea it meets."""
+    box = store['box']; bh, bw = store['land'].shape
+    gy, gx = np.mgrid[0:bh, 0:bw]; X = (gx + .5) / R8 + box[0]; Y = (gy + .5) / R8 + box[1]; P = np.c_[X.ravel(), Y.ravel()]
+    land = AA._raster(w['geo']['land'], box[0], box[1], bw, bh); water = AA._raster(w['geo']['water'], box[0], box[1], bw, bh)
+    mire = ndi.binary_dilation(store['added'], iterations=4)
+    lab, n = ndi.label(~land)
+    border = np.unique(np.r_[lab[0, :], lab[-1, :], lab[:, 0], lab[:, -1]]); ext = np.isin(lab, border[border > 0])
+    d, (iy, ix) = ndi.distance_transform_edt(~land, return_indices=True); d = d / R8
+    wx = np.where(land.any(1), np.argmax(land, axis=1) / R8 + box[0], -np.inf)          # (the west coast only: west of the land's westmost point in each row)
+    core = ext & (X < X[iy, ix] - 0.15) & (X < wx[:, None]) & mire[iy, ix] & (d <= REACH) & (d >= 0.15)
+    region = ndi.gaussian_filter(core.astype(float), 2.0 * R8) > 0.30
+    bwn = ndi.gaussian_filter(np.random.default_rng(seed + 61).normal(size=(bh, bw)), 4.0 * R8); bwn = (bwn - bwn.min()) / (bwn.max() - bwn.min())
+    sea = ext & region & (d >= 0.15) & (d <= REACH * (0.85 + 0.3 * bwn)) & (X < wx[:, None] + 1.0)
+    marks = np.array([p['path'][-1][:2] for p in w['places']], float)
+    lines = [l for k in ('fwtracks', 'swtracks', 'etrtracks', 'dirtroads', 'ashtracks') for l in (w.get(k) or []) if len(l) > 1]
+    blocked = (cKDTree(marks).query(P)[0].reshape(bh, bw) <= 1.3) | (cKDTree(_samples(lines, 0.35)).query(P)[0].reshape(bh, bw) <= 0.7)
+    sea = (ndi.gaussian_filter((sea & ~blocked).astype(float), 0.8 * R8) > 0.5) & ext & (d >= 0.15) & ~blocked
+    lab, n = ndi.label(sea)
+    if n: sea = np.isin(lab, np.unique(lab[sea & ndi.binary_dilation(water, iterations=3)]))   # (only the pieces that join the west-coast sea: it is carried on, no new seas)
+    new = sea & ~water
+    bb = lambda p: (min(q[0] for q in p), min(q[1] for q in p), max(q[0] for q in p), max(q[1] for q in p))
+    near = ndi.binary_dilation(new, iterations=4)
+    sel = [p for p in w['geo']['water'] if any(box[0] <= q[0] < box[2] and box[1] <= q[1] < box[3] for q in p) and (AA._raster([p], box[0], box[1], bw, bh) & near).any()]
+    gb = [math.floor(min([bb(p)[0] for p in sel] + [box[0]])) - 1, math.floor(min([bb(p)[1] for p in sel] + [box[1]])) - 1,
+          math.ceil(max([bb(p)[2] for p in sel] + [box[2]])) + 1, math.ceil(max([bb(p)[3] for p in sel] + [box[3]])) + 1]   # (the sea it meets is traced again whole)
+    gw, gh = int((gb[2] - gb[0]) * R8), int((gb[3] - gb[1]) * R8)
+    merged = AA._raster(sel, gb[0], gb[1], gw, gh) if sel else np.zeros((gh, gw), bool)
+    c0, r0 = int(round((box[0] - gb[0]) * R8)), int(round((box[1] - gb[1]) * R8)); merged[r0:r0 + bh, c0:c0 + bw] |= new
+    w['geo']['water'] = [p for p in w['geo']['water'] if not any(p is s_ for s_ in sel)] + AA._contours(merged, gb[0], gb[1], sigma=1.5)
+    m = ndi.binary_dilation(new, iterations=int(0.25 * R8)); cleared = {}
+    for k in SPRITES:
+        arr = w.get(k) or []; kept = [q for q in arr if not (0 <= int((q[1] - box[1]) * R8) < bh and 0 <= int((q[0] - box[0]) * R8) < bw and m[int((q[1] - box[1]) * R8), int((q[0] - box[0]) * R8)])]
+        if len(kept) != len(arr): cleared[k] = len(arr) - len(kept); w[k] = kept
+    hit = {}
+    for k, ps in w['geo'].items():
+        if k in ('land', 'water') or not ps: continue
+        inb = [p for p in ps if all(box[0] <= q[0] < box[2] and box[1] <= q[1] < box[3] for q in p)]
+        if not inb: continue
+        r = AA._raster(inb, box[0], box[1], bw, bh)
+        if (r & new).any(): hit[k] = round(float((r & new).sum()) / R8 / R8, 1); w['geo'][k] = [p for p in ps if not any(p is q for q in inb)] + AA._contours(r & ~new, box[0], box[1], sigma=1.0)
+    return w, dict(sea_new_sq=round(float(new.sum()) / R8 / R8, 1), bodies=int(ndi.label(new)[1]), joined_water_polys=len(sel), cleared=cleared, tints_cut_sq=hit)
 
 
 def _place(mask, X, Y, spacing, salt, avoid=None):
@@ -243,13 +287,8 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     w['fwtracks'] = list(w['fwtracks']) + dirt
     rep['lines'] = dict(trails=len(dirt), links=links, up_down=uds)
 
-    # ---------------------------------------------------------------- the sea, sand along it
-    seap = AA._contours(sea, box[0], box[1], sigma=1.5)
-    w['geo']['water'] = list(w['geo']['water']) + seap
-    rep['sea'] = dict(sq=sqm(sea), seeds=store['sea_pts'], land_new_sq=store.get('land_new_sq'))
-    sea = sea | ndi.binary_dilation(AA._raster(seap, box[0], box[1], bw, bh), iterations=2)   # (the sea as drawn)
-    land_mi = landm & ~sea
-    d_sea = ndi.distance_transform_edt(~sea) / R8
+    land_mi = landm
+    rep['land'] = dict(new_sq=store.get('land_new_sq'), enclosed_gaps_sq=store.get('gap_pieces'), all_gaps_and_inlets_sq=sqm(store['gaps']))
 
     # ---------------------------------------------------------------- ground: one bog ground; zones by the nearest room's terrain
     rs = [v for v in MI if shown(v) and not void(v)]
@@ -257,7 +296,9 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     Z = np.array([cls[v] for v in rs])[idx].reshape(bh, bw); dist = dist.reshape(bh, bw)
     fx = [pos[v] for v, r in info.items() if r.get('fixed') and v in pos]
     d_fix = cKDTree(np.array(fx)).query(P)[0].reshape(bh, bw) if fx else np.full((bh, bw), np.inf)
-    own = land_mi & (dist <= LAND_R + 8) & (dist < d_fix)                          # (the Mire's own ground: nearer its rooms than the map's)
+    gaps = store['gaps'] & land_mi
+    own = land_mi & ((dist <= LAND_R + 8) | (store['added'] & ~gaps)) & (dist < d_fix)   # (the Mire's own ground: its new land, and land nearer its rooms than the map's)
+    own |= gaps & (dist < d_fix)                                                   # (a gap's part nearer the Mire is the Mire's, however far)
     clipped = {}                                                                   # (no other tint under or over it)
     bb = lambda p: (min(q[0] for q in p), min(q[1] for q in p), max(q[0] for q in p), max(q[1] for q in p))
     for k in [k for k in w['geo'] if k not in ('land', 'water')]:
@@ -275,36 +316,105 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     sm = lambda m, s=0.6: ndi.gaussian_filter(m.astype(float), s * R8) > 0.5
     zone = lambda k: sm(own & (dist <= TERR_R) & (Z == k))
     tints = {'bog': _put(w, 'bog', own, box, sigma=2.0)}
-    beach = (zone('beach') | (own & (d_sea <= 0.45))) & ~watm
+    beach = zone('beach') & ~watm
     tints['sand'] = _put(w, 'sand', beach & ~patchm, box, sigma=1.5)
     w['geo']['shallows'] = list(w['geo'].get('shallows') or []) + AA._contours(watm, box[0], box[1], sigma=1.2, tol=0.3, minarea=0.3)
     tints['marsh_water'] = sqm(watm)
-    rep['tints_sq'] = tints
 
-    # ---------------------------------------------------------------- sprites (clear of paths, clearings, the sea)
+    # ---------------------------------------------------------------- old sprites make way for the Mire's paths and ground
     d_path = cKDTree(_samples([_drawn(l) for l in dirt], 0.1)).query(P)[0].reshape(bh, bw) if dirt else np.full((bh, bw), np.inf)
-    onway = (d_path <= 0.55) | patchm | sea
+    onway = (d_path <= 0.55) | patchm
     def off(q):
         c, r = int((q[0] - box[0]) * R8), int((q[1] - box[1]) * R8)
         return 0 <= r < bh and 0 <= c < bw and bool(onway[r, c] or own[r, c])
     cl = {}
-    for k in ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns'):   # (old sprites in the Mire's ground make way)
+    for k in SPRITES:
         n0 = len(w.get(k) or []); w[k] = [q for q in (w.get(k) or []) if not off(q)]
         if n0 - len(w[k]): cl[k] = n0 - len(w[k])
     rep['old_sprites_cleared'] = cl
-    free = own & (d_path > 0.6) & ~patchm & ~watm
-    nz = ndi.gaussian_filter(np.random.default_rng(seed + 3).normal(size=(bh, bw)), 1.4 * R8); nz = (nz - nz.min()) / (nz.max() - nz.min())
+
+    # ---------------------------------------------------------------- the gaps' other parts: standard terrain, as the land round them (gap_fill's way)
+    std = gaps & ~own & (d_path > 0.6)
+    lab, n = ndi.label(std); gstd = []
+    rng = np.random.default_rng(seed + 21)
+    tint_m = {}
+    for i in range(1, n + 1):
+        m = lab == i
+        ring = ndi.binary_dilation(m, iterations=int(2.5 * R8)) & ~ndi.binary_dilation(m, iterations=2) & land_mi & ~gaps & ~own
+        if not ring.any() or m.sum() < R8 * R8: continue
+        got = {}
+        for k in [k for k in w['geo'] if k not in ('land', 'water', 'shallows')]:
+            if k not in tint_m:
+                ps = [p for p in w['geo'][k] if any(box[0] <= q[0] < box[2] and box[1] <= q[1] < box[3] for q in p)]
+                tint_m[k] = AA._raster(ps, box[0], box[1], bw, bh) if ps else None
+            if tint_m[k] is not None and tint_m[k][ring].mean() >= 0.35:
+                got[k] = _put(w, k, ndi.binary_dilation(m, iterations=3) & land_mi & ~own, box, sigma=1.5)
+        ringsq = float(ring.sum()) / R8 / R8; area = float(m.sum()) / R8 / R8
+        inner = m & ~ndi.binary_dilation(~m, iterations=2); ys_, xs_ = np.nonzero(inner)
+        spr = {}
+        for k in SPRITES:
+            ref = [q for q in (w.get(k) or []) if 0 <= int((q[1] - box[1]) * R8) < bh and 0 <= int((q[0] - box[0]) * R8) < bw and ring[int((q[1] - box[1]) * R8), int((q[0] - box[0]) * R8)]]
+            if not ref or not len(xs_): continue
+            want = int(round(len(ref) / ringsq * area)); new = []; pts = []
+            for _ in range(want * 4):
+                if len(new) >= want: break
+                j = rng.integers(len(xs_)); x = (xs_[j] + rng.random()) / R8 + box[0]; y = (ys_[j] + rng.random()) / R8 + box[1]
+                if any(math.hypot(x - a, y - b) < 0.35 for a, b in pts[-60:]): continue
+                q = list(ref[rng.integers(len(ref))]); q[0], q[1] = round(float(x), 3), round(float(y), 3); new.append(q); pts.append((x, y))
+            w[k] = list(w[k]) + new; spr[k] = len(new)
+        gstd.append(dict(sq=round(area, 1), at=[round(float(X[m].mean()), 1), round(float(Y[m].mean()), 1)], tints=got, sprites=spr))
+    rep['gaps_standard_terrain'] = gstd
+
+    # ---------------------------------------------------------------- the swamp (owner, Oct 18: "a miserable swamp"; the map's own pieces):
+    # a darker mottled bog, mud patches, stagnant pools ringed with reeds, thickets of dead trees and brush, reeds all over, scattered swamp trees
+    noise = lambda s, sd: (lambda a: (a - a.min()) / (a.max() - a.min()))(ndi.gaussian_filter(np.random.default_rng(seed + sd).normal(size=(bh, bw)), s * R8))
+    n1, n2, n3, n4 = noise(1.6, 31), noise(1.3, 32), noise(1.1, 33), noise(0.5, 34)
+    base = own & ~patchm & ~watm & ~beach
+    bog2 = sm(base & (n1 > 0.55), 0.5)
+    tints['bog2'] = _put(w, 'bog2', bog2, box, sigma=2.0)
+    walk = d_path > 0.7
+    mud = sm(base & walk & (n2 > 0.66) & (dist <= LAND_R + 4), 0.5)
+    tints['mimud'] = _put(w, 'mimud', mud, box, sigma=1.5)
+    thick = base & ~mud & (d_path > 1.1) & (n3 > 0.66) & ~ndi.binary_dilation(watm, iterations=R8)
+    thick = ndi.binary_opening(thick, iterations=R8 // 2)
+    lab, n = ndi.label(thick)
+    if n: thick = np.isin(lab, [i + 1 for i, s in enumerate(ndi.sum(thick, lab, range(1, n + 1))) if s / R8 / R8 >= 1.5])
+    tints['thicket'] = _put(w, 'thicket', thick, box, sigma=1.5)
+    cand = base & ~mud & ~thick & (d_path > 1.5) & ~ndi.binary_dilation(watm, iterations=int(1.2 * R8))
+    centres = _place(cand, X, Y, 3.6, 141)
+    pool = np.zeros((bh, bw), bool)
+    for x, y in centres:
+        r = 0.35 + 0.75 * float(_hash(x, y, 142)); c, rr_ = int((x - box[0]) * R8), int((y - box[1]) * R8); k = int((r * 1.4 + 0.2) * R8)
+        sl = (slice(max(0, rr_ - k), rr_ + k + 1), slice(max(0, c - k), c + k + 1))
+        pool[sl] |= np.hypot(X[sl] - x, Y[sl] - y) <= r * (0.7 + 0.6 * n4[sl])
+    pool = sm(pool & cand, 0.25)
+    w['geo']['mipool'] = list(w['geo'].get('mipool') or []) + AA._contours(pool, box[0], box[1], sigma=1.0, tol=0.2, minarea=0.12)
+    tints['pools'] = dict(n=len(centres), sq=sqm(pool))
+    rep['tints_sq'] = tints
+
+    # ---------------------------------------------------------------- sprites (clear of paths, clearings, water)
+    free = own & (d_path > 0.6) & ~patchm & ~watm & ~pool
     hills = _place(free & zone('hills') & (d_path > 1.0), X, Y, 1.8, 187)
     w['hills'] = list(w['hills']) + [[x, y, round(0.8 + 0.3 * float(_hash(x, y, 188)), 2), 'h', int(float(_hash(x, y, 189)) * 3)] for x, y in hills]
     rocks = _place(free & zone('rocks') & ~beach & (d_path > 0.5), X, Y, 1.0, 193, hills)
     w['boulders'] = sorted(list(w.get('boulders') or []) + [[x, y, round(0.4 + 0.3 * float(_hash(x, y, 194)), 2)] for x, y in rocks], key=lambda b: b[1])
     trees = _place(free & zone('forest') & (d_path > 0.7), X, Y, 0.9, 181, hills + rocks)
-    w['trees'] = list(w['trees']) + [[x, y, round(0.85 + 0.3 * float(_hash(x, y, 182)), 2), 'w', int(float(_hash(x, y, 183)) * 3)] for x, y in trees]
-    edge = ndi.binary_dilation(watm, iterations=int(0.8 * R8)) & ~ndi.binary_erosion(watm, iterations=int(0.5 * R8))
-    reeds_w = _place(own & edge & (d_path > 0.45) & ~patchm & ~beach, X, Y, 0.6, 171, hills + rocks + trees)     # (round the marsh water)
-    reeds_b = _place(free & ~beach & (nz > 0.62) & ~ndi.binary_dilation(watm, iterations=int(0.8 * R8)), X, Y, 2.4, 172, hills + rocks + trees + reeds_w)   # (over the bog)
-    w['reeds'] = list(w['reeds']) + [[x, y, round(0.8 + 0.4 * float(_hash(x, y, 173)), 2)] for x, y in reeds_w + reeds_b]
-    rep['sprites'] = dict(trees=len(trees), hills=len(hills), boulders=len(rocks), reeds=len(reeds_w) + len(reeds_b))
+    tk = [[x, y, round(0.85 + 0.3 * float(_hash(x, y, 182)), 2), 'w', int(float(_hash(x, y, 183)) * 3)] for x, y in trees]
+    inth = free & thick & ndi.binary_erosion(thick, iterations=2)                 # thickets: dead trees and brown brush, packed (the Plains' thicket mix)
+    tp = _place(inth, X, Y, 0.55, 151, hills + rocks + trees)
+    dead = [q for q in tp if _hash(q[0], q[1], 152) < 0.45]; shrub = [q for q in tp if _hash(q[0], q[1], 152) >= 0.45]
+    tk += [[x, y, round(0.7 + 0.3 * float(_hash(x, y, 153)), 2), 'h', int(float(_hash(x, y, 154)) * 3)] for x, y in dead]
+    ring = ndi.binary_dilation(watm | pool, iterations=int(0.7 * R8)) & ~ndi.binary_erosion(watm | pool, iterations=int(0.25 * R8))
+    reeds_w = _place(own & ring & (d_path > 0.45) & ~patchm & ~beach & ~thick, X, Y, 0.42, 171, hills + rocks + trees + tp)   # (round the water)
+    lone = free & ~thick & ~beach & ~ring & (d_path > 0.9)
+    st = _place(lone, X, Y, 2.3, 161, hills + rocks + trees + tp + reeds_w)       # (lone swamp trees, mostly dead)
+    tk += [[x, y, round(0.75 + 0.35 * float(_hash(x, y, 162)), 2), 'h' if _hash(x, y, 163) < 0.65 else 'w', int(float(_hash(x, y, 164)) * 3)] for x, y in st]
+    w['trees'] = list(w['trees']) + tk
+    reeds_b = _place(free & ~thick & ~beach & ~ring & (n1 > 0.3), X, Y, 0.95, 172, hills + rocks + trees + tp + reeds_w + st)   # (reeds and sedge all over the bog)
+    w['reeds'] = list(w['reeds']) + [[x, y, round(0.75 + 0.45 * float(_hash(x, y, 173)), 2)] for x, y in reeds_w + reeds_b]
+    w['brush'] = sorted(list(w.get('brush') or []) + [[x, y, round(0.8 + 0.4 * float(_hash(x, y, 155)), 2), 1] for x, y in shrub], key=lambda b: b[1])
+    rep['sprites'] = dict(forest_trees=len(trees), thicket_dead_trees=len(dead), thicket_brush=len(shrub), swamp_trees=len(st), hills=len(hills), boulders=len(rocks),
+                          reeds_round_water=len(reeds_w), reeds_on_bog=len(reeds_b))
 
     # ---------------------------------------------------------------- the map grows west and south
     xs_ = [q[0] for k in ('land', 'water') for p in w['geo'][k] for q in p]; ys_ = [q[1] for k in ('land', 'water') for p in w['geo'][k] for q in p]

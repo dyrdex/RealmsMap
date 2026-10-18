@@ -161,6 +161,7 @@ WILD+=`<path d="${blobs(GEO.fill)}" fill="var(--w-wood)" fill-rule="evenodd" opa
 WILD+=`<path d="${blobs(GEO.sparse)}" fill="var(--w-sparse)" fill-rule="evenodd" opacity=".9"/>`;
 WILD+=`<path d="${blobs(GEO.deep)}" fill="var(--w-deep)" fill-rule="evenodd" opacity=".75"/>`;
 WILD+=`<path d="${blobs(GEO.bog)}" fill="var(--w-bog)" fill-rule="evenodd" opacity=".85"/>`;
+WILD+=`<path d="${blobs(GEO.bog2||[])}" fill="var(--w-bogdeep)" fill-rule="evenodd" opacity=".85"/><path d="${blobs(GEO.mimud||[])}" fill="#40382A" fill-rule="evenodd" opacity=".7"/>`;   /* the Mire: darker bog, mud patches (owner, Oct 18) */
 for(const rb of (WD.ribbons||[])){const rd=curve(rb);WILD+=`<path d="${rd}" fill="none" stroke="var(--w-path)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" opacity=".45"/><path d="${rd}" fill="none" stroke="var(--w-path)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>`;}
 for(const p of (WD.swtracks||[])){const rd=curve(p);
   WILD+=DIRT(rd,.28);}
@@ -176,6 +177,7 @@ WILD+=(WD.wheattufts||[]).map(r=>`<use href="#wt${r[3]?2:''}" transform="transla
 WILD+=(WD.brush||[]).map(r=>`<use href="#bs${r[3]?2:''}" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
 WILD+=`<path d="${blobs(GEO.fwwood)}" fill="var(--w-wood)" fill-rule="evenodd" opacity=".55"/><path d="${blobs(GEO.fwplain)}" fill="var(--w-sparse)" fill-rule="evenodd" opacity=".7"/>`;
 WILD+=`<path d="${blobs(GEO.shallows||[])}" fill="var(--w-water)" fill-rule="evenodd" opacity=".4"/>`;
+WILD+=`<path d="${blobs(GEO.mipool||[])}" fill="#1F302B" fill-rule="evenodd" stroke="#4A6A62" stroke-width=".05" opacity=".95"/>`;   /* the Mire: stagnant pools (owner, Oct 18) */
 WILD+=`<path d="${blobs(GEO.sand)}" fill="var(--sand)" fill-rule="evenodd" opacity=".9"/><path d="${blobs(GEO.blight)}" fill="var(--blight)" fill-rule="evenodd" opacity=".75"/>`;
 WILD+=`<path d="${blobs(GEO.bramble)}" fill="var(--bramble)" fill-rule="evenodd" opacity=".9"/><path d="${blobs(GEO.black)}" fill="var(--black-wood)" fill-rule="evenodd" opacity=".9"/><path d="${blobs(GEO.blackheart)}" fill="var(--black-heart)" fill-rule="evenodd" opacity=".85"/><path d="${blobs(GEO.doom)}" fill="var(--doom)" fill-rule="evenodd" opacity=".85"/>`;
 WILD+=`<path d="${blobs(GEO.clifftop||[])}" fill="var(--clifftop)" fill-rule="evenodd" opacity=".92"/><path d="${blobs(GEO.clifftop2||[])}" fill="var(--clifftop2)" fill-rule="evenodd" opacity=".6"/>`;   /* the top of the cliff, Coral Depths (owner, Oct 16) */
