@@ -24,6 +24,7 @@ from smr_merge import _hash, _drawn, X0 as SX0                  # (SX0: the west
 
 R8 = GF.R8
 LAND_R, TERR_R = 4.2, 3.2
+SHOWN = {19582, 7938}                            # shown on the map whatever the save says (owner, Oct 18)
 EXTRA_WATER = {8458, 8459, 8063, 8081, 8035, 8034, 17864, 17675, 17677, 17862, 17863, 8033, 8032, 8008}   # marsh water (owner, Oct 18): the Reeds carried to 8063/8081 and south to the clearing
 EXTRA_CLEAR = [set(range(8082, 8114)),                                                       # one clearing from east of 8081 to 8113 (owner, Oct 18)
                {8118, 8119, 8120, 8121, 8171, 8177},                                         # the clearing at (-70.6, 84.4) taken west over 8118-8120
@@ -39,7 +40,7 @@ RIVER = [(-19.3, 86.3, .26), (-18.4, 88.0, .3), (-17.3, 90.0, .36), (-15.9, 93.5
 RIVER_END = 136.0                                # it runs off the map's south edge there, cut straight (the fan, not a round end)
 # the river east of the "Along the River" rooms (owner, Oct 18): (x, y, half width): thin at its head, widening south, a fan (delta) below y 121
 RIVER_STONES = (116.0, 122.0)                    # (stones only north of the last crossing path, 8491-8492-8640: none by or beyond the coast: owner, Oct 18)
-RIVER_HEAD = [[(-22.1, 83.7, .18), (-21.0, 85.0, .21), (-19.6, 86.2, .25)], [(-20.0, 83.9, .18), (-19.7, 85.0, .2), (-19.4, 86.2, .24)], [(-21.2, 83.3, .17), (-20.9, 84.1, .18)], [(-21.7, 82.2, .16), (-21.4, 82.8, .17)]]   # slivers of water just below the marsh by the MacMillan farm that run together into the river (owner, Oct 18)
+RIVER_HEAD = [[(-22.1, 83.7, .24), (-21.0, 85.0, .25), (-19.6, 86.2, .26)], [(-20.0, 83.9, .24), (-19.7, 85.0, .25), (-19.4, 86.2, .26)], [(-21.3, 82.9, .24), (-21.0, 83.4, .24)], [(-21.9, 81.9, .24), (-21.7, 82.35, .24)]]   # slivers of water just below the marsh by the MacMillan farm that run together into the river (owner, Oct 18); 0.24 at least, or they vanish when traced
 WAVY_LINK = 8.0                                  # links to the map longer than this get a gentle wave (owner, Oct 18)                                                                # stones in its shallow, wide reach (rows)
 BRIDGE = dict(x0=-17.5, x1=-14.0, y=93.5)                                                    # the Crumbling Bridge (8591, 8612, 8590) over it                                                                 # 8060 joined to its clearing
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
@@ -57,7 +58,7 @@ def _setup(layout, edges):
     rooms, exits = AF._world()
     pos = dict(zip(layout['ids'], zip(layout['xs'], layout['ys'])))
     info = {r['id']: r for r in edges['rooms']}
-    hidden = set(layout.get('hidden', []))
+    hidden = set(layout.get('hidden', [])) - SHOWN
     MI = {v for v, r in info.items() if r.get('area') == 'MI' and r.get('grp') != 'un' and v in pos}   # (grp 'un': unlocked range rooms, drawn by smr_merge)
     shown = lambda v: v in pos and v not in hidden
     void = lambda v: bool(info.get(v, {}).get('void'))
@@ -218,10 +219,13 @@ def merge_mi(w, layout, edges, store, seed=SEED):
         if k != 'ud' and {a, b} & LAKE: _ld.line([px(pos[a]), px(pos[b])], fill=255, width=s_)
     watm |= ndi.gaussian_filter(ndi.binary_fill_holes(np.array(_lk, bool)).astype(float), 0.3 * R8) > 0.5
     riv = np.zeros((bh, bw), bool)                                                   # the river (owner, Oct 18)
-    for (xa, ya, wa), (xb, yb, wb_) in [s_ for ch in [RIVER] + RIVER_HEAD for s_ in zip(ch[:-1], ch[1:])]:
+    for (xa, ya, wa), (xb, yb, wb_), hd in [s_ + (ci > 0,) for ci, ch in enumerate([RIVER] + RIVER_HEAD) for s_ in zip(ch[:-1], ch[1:])]:
         n_ = max(2, int(math.dist((xa, ya), (xb, yb)) / 0.1))
         for i in range(n_ + 1):
             f_ = i / n_; x, y, r = xa + (xb - xa) * f_, ya + (yb - ya) * f_, wa + (wb_ - wa) * f_
+            if hd:                                                                    # (the slivers: as given, no winding, or they vanish)
+                c, rr_ = (x - box[0]) * R8, (y - box[1]) * R8; k = int(r * R8) + 2
+                sl = (slice(max(0, int(rr_) - k), int(rr_) + k + 1), slice(max(0, int(c) - k), int(c) + k + 1)); riv[sl] |= np.hypot(X[sl] - x, Y[sl] - y) <= r; continue
             x += min(r, 0.6) * 0.5 * (math.sin(y * 0.9 + 1.3) + 0.6 * math.sin(y * 2.3 + 0.4))   # (banks that wind: owner, Oct 18)
             r *= 0.82 + 0.18 * math.sin(y * 1.7 + 2.1) + 0.12 * math.sin(y * 3.9) + 0.06 * float(_hash(round(x, 1), round(y, 1), 201)); c, rr_ = (x - box[0]) * R8, (y - box[1]) * R8; k = int(r * R8) + 2
             sl = (slice(max(0, int(rr_) - k), int(rr_) + k + 1), slice(max(0, int(c) - k), int(c) + k + 1))

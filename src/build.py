@@ -157,6 +157,8 @@ WL_UN=[8606,8608,10049,8610,8611,8614,10045]                      # Wastelands r
 for _i,_v in enumerate(_WLL['ids']):
     if _v in WL_UN and _v in _mip: _WLL['xs'][_i],_WLL['ys'][_i]=_mip[_v]
 _MIL=_json.load(open(os.path.join(_here,'mi_layout_final.json'))); _MIE=_json.load(open(os.path.join(_here,'mi_editor_edges.json')))   # The Mire layout (Oct 18)
+for _r in _MIE['rooms']:                                          # rooms added to the Mire editor after the owner's last save (the Old Marsh, 7940): at their starting spots until the next save
+    if _r.get('grp')=='om' and _r['id'] not in _MIL['ids']: _MIL['ids'].append(_r['id']); _MIL['xs'].append(_r['x0']); _MIL['ys'].append(_r['y0'])
 import mi_merge as _mim
 _mis={}
 _cdr={}

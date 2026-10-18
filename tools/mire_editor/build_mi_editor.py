@@ -242,6 +242,36 @@ UN = list(range(110, 117)) + [8606, 8608, 10049, 8610, 8611, 8614, 10045]   # un
 assert all(v in POS for v in UN), [(v, rooms[v]['area'], v in POS) for v in UN]
 for v in UN: start[v] = [round(POS[v][0], 2), round(POS[v][1], 2)]; GRP[v] = 'un'; CTX.pop(v, None)
 S = S | set(UN)
+# ---- added later (owner, Oct 18): the Old Marsh's rooms and Dragon Tower's 7940, movable (grp 'om'), starting next to the rooms they join in the
+# owner's saved layout (spread from there, clear of it and of the map), with the spacers that join them
+SAVED = {v: (x, y) for v, x, y in zip(*(J('mi_layout_final.json')[k] for k in ('ids', 'xs', 'ys'))) if v in S}
+ADD = {v for v, r in rooms.items() if r['area'] == 'Old Marsh'} | {7940}
+ends_ = lambda c: {u for x in c for u in nbs(x) if u in ADD or u in S or u in POS}
+cand2 = set(); q = deque(ADD)
+while q:
+    v = q.popleft()
+    for t in nbs(v):
+        if t not in cand2 and t not in POS and t not in S and t not in ADD and isspacer(t): cand2.add(t); q.append(t)
+keep2 = set(); seen2 = set()
+for s0 in sorted(cand2):
+    if s0 in seen2: continue
+    comp = {s0}; st = [s0]
+    while st:
+        x = st.pop()
+        for t in nbs(x):
+            if t in cand2 and t not in comp: comp.add(t); st.append(t)
+    seen2 |= comp
+    if len(ends_(comp)) >= 2: keep2 |= comp
+while True:
+    leaf = {s0 for s0 in keep2 if len({u for u in nbs(s0) if u in keep2 or u in ADD or u in S or u in POS}) <= 1}
+    if not leaf: break
+    keep2 -= leaf
+ADDS = ADD | keep2
+FIX2 = dict(POS); FIX2.update(SAVED)
+roots2 = sorted({t for v in ADDS for t, _ in links2(v) if t in SAVED})
+sp2 = ES.spread(ADDS, lambda v: [(t, d) for t, d in links2(v) if t in ADDS or t in FIX2], FIX2, roots2, step=STEP)
+for v in ADDS: start[v] = sp2[v]; GRP[v] = 'om'; CTX.pop(v, None)
+S = S | ADDS
 
 # ---- rooms and exits ----
 def exlist(v):
@@ -257,7 +287,7 @@ for v in sorted(CTX):
     R.append(dict(id=v, name=r['name'], terrain='', void=isspacer(v), lvl=0, x=round(POS[v][0], 2), y=round(POS[v][1], 2), x0=round(POS[v][0], 2), y0=round(POS[v][1], 2), fixed=True, src=CTX[v]))
 for v in sorted(S):
     r = rooms[v]
-    R.append(dict(id=v, name=r['name'], terrain='' if isspacer(v) else r['terrain'], void=isspacer(v), lvl=0, area='MI', grp=GRP[v], piece=sec.get(v), ga=r['area'],
+    R.append(dict(id=v, name=r['name'], terrain='' if isspacer(v) else r['terrain'], void=isspacer(v), lvl=0, area='MI', grp=GRP[v], piece=sec.get(v), ga=r['area'] or 'spacer',
                   x=start[v][0], y=start[v][1], x0=start[v][0], y0=start[v][1], ex=exlist(v)))
 V = {r['id'] for r in R}
 pair = defaultdict(lambda: [False, False, False])
@@ -288,7 +318,7 @@ secs = [dict(i=i, name=NAMES[i], n=len(c)) for i, c in enumerate(SEC)]
 D = dict(rooms=R, edges=EDG, groups=[], ctx=ctx, audit=audit, secs=secs)
 t = open(os.path.join(here, 'mi_editor_template.html'), encoding='utf-8').read()
 open(out, 'w', encoding='utf-8').write(t.replace('__DATA__', json.dumps(D, separators=(',', ':'))))
-json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed', 'src', 'area', 'grp', 'piece', 'ga') if k in r} for r in R], edges=EDG, secs=secs),
+json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed', 'src', 'area', 'grp', 'piece', 'ga', 'x0', 'y0') if k in r and not (k in ('x0', 'y0') and r.get('fixed'))} for r in R], edges=EDG, secs=secs),
           open(os.path.join(SRCDIR, 'mi_editor_edges.json'), 'w'), separators=(',', ':'))
 print('AUDIT', audit)
 print('spacers kept', len(keep), '| stubs left off', len(stubs))
