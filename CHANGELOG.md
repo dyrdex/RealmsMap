@@ -2,6 +2,7 @@
 
 ## In progress (after version 18)
 
+- The Mire (your requests): the two dark blue lines by the river's head removed; the river now visibly runs out of the marsh by the MacMillan farm (two short runs from the marsh into its head, the head no longer too thin to show); the Crumbling Bridge redrawn as an ancient stone arch seen from the side, parapet stones missing, bites broken away, fallen stones in the water, vines and moss; the wading waters (Wading amongst the Reeds, Blackpool Bog, the Marshy Lake and the other wading rooms) drawn like the clearings but in dull dark blue, replacing the pale tint.
 - Mire editor save of Oct 18 (05:10): range rooms 111-116 and Wastelands rooms 8606, 8608, 8610, 8611, 8614 (+ spacers 10045, 10049) moved; the map follows.
 - Falcon's Nest Tavern: 0.7 west and 0.45 south of where it was, 1.1 rooms clear of the Western Trade Route's centre (outside its verge).
 - The Mire (your requests): the Secluded Valley's clearing (7873 and north) is now wet swamp (marsh water with sedge, 201 sq; its paths stay); a regular path 8440-8439-8438-8451-8462 along the marsh lake's south shore; every link into or inside the lake a very faint dull blue dashed line (8459-8460 stays a path); the river widens steadily from a thin head to full width, then fans out below y 121 into a delta that runs off the map's south edge (y 136), 126 stones across the fan.

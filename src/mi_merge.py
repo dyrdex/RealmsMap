@@ -34,13 +34,13 @@ LAKE_POLY = [(-38.9, 105.75), (-31.1, 105.75), (-30.6, 101.5), (-31.0, 98.1), (-
 LAKE = {8450, 8452, 8453, 8454, 8455, 8456, 8457, 8458, 8459}                              # the marsh lake's rooms: every link into or inside it a very faint dull blue dashed line, but 8459-8460 (owner, Oct 18)
 LAKE_PATH = [(8440, 8439), (8439, 8438), (8438, 8451), (8451, 8462)]                         # a regular path along its south shore (owner, Oct 18)
 WETLAND = 7873                                   # the clearing of this room's section (the Secluded Valley): a wet swamp, not dry ground (owner, Oct 18)
-RIVER = [(-20.5, 79.2, .15), (-20.2, 81.0, .18), (-19.4, 83.5, .22), (-18.4, 86.5, .28), (-17.3, 90.0, .35), (-15.9, 93.5, .45), (-15.6, 96.5, .6),
+RIVER = [(-20.5, 79.2, .28), (-20.2, 81.0, .3), (-19.4, 83.5, .3), (-18.4, 86.5, .32), (-17.3, 90.0, .36), (-15.9, 93.5, .45), (-15.6, 96.5, .6),
          (-15.5, 99.6, .8), (-15.7, 102.0, 1.0), (-17.0, 104.6, 1.2), (-17.0, 107.5, 1.5), (-17.0, 110.5, 1.8), (-17.0, 114.0, 2.0), (-17.4, 117.0, 2.2),
          (-18.2, 119.5, 2.6), (-19.2, 121.5, 3.2), (-20.5, 124.0, 4.4), (-21.5, 127.0, 5.6), (-22.0, 130.0, 6.6), (-22.0, 133.0, 7.4), (-22.0, 137.5, 8.0)]
 RIVER_END = 136.0                                # it runs off the map's south edge there, cut straight (the fan, not a round end)
 # the river east of the "Along the River" rooms (owner, Oct 18): (x, y, half width): thin at its head, widening south, a fan (delta) below y 121
 RIVER_STONES = (120.0, 134.0)
-RIVER_RILLS = [[(-20.5, 79.2), (-21.6, 79.8), (-22.7, 79.6)], [(-20.4, 80.4), (-21.5, 81.2), (-22.6, 81.7)]]   # tiny runs from the marsh by the MacMillan farm to the river's head (owner, Oct 18: it is the range's river)
+RIVER_HEAD = [[(-23.6, 79.6, .2), (-22.3, 79.3, .24), (-20.5, 79.2, .28)], [(-25.0, 81.2, .18), (-23.3, 80.7, .22), (-21.6, 80.1, .26)]]   # short runs out of the marsh by the MacMillan farm into the river's head (owner, Oct 18: it is the range's river)
 WAVY_LINK = 8.0                                  # links to the map longer than this get a gentle wave (owner, Oct 18)                                                                # stones in its shallow, wide reach (rows)
 BRIDGE = dict(x0=-17.5, x1=-14.0, y=93.5)                                                    # the Crumbling Bridge (8591, 8612, 8590) over it                                                                 # 8060 joined to its clearing
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
@@ -215,7 +215,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     _lk = Image.new('L', (bw, bh), 0); ImageDraw.Draw(_lk).polygon([px(p) for p in LAKE_POLY], fill=255)
     watm |= ndi.gaussian_filter(np.array(_lk, bool).astype(float), 0.5 * R8) > 0.5
     riv = np.zeros((bh, bw), bool)                                                   # the river (owner, Oct 18)
-    for (xa, ya, wa), (xb, yb, wb_) in zip(RIVER[:-1], RIVER[1:]):
+    for (xa, ya, wa), (xb, yb, wb_) in [s_ for ch in [RIVER] + RIVER_HEAD for s_ in zip(ch[:-1], ch[1:])]:
         n_ = max(2, int(math.dist((xa, ya), (xb, yb)) / 0.1))
         for i in range(n_ + 1):
             f_ = i / n_; x, y, r = xa + (xb - xa) * f_, ya + (yb - ya) * f_, wa + (wb_ - wa) * f_
@@ -322,7 +322,6 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     w['fwtracks'] = list(w['fwtracks']) + [[[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]] for a, b in LAKE_PATH if shown(a) and shown(b)]
     w['geo']['water'] = list(w['geo']['water']) + AA._contours(riv, box[0], box[1], sigma=1.0, tol=0.15, minarea=0.05)
     w['micrumble'] = [BRIDGE]
-    w['mirill'] = [[list(p) for p in r] for r in RIVER_RILLS]
     rep['lines'] = dict(trails=len(dirt), links=links, up_down=uds)
 
     land_mi = landm
@@ -359,7 +358,8 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     tints = {'bog': _put(w, 'bog', own, box, sigma=2.0)}
     beach = zone('beach') & ~watm
     tints['sand'] = _put(w, 'sand', beach & ~patchm, box, sigma=1.5)
-    w['geo']['shallows'] = list(w['geo'].get('shallows') or []) + AA._contours(watm | wet, box[0], box[1], sigma=1.2, tol=0.3, minarea=0.3)
+    w['geo']['shallows'] = list(w['geo'].get('shallows') or []) + AA._contours(wet, box[0], box[1], sigma=1.2, tol=0.3, minarea=0.3)
+    w['miwater'] = AA._contours(watm, box[0], box[1], sigma=1.0, tol=0.35, minarea=0.3)   # the wading rooms (the Reeds, Blackpool Bog, the Marshy Lake): drawn like the clearings, in dull dark blue (owner, Oct 18)
     tints['wet_valley'] = sqm(wet)
     tints['marsh_water'] = sqm(watm)
 
