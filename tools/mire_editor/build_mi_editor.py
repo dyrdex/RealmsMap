@@ -245,7 +245,7 @@ S = S | set(UN)
 # ---- added later (owner, Oct 18): the Old Marsh's rooms and Dragon Tower's 7940, movable (grp 'om'), starting next to the rooms they join in the
 # owner's saved layout (spread from there, clear of it and of the map), with the spacers that join them
 SAVED = {v: (x, y) for v, x, y in zip(*(J('mi_layout_final.json')[k] for k in ('ids', 'xs', 'ys'))) if v in S}
-ADD = {v for v, r in rooms.items() if r['area'] == 'Old Marsh'} | {7940}
+ADD = {v for v, r in rooms.items() if r['area'] == 'Old Marsh'} | {7940, 8155}   # (8155: Dragon Tower's gates, owner Oct 18)
 ends_ = lambda c: {u for x in c for u in nbs(x) if u in ADD or u in S or u in POS}
 cand2 = set(); q = deque(ADD)
 while q:

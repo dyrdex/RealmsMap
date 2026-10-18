@@ -2,6 +2,7 @@
 
 ## In progress (after version 18)
 
+- The Mire: Dragon Tower's gates (8155) added, two rooms north of 21879 with its path; movable in the Mire editor (orange outline).
 - The Mire redrawn from your save of Oct 18 (06:38; 67 rooms moved; 8405-8407 hidden). The Old Marsh: its central cluster (8408-8410, 8412-8417) one regular clearing, its other rooms paths (none drawn as water).
 - The Mire: the extra slivers at the river's head now really show (two small ones below the marsh, above the two that run into the river; the last round's sliver was too thin and vanished when traced, so it never appeared); the Old Marsh's 18 rooms (+ 2 spacers) and Dragon Tower room 7940 added (on the map at their starting spots next to the rooms they join; movable in the Mire editor, orange outline); 19582 and 7938 shown. The Old Marsh and Dragon Tower markers now follow their routes into those rooms.
 - The Mire (your requests): river stones only north of the last crossing path (27, none by or beyond the coast); one more thin sliver of water between the river's head and the marsh; sub-area destinations traced from your directions, each marker where its route leaves the drawn rooms: Dragon Tower (at 7935: the way on through 7938 is hidden), High Tower of Sorcery (8123, its line breaks through the undrawn Dragon's Pass), Ockwater Fens (8460), Old Marsh (8392), Tribal Swamplands (8362). Dragon's Pass and Machine Dreams were already on the map by their own routes; Asgard Nexus stays off the map.
