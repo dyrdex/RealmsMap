@@ -2,6 +2,7 @@
 
 ## In progress (after version 18)
 
+- The Mire (your requests): the two little round puddles at the river's head replaced by two longer, narrow fingers of water beside the two that run into the river; river stones now just north and south of the last crossing (39, y 119-125.5); the Machine Dreams marker at 7872; a sorcerer's tower (slender, pointed violet roof, glowing orb, stars) north of the High Tower of Sorcery marker; a tall grey stone tower north of Dragon Tower's gates (8155) up to y 43, clear of 7940; the swampy valley clearing at 7873 now a dull, flat grey-green, opaque.
 - The Mire redrawn from your save of Oct 18 (06:56; 41 rooms moved, incl. 7938-7940 and 8134-8150); the Dragon Tower marker follows 7940.
 - The Mire: Dragon Tower's gates (8155) added, two rooms north of 21879 with its path; movable in the Mire editor (orange outline).
 - The Mire redrawn from your save of Oct 18 (06:38; 67 rooms moved; 8405-8407 hidden). The Old Marsh: its central cluster (8408-8410, 8412-8417) one regular clearing, its other rooms paths (none drawn as water).

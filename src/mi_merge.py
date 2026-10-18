@@ -41,8 +41,8 @@ RIVER = [(-19.3, 86.3, .26), (-18.4, 88.0, .3), (-17.3, 90.0, .36), (-15.9, 93.5
          (-18.2, 119.5, 2.6), (-19.2, 121.5, 3.2), (-20.5, 124.0, 4.4), (-21.5, 127.0, 5.6), (-22.0, 130.0, 6.6), (-22.0, 133.0, 7.4), (-22.0, 137.5, 8.0)]
 RIVER_END = 136.0                                # it runs off the map's south edge there, cut straight (the fan, not a round end)
 # the river east of the "Along the River" rooms (owner, Oct 18): (x, y, half width): thin at its head, widening south, a fan (delta) below y 121
-RIVER_STONES = (116.0, 122.0)                    # (stones only north of the last crossing path, 8491-8492-8640: none by or beyond the coast: owner, Oct 18)
-RIVER_HEAD = [[(-22.1, 83.7, .24), (-21.0, 85.0, .25), (-19.6, 86.2, .26)], [(-20.0, 83.9, .24), (-19.7, 85.0, .25), (-19.4, 86.2, .26)], [(-21.3, 82.9, .24), (-21.0, 83.4, .24)], [(-21.9, 81.9, .24), (-21.7, 82.35, .24)]]   # slivers of water just below the marsh by the MacMillan farm that run together into the river (owner, Oct 18); 0.24 at least, or they vanish when traced
+RIVER_STONES = (119.0, 125.5)                    # (stones just north and south of the last crossing path, 8491-8492-8640: owner, Oct 18)
+RIVER_HEAD = [[(-22.1, 83.7, .24), (-21.0, 85.0, .25), (-19.6, 86.2, .26)], [(-20.0, 83.9, .24), (-19.7, 85.0, .25), (-19.4, 86.2, .26)], [(-24.4, 82.9, .24), (-23.6, 83.8, .25), (-22.8, 84.6, .24)], [(-18.4, 82.8, .24), (-18.7, 83.8, .25), (-18.9, 84.8, .24)]]   # the marsh's first fingers below the MacMillan farm: two that run together into the river, two longer ones beside them (owner, Oct 18); 0.24 at least, or they vanish when traced
 WAVY_LINK = 8.0                                  # links to the map longer than this get a gentle wave (owner, Oct 18)                                                                # stones in its shallow, wide reach (rows)
 BRIDGE = dict(x0=-17.5, x1=-14.0, y=93.5)                                                    # the Crumbling Bridge (8591, 8612, 8590) over it                                                                 # 8060 joined to its clearing
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
@@ -513,4 +513,20 @@ def add_mi_places(w, layouts):
                                 group='af', where='off the Mire',
                                 note=None if len(segs) == 1 else "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."))
         rep[name] = dict(end_room=upto[-1], walked=len(t), left_at=len(upto), dir=d, pieces=len(segs), marker=segs[-1][-1])
+    pos = {}
+    for L in layouts:
+        for v, x, y in zip(L['ids'], L['xs'], L['ys']): pos.setdefault(v, (x, y))
+    md = next((p for p in w['places'] if p['name'] == 'Machine Dreams'), None)        # Machine Dreams at 7872 (its 'enter'), owner Oct 18
+    if md and 7872 in pos:
+        q = [round(pos[7872][0], 2), round(pos[7872][1], 2)]; md.update(path=[q], segs=[[q]], dir='here', room=rooms[7872]['name'], where='off the Mire', note=None)
+        rep['Machine Dreams'] = dict(marker=q)
+    ht = next((p for p in w['places'] if p['name'] == 'High Tower of Sorcery'), None)
+    g = []
+    if ht:                                                                           # a sorcerer's tower north of its marker (owner, Oct 18)
+        e = ht['path'][-1]; v_ = {'n': (0, -1), 's': (0, 1), 'e': (1, 0), 'w': (-1, 0)}.get(ht['dir'], (0, 0)); px_, py_ = e[0] + v_[0] * .62, e[1] + v_[1] * .62
+        g.append({'k': 'magetower', 'at': 'xy', 'x': round(px_, 2), 'y': round(py_ - 0.55 - 2.6 / 2, 2), 'w': 1.15, 'h': 2.6})
+    if 8155 in pos:                                                                  # a tall grey stone tower north of Dragon Tower's gates (8155) up to y 43 (owner, Oct 18)
+        x_, y0_ = pos[8155][0] - 0.1, pos[8155][1] - 0.6
+        g.append({'k': 'stonetower', 'at': 'xy', 'x': round(x_, 2), 'y': round((y0_ + 43.0) / 2, 2), 'w': 1.1, 'h': round(y0_ - 43.0, 2)})
+    w['gfx'] = list(w['gfx']) + g; rep['gfx'] = g
     return w, rep
