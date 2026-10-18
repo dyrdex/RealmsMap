@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## In progress (after version 18)
+
+- New layout editor for The Mire (`tools/mire_editor`, October 18): all 488 rooms with 51 joining spacer rooms; 984 exits between them, 7 to the map (Forest of Tears 1610/1612/1613, Southern Mountain Range 116, Wastelands 8591/8633/8638). Its 19 exits to other areas (Blood Sea 7, Old Marsh 3, Dragon Tower 2, and 7 others) are left off. Split into 14 sections (plus 3 rooms with no exits, parked by their neighbours) that start apart from each other, at least 6 rooms apart, in the empty ground south-west of the map: 0 overlapping rooms, 0 crossing exits between sections; the exits between sections are stretched (median 9.5 rooms, longest 72: the Marshy Valley from the valley trail to the Grassy Trail). New 'Select a section' list. https://claude.ai/artifact/2vc9DVUVAnNRPZ3PzZBQv5
+
 ## Version 18 · The Wastelands · October 17, 2026
 
 - New layout editor for the Wastelands (`tools/wastelands_editor`, October 16): all 351 rooms (the 13 underwater and 6 tunnel rooms included) with 132 joining spacer rooms; 671 exits between them, 6 to the Southern Mountain Range (34-36) and its Trade Route (9339, 9346). Its 24 exits to the Blood Sea, 3 to the Sea of Sorrows and 30 to other areas are left off. https://claude.ai/artifact/2yna7daYADcMC8Sh9xcsin
