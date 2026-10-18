@@ -30,17 +30,16 @@ EXTRA_CLEAR = [set(range(8082, 8114)),                                          
                {8059, 8060},
                {8057, 8030, 8031, 8056, 8054, 8026, 8027, 8048, 8053, 8055},
                {7958, 7960, 7961, 7962}]                                                     # no path showing between the water and the clearing at (-95, 51.5) (owner, Oct 18)                 # 8057, 8030, 8031, 8056, 8054 tied into the clearing south of them (owner, Oct 18)
-LAKE_POLY = [(-38.9, 105.75), (-31.1, 105.75), (-30.6, 101.5), (-31.0, 98.1), (-33.0, 97.7), (-35.2, 98.0), (-37.4, 100.2), (-39.0, 103.0)]   # the marsh lake round 8454, from 8459 down to just north of 8440/8439/8451 (owner, Oct 18)
 LAKE = {8450, 8452, 8453, 8454, 8455, 8456, 8457, 8458, 8459}                              # the marsh lake's rooms: every link into or inside it a very faint dull blue dashed line, but 8459-8460 (owner, Oct 18)
 LAKE_PATH = [(8440, 8439), (8439, 8438), (8438, 8451), (8451, 8462)]                         # a regular path along its south shore (owner, Oct 18)
 WETLAND = 7873                                   # the clearing of this room's section (the Secluded Valley): a wet swamp, not dry ground (owner, Oct 18)
-RIVER = [(-20.5, 79.2, .28), (-20.2, 81.0, .3), (-19.4, 83.5, .3), (-18.4, 86.5, .32), (-17.3, 90.0, .36), (-15.9, 93.5, .45), (-15.6, 96.5, .6),
+RIVER = [(-19.3, 86.3, .26), (-18.4, 88.0, .3), (-17.3, 90.0, .36), (-15.9, 93.5, .45), (-15.6, 96.5, .6),
          (-15.5, 99.6, .8), (-15.7, 102.0, 1.0), (-17.0, 104.6, 1.2), (-17.0, 107.5, 1.5), (-17.0, 110.5, 1.8), (-17.0, 114.0, 2.0), (-17.4, 117.0, 2.2),
          (-18.2, 119.5, 2.6), (-19.2, 121.5, 3.2), (-20.5, 124.0, 4.4), (-21.5, 127.0, 5.6), (-22.0, 130.0, 6.6), (-22.0, 133.0, 7.4), (-22.0, 137.5, 8.0)]
 RIVER_END = 136.0                                # it runs off the map's south edge there, cut straight (the fan, not a round end)
 # the river east of the "Along the River" rooms (owner, Oct 18): (x, y, half width): thin at its head, widening south, a fan (delta) below y 121
 RIVER_STONES = (120.0, 134.0)
-RIVER_HEAD = [[(-23.6, 79.6, .2), (-22.3, 79.3, .24), (-20.5, 79.2, .28)], [(-25.0, 81.2, .18), (-23.3, 80.7, .22), (-21.6, 80.1, .26)]]   # short runs out of the marsh by the MacMillan farm into the river's head (owner, Oct 18: it is the range's river)
+RIVER_HEAD = [[(-22.1, 83.7, .18), (-21.0, 85.0, .21), (-19.6, 86.2, .25)], [(-20.0, 83.9, .18), (-19.7, 85.0, .2), (-19.4, 86.2, .24)], [(-21.2, 83.3, .17), (-20.9, 84.1, .18)]]   # slivers of water just below the marsh by the MacMillan farm that run together into the river (owner, Oct 18)
 WAVY_LINK = 8.0                                  # links to the map longer than this get a gentle wave (owner, Oct 18)                                                                # stones in its shallow, wide reach (rows)
 BRIDGE = dict(x0=-17.5, x1=-14.0, y=93.5)                                                    # the Crumbling Bridge (8591, 8612, 8590) over it                                                                 # 8060 joined to its clearing
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
@@ -184,7 +183,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     _lp = {frozenset(e) for e in LAKE_PATH}; lakedash = []
     for a, b, k in E:
         if frozenset((a, b)) in _lp: continue                                       # (drawn whole, below)
-        if ({a, b} & LAKE) and frozenset((a, b)) != frozenset((8459, 8460)): lakedash.append((a, b)); continue   # (faint dashed, below)
+        if ({a, b} & LAKE) and frozenset((a, b)) != frozenset((8459, 8460)): continue   # (no lines in the lake: owner, Oct 18)
         if not (a in MI and b in MI): links.append((a, b)); continue                 # to the map
         if k == 'ud': uds.append((a, b)); continue
         GD[a].add(b); GD[b].add(a)
@@ -201,7 +200,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     rep['spacer_stubs_dropped'] = n_
 
     # ---------------------------------------------------------------- marsh water: the wading rooms and the exits between them
-    WAT = {v for v in MI if shown(v) and cls[v] == 'water'}
+    WAT = {v for v in MI if shown(v) and cls[v] == 'water'} - LAKE
     im = Image.new('L', (bw, bh), 0); dr = ImageDraw.Draw(im); s_ = int(SQ * R8)
     for v in WAT:
         p = px(pos[v]); dr.rectangle([p[0] - s_ / 2, p[1] - s_ / 2, p[0] + s_ / 2, p[1] + s_ / 2], fill=255)
@@ -212,8 +211,12 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     _wb = ndi.gaussian_filter(np.random.default_rng(seed + 7).normal(size=(bh, bw)), 0.7 * R8); _wb = (_wb - _wb.min()) / (_wb.max() - _wb.min())
     watm = (ndi.distance_transform_edt(~watm) / R8 <= 0.2 + 0.6 * _wb) & landm & ~sea   # (wavy edges)
     watm = ndi.gaussian_filter(watm.astype(float), 0.4 * R8) > 0.5
-    _lk = Image.new('L', (bw, bh), 0); ImageDraw.Draw(_lk).polygon([px(p) for p in LAKE_POLY], fill=255)
-    watm |= ndi.gaussian_filter(np.array(_lk, bool).astype(float), 0.5 * R8) > 0.5
+    _lk = Image.new('L', (bw, bh), 0); _ld = ImageDraw.Draw(_lk)                   # the Marshy Lake: exactly its rooms and the exits between them, out to the rooms it joins (owner, Oct 18)
+    for v in LAKE:
+        if shown(v): p = px(pos[v]); _ld.rectangle([p[0] - s_ / 2, p[1] - s_ / 2, p[0] + s_ / 2, p[1] + s_ / 2], fill=255)
+    for a, b, k in E:
+        if k != 'ud' and {a, b} & LAKE: _ld.line([px(pos[a]), px(pos[b])], fill=255, width=s_)
+    watm |= ndi.gaussian_filter(ndi.binary_fill_holes(np.array(_lk, bool)).astype(float), 0.3 * R8) > 0.5
     riv = np.zeros((bh, bw), bool)                                                   # the river (owner, Oct 18)
     for (xa, ya, wa), (xb, yb, wb_) in [s_ for ch in [RIVER] + RIVER_HEAD for s_ in zip(ch[:-1], ch[1:])]:
         n_ = max(2, int(math.dist((xa, ya), (xb, yb)) / 0.1))
@@ -274,7 +277,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     rep['water'] = dict(rooms=len(WAT), sq=sqm(watm)); rep['clearings'] = dict(cells=len(cells), patches=len(patches), sq=sqm(clear))
 
     # ---------------------------------------------------------------- lines: trails (clipped at the water and the clearings), links, up/down exits
-    blocked = patchm | watm
+    blocked = patchm | watm | wet
     def trails(G):
         Tg = defaultdict(set)
         for a in G:
@@ -318,7 +321,6 @@ def merge_mi(w, layout, edges, store, seed=SEED):
         return out
     dirt = clip(dirt, blocked)
     w['fwtracks'] = list(w['fwtracks']) + dirt
-    w['milakedash'] = [[[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]] for a, b in lakedash]
     w['fwtracks'] = list(w['fwtracks']) + [[[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]] for a, b in LAKE_PATH if shown(a) and shown(b)]
     w['geo']['water'] = list(w['geo']['water']) + AA._contours(riv, box[0], box[1], sigma=1.0, tol=0.15, minarea=0.05)
     w['micrumble'] = [BRIDGE]
@@ -358,7 +360,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     tints = {'bog': _put(w, 'bog', own, box, sigma=2.0)}
     beach = zone('beach') & ~watm
     tints['sand'] = _put(w, 'sand', beach & ~patchm, box, sigma=1.5)
-    w['geo']['shallows'] = list(w['geo'].get('shallows') or []) + AA._contours(wet, box[0], box[1], sigma=1.2, tol=0.3, minarea=0.3)
+    w['migreen'] = AA._contours(wet, box[0], box[1], sigma=1.0, tol=0.35, minarea=0.3)   # the swampy valley at 7873: a clearing, mossy green (owner, Oct 18)
     w['miwater'] = AA._contours(watm, box[0], box[1], sigma=1.0, tol=0.35, minarea=0.3)   # the wading rooms (the Reeds, Blackpool Bog, the Marshy Lake): drawn like the clearings, in dull dark blue (owner, Oct 18)
     tints['wet_valley'] = sqm(wet)
     tints['marsh_water'] = sqm(watm)
@@ -453,7 +455,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     tk += [[x, y, round(0.75 + 0.35 * float(_hash(x, y, 162)), 2), 'h' if _hash(x, y, 163) < 0.65 else 'w', int(float(_hash(x, y, 164)) * 3)] for x, y in st]
     w['trees'] = list(w['trees']) + tk
     reeds_b = _place(free & ~thick & ~beach & ~ring & (n1 > 0.45), X, Y, 1.7, 172, hills + rocks + trees + tp + reeds_w + st)   # (reeds and sedge all over the bog)
-    reeds_v = [q for q in _place(wet & (d_path > 0.35), X, Y, 0.55, 174, reeds_w + reeds_b) if _hash(q[0], q[1], 175) < 0.7]   # (sedge all through the wet valley)
+    reeds_v = []
     w['reeds'] = list(w['reeds']) + [[x, y, round(0.75 + 0.45 * float(_hash(x, y, 173)), 2)] for x, y in reeds_w + reeds_b + reeds_v]
     w['brush'] = sorted(list(w.get('brush') or []) + [[x, y, round(0.8 + 0.4 * float(_hash(x, y, 155)), 2), 1] for x, y in shrub], key=lambda b: b[1])
     rv = ndi.binary_dilation(riv, iterations=2)
