@@ -157,8 +157,9 @@ WL_UN=[8606,8608,10049,8610,8611,8614,10045]                      # Wastelands r
 for _i,_v in enumerate(_WLL['ids']):
     if _v in WL_UN and _v in _mip: _WLL['xs'][_i],_WLL['ys'][_i]=_mip[_v]
 _MIL=_json.load(open(os.path.join(_here,'mi_layout_final.json'))); _MIE=_json.load(open(os.path.join(_here,'mi_editor_edges.json')))   # The Mire layout (Oct 18)
-for _r in _MIE['rooms']:                                          # rooms added to the Mire editor after the owner's last save (the Old Marsh, 7940): at their starting spots until the next save
-    if _r.get('grp')=='om' and _r['id'] not in _MIL['ids']: _MIL['ids'].append(_r['id']); _MIL['xs'].append(_r['x0']); _MIL['ys'].append(_r['y0'])
+_MIX={'ids':[],'xs':[],'ys':[],'hidden':[]}                         # rooms added to the Mire editor but not saved yet: never drawn (owner, Oct 18); their starting spots only guide the route tracer
+for _r in _MIE['rooms']:
+    if _r.get('grp')=='om' and _r['id'] not in _MIL['ids']: _MIX['ids'].append(_r['id']); _MIX['xs'].append(_r['x0']); _MIX['ys'].append(_r['y0']); _MIX['hidden'].append(_r['id'])
 import mi_merge as _mim
 _mis={}
 _cdr={}
@@ -208,7 +209,7 @@ w,_cdpl=_cdm.add_cd_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout()
 print('Coral Depths places:',_cdpl)
 w,_wlpl=_wlm.add_wl_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_WLL])   # the Wastelands' sub-areas (owner, Oct 17)
 print('Wastelands places:',_wlpl)
-w,_mipl=_mim.add_mi_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_WLL,_MIL])   # the Mire's sub-areas (owner, Oct 18)
+w,_mipl=_mim.add_mi_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_WLL,_MIL,_MIX])   # the Mire's sub-areas (owner, Oct 18)
 print('Mire places:',_mipl)
 from na_merge import grimdog_route
 w,_ngr=grimdog_route(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_NALm])   # Grimdog's route on to 21076, through the hidden port rooms (owner, Oct 16)

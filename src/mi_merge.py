@@ -25,7 +25,7 @@ from smr_merge import _hash, _drawn, X0 as SX0                  # (SX0: the west
 R8 = GF.R8
 LAND_R, TERR_R = 4.2, 3.2
 OLD_MARSH = set(range(8394, 8422)) | {21812}
-NOT_MIRE = {655, 8209, 8212, 8214, 8221}         # Dragon's Pass rooms in the Mire editor (owner, Oct 18): paths only
+NOT_MIRE = {655, 8209, 8212, 8214, 8221}         # Dragon's Pass rooms in the Mire editor (owner, Oct 18): hidden; routes pass through them (8221-8195 the shortcut: a plain route line, like the Ofcol Shortcut)
 SHORTCUT = frozenset((8195, 8221))              # the Dragon's Pass shortcut: drawn as a faint dashed line across the map (owner, Oct 18)
 SHOWN = {19582, 7938}                            # shown on the map whatever the save says (owner, Oct 18)
 EXTRA_WATER = {8458, 8459, 8063, 8081, 8035, 8034, 17864, 17675, 17677, 17862, 17863, 8033, 8032, 8008}   # marsh water (owner, Oct 18): the Reeds carried to 8063/8081 and south to the clearing
@@ -56,6 +56,10 @@ ISLAND_BOX, ISLAND_R, ISLAND_GAP = (-115.5, 72.0, -111.5, 78.5), 1.0, 2.2   # (o
 IN_SEA = (8072,)                                 # A Shallow Channel: in the water between the island and the coast (owner, Oct 18)
 THIN = {8038: 0.9, 8039: 0.9, 8040: 0.9, 8041: 0.8, 8042: 0.45, 8043: 0.45, 8044: 0.5}   # The Small Beach; The Narrow Beach and its tip 8044: a thin peninsula (owner, Oct 18)
 SHORE_GAP = 1.6                                  # (rooms) other land kept off these
+COAST_FILL = [[(-114.6, 108.8), (-114.6, 111.7), (-109.8, 111.7), (-109.4, 108.8)],      # north of the peninsula's clearing: the coast straight down to it
+              [(-114.6, 114.3), (-114.6, 117.8), (-110.3, 117.8), (-110.3, 114.3)]]     # south of it: the coast meets it just south of the clearing
+MANSION_AT = (-43.3, 128.6)                      # Redferne's Residence's mansion (owner, Oct 18)
+FINGER_LAKE = [8414, 21812, 8419]                # the Old Marsh's finger lake: a double-wide water clearing along these rooms (owner, Oct 18)
 INLET = 60.0                                     # (sq) narrow inlets in the Mire's coast smaller than this are filled
 PAD, SQ, CELL_MAX, MIN_PATCH = 0.55, 1.1, 6.0, 3.0
 SEED = 211
@@ -66,7 +70,7 @@ def _setup(layout, edges):
     rooms, exits = AF._world()
     pos = dict(zip(layout['ids'], zip(layout['xs'], layout['ys'])))
     info = {r['id']: r for r in edges['rooms']}
-    hidden = set(layout.get('hidden', [])) - SHOWN
+    hidden = (set(layout.get('hidden', [])) - SHOWN) | NOT_MIRE                  # (the Dragon's Pass rooms: hidden, on routes only: owner, Oct 18)
     MI = {v for v, r in info.items() if r.get('area') == 'MI' and r.get('grp') != 'un' and v in pos}   # (grp 'un': unlocked range rooms, drawn by smr_merge)
     shown = lambda v: v in pos and v not in hidden
     void = lambda v: bool(info.get(v, {}).get('void'))
@@ -122,6 +126,8 @@ def mi_land(layout, edges, store, seed=SEED):
     near &= (d_sp > SHORE_GAP) | (d_l <= 1.0)                                       # (other rooms keep a little land round them)
     near &= d_isl > ISLAND_GAP                                                      # (the island stands out at sea)
     near = (ndi.gaussian_filter(near.astype(float), 0.4 * R8) > 0.5) | (ndi.gaussian_filter(thin.astype(float), 0.25 * R8) > 0.5)
+    for poly in COAST_FILL:                                                         # the coast round the Tipsy Lizard peninsula filled in (owner, Oct 18)
+        im_ = Image.new('L', (bw, bh), 0); ImageDraw.Draw(im_).polygon([((x_ - box[0]) * R8, (y_ - box[1]) * R8) for x_, y_ in poly], fill=255); near |= np.array(im_, bool)
     store.update(box=box, sea=np.zeros((bh, bw), bool), land=near, nofill=d_sp < 6.0)
 
     def edit(land_n, water0, gx0, gy0):
@@ -229,6 +235,11 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     for a, b, k in E:
         if k != 'ud' and {a, b} & LAKE: _ld.line([px(pos[a]), px(pos[b])], fill=255, width=s_)
     watm |= ndi.gaussian_filter(ndi.binary_fill_holes(np.array(_lk, bool)).astype(float), 0.3 * R8) > 0.5
+    _fl = [px(pos[v]) for v in FINGER_LAKE if shown(v)]
+    if len(_fl) > 1:
+        _fi = Image.new('L', (bw, bh), 0); _fd = ImageDraw.Draw(_fi); _fd.line(_fl, fill=255, width=2 * s_, joint='curve')
+        for q in _fl: _fd.ellipse([q[0] - s_, q[1] - s_, q[0] + s_, q[1] + s_], fill=255)
+        watm |= ndi.gaussian_filter(np.array(_fi, bool).astype(float), 0.3 * R8) > 0.5
     riv = np.zeros((bh, bw), bool)                                                   # the river (owner, Oct 18)
     for (xa, ya, wa), (xb, yb, wb_), hd in [s_ + (ci > 0,) for ci, ch in enumerate([RIVER] + RIVER_HEAD) for s_ in zip(ch[:-1], ch[1:])]:
         n_ = max(2, int(math.dist((xa, ya), (xb, yb)) / 0.1))
@@ -348,7 +359,6 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     w['fwtracks'] = list(w['fwtracks']) + [[[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]] for a, b in LAKE_PATH if shown(a) and shown(b)]
     w['geo']['water'] = list(w['geo']['water']) + AA._contours(riv, box[0], box[1], sigma=1.0, tol=0.15, minarea=0.05)
     w['micrumble'] = [BRIDGE]
-    if all(v in pos and shown(v) for v in SHORTCUT): w['pffaint'] = list(w.get('pffaint') or []) + [[[round(p[0], 2), round(p[1], 2)] for p in (pos[v] for v in sorted(SHORTCUT))]]
     rep['lines'] = dict(trails=len(dirt), links=links, up_down=uds)
 
     land_mi = landm
@@ -508,6 +518,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
 
 
 EXTRA_PLACES = [("Tipsy Lizard Tavern", "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;sw;sw;sw;sw;sw;sw;sw;w;u;s;e;e;se;se;s;s;sw;nw;nw;w;w;w;sw;w;sw;sw;sw;sw;s;s;s;s;se;s;sw;s;sw;w;sw;sw;sw;sw;sw;sw;s;sw;sw;e", None),
+                ("Redferne's Residence", "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;sw;sw;nw;n;ne;nw;n;n;ne;n;e;se;se;e;s;se;sw;s;s;sw;s;s;sw;s;se;e;e;se;e;se;sw;se;se;s;s;se;se;e;se;sw;s;e;e;se;se;se;s;s;e;e;s;e;s;w", None),
                 ("Vaellys el Notrune", "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;sw;sw;sw;sw;sw;sw;sw;w;u;s;e;e;se;se;s;s;sw;nw;nw;w;w;w;sw;w;sw;sw;sw;sw;s;s;s;s;se;s;sw;s;sw;w;sw;sw;sw;sw;sw;sw;s;sw;sw;w;sw;w;n;nw;n", 'mob')]   # (owner, Oct 18)
 SUBAREAS = ("Dragon Tower", "High Tower of Sorcery", "Ockwater Fens", "Old Marsh", "Tribal Swamplands (Lizardmen)")   # the areas off the Mire with directions in data.py (owner, Oct 18;
 # not the Forest of Tears or the Wastelands; Dragon's Pass and Machine Dreams are already on the map by other routes; Asgard Nexus stays off the map)
@@ -520,7 +531,7 @@ def add_mi_places(w, layouts):
     from route_fix import make_tracer
     from extra_places import segments
     rooms, walk, at = make_tracer(w, layouts)
-    exits = AF._world()[1]; hid = set(layouts[-1].get('hidden', []))              # (the Mire layout comes last)
+    exits = AF._world()[1]; hid = set().union(*(set(L.get('hidden', [])) for L in layouts[-2:])) | NOT_MIRE   # (the Mire layout and the unsaved editor rooms come last; hidden rooms are not drawn)
     lines = (DT.AREAS + '\n' + DT.HOMETOWNS + '\n' + DT.MORE_DIRECTIONS).split('\n')
     rep = {}
     for name in SUBAREAS:
@@ -554,6 +565,18 @@ def add_mi_places(w, layouts):
                   note=None if len(segs) == 1 else "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there.")
         if kind: pl['kind'] = kind
         w['places'].append(pl); rep[name] = dict(end_room=upto[-1], walked=len(t), left_at=len(upto), dir=d, pieces=len(segs), marker=segs[-1][-1], kind=kind)
+    pin = lambda p: (p['path'][-1][0] + {'n': 0, 's': 0, 'e': .62, 'w': -.62}.get(p['dir'], 0) * (1 if p['dir'] in ('e', 'w') else 0), p['path'][-1][1] + {'n': -.62, 's': .62}.get(p['dir'], 0))
+    tl = next((p for p in w['places'] if p['name'] == 'Tipsy Lizard Tavern'), None)
+    if tl:                                                                           # a small inn east of its marker, its name below the inn (owner, Oct 18)
+        q = pin(tl); ix_, iy_ = q[0] + 1.25, q[1] - 0.1
+        g.append({'k': 'inn', 'at': 'xy', 'x': round(ix_, 2), 'y': round(iy_, 2), 'w': 1.6, 'h': 1.3})
+        g.append({'k': 'text', 'at': 'xy', 'x': round(ix_, 2), 'y': round(iy_ + 0.65 + 0.42, 2), 'text': 'Tipsy Lizard Tavern'}); tl['nolabel'] = True
+    rf = next((p for p in w['places'] if p['name'] == "Redferne's Residence"), None)
+    if rf:                                                                           # a large, old, grand mansion above its marker, drawn like an old map's (owner, Oct 18)
+        g.append({'k': 'mansion', 'at': 'xy', 'x': MANSION_AT[0], 'y': MANSION_AT[1], 'w': 3.2, 'h': 1.8})   # (on the open ground west of the Old Marsh: above the marker it would cover the finger lake)
+    for b in g:                                                                      # nothing grows under the new buildings
+        if b['k'] in ('inn', 'mansion'):
+            for k in SPRITES: w[k] = [s for s in (w.get(k) or []) if not (abs(s[0] - b['x']) < b['w'] / 2 + 0.2 and abs(s[1] - b['y']) < b['h'] / 2 + 0.2)]
     ht = next((p for p in w['places'] if p['name'] == 'High Tower of Sorcery'), None)
     if ht:                                                                           # a sorcerer's tower north of its marker (owner, Oct 18)
         e = ht['path'][-1]; v_ = {'n': (0, -1), 's': (0, 1), 'e': (1, 0), 'w': (-1, 0)}.get(ht['dir'], (0, 0)); px_, py_ = e[0] + v_[0] * .62, e[1] + v_[1] * .62

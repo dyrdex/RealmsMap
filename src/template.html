@@ -840,6 +840,19 @@ document.getElementById('lanes').innerHTML=ln;
     for(const y of [-1.75,-2.0])s+=`<path d="M${(-.27*(y+2.45)/.95).toFixed(3)} ${y} l-.06 -.05 M${(.27*(y+2.45)/.95).toFixed(3)} ${y} l.06 -.05" stroke="${D}" stroke-width=".02"/>`;   /* crockets */
     s+=`<circle cx="0" cy="-2.52" r=".09" fill="${G}"/><circle cx="0" cy="-2.52" r=".2" fill="${G}" opacity=".25"/>`;
     return s};
+  SPRITE.mansion=()=>{const ink='var(--peak-line)',f='var(--peak)',sh='var(--peak-shade)';let s=`<ellipse cx="0" cy=".98" rx="1.75" ry=".09" fill="#000" opacity=".35"/>`;   /* Redferne's Residence (owner, Oct 18): a large, old, grand mansion in old-map ink: a central hall with a pediment and columns, two wings, tall chimneys, many windows */
+    s+=`<g stroke="${ink}" stroke-width=".035" stroke-linejoin="round" stroke-linecap="round">`;
+    s+=`<path d="M-1.7 .95 V-.05 L-1.45 -.38 H-.62 L-.45 -.05 V.95Z M1.7 .95 V-.05 L1.45 -.38 H.62 L.45 -.05 V.95Z" fill="${f}"/>`;   /* the wings, hipped roofs */
+    s+=`<path d="M-.62 .95 V-.25 H.62 V.95Z" fill="${f}"/><path d="M-.72 -.25 L0 -.82 L.72 -.25Z" fill="${f}"/><path d="M-.42 -.36 L0 -.68 L.42 -.36Z" fill="none"/>`;   /* the hall and its pediment */
+    s+=`<circle cx="0" cy="-.47" r=".07" fill="none"/>`;
+    for(const x of [-.5,-.25,0,.25,.5])s+=`<path d="M${x} -.2 V.72"/>`;   /* columns */
+    s+=`<path d="M-.66 .72 H.66 M-.75 .84 H.75 M-.82 .95 H.82"/>`;   /* steps */
+    s+=`<path d="M-1.35 -.38 V-.62 H-1.2 V-.38 M1.2 -.38 V-.66 H1.35 V-.38 M-.85 -.38 V-.58 H-.72 V-.38 M.72 -.38 V-.58 H.85 V-.38" fill="${f}"/>`;   /* chimneys */
+    s+=`</g>`;
+    for(const sx of [-1,1])for(const [x,y] of [[1.52,.1],[1.22,.1],[.92,.1],[.62,.1],[1.52,.5],[1.22,.5],[.92,.5],[.62,.5]])s+=`<rect x="${(sx*x-.07).toFixed(2)}" y="${y}" width=".14" height=".22" fill="none" stroke="${ink}" stroke-width=".025"/>`;   /* the wings' windows */
+    s+=`<path d="M-1.7 .95 V-.05 L-1.45 -.38 H-1.1 V.95Z" fill="${sh}"/><path d="M.45 .95 V-.05 L.62 -.38 H.95 V.95Z" fill="${sh}"/>`;   /* shading */
+    for(let i=0;i<7;i++)s+=`<path d="M${(-1.68+i*.04).toFixed(2)} ${(.2+i*.1).toFixed(2)} l.18 -.12" stroke="${ink}" stroke-width=".015" opacity=".5"/>`;   /* hatching */
+    return s};
   SPRITE.stonetower=()=>{const D='#1E1C18',S1='#8A857A',S2='#6E695F';let s=`<ellipse cx="0" cy="2.7" rx=".62" ry=".08" fill="#000" opacity=".4"/>`;   /* a tall grey stone tower north of Dragon Tower's gates (owner, Oct 18) */
     s+=`<path d="M-.42 2.7 L-.34 -2.2 H.34 L.42 2.7Z" fill="${S1}" stroke="${D}" stroke-width=".035" stroke-linejoin="round"/><path d="M0 -2.2 H.34 L.42 2.7 H.06Z" fill="${S2}"/>`;
     for(let i=0;i<20;i++){const y=-2.0+i*.24;s+=`<path d="M-.4 ${y.toFixed(2)} H.4" stroke="${D}" stroke-width=".014" opacity=".45"/>`;const o=(i%2?.0:.13);for(const x of [-.2,.07,.3])s+=`<path d="M${(x+o-.1).toFixed(2)} ${y.toFixed(2)} v.24" stroke="${D}" stroke-width=".012" opacity=".35"/>`}
@@ -877,7 +890,7 @@ document.getElementById('lanes').innerHTML=ln;
     else if(g.at==='above-pin'){cx=p.mx+(g.dx||0);cy=p.my-.5-g.h/2+(g.dy||0)}
     else{const t=[...svg.querySelectorAll('.plabel.lbl')].find(e=>P[+e.dataset.i]===p);if(!t)continue;const bb=t.getBBox();cx=bb.x+bb.width/2+(g.dx||0);cy=(g.at==='above-text'?bb.y-g.h/2-.12:bb.y+bb.height+g.h/2+.08)+(g.dy||0)}  // at: 'above-text' or 'below-text'
     if(g.k==='text'){out+=`<text x="${g.x}" y="${g.y}" text-anchor="middle" font-size=".38" font-style="italic" fill="var(--soft)" style="paint-order:stroke;stroke:var(--halo);stroke-width:.1px;stroke-linejoin:round">${g.text}</text>`;continue}
-    const dx={hut:1.0,jtemple:1.1,pirateinn:2.5,gatetower:3.8,volcano:3.0,saloon:2.2,pier:1,ladderhole:1,ladderexit:1,darktower:1.4,magetower:1.6,stonetower:1.0,shatteredtemple:2.6,seainn:3.4,seahole:1.1,barn:3.5,hideout:5.0,castle:4,windmill:2.4,town:4.4,inn:3,keep:2.6,palisade:3.3,stonecity:3.5,ruin:3.0,darkpeak:4.4,barrow:4.6,grove:1,waterway:1,graves:1}[g.k],dy={hut:.9,jtemple:1.6,pirateinn:2.1,gatetower:3.64,volcano:2.4,saloon:1.7,pier:1,ladderhole:1,ladderexit:1,darktower:2.7,magetower:5.1,stonetower:5.4,shatteredtemple:1.6,seainn:2.2,seahole:1.1,barn:2.6,hideout:4.7,castle:3.3,windmill:3.2,town:2.6,inn:2.4,keep:5.3,palisade:2.5,stonecity:2.9,ruin:2.1,darkpeak:2.9,barrow:2.3,grove:1,waterway:1,graves:1}[g.k];
+    const dx={hut:1.0,jtemple:1.1,pirateinn:2.5,gatetower:3.8,volcano:3.0,saloon:2.2,pier:1,ladderhole:1,ladderexit:1,darktower:1.4,magetower:1.6,mansion:3.6,stonetower:1.0,shatteredtemple:2.6,seainn:3.4,seahole:1.1,barn:3.5,hideout:5.0,castle:4,windmill:2.4,town:4.4,inn:3,keep:2.6,palisade:3.3,stonecity:3.5,ruin:3.0,darkpeak:4.4,barrow:4.6,grove:1,waterway:1,graves:1}[g.k],dy={hut:.9,jtemple:1.6,pirateinn:2.1,gatetower:3.64,volcano:2.4,saloon:1.7,pier:1,ladderhole:1,ladderexit:1,darktower:2.7,magetower:5.1,mansion:2.1,stonetower:5.4,shatteredtemple:1.6,seainn:2.2,seahole:1.1,barn:2.6,hideout:4.7,castle:3.3,windmill:3.2,town:2.6,inn:2.4,keep:5.3,palisade:2.5,stonecity:2.9,ruin:2.1,darkpeak:2.9,barrow:2.3,grove:1,waterway:1,graves:1}[g.k];
     out+=`<g class="gfx-${g.k}" transform="translate(${cx.toFixed(3)},${cy.toFixed(3)}) scale(${(g.w/dx).toFixed(4)},${(g.h/dy).toFixed(4)})">${SPRITE[g.k](g)}</g>`;
   }
   layer.innerHTML=out;
