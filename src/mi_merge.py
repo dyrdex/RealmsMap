@@ -25,6 +25,8 @@ from smr_merge import _hash, _drawn, X0 as SX0                  # (SX0: the west
 R8 = GF.R8
 LAND_R, TERR_R = 4.2, 3.2
 OLD_MARSH = set(range(8394, 8422)) | {21812}
+NOT_MIRE = {655, 8209, 8212, 8214, 8221}         # Dragon's Pass rooms in the Mire editor (owner, Oct 18): paths only
+SHORTCUT = frozenset((8195, 8221))              # the Dragon's Pass shortcut: drawn as a faint dashed line across the map (owner, Oct 18)
 SHOWN = {19582, 7938}                            # shown on the map whatever the save says (owner, Oct 18)
 EXTRA_WATER = {8458, 8459, 8063, 8081, 8035, 8034, 17864, 17675, 17677, 17862, 17863, 8033, 8032, 8008}   # marsh water (owner, Oct 18): the Reeds carried to 8063/8081 and south to the clearing
 EXTRA_CLEAR = [set(range(8082, 8114)),                                                       # one clearing from east of 8081 to 8113 (owner, Oct 18)
@@ -44,6 +46,10 @@ RIVER_END = 136.0                                # it runs off the map's south e
 RIVER_STONES = (119.0, 125.5)                    # (stones just north and south of the last crossing path, 8491-8492-8640: owner, Oct 18)
 RIVER_HEAD = [[(-22.1, 83.7, .24), (-21.0, 85.0, .25), (-19.6, 86.2, .26)], [(-20.0, 83.9, .24), (-19.7, 85.0, .25), (-19.4, 86.2, .26)], [(-24.4, 82.9, .24), (-23.6, 83.8, .25), (-22.8, 84.6, .24)], [(-18.4, 82.8, .24), (-18.7, 83.8, .25), (-18.9, 84.8, .24)]]   # the marsh's first fingers below the MacMillan farm: two that run together into the river, two longer ones beside them (owner, Oct 18); 0.24 at least, or they vanish when traced
 WAVY_LINK = 8.0                                  # links to the map longer than this get a gentle wave (owner, Oct 18)                                                                # stones in its shallow, wide reach (rows)
+MARSH_PONDS = [(-25.5, 83.3, .7, .3, 35), (-23.3, 82.5, .55, .28, -15), (-21.0, 82.6, .6, .3, 10), (-19.3, 83.0, .45, .26, 55), (-17.6, 83.4, .5, .26, -30),
+               (-24.2, 85.6, .55, .28, 40), (-17.9, 85.9, .45, .24, -45), (-22.6, 86.6, .4, .24, 20)]   # a marsh of small lakes below the farm's marsh (owner, Oct 18): (x, y, rx, ry, angle)
+MARSH_STREAMS = [[(-25.0, 82.4), (-25.5, 83.3)], [(-25.0, 83.6), (-24.4, 82.9)], [(-23.3, 82.5), (-22.1, 83.7)], [(-21.0, 82.6), (-20.0, 83.9)], [(-19.3, 83.0), (-18.4, 82.8)],
+                 [(-17.6, 83.4), (-18.7, 83.8)], [(-22.8, 84.6), (-24.2, 85.6)], [(-24.0, 85.9), (-22.6, 86.6), (-21.0, 86.9)], [(-18.9, 84.8), (-17.9, 85.9), (-18.2, 87.2)]]   # streams joining them, south to the river
 BRIDGE = dict(x0=-17.5, x1=-14.0, y=93.5)                                                    # the Crumbling Bridge (8591, 8612, 8590) over it                                                                 # 8060 joined to its clearing
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
 ISLAND_BOX, ISLAND_R, ISLAND_GAP = (-115.5, 72.0, -111.5, 78.5), 1.0, 2.2   # (owner, Oct 18) rooms 8073-8079 (+ spacers): a small island out at sea, ISLAND_GAP of water round it
@@ -90,7 +96,7 @@ def mi_land(layout, edges, store, seed=SEED):
     isl = {v for v in dry if ISLAND_BOX[0] <= pos[v][0] <= ISLAND_BOX[2] and ISLAND_BOX[1] <= pos[v][1] <= ISLAND_BOX[3]}   # (owner, Oct 18)
     rad = {v: ISLAND_R for v in isl}; rad.update(THIN); rad.update({v: 0.0 for v in IN_SEA})
     sp = {v for v in rad if v in pos}
-    land_lines = [[pos[a], pos[b]] for a, b, k in E if k != 'ud' and not ({a, b} & sp)]
+    land_lines = [[pos[a], pos[b]] for a, b, k in E if k != 'ud' and not ({a, b} & sp) and frozenset((a, b)) != SHORTCUT]
     lp = np.r_[np.array([pos[v] for v in dry if v not in sp]), _samples(land_lines, 0.15)]
     thin_lines = [(pos[a], pos[b], min(rad.get(a, 9), rad.get(b, 9))) for a, b, k in E if k != 'ud' and {a, b} & sp and not ({a, b} & set(IN_SEA))]
     xs = [p[0] for p in lp] + [pos[v][0] for v in dry] + [p[0] for p in RIVER]; ys = [p[1] for p in lp] + [pos[v][1] for v in dry] + [p[1] for p in RIVER]   # (the river reaches past the area)
@@ -189,6 +195,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     for a, b, k in E:
         if frozenset((a, b)) in _lp: continue                                       # (drawn whole, below)
         if ({a, b} & LAKE) and frozenset((a, b)) != frozenset((8459, 8460)): continue   # (no lines in the lake: owner, Oct 18)
+        if frozenset((a, b)) == SHORTCUT: continue                                   # (a faint dashed line across the map, below)
         if not (a in MI and b in MI): links.append((a, b)); continue                 # to the map
         if k == 'ud': uds.append((a, b)); continue
         GD[a].add(b); GD[b].add(a)
@@ -234,6 +241,15 @@ def merge_mi(w, layout, edges, store, seed=SEED):
             r *= 0.82 + 0.18 * math.sin(y * 1.7 + 2.1) + 0.12 * math.sin(y * 3.9) + 0.06 * float(_hash(round(x, 1), round(y, 1), 201)); c, rr_ = (x - box[0]) * R8, (y - box[1]) * R8; k = int(r * R8) + 2
             sl = (slice(max(0, int(rr_) - k), int(rr_) + k + 1), slice(max(0, int(c) - k), int(c) + k + 1))
             riv[sl] |= np.hypot(X[sl] - x, Y[sl] - y) <= r
+    for x_, y_, ax_, ay_, an_ in MARSH_PONDS:                                         # the marsh of small lakes and streams at the river's head (owner, Oct 18)
+        ca, sa = math.cos(math.radians(an_)), math.sin(math.radians(an_)); u_ = (X - x_) * ca + (Y - y_) * sa; v_ = -(X - x_) * sa + (Y - y_) * ca
+        riv |= (u_ / ax_) ** 2 + (v_ / ay_) ** 2 <= 1
+    for ln in MARSH_STREAMS:
+        for p_, q_ in zip(ln[:-1], ln[1:]):
+            n_ = max(2, int(math.dist(p_, q_) / 0.08))
+            for i in range(n_ + 1):
+                x_, y_ = p_[0] + (q_[0] - p_[0]) * i / n_, p_[1] + (q_[1] - p_[1]) * i / n_; c, rr_ = (x_ - box[0]) * R8, (y_ - box[1]) * R8; k = 4
+                sl = (slice(max(0, int(rr_) - k), int(rr_) + k + 1), slice(max(0, int(c) - k), int(c) + k + 1)); riv[sl] |= np.hypot(X[sl] - x_, Y[sl] - y_) <= 0.22
     riv = ndi.gaussian_filter(riv.astype(float), 0.25 * R8) > 0.5
     riv &= Y <= RIVER_END
 
@@ -332,13 +348,14 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     w['fwtracks'] = list(w['fwtracks']) + [[[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]] for a, b in LAKE_PATH if shown(a) and shown(b)]
     w['geo']['water'] = list(w['geo']['water']) + AA._contours(riv, box[0], box[1], sigma=1.0, tol=0.15, minarea=0.05)
     w['micrumble'] = [BRIDGE]
+    if all(v in pos and shown(v) for v in SHORTCUT): w['pffaint'] = list(w.get('pffaint') or []) + [[[round(p[0], 2), round(p[1], 2)] for p in (pos[v] for v in sorted(SHORTCUT))]]
     rep['lines'] = dict(trails=len(dirt), links=links, up_down=uds)
 
     land_mi = landm
     rep['land'] = dict(new_sq=store.get('land_new_sq'), enclosed_gaps_sq=store.get('gap_pieces'), all_gaps_and_inlets_sq=sqm(store['gaps']))
 
     # ---------------------------------------------------------------- ground: one bog ground; zones by the nearest room's terrain
-    rs = [v for v in MI if shown(v) and not void(v)]
+    rs = [v for v in MI if shown(v) and not void(v) and v not in NOT_MIRE]       # (the Dragon's Pass rooms get no Mire ground round them)
     dist, idx = cKDTree(np.array([pos[v] for v in rs])).query(P)
     Z = np.array([cls[v] for v in rs])[idx].reshape(bh, bw); dist = dist.reshape(bh, bw)
     fx = [pos[v] for v, r in info.items() if (r.get('fixed') or r.get('grp') == 'un') and v in pos]   # (unlocked map rooms are map rooms)
@@ -471,7 +488,12 @@ def merge_mi(w, layout, edges, store, seed=SEED):
         w[k] = [q for q in (w.get(k) or []) if not (0 <= int((q[1] - box[1]) * R8) < bh and 0 <= int((q[0] - box[0]) * R8) < bw and rv[int((q[1] - box[1]) * R8), int((q[0] - box[0]) * R8)])]
     sto = [q for q in _place(ndi.binary_erosion(riv, iterations=int(0.35 * R8)) & (Y >= RIVER_STONES[0]) & (Y <= RIVER_STONES[1]) & (d_path > 0.5), X, Y, 0.8, 205) if _hash(q[0], q[1], 206) < 0.6]
     w['mistones'] = [[x, y, round(0.09 + 0.08 * float(_hash(x, y, 207)), 3)] for x, y in sto]
-    tints['river'] = dict(sq=sqm(riv), stones=len(sto))
+    hz = np.zeros((bh, bw), bool)
+    for x_, y_, ax_, ay_, an_ in MARSH_PONDS: hz |= np.hypot(X - x_, Y - y_) <= ax_ + 1.0
+    hz &= ~riv & land_mi
+    hr = _place(hz & (d_path > 0.4), X, Y, 0.45, 176)
+    w['reeds'] = list(w['reeds']) + [[x, y, round(0.75 + 0.4 * float(_hash(x, y, 177)), 2)] for x, y in hr]
+    tints['river'] = dict(sq=sqm(riv), stones=len(sto), head_marsh_reeds=len(hr))
     rep['sprites'] = dict(forest_trees=len(trees), thicket_dead_trees=len(dead), thicket_brush=len(shrub), swamp_trees=len(st), hills=len(hills), boulders=len(rocks),
                           reeds_round_water=len(reeds_w), reeds_on_bog=len(reeds_b))
 
@@ -485,6 +507,8 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     return w, rep
 
 
+EXTRA_PLACES = [("Tipsy Lizard Tavern", "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;sw;sw;sw;sw;sw;sw;sw;w;u;s;e;e;se;se;s;s;sw;nw;nw;w;w;w;sw;w;sw;sw;sw;sw;s;s;s;s;se;s;sw;s;sw;w;sw;sw;sw;sw;sw;sw;s;sw;sw;e", None),
+                ("Vaellys el Notrune", "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;sw;sw;sw;sw;sw;sw;sw;w;u;s;e;e;se;se;s;s;sw;nw;nw;w;w;w;sw;w;sw;sw;sw;sw;s;s;s;s;se;s;sw;s;sw;w;sw;sw;sw;sw;sw;sw;s;sw;sw;w;sw;w;n;nw;n", 'mob')]   # (owner, Oct 18)
 SUBAREAS = ("Dragon Tower", "High Tower of Sorcery", "Ockwater Fens", "Old Marsh", "Tribal Swamplands (Lizardmen)")   # the areas off the Mire with directions in data.py (owner, Oct 18;
 # not the Forest of Tears or the Wastelands; Dragon's Pass and Machine Dreams are already on the map by other routes; Asgard Nexus stays off the map)
 
@@ -516,15 +540,24 @@ def add_mi_places(w, layouts):
     pos = {}
     for L in layouts:
         for v, x, y in zip(L['ids'], L['xs'], L['ys']): pos.setdefault(v, (x, y))
-    md = next((p for p in w['places'] if p['name'] == 'Machine Dreams'), None)        # Machine Dreams at 7872 (its 'enter'), owner Oct 18
-    if md and 7872 in pos:
-        q = [round(pos[7872][0], 2), round(pos[7872][1], 2)]; md.update(path=[q], segs=[[q]], dir='here', room=rooms[7872]['name'], where='off the Mire', note=None)
-        rep['Machine Dreams'] = dict(marker=q)
-    ht = next((p for p in w['places'] if p['name'] == 'High Tower of Sorcery'), None)
     g = []
+    if 7872 in pos:                                                                  # Machine Dreams' second entrance (7872 'enter'): a text label only (owner, Oct 18)
+        g.append({'k': 'text', 'at': 'xy', 'x': round(pos[7872][0], 2), 'y': round(pos[7872][1] + 0.85, 2), 'text': 'Machine Dreams'})
+    for b in w['gfx']:
+        if b.get('k') == 'barn': b['y'] = round(b['y'] - 0.5, 2); rep['barn_moved_north'] = 0.5   # the MacMillan Family Farm's barn, a little north (owner, Oct 18)
+    for name, route, kind in EXTRA_PLACES:                                           # owner's places (Oct 18), traced from Darkhaven Square
+        if any(p['name'] == name for p in w['places']): continue
+        t = walk(route); last = max(i for i, v in enumerate(t) if at(v) and v not in hid)
+        upto = t[:last + 1]; segs = segments([at(v) for v in upto])
+        d = 'here' if last == len(t) - 1 else re.sub(r'^#\s*\d+\s*', '', route.split(';')[-1].strip())
+        pl = dict(name=name, route=route, room=rooms[upto[-1]]['name'], dir=d, path=[q for s_ in segs for q in s_], segs=segs, group='af', where='in the Mire',
+                  note=None if len(segs) == 1 else "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there.")
+        if kind: pl['kind'] = kind
+        w['places'].append(pl); rep[name] = dict(end_room=upto[-1], walked=len(t), left_at=len(upto), dir=d, pieces=len(segs), marker=segs[-1][-1], kind=kind)
+    ht = next((p for p in w['places'] if p['name'] == 'High Tower of Sorcery'), None)
     if ht:                                                                           # a sorcerer's tower north of its marker (owner, Oct 18)
         e = ht['path'][-1]; v_ = {'n': (0, -1), 's': (0, 1), 'e': (1, 0), 'w': (-1, 0)}.get(ht['dir'], (0, 0)); px_, py_ = e[0] + v_[0] * .62, e[1] + v_[1] * .62
-        g.append({'k': 'magetower', 'at': 'xy', 'x': round(px_, 2), 'y': round(py_ - 0.55 - 2.6 / 2, 2), 'w': 1.15, 'h': 2.6})
+        g.append({'k': 'magetower', 'at': 'xy', 'x': round(px_, 2), 'y': round(py_ - 0.55 - 5.0 / 2, 2), 'w': 1.6, 'h': 5.0})   # (as big as Dragon Tower's: owner, Oct 18)
     if 8155 in pos:                                                                  # a tall grey stone tower north of Dragon Tower's gates (8155) up to y 43 (owner, Oct 18)
         x_, y0_ = pos[8155][0] - 0.1, pos[8155][1] - 0.6
         g.append({'k': 'stonetower', 'at': 'xy', 'x': round(x_, 2), 'y': round((y0_ + 43.0) / 2, 2), 'w': 1.1, 'h': round(y0_ - 43.0, 2)})

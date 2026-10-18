@@ -245,7 +245,7 @@ S = S | set(UN)
 # ---- added later (owner, Oct 18): the Old Marsh's rooms and Dragon Tower's 7940, movable (grp 'om'), starting next to the rooms they join in the
 # owner's saved layout (spread from there, clear of it and of the map), with the spacers that join them
 SAVED = {v: (x, y) for v, x, y in zip(*(J('mi_layout_final.json')[k] for k in ('ids', 'xs', 'ys'))) if v in S}
-ADD = {v for v, r in rooms.items() if r['area'] == 'Old Marsh'} | {7940, 8155}   # (8155: Dragon Tower's gates, owner Oct 18)
+ADD = {v for v, r in rooms.items() if r['area'] == 'Old Marsh'} | {7940, 8155} | {655, 8209, 8212, 8214, 8221}   # (8155: Dragon Tower's gates; 655-8221: the Dragon's Pass shortcut to 8195: owner Oct 18)
 ends_ = lambda c: {u for x in c for u in nbs(x) if u in ADD or u in S or u in POS}
 cand2 = set(); q = deque(ADD)
 while q:
@@ -268,8 +268,8 @@ while True:
     keep2 -= leaf
 ADDS = ADD | keep2
 FIX2 = dict(POS); FIX2.update(SAVED)
-roots2 = sorted({t for v in ADDS for t, _ in links2(v) if t in SAVED})
-sp2 = ES.spread(ADDS, lambda v: [(t, d) for t, d in links2(v) if t in ADDS or t in FIX2], FIX2, roots2, step=STEP)
+roots2 = sorted({t for v in ADDS for t, _ in links2(v) if t in SAVED and t != 8195} | {t for v in ADDS for t, _ in links2(v) if t in POS})   # (not 8195: the shortcut stretches across the map)
+sp2 = ES.spread(ADDS, lambda v: [(t, d) for t, d in links2(v) if (t in ADDS or t in FIX2) and {v, t} != {8195, 8221}], FIX2, roots2, step=STEP)   # (the shortcut 8221-8195 left out of the layout)
 for v in ADDS: start[v] = sp2[v]; GRP[v] = 'om'; CTX.pop(v, None)
 S = S | ADDS
 
