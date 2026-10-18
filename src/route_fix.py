@@ -12,6 +12,16 @@ DIRS = {'n', 'e', 's', 'w', 'ne', 'nw', 'se', 'sw', 'u', 'd'}
 PORTAL = {4222}
 
 
+def condense(route):
+    """directions in numbered form (owner, Oct 18): runs of the same direction become '#N dir' ('n;n;#2 n' -> '#4 n'); other commands kept as they are"""
+    out = []
+    for tok in [x.strip() for x in route.split(';') if x.strip()]:
+        m = re.match(r'^#\s*(\d+)\s*(.+)$', tok); n, d = (int(m.group(1)), m.group(2).strip()) if m else (1, tok)
+        if d in DIRS and out and out[-1][1] == d: out[-1][0] += n
+        else: out.append([n, d] if (d in DIRS or not m) else [1, tok])
+    return ';'.join(f'#{n} {d}' if n > 1 else d for n, d in out)
+
+
 def make_tracer(w, layouts):
     """walk(route) -> the rooms the directions pass through (from Darkhaven Square); at(room) -> its place on the map (or None)."""
     rooms, exits = AF._world()

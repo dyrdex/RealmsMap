@@ -60,7 +60,8 @@ COAST_FILL = [[(-114.6, 108.8), (-114.6, 111.7), (-109.8, 111.7), (-109.4, 108.8
               [(-114.6, 114.3), (-114.6, 117.8), (-110.3, 117.8), (-110.3, 114.3)],     # south of it: the coast meets it just south of the clearing
               [(-111.0, 112.7), (-110.0, 111.8), (-108.2, 111.8), (-107.8, 113.0), (-108.2, 114.7), (-110.6, 114.7)],   # the gap north-east of the tavern (owner, Oct 18; the sea is kept)
               [(-36.2, 124.6), (-33.5, 123.4), (-29.0, 122.8), (-29.6, 126.5), (-30.0, 130.0), (-30.6, 133.0), (-30.6, 135.0), (-36.2, 135.0)]]   # between the land east of the Old Marsh and the Mire river: standard Mire ground (owner, Oct 18)
-MANSION_EAST_OF = 8421                           # Redferne's Residence's manor: its east side just west of this room (owner, Oct 18)
+MANSION_DOOR_AT = 8421                           # Redferne's Residence's manor: its front door just north of this room, the trail's end (owner, Oct 18)
+DRAGON = (3.7, 2.75)                             # (w, h) The Mire (Central)'s dragon (owner, Oct 18: redrawn, a little smaller than 4.25 x 3.1)
 FINGER_LAKE = [8418, 21812, 8419]                # the Old Marsh's finger lake: a narrow north-south water clearing along these rooms (owner, Oct 18)
 INLET = 60.0                                     # (sq) narrow inlets in the Mire's coast smaller than this are filled
 PAD, SQ, CELL_MAX, MIN_PATCH = 0.55, 1.1, 6.0, 3.0
@@ -521,10 +522,11 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     return w, rep
 
 
-EXTRA_PLACES = [("Tipsy Lizard Tavern", "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;sw;sw;sw;sw;sw;sw;sw;w;u;s;e;e;se;se;s;s;sw;nw;nw;w;w;w;sw;w;sw;sw;sw;sw;s;s;s;s;se;s;sw;s;sw;w;sw;sw;sw;sw;sw;sw;s;sw;sw;e", None),
-                ("Redferne's Residence", "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;sw;sw;nw;n;ne;nw;n;n;ne;n;e;se;se;e;s;se;sw;s;s;sw;s;s;sw;s;se;e;e;se;e;se;sw;se;se;s;s;se;se;e;se;sw;s;e;e;se;se;se;s;s;e;e;s;e;s;w", None),
+EXTRA_PLACES = [("Tipsy Lizard Tavern", "#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#10 sw;w;u;s;#2 e;#2 se;#2 s;sw;#2 nw;#3 w;sw;w;#4 sw;#4 s;se;s;sw;s;sw;w;#6 sw;s;#2 sw;e", None),
+                ("Redferne's Residence", "#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;ne;nw;#2 n;ne;n;e;#2 se;e;s;se;sw;#2 s;sw;#2 s;sw;s;se;#2 e;se;e;se;sw;#2 se;#2 s;#2 se;e;se;sw;s;#2 e;#3 se;#2 s;#2 e;s;e;s;w", None),
+                ("The Mire (Central)", "#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;ne;nw;#2 n;ne;n;e;#2 se;e;s;se;sw;s", None),   # (owner, Oct 18: ends at 8195)
                 ("Shadowport", None, 'onhidden'),   # the marker on the hidden room 10099 (the route's end): its route from data.py (owner, Oct 18)
-                ("Vaellys el Notrune", "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;sw;sw;sw;sw;sw;sw;sw;sw;sw;sw;w;u;s;e;e;se;se;s;s;sw;nw;nw;w;w;w;sw;w;sw;sw;sw;sw;s;s;s;s;se;s;sw;s;sw;w;sw;sw;sw;sw;sw;sw;s;sw;sw;w;sw;w;n;nw;n", 'mob')]   # (owner, Oct 18)
+                ("Vaellys el Notrune", "#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#10 sw;w;u;s;#2 e;#2 se;#2 s;sw;#2 nw;#3 w;sw;w;#4 sw;#4 s;se;s;sw;s;sw;w;#6 sw;s;#2 sw;w;sw;w;n;nw;n", 'mob')]   # (owner, Oct 18)
 SUBAREAS = ("Dragon Tower", "High Tower of Sorcery", "Ockwater Fens", "Old Marsh", "Tribal Swamplands (Lizardmen)")   # the areas off the Mire with directions in data.py (owner, Oct 18;
 # not the Forest of Tears or the Wastelands; Dragon's Pass and Machine Dreams are already on the map by other routes; Asgard Nexus stays off the map)
 
@@ -583,15 +585,23 @@ def add_mi_places(w, layouts):
     pin = lambda p: (p['path'][-1][0] + {'n': 0, 's': 0, 'e': .62, 'w': -.62}.get(p['dir'], 0) * (1 if p['dir'] in ('e', 'w') else 0), p['path'][-1][1] + {'n': -.62, 's': .62}.get(p['dir'], 0))
     tl = next((p for p in w['places'] if p['name'] == 'Tipsy Lizard Tavern'), None)
     if tl:                                                                           # a small inn east of its marker, its name below the inn (owner, Oct 18)
-        q = pin(tl); ix_, iy_ = q[0] + 1.4, q[1] - 0.2                               # (a dusty old outback shack: owner, Oct 18)
+        q = pin(tl); ix_, iy_ = q[0] + 1.4, q[1] - 0.65                              # (a dusty old outback shack: owner, Oct 18; 0.45 up, clear of the name below the dot)
         g.append({'k': 'shack', 'at': 'xy', 'x': round(ix_, 2), 'y': round(iy_, 2), 'w': 2.0, 'h': 1.6})
-        g.append({'k': 'text', 'at': 'xy', 'x': round(ix_, 2), 'y': round(iy_ + 0.65 + 0.42, 2), 'text': 'Tipsy Lizard Tavern'}); tl['nolabel'] = True
+        # (its name: a standard place label centred below the marker dot, template LBL + PINNED: owner, Oct 18)
     rf = next((p for p in w['places'] if p['name'] == "Redferne's Residence"), None)
     if rf:                                                                           # a large, old, grand mansion above its marker, drawn like an old map's (owner, Oct 18)
-        ex_, ey_ = pos[MANSION_EAST_OF]                                              # (its east side just west of 8421: owner, Oct 18)
-        g.append({'k': 'mansion', 'at': 'xy', 'x': round(ex_ - 0.35 - 3.2 / 2, 2), 'y': round(ey_ - 0.15, 2), 'w': 3.2, 'h': 2.3})
+        dx_, dy_ = pos[MANSION_DOOR_AT]                                              # north of the trail, its central front door just north of the trail's end 8421 (owner, Oct 18)
+        g.append({'k': 'mansion', 'at': 'xy', 'x': round(dx_, 2), 'y': round(dy_ - 0.55 - 0.95 * 2.3 / 2.6, 2), 'w': 3.2, 'h': 2.3})   # (the door's foot at sprite y .95)
+    mc = next((p for p in w['places'] if p['name'] == 'The Mire (Central)'), None)
+    if mc:                                                                           # a small, dull, grim old-map dragon just north of its marker (owner, Oct 18)
+        e = mc['path'][-1]
+        g.append({'k': 'dragon', 'at': 'xy', 'x': round(e[0], 2), 'y': round(e[1] - 0.85 - DRAGON[1] / 2, 2), 'w': DRAGON[0], 'h': DRAGON[1]})
+        g.append({'k': 'text', 'at': 'xy', 'x': round(e[0], 2), 'y': round(e[1] - 0.85 - DRAGON[1] / 2 - 0.76 * DRAGON[1] / 1.5 - 0.42, 2), 'text': "(Dragon's Pass Link)"})   # (a small label just north of the dragon: owner, Oct 18)
+    if any(p['name'] == "Dragon's Pass" for p in w['places']):                      # a smaller label just south of the Dragon's Pass name (owner, Oct 18): placed from the name as drawn
+        q = next(p for p in w['places'] if p['name'] == "Dragon's Pass")['path'][-1]   # (its name pinned at its solver spot: template LBL [.77, .175]; 4.84 wide at the bake's font, baseline + .33 to its foot)
+        g.append({'k': 'text', 'at': 'xy', 'x': round(q[0] + 0.77 + 4.84 / 2, 2), 'y': round(q[1] + 0.175 + 0.15 + 0.333 + 0.33, 2), 'text': '(The Mire Link)'})
     for b in g:                                                                      # nothing grows under the new buildings
-        if b['k'] in ('shack', 'mansion'):
+        if b['k'] in ('shack', 'mansion', 'dragon'):
             for k in SPRITES: w[k] = [s for s in (w.get(k) or []) if not (abs(s[0] - b['x']) < b['w'] / 2 + 0.2 and abs(s[1] - b['y']) < b['h'] / 2 + 0.2)]
     ht = next((p for p in w['places'] if p['name'] == 'High Tower of Sorcery'), None)
     if ht:                                                                           # a sorcerer's tower north of its marker (owner, Oct 18)

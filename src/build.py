@@ -244,6 +244,11 @@ w,_lb=place_labels(w)
 print('labels placed:',_lb)
 w,_ll=place_lake_label(w)
 print('lake name placed:',_ll)
+from route_fix import condense as _cond                         # every route in numbered form, '#N dir' (owner, Oct 18)
+for _p in w['places']:
+    if _p.get('route'): _p['route']=_cond(_p['route'])
+    for _o in _p.get('opts') or []:
+        if _o.get('route'): _o['route']=_cond(_o['route'])
 if os.environ.get('FINAL_DUMP'):                                 # (used to build the layout editors)
     json.dump(w, open(os.environ['FINAL_DUMP'], 'w'))
 w['track']={k:v for k,v in w['track'].items() if not k.startswith(('ft','wt'))}    # (the Forest of Tears editor's room positions: in the FINAL_DUMP only, so realm_map.html stays as it was)
