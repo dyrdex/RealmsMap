@@ -153,7 +153,6 @@ let WILD=`<defs>
 <linearGradient id="linkFadeE" gradientUnits="userSpaceOnUse" x1="-10.2" y1="0" x2="-11.9" y2="0"><stop offset="0" stop-color="var(--dirt-edge)" stop-opacity="1"/><stop offset="1" stop-color="var(--dirt-edge)" stop-opacity="0"/></linearGradient>
 <g id="rd"><path d="M-.12 .1 L-.16 -.18 M0 .1 L0 -.26 M.12 .1 L.17 -.16" stroke="var(--reed)" stroke-width=".045" stroke-linecap="round" fill="none"/></g>
 </defs>`;
-WILD+=`<path d="${blobs(GEO.undersea||[])}" fill="var(--w-water)" fill-rule="evenodd" stroke="var(--w-shore)" stroke-width=".07"/>`;   /* the west-coast sea down the Mire, under the land (owner, Oct 18) */
 WILD+=`<path d="${blobs(GEO.land)}" fill="var(--w-land)" fill-rule="evenodd" stroke="var(--w-edge)" stroke-width=".18" stroke-linejoin="round"/>`;
 WILD+=`<path d="${blobs(GEO.sg)}" fill="var(--shadow-grass)" fill-rule="evenodd" opacity=".8"/><path d="${blobs(GEO.sg2)}" fill="var(--shadow-grass2)" fill-rule="evenodd" opacity=".55"/>`;
 for(const k of ['meadow1','meadow2','meadow3'])WILD+=`<path d="${blobs(GEO[k])}" fill="var(--w-meadow)" fill-rule="evenodd" opacity=".42"/>`;

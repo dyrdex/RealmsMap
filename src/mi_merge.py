@@ -2,7 +2,7 @@
 First pass, in broad strokes (as the Wastelands' first pass; the owner reviews it):
   - land round every shown room and exit (traced with the mainland: mi_land is chained into smr_merge's land_edit, whose grid now starts 20 rooms
     further west); the gaps it closes against the Forest of Tears and the range filled (owner, Oct 18: standard terrain, as the land round them;
-    the parts nearer the Mire are the Mire's); no sea of its own: the west-coast sea is carried down its west coast (mire_west_sea, owner Oct 18);
+    the parts nearer the Mire are the Mire's); no sea of its own (owner, Oct 18);
   - ONE ground under the whole area: the bog tint (other tints cut back to where the Mire's ground starts: nearer the Mire's rooms than the map's);
   - the rooms you wade or swim (terrain Swimming / Water: Wading amongst the Reeds, Blackpool Bog, the Dank Bog, river crossings) = shallow marsh
     water on exactly their rooms and the exits between them, wavy edges, reeds round it; clumps of mutually joined other rooms = mud clearings
@@ -29,11 +29,7 @@ ISLAND_BOX, ISLAND_R, ISLAND_GAP = (-115.5, 72.0, -111.5, 78.5), 1.0, 2.2   # (o
 IN_SEA = (8072,)                                 # A Shallow Channel: in the water between the island and the coast (owner, Oct 18)
 THIN = {8038: 0.9, 8039: 0.9, 8040: 0.9, 8041: 0.8, 8042: 0.45, 8043: 0.45, 8044: 0.5}   # The Small Beach; The Narrow Beach and its tip 8044: a thin peninsula (owner, Oct 18)
 SHORE_GAP = 1.6                                  # (rooms) other land kept off these
-BAY, BAYWIN = 10.0, 6.0                          # the west-coast sea fills bays up to BAY rooms deep (coast's westmost point within BAYWIN rows)
 INLET = 60.0                                     # (sq) narrow inlets in the Mire's coast smaller than this are filled
-SEA_Y0, SEA_Y1 = 12.0, 124.0                    # (rows: from the Forest of Tears' corner down to just below the beach; not round the south coast)
-#                                    # (rows south of this: the sea north of it is left as it is)
-REACH = 9.0                                      # the west-coast sea carried down the Mire's west coast: as west_sea
 PAD, SQ, CELL_MAX, MIN_PATCH = 0.55, 1.1, 6.0, 3.0
 SEED = 211
 CLASS = {'Swimming': 'water', 'Water': 'water', 'Forest': 'forest', 'Hills': 'hills', 'Mountains': 'rocks', 'Desert': 'beach'}
@@ -63,7 +59,7 @@ def _setup(layout, edges):
 
 def mi_land(layout, edges, store, seed=SEED):
     """land_edit for smr_merge: the Mire's land added to the grid, and the gaps it closes between itself and the map filled with land
-    (owner, Oct 18: no sea of its own; the west-coast sea carried down its west coast instead: mire_west_sea)"""
+    (owner, Oct 18: no sea of its own)"""
     rooms, exits, pos, info, hidden, MI, shown, void, E, cls = _setup(layout, edges)
     dry = [v for v in MI if shown(v)]
     isl = {v for v in dry if ISLAND_BOX[0] <= pos[v][0] <= ISLAND_BOX[2] and ISLAND_BOX[1] <= pos[v][1] <= ISLAND_BOX[3]}   # (owner, Oct 18)
@@ -126,34 +122,6 @@ def mi_land(layout, edges, store, seed=SEED):
         store['land'] = land_n[sub].copy()
         return land_n
     return edit
-
-
-def avoid(store):
-    """for add_west_sea: the land the Mire added (its west coast gets its sea from mire_west_sea, worked out against the Mire's land)"""
-    return store['box'], store['added']
-
-
-def mire_west_sea(w, store, seed=SEED):
-    """the west-coast sea, fresh (owner, Oct 18: "a new sea layer that underlays the land"): in every row from the map's top down to SEA_Y1, a band
-    from REACH rooms west of the land's westmost point to BAY rooms inland, in geo.undersea, drawn UNDER the land (the land covers what it
-    overlaps, so the coast has no gaps). It replaces add_west_sea's water (that step now only places the shack and dock)."""
-    x0, x1, y0 = -160.0, 0.0, float(w['bounds'][1])
-    bw, bh = int((x1 - x0) * R8), int((SEA_Y1 + 12 - y0) * R8)
-    land = AA._raster(w['geo']['land'], x0, y0, bw, bh)
-    ys = (np.arange(bh) + .5) / R8 + y0; X = (np.arange(bw)[None, :] + .5) / R8 + x0
-    wx = np.where(land.any(1), np.argmax(land, axis=1) / R8 + x0, np.nan)
-    rows = ~np.isnan(wx) & (ys <= SEA_Y1)
-    wx = np.interp(np.arange(bh), np.nonzero(rows)[0], wx[rows])
-    wxs = ndi.minimum_filter1d(wx, int(2 * BAYWIN * R8) + 1)
-    sm = ndi.gaussian_filter1d(wxs, 2.0 * R8)
-    nz = ndi.gaussian_filter1d(np.random.default_rng(seed + 61).normal(size=bh), 4.0 * R8); nz = (nz - nz.min()) / (nz.max() - nz.min())
-    r_ = np.nonzero(rows)[0]; rows = (np.arange(bh) >= r_.min()) & (np.arange(bh) <= r_.max())
-    band = rows[:, None] & (X >= (sm - REACH * (0.85 + 0.3 * nz))[:, None]) & (X <= (wxs + BAY)[:, None])
-    band = ndi.gaussian_filter(band.astype(float), 1.0 * R8) > 0.5
-    w['geo']['undersea'] = AA._contours(band, x0, y0, sigma=1.5)
-    xs_ = [q[0] for p in w['geo']['undersea'] for q in p]
-    b0 = list(w['bounds']); w['bounds'] = [min(b0[0], math.floor(min(xs_)) - 2), b0[1], b0[2], b0[3]]
-    return w, dict(sea_sq=round(float(band.sum()) / R8 / R8, 1), bounds=[b0, w['bounds']])
 
 
 def _place(mask, X, Y, spacing, salt, avoid=None):
