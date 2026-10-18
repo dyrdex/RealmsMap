@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## In progress (after version 19)
+
+- The Mire redrawn from your save of Oct 18 (15:43; 20 rooms moved): the Dragon's Pass rooms beside 169 (still hidden; the High Tower of Sorcery's route follows them); 8606, 8608, 10049 and the way down to Shadowport re-placed, the Shadowport marker now at 10099's new spot (-11.07, 100.92). The Mire editor also shows the Southern Mountain Range rooms round Dragon's Pass (incl. 169) as fixed rooms.
+
 ## Version 19 · The Mire · October 18, 2026
 
 - The Mire from your save of Oct 18 (14:32): the 12 Shadowport-way rooms you hid stay hidden (routes still run through them); Shadowport added (marker on hidden room 10099, your directions); a dusty old outback shack for the Tipsy Lizard Tavern (tin roof, verandah, water tank) and the gap north-east of it filled; the finger lake now only 8418-21812-8419, north-south, half as wide; Redferne's Residence an old medieval manor (half-timbered hall, round tower, keep), its east side just west of 8421; the gap between the Old Marsh land and the river filled with Mire ground; new directions to The Mire (marker at 7869, The End of the Valley Trail).
