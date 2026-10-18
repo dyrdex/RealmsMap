@@ -271,6 +271,9 @@ FIX2 = dict(POS); FIX2.update(SAVED)
 roots2 = sorted({t for v in ADDS for t, _ in links2(v) if t in SAVED and t != 8195} | {t for v in ADDS for t, _ in links2(v) if t in POS})   # (not 8195: the shortcut stretches across the map)
 sp2 = ES.spread(ADDS, lambda v: [(t, d) for t, d in links2(v) if (t in ADDS or t in FIX2) and {v, t} != {8195, 8221}], FIX2, roots2, step=STEP)   # (the shortcut 8221-8195 left out of the layout)
 for v in ADDS: start[v] = sp2[v]; GRP[v] = 'om'; CTX.pop(v, None)
+DP_NEAR = 10.0                                                                   # map rooms round the Dragon's Pass rooms shown as fixed reference rooms, incl. 169 they join (owner, Oct 18)
+for v, p in POS.items():
+    if v not in ADDS and v not in S and min(math.hypot(p[0] - start[u][0], p[1] - start[u][1]) for u in (655, 8209, 8212, 8214, 8221)) <= DP_NEAR: CTX[v] = SRC[v]
 S = S | ADDS
 
 # ---- rooms and exits ----
