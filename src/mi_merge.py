@@ -24,13 +24,15 @@ from smr_merge import _hash, _drawn, X0 as SX0                  # (SX0: the west
 
 R8 = GF.R8
 LAND_R, TERR_R = 4.2, 3.2
+OLD_MARSH = set(range(8394, 8422)) | {21812}
 SHOWN = {19582, 7938}                            # shown on the map whatever the save says (owner, Oct 18)
 EXTRA_WATER = {8458, 8459, 8063, 8081, 8035, 8034, 17864, 17675, 17677, 17862, 17863, 8033, 8032, 8008}   # marsh water (owner, Oct 18): the Reeds carried to 8063/8081 and south to the clearing
 EXTRA_CLEAR = [set(range(8082, 8114)),                                                       # one clearing from east of 8081 to 8113 (owner, Oct 18)
                {8118, 8119, 8120, 8121, 8171, 8177},                                         # the clearing at (-70.6, 84.4) taken west over 8118-8120
                {8059, 8060},
                {8057, 8030, 8031, 8056, 8054, 8026, 8027, 8048, 8053, 8055},
-               {7958, 7960, 7961, 7962}]                                                     # no path showing between the water and the clearing at (-95, 51.5) (owner, Oct 18)                 # 8057, 8030, 8031, 8056, 8054 tied into the clearing south of them (owner, Oct 18)
+               {7958, 7960, 7961, 7962},
+               {8408, 8409, 8410, 8412, 8413, 8414, 8415, 8416, 8417}]                     # the Old Marsh's central cluster: a regular clearing; its other rooms paths (owner, Oct 18)                                                     # no path showing between the water and the clearing at (-95, 51.5) (owner, Oct 18)                 # 8057, 8030, 8031, 8056, 8054 tied into the clearing south of them (owner, Oct 18)
 LAKE = {8450, 8452, 8453, 8454, 8455, 8456, 8457, 8458, 8459}                              # the marsh lake's rooms: every link into or inside it a very faint dull blue dashed line, but 8459-8460 (owner, Oct 18)
 LAKE_PATH = [(8440, 8439), (8439, 8438), (8438, 8451), (8451, 8462)]                         # a regular path along its south shore (owner, Oct 18)
 WETLAND = 7873                                   # the clearing of this room's section (the Secluded Valley): a wet swamp, not dry ground (owner, Oct 18)
@@ -75,6 +77,8 @@ def _setup(layout, edges):
         if cls[v] is None: cls[v] = 'bog'
     for v in EXTRA_WATER:
         if v in cls: cls[v] = 'water'
+    for v in OLD_MARSH:
+        if v in cls and cls[v] == 'water': cls[v] = 'bog'                          # (the Old Marsh: a clearing and paths, not water: owner, Oct 18)
     return rooms, exits, pos, info, hidden, MI, shown, void, E, cls
 
 
