@@ -134,51 +134,26 @@ def avoid(store):
 
 
 def mire_west_sea(w, store, seed=SEED):
-    """the west-coast sea carried south down the Mire's west coast (owner, Oct 18), drawn as add_west_sea draws it (REACH rooms off the land, west of
-    the nearest land point, smoothed, clear of markers and paths) where the nearest land is the Mire's; united with the sea it meets."""
-    box = store['box']; bh, bw = store['land'].shape
-    gy, gx = np.mgrid[0:bh, 0:bw]; X = (gx + .5) / R8 + box[0]; Y = (gy + .5) / R8 + box[1]; P = np.c_[X.ravel(), Y.ravel()]
-    land = AA._raster(w['geo']['land'], box[0], box[1], bw, bh); water = AA._raster(w['geo']['water'], box[0], box[1], bw, bh)
-    mire = ndi.binary_dilation(store['added'], iterations=4)
-    lab, n = ndi.label(~land)
-    border = np.unique(np.r_[lab[0, :], lab[-1, :], lab[:, 0], lab[:, -1]]); ext = np.isin(lab, border[border > 0])
-    d, (iy, ix) = ndi.distance_transform_edt(~land, return_indices=True); d = d / R8
-    wx = np.where(land.any(1), np.argmax(land, axis=1) / R8 + box[0], np.inf)
-    wx = ndi.minimum_filter1d(wx, int(2 * BAYWIN * R8) + 1)                          # (the coast's westmost point within BAYWIN rows: its bays, up to BAY deep, are sea too)
-    core = ext & (X <= wx[:, None] + BAY) & (Y >= SEA_Y0) & (Y <= SEA_Y1) & (d <= REACH) & (d >= 0.15)
-    region = ndi.gaussian_filter(core.astype(float), 2.0 * R8) > 0.30
-    bwn = ndi.gaussian_filter(np.random.default_rng(seed + 61).normal(size=(bh, bw)), 4.0 * R8); bwn = (bwn - bwn.min()) / (bwn.max() - bwn.min())
-    sea = ext & region & (d >= 0.15) & (d <= REACH * (0.85 + 0.3 * bwn)) & (X <= wx[:, None] + BAY) & (Y >= SEA_Y0) & (Y <= SEA_Y1)
-    marks = np.array([p['path'][-1][:2] for p in w['places']], float)
-    lines = [l for k in ('fwtracks', 'swtracks', 'etrtracks', 'dirtroads', 'ashtracks') for l in (w.get(k) or []) if len(l) > 1]
-    blocked = cKDTree(marks).query(P)[0].reshape(bh, bw) <= 1.3                   # (markers only: the channel to the island is water)
-    sea = (sea | (water & ext)) & ~blocked
-    pad = 4 * R8; sea = ndi.binary_closing(np.pad(sea, pad), structure=disk(3 * R8))[pad:-pad, pad:-pad] & ext & ~land   # (no waist where it meets the old sea)
-    sea = (ndi.gaussian_filter(sea.astype(float), 1.2 * R8) > 0.5) & ext & (d >= 0.15) & ~blocked
-    lab, n = ndi.label(sea)
-    if n: sea = np.isin(lab, np.unique(lab[sea & ndi.binary_dilation(water, iterations=3)]))   # (only the pieces that join the west-coast sea: it is carried on, no new seas)
-    new = sea & ~water
-    bb = lambda p: (min(q[0] for q in p), min(q[1] for q in p), max(q[0] for q in p), max(q[1] for q in p))
-    near = ndi.binary_dilation(new, iterations=4)
-    sel = [p for p in w['geo']['water'] if any(box[0] <= q[0] < box[2] and box[1] <= q[1] < box[3] for q in p) and (AA._raster([p], box[0], box[1], bw, bh) & near).any()]
-    gb = [math.floor(min([bb(p)[0] for p in sel] + [box[0]])) - 1, math.floor(min([bb(p)[1] for p in sel] + [box[1]])) - 1,
-          math.ceil(max([bb(p)[2] for p in sel] + [box[2]])) + 1, math.ceil(max([bb(p)[3] for p in sel] + [box[3]])) + 1]   # (the sea it meets is traced again whole)
-    gw, gh = int((gb[2] - gb[0]) * R8), int((gb[3] - gb[1]) * R8)
-    merged = AA._raster(sel, gb[0], gb[1], gw, gh) if sel else np.zeros((gh, gw), bool)
-    c0, r0 = int(round((box[0] - gb[0]) * R8)), int(round((box[1] - gb[1]) * R8)); merged[r0:r0 + bh, c0:c0 + bw] |= new
-    w['geo']['water'] = [p for p in w['geo']['water'] if not any(p is s_ for s_ in sel)] + AA._contours(merged, gb[0], gb[1], sigma=1.5)
-    m = ndi.binary_dilation(new, iterations=int(0.25 * R8)); cleared = {}
-    for k in SPRITES:
-        arr = w.get(k) or []; kept = [q for q in arr if not (0 <= int((q[1] - box[1]) * R8) < bh and 0 <= int((q[0] - box[0]) * R8) < bw and m[int((q[1] - box[1]) * R8), int((q[0] - box[0]) * R8)])]
-        if len(kept) != len(arr): cleared[k] = len(arr) - len(kept); w[k] = kept
-    hit = {}
-    for k, ps in w['geo'].items():
-        if k in ('land', 'water') or not ps: continue
-        inb = [p for p in ps if all(box[0] <= q[0] < box[2] and box[1] <= q[1] < box[3] for q in p)]
-        if not inb: continue
-        r = AA._raster(inb, box[0], box[1], bw, bh)
-        if (r & new).any(): hit[k] = round(float((r & new).sum()) / R8 / R8, 1); w['geo'][k] = [p for p in ps if not any(p is q for q in inb)] + AA._contours(r & ~new, box[0], box[1], sigma=1.0)
-    return w, dict(sea_new_sq=round(float(new.sum()) / R8 / R8, 1), bodies=int(ndi.label(new)[1]), joined_water_polys=len(sel), cleared=cleared, tints_cut_sq=hit)
+    """the west-coast sea, fresh (owner, Oct 18: "a new sea layer that underlays the land"): in every row from the map's top down to SEA_Y1, a band
+    from REACH rooms west of the land's westmost point to BAY rooms inland, in geo.undersea, drawn UNDER the land (the land covers what it
+    overlaps, so the coast has no gaps). It replaces add_west_sea's water (that step now only places the shack and dock)."""
+    x0, x1, y0 = -160.0, 0.0, float(w['bounds'][1])
+    bw, bh = int((x1 - x0) * R8), int((SEA_Y1 + 12 - y0) * R8)
+    land = AA._raster(w['geo']['land'], x0, y0, bw, bh)
+    ys = (np.arange(bh) + .5) / R8 + y0; X = (np.arange(bw)[None, :] + .5) / R8 + x0
+    wx = np.where(land.any(1), np.argmax(land, axis=1) / R8 + x0, np.nan)
+    rows = ~np.isnan(wx) & (ys <= SEA_Y1)
+    wx = np.interp(np.arange(bh), np.nonzero(rows)[0], wx[rows])
+    wxs = ndi.minimum_filter1d(wx, int(2 * BAYWIN * R8) + 1)
+    sm = ndi.gaussian_filter1d(wxs, 2.0 * R8)
+    nz = ndi.gaussian_filter1d(np.random.default_rng(seed + 61).normal(size=bh), 4.0 * R8); nz = (nz - nz.min()) / (nz.max() - nz.min())
+    r_ = np.nonzero(rows)[0]; rows = (np.arange(bh) >= r_.min()) & (np.arange(bh) <= r_.max())
+    band = rows[:, None] & (X >= (sm - REACH * (0.85 + 0.3 * nz))[:, None]) & (X <= (wxs + BAY)[:, None])
+    band = ndi.gaussian_filter(band.astype(float), 1.0 * R8) > 0.5
+    w['geo']['undersea'] = AA._contours(band, x0, y0, sigma=1.5)
+    xs_ = [q[0] for p in w['geo']['undersea'] for q in p]
+    b0 = list(w['bounds']); w['bounds'] = [min(b0[0], math.floor(min(xs_)) - 2), b0[1], b0[2], b0[3]]
+    return w, dict(sea_sq=round(float(band.sum()) / R8 / R8, 1), bounds=[b0, w['bounds']])
 
 
 def _place(mask, X, Y, spacing, salt, avoid=None):

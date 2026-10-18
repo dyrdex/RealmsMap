@@ -169,7 +169,7 @@ w,_ssa=add_smr_subareas(w,_SML,_json.load(open(os.path.join(_here,'smr_marker_ro
 print('Southern Mountain Range sub-areas:',_ssa)
 print('Forest of Tears, Lake of Tich\'Pyga and Western Trade Route merged:',{k:v for k,v in _ft.items() if not k.startswith('_')})
 from west_sea import add_west_sea                                # the sea along the whole west coast + the small marina on it (Oct 13)
-w,_wsea=add_west_sea(w,avoid=_mim.avoid(_mis))
+w,_wsea=add_west_sea(w,avoid=_mim.avoid(_mis),write=False)      # (only the shack and dock now: the sea is the Mire's under-land layer, owner Oct 18)
 w,_mws=_mim.mire_west_sea(w,_mis)                               # the west-coast sea carried down the Mire's west coast (owner, Oct 18)
 print('Mire west coast sea:',_mws)
 print('west sea and marina:',_wsea)

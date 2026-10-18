@@ -19,7 +19,7 @@ REACH = 9.0                                  # rooms of sea off the coast (the A
 DOCK_AT = (-94.3, -16.4)                     # owner: the small wooden marina
 
 
-def add_west_sea(w, seed=61, avoid=None):
+def add_west_sea(w, seed=61, avoid=None, write=True):
     nrng = np.random.default_rng(seed)
     HN = int((max(GF.Y1, w['bounds'][3]) - YN) * R8)                    # (the grid reaches the map's south edge: the Southern Mountain Range's west coast gets its sea too)
     land = AA._raster(w['geo']['land'], X0, YN, W, HN)
@@ -81,7 +81,8 @@ def add_west_sea(w, seed=61, avoid=None):
         r = AA._raster([p], X0, YN, W, HN)
         (sel if (r & near).any() else keepp).append(p)
     merged = (AA._raster(sel, X0, YN, W, HN) if sel else np.zeros((HN, W), bool)) | new
-    w['geo']['water'] = keepp + AA._contours(merged, X0, YN, sigma=1.5)
+    if write: w['geo']['water'] = keepp + AA._contours(merged, X0, YN, sigma=1.5)   # (write=False: the Mire's under-land sea replaces it, owner Oct 18)
+    else: new = np.zeros_like(new)
     # nothing stands in the new water, and no ground tint runs out over it
     m = ndi.binary_dilation(new, iterations=int(0.25 * R8))
     cleared = {}

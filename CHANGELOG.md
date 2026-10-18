@@ -2,6 +2,7 @@
 
 ## In progress (after version 18)
 
+- The west-coast sea redrawn from scratch (your request): one wide sea layer under the land along the whole west coast, from the Northern Plains down past the Mire's beach (6,192 sq); the land covers it, so there are no gaps at the shore. The old west sea is no longer drawn (its shack and dock stay).
 - The Mire's west coast (your review): rooms 8073-8079 a small island out at sea (2.2 rooms of water round it; 8072 A Shallow Channel in the water); The Small Beach (8038-8041) a thin strip; The Narrow Beach (8042-8043) and its tip 8044 a very thin peninsula; the west-coast sea fills the coast's bays (up to 10 rooms deep) from the Forest of Tears down to just below the beach, one even sea.
 - The Mire (your review): far fewer stagnant pools (69, was 401) in varied sizes, lighter reeds (1,110, was ~8,900); the west-coast sea now carries on down the Mire's coast as one even strip with the same width as up north (no notch or waist where it meets the old sea).
 - The Mire (your requests): gaps against the Forest of Tears and the Southern Mountains filled (1,514 sq; Mire side bog, the rest copies the land round it); the Mire's own sea removed; the west-coast sea carried down the Mire's whole west coast (1,142 sq, one body); the bog dressed as a swamp: darker mottled bog, mud patches, 401 stagnant pools, thickets of dead trees and brush, ~8,900 reeds, 73 lone swamp trees.
