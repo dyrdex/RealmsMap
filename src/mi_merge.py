@@ -24,10 +24,18 @@ from smr_merge import _hash, _drawn, X0 as SX0                  # (SX0: the west
 
 R8 = GF.R8
 LAND_R, TERR_R = 4.2, 3.2
-EXTRA_WATER = {8063, 8081, 8035, 8034, 17864, 17675, 17677, 17862, 17863, 8033, 8032, 8008}   # marsh water (owner, Oct 18): the Reeds carried to 8063/8081 and south to the clearing
+EXTRA_WATER = {8458, 8459, 8063, 8081, 8035, 8034, 17864, 17675, 17677, 17862, 17863, 8033, 8032, 8008}   # marsh water (owner, Oct 18): the Reeds carried to 8063/8081 and south to the clearing
 EXTRA_CLEAR = [set(range(8082, 8114)),                                                       # one clearing from east of 8081 to 8113 (owner, Oct 18)
                {8118, 8119, 8120, 8121, 8171, 8177},                                         # the clearing at (-70.6, 84.4) taken west over 8118-8120
-               {8059, 8060}]                                                                 # 8060 joined to its clearing
+               {8059, 8060},
+               {8057, 8030, 8031, 8056, 8054, 8026, 8027, 8048, 8053, 8055}]                 # 8057, 8030, 8031, 8056, 8054 tied into the clearing south of them (owner, Oct 18)
+LAKE_POLY = [(-38.9, 105.75), (-31.1, 105.75), (-30.6, 101.5), (-31.0, 98.1), (-33.0, 97.7), (-35.2, 98.0), (-37.4, 100.2), (-39.0, 103.0)]   # the marsh lake round 8454, from 8459 down to just north of 8440/8439/8451 (owner, Oct 18)
+LAKE_DASH = [(8440, 8450), (8439, 8450), (8451, 8450), (8451, 8452)]                         # its links to the rooms south of it: thin dashed blue lines (owner, Oct 18)
+RIVER = [(-18.8, 83.3, .06), (-18.3, 86.5, .12), (-17.3, 90.0, .22), (-15.9, 93.5, .35), (-15.6, 96.5, .42), (-15.5, 99.6, .4), (-16.2, 102.0, .38),
+         (-18.4, 104.6, .45), (-17.6, 106.5, 1.3), (-17.0, 108.5, 2.0), (-17.0, 116.0, 1.9), (-17.6, 118.5, 2.2), (-19.2, 121.3, 3.0), (-19.0, 124.0, 3.2),
+         (-18.6, 128.0, 2.5), (-18.2, 134.0, 2.0), (-18.0, 140.0, 1.8)]   # the river east of the "Along the River" rooms (owner, Oct 18): (x, y, half width); narrow past 8606/8608/10049/8610
+RIVER_STONES = (117.0, 127.5)                                                                # stones in its shallow, wide reach (rows)
+BRIDGE = dict(x0=-17.5, x1=-14.0, y=93.5)                                                    # the Crumbling Bridge (8591, 8612, 8590) over it                                                                 # 8060 joined to its clearing
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
 ISLAND_BOX, ISLAND_R, ISLAND_GAP = (-115.5, 72.0, -111.5, 78.5), 1.0, 2.2   # (owner, Oct 18) rooms 8073-8079 (+ spacers): a small island out at sea, ISLAND_GAP of water round it
 IN_SEA = (8072,)                                 # A Shallow Channel: in the water between the island and the coast (owner, Oct 18)
@@ -74,7 +82,7 @@ def mi_land(layout, edges, store, seed=SEED):
     land_lines = [[pos[a], pos[b]] for a, b, k in E if k != 'ud' and not ({a, b} & sp)]
     lp = np.r_[np.array([pos[v] for v in dry if v not in sp]), _samples(land_lines, 0.15)]
     thin_lines = [(pos[a], pos[b], min(rad.get(a, 9), rad.get(b, 9))) for a, b, k in E if k != 'ud' and {a, b} & sp and not ({a, b} & set(IN_SEA))]
-    xs = [p[0] for p in lp] + [pos[v][0] for v in dry]; ys = [p[1] for p in lp] + [pos[v][1] for v in dry]
+    xs = [p[0] for p in lp] + [pos[v][0] for v in dry] + [p[0] for p in RIVER]; ys = [p[1] for p in lp] + [pos[v][1] for v in dry] + [p[1] for p in RIVER]   # (the river reaches past the area)
     box = (max(SX0, math.floor(min(xs)) - 16), math.floor(min(ys)) - 8, math.ceil(max(xs)) + 12, math.ceil(max(ys)) + 10)
     bw, bh = int((box[2] - box[0]) * R8), int((box[3] - box[1]) * R8)
     gy, gx = np.mgrid[0:bh, 0:bw]; X = (gx + .5) / R8 + box[0]; Y = (gy + .5) / R8 + box[1]; P = np.c_[X.ravel(), Y.ravel()]
@@ -166,7 +174,9 @@ def merge_mi(w, layout, edges, store, seed=SEED):
 
     # ---------------------------------------------------------------- the graphs
     GD = defaultdict(set); links = []; uds = []
+    _ld = {frozenset(e) for e in LAKE_DASH}
     for a, b, k in E:
+        if frozenset((a, b)) in _ld: continue                                       # (dashed blue, below)
         if not (a in MI and b in MI): links.append((a, b)); continue                 # to the map
         if k == 'ud': uds.append((a, b)); continue
         GD[a].add(b); GD[b].add(a)
@@ -194,6 +204,17 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     _wb = ndi.gaussian_filter(np.random.default_rng(seed + 7).normal(size=(bh, bw)), 0.7 * R8); _wb = (_wb - _wb.min()) / (_wb.max() - _wb.min())
     watm = (ndi.distance_transform_edt(~watm) / R8 <= 0.2 + 0.6 * _wb) & landm & ~sea   # (wavy edges)
     watm = ndi.gaussian_filter(watm.astype(float), 0.4 * R8) > 0.5
+    _lk = Image.new('L', (bw, bh), 0); ImageDraw.Draw(_lk).polygon([px(p) for p in LAKE_POLY], fill=255)
+    watm |= ndi.gaussian_filter(np.array(_lk, bool).astype(float), 0.5 * R8) > 0.5
+    riv = np.zeros((bh, bw), bool)                                                   # the river (owner, Oct 18)
+    for (xa, ya, wa), (xb, yb, wb_) in zip(RIVER[:-1], RIVER[1:]):
+        n_ = max(2, int(math.dist((xa, ya), (xb, yb)) / 0.1))
+        for i in range(n_ + 1):
+            f_ = i / n_; x, y, r = xa + (xb - xa) * f_, ya + (yb - ya) * f_, wa + (wb_ - wa) * f_
+            r *= 0.9 + 0.2 * float(_hash(round(x, 1), round(y, 1), 201)); c, rr_ = (x - box[0]) * R8, (y - box[1]) * R8; k = int(r * R8) + 2
+            sl = (slice(max(0, int(rr_) - k), int(rr_) + k + 1), slice(max(0, int(c) - k), int(c) + k + 1))
+            riv[sl] |= np.hypot(X[sl] - x, Y[sl] - y) <= r
+    riv = ndi.gaussian_filter(riv.astype(float), 0.25 * R8) > 0.5
 
     # ---------------------------------------------------------------- clearings: cells of mutually joined other real rooms (the range's rule)
     real = {v for v in GD if not void(v) and v not in WAT}
@@ -225,7 +246,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
             if a in S_ and b in S_ and k != 'ud': dr.line([px(pos[a]), px(pos[b])], fill=255, width=s_)
         m_ = ndi.binary_fill_holes(ndi.binary_closing(np.array(im, bool), structure=disk(int(1.2 * R8))))
         clear |= ndi.binary_dilation(m_, structure=disk(int(PAD * R8)))
-    clear &= ~watm & ~sea
+    clear &= ~watm & ~sea & ~ndi.binary_dilation(riv, iterations=2)
     lab, n = ndi.label(clear); keep = np.zeros_like(clear)
     for i in range(1, n + 1):
         comp = lab == i
@@ -276,6 +297,9 @@ def merge_mi(w, layout, edges, store, seed=SEED):
         return out
     dirt = clip(dirt, blocked)
     w['fwtracks'] = list(w['fwtracks']) + dirt
+    w['seadash'] = list(w.get('seadash') or []) + [[[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]] for a, b in LAKE_DASH if shown(a) and shown(b)]
+    w['geo']['water'] = list(w['geo']['water']) + AA._contours(riv, box[0], box[1], sigma=1.0, tol=0.15, minarea=0.05)
+    w['micrumble'] = [BRIDGE]
     rep['lines'] = dict(trails=len(dirt), links=links, up_down=uds)
 
     land_mi = landm
@@ -404,6 +428,12 @@ def merge_mi(w, layout, edges, store, seed=SEED):
     reeds_b = _place(free & ~thick & ~beach & ~ring & (n1 > 0.45), X, Y, 1.7, 172, hills + rocks + trees + tp + reeds_w + st)   # (reeds and sedge all over the bog)
     w['reeds'] = list(w['reeds']) + [[x, y, round(0.75 + 0.45 * float(_hash(x, y, 173)), 2)] for x, y in reeds_w + reeds_b]
     w['brush'] = sorted(list(w.get('brush') or []) + [[x, y, round(0.8 + 0.4 * float(_hash(x, y, 155)), 2), 1] for x, y in shrub], key=lambda b: b[1])
+    rv = ndi.binary_dilation(riv, iterations=2)
+    for k in SPRITES:
+        w[k] = [q for q in (w.get(k) or []) if not (0 <= int((q[1] - box[1]) * R8) < bh and 0 <= int((q[0] - box[0]) * R8) < bw and rv[int((q[1] - box[1]) * R8), int((q[0] - box[0]) * R8)])]
+    sto = [q for q in _place(ndi.binary_erosion(riv, iterations=int(0.35 * R8)) & (Y >= RIVER_STONES[0]) & (Y <= RIVER_STONES[1]) & (d_path > 0.5), X, Y, 0.8, 205) if _hash(q[0], q[1], 206) < 0.6]
+    w['mistones'] = [[x, y, round(0.09 + 0.08 * float(_hash(x, y, 207)), 3)] for x, y in sto]
+    tints['river'] = dict(sq=sqm(riv), stones=len(sto))
     rep['sprites'] = dict(forest_trees=len(trees), thicket_dead_trees=len(dead), thicket_brush=len(shrub), swamp_trees=len(st), hills=len(hills), boulders=len(rocks),
                           reeds_round_water=len(reeds_w), reeds_on_bog=len(reeds_b))
 

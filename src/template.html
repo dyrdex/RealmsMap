@@ -187,6 +187,7 @@ WILD+=(WD.hills||[]).slice().sort((a,b)=>a[1]-b[1]).map(r=>`<use href="#hl" tran
 WILD+=(WD.thorns||[]).map(r=>`<use href="#th" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
 WILD+=`<path d="${blobs(GEO.cliff)}" fill="var(--w-cliff)" fill-rule="evenodd" opacity=".8"/>`;
 WILD+=`<path d="${blobs(GEO.water)}" fill="var(--w-water)" fill-rule="evenodd" stroke="var(--w-shore)" stroke-width=".07"/>`;
+WILD+=(WD.mistones||[]).map(r=>`<ellipse cx="${r[0]+.02}" cy="${r[1]+.03}" rx="${(r[2]*1.25).toFixed(3)}" ry="${(r[2]*.8).toFixed(3)}" fill="#000" opacity=".3"/><ellipse cx="${r[0]}" cy="${r[1]}" rx="${(r[2]*1.2).toFixed(3)}" ry="${(r[2]*.85).toFixed(3)}" fill="var(--boulder)" stroke="var(--crag-line)" stroke-width=".02"/>`).join('');   /* stones in the Mire's river (owner, Oct 18) */
 WILD+=`<g stroke="var(--w-hach)" stroke-width=".06" stroke-linecap="round" opacity=".8">`+WD.hach.map(l=>`<line x1="${l[0]}" y1="${l[1]}" x2="${l[2]}" y2="${l[3]}"/>`).join('')+`</g>`;
 WILD+=WD.reeds.map(r=>`<use href="#rd" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
 WILD+=WD.trees.slice().sort((a,b)=>a[1]-b[1]).map(t=>`<use href="#${t[3]==='d'?'tc':t[3]==='x'?'tx':t[3]==='k'?'tk':t[3]==='a'?'ta':t[3]==='h'?'td':'tw'}${t[4]}" transform="translate(${t[0]},${t[1]}) scale(${t[2]*(t[3]==='d'?1:1.05)})"/>`).join('');
@@ -346,6 +347,10 @@ for(const m of (WD.fwmazes||[])){const d=ring(m.poly);
    every link of a hidden room as a small dashed line */
 for(const p of (WD.streams||[])){const rd=p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L');
   FWPATHS+=`<path d="${rd}" fill="none" stroke="var(--stream-edge)" stroke-width=".5" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/><path d="${rd}" fill="none" stroke="var(--stream)" stroke-width=".34" stroke-linecap="round" stroke-linejoin="round"/>`;}
+for(const B of (WD.micrumble||[])){const {x0,x1,y}=B;   /* the Crumbling Bridge over the Mire's river (owner, Oct 18): a stone deck, one rail broken */
+  FWPATHS+=`<rect x="${x0}" y="${y-.22}" width="${x1-x0}" height=".44" fill="#000" opacity=".3" transform="translate(.04 .08)"/><rect x="${x0}" y="${y-.26}" width="${x1-x0}" height=".52" fill="var(--stone-top)" opacity=".95"/>`;
+  for(let x=x0+.14;x<x1;x+=.2)FWPATHS+=`<line x1="${x.toFixed(2)}" y1="${y-.26}" x2="${(x+.03).toFixed(2)}" y2="${y+.26}" stroke="var(--stone)" stroke-width=".02" opacity=".7"/>`;
+  const xm=(x0+x1)/2;FWPATHS+=`<path d="M${x0} ${y-.32} L${x1} ${y-.32} M${x0} ${y+.32} L${(xm-.35).toFixed(2)} ${y+.32} M${(xm+.25).toFixed(2)} ${y+.32} L${x1} ${y+.32}" stroke="var(--stone)" stroke-width=".16" stroke-linecap="round" fill="none"/>`;}
 FWPATHS+=(WD.seadash||[]).map(p=>`<path d="M${p.map(q=>q.join(' ')).join('L')}" fill="none" stroke="var(--seadash)" stroke-width=".09" stroke-dasharray=".28 .2" stroke-linecap="round" opacity=".8"/>`).join('');
 {const SW=(WD.seaways||[]).map(p=>p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L'));if(SW.length){const L=(sw,col,extra,op)=>`<g opacity="${op}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" ${extra||''}>`+SW.map(d=>`<path d="${d}"/>`).join('')+`</g>`;
   FWPATHS+=L(.5,'var(--seaway-edge)','',.55)+L(.32,'var(--seaway)','',1)+L(.07,'var(--seaway-hi)','stroke-dasharray=".35 .3"',.5);}}

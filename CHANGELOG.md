@@ -2,6 +2,8 @@
 
 ## In progress (after version 18)
 
+- The Mire (your requests): 8057, 8030, 8031, 8056, 8054 tied into the clearing south of them; the marsh lake round 8454 now runs from 8459 down to just north of 8440/8439/8451, its links to those rooms thin dashed blue lines, only the 8459-8460 path showing at its north end.
+- The river east of the "Along the River" rooms (your request): a trickle from about (-18.8, 83.3), under the Crumbling Bridge (stone deck, one rail broken, -17.5 to -14 at y 93.5), narrow past 8606/8608/10049/8610 (0.8 rooms from 8481 and 8610), x -19 to -15 below them, fanning west at y 119 past 8490/8491 (8492, 8640 and the 8485-8487-8488 crossing on top), 37 stones in its shallow reach, on south past the land to y 140 (188.6 sq). The map's south edge is now y 143.
 - The Mire redrawn from your save of Oct 18 (04:01; 108 rooms moved, 8430 shown again).
 - The Mire (your requests): the Wading amongst the Reeds water carried over 8063 and 8081, and south over 8035, 8034/17864, 8033, 8032 and 8008 to meet the clearing beyond (water 632 sq, was 564); one clearing from east of 8081 to 8113 (8082-8113); the clearing at (-70.6, 84.4) taken west over 8118, 8119, 8120; 8060 joined to its clearing.
 - Sea work on the Mire removed (your request): the under-land sea layer and the Mire's own sea code are gone; the west-coast sea is as in version 18, kept off the Mire's land (the plain version 18 step drew a stripe of water across the map now that the Mire is there).
