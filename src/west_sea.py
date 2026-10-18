@@ -14,14 +14,21 @@ from ntr_merge import _samples
 
 X0, W, R8 = GF.X0, GF.W, GF.R8
 YN = -215.0; HN = int((GF.Y1 - YN) * R8)
+AVOID = 8                                    # (pixels) the west sea keeps a room off the Mire's land
 REACH = 9.0                                  # rooms of sea off the coast (the Azure and Plains seas reach 8-9)
 DOCK_AT = (-94.3, -16.4)                     # owner: the small wooden marina
 
 
-def add_west_sea(w, seed=61):
+def add_west_sea(w, seed=61, avoid=None):
     nrng = np.random.default_rng(seed)
     HN = int((max(GF.Y1, w['bounds'][3]) - YN) * R8)                    # (the grid reaches the map's south edge: the Southern Mountain Range's west coast gets its sea too)
     land = AA._raster(w['geo']['land'], X0, YN, W, HN)
+    am = None
+    if avoid is not None:                                                     # the Mire's land (Oct 18) is left out: the west sea is worked out as before it, then kept off it (the Mire has its own sea: mi_merge)
+        abox, amask = avoid; am = np.zeros(land.shape, bool)
+        c0, r0 = int(round((abox[0] - X0) * R8)), int(round((abox[1] - YN) * R8)); cc0, rr0 = max(0, c0), max(0, r0)
+        sub = amask[rr0 - r0:rr0 - r0 + HN - rr0, cc0 - c0:cc0 - c0 + W - cc0]; am[rr0:rr0 + sub.shape[0], cc0:cc0 + sub.shape[1]] = sub
+        am = ndi.binary_dilation(am, iterations=4); land = land & ~am                         # (4 px: the traced coast reaches a little past the mask)
     water = AA._raster(w['geo']['water'], X0, YN, W, HN)
     xs = (np.arange(W) + .5) / R8 + X0; ys = (np.arange(HN) + .5) / R8 + YN
     SX = np.broadcast_to(xs[None, :], (HN, W))
@@ -65,6 +72,7 @@ def add_west_sea(w, seed=61):
         sz = ndi.sum(sea, lab2, range(1, n2 + 1)) / R8 / R8
         touch = ndi.sum(ndi.binary_dilation(water, iterations=3), lab2, range(1, n2 + 1)) > 0
         sea = np.isin(lab2, [i + 1 for i, s in enumerate(sz) if s >= 300.0 or (touch[i] and s >= 4.0)])
+    if am is not None: sea &= ~ndi.binary_dilation(am, iterations=AVOID)            # (kept a room off the Mire's land)
     new = sea & ~water
     # unite with the water it touches (one shape: no seam line between old and new water)
     polys = w['geo']['water']; near = ndi.binary_dilation(new, iterations=4)

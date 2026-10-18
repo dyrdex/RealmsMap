@@ -169,7 +169,7 @@ w,_ssa=add_smr_subareas(w,_SML,_json.load(open(os.path.join(_here,'smr_marker_ro
 print('Southern Mountain Range sub-areas:',_ssa)
 print('Forest of Tears, Lake of Tich\'Pyga and Western Trade Route merged:',{k:v for k,v in _ft.items() if not k.startswith('_')})
 from west_sea import add_west_sea                                # the sea along the whole west coast + the small marina on it (Oct 13)
-w,_wsea=add_west_sea(w)
+w,_wsea=add_west_sea(w,avoid=_mim.avoid(_mis))
 print('west sea and marina:',_wsea)
 from pf_merge import merge_pf                                     # the Pixie Forest rooms and the moved Woods rooms 4017-4019, from the owner's save (Oct 15)
 _PFL=_json.load(open(os.path.join(_here,'pf_layout_final.json')))

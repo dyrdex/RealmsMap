@@ -124,6 +124,11 @@ def mi_land(layout, edges, store, seed=SEED):
     return edit
 
 
+def avoid(store):
+    """for add_west_sea: the land the Mire added (the west sea is worked out without it and kept off it)"""
+    return store['box'], store['added']
+
+
 def _place(mask, X, Y, spacing, salt, avoid=None):
     ys, xs = np.nonzero(mask); placed = []; grid = {}
     if avoid is not None and len(avoid):
