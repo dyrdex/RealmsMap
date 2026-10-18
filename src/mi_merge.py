@@ -24,6 +24,10 @@ from smr_merge import _hash, _drawn, X0 as SX0                  # (SX0: the west
 
 R8 = GF.R8
 LAND_R, TERR_R = 4.2, 3.2
+EXTRA_WATER = {8063, 8081, 8035, 8034, 17864, 17675, 17677, 17862, 17863, 8033, 8032, 8008}   # marsh water (owner, Oct 18): the Reeds carried to 8063/8081 and south to the clearing
+EXTRA_CLEAR = [set(range(8082, 8114)),                                                       # one clearing from east of 8081 to 8113 (owner, Oct 18)
+               {8118, 8119, 8120, 8121, 8171, 8177},                                         # the clearing at (-70.6, 84.4) taken west over 8118-8120
+               {8059, 8060}]                                                                 # 8060 joined to its clearing
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
 ISLAND_BOX, ISLAND_R, ISLAND_GAP = (-115.5, 72.0, -111.5, 78.5), 1.0, 2.2   # (owner, Oct 18) rooms 8073-8079 (+ spacers): a small island out at sea, ISLAND_GAP of water round it
 IN_SEA = (8072,)                                 # A Shallow Channel: in the water between the island and the coast (owner, Oct 18)
@@ -54,6 +58,8 @@ def _setup(layout, edges):
                 if s: cls[v] = max(sorted(set(s)), key=s.count)
     for v in MI:
         if cls[v] is None: cls[v] = 'bog'
+    for v in EXTRA_WATER:
+        if v in cls: cls[v] = 'water'
     return rooms, exits, pos, info, hidden, MI, shown, void, E, cls
 
 
@@ -183,6 +189,7 @@ def merge_mi(w, layout, edges, store, seed=SEED):
         p = px(pos[v]); dr.rectangle([p[0] - s_ / 2, p[1] - s_ / 2, p[0] + s_ / 2, p[1] + s_ / 2], fill=255)
     for a, b, k in E:
         if a in WAT and b in WAT and k != 'ud': dr.line([px(pos[a]), px(pos[b])], fill=255, width=s_)
+        elif k != 'ud' and ({a, b} & EXTRA_WATER) and math.dist(pos[a], pos[b]) <= 6: dr.line([px(pos[a]), px(pos[b])], fill=255, width=s_)   # (on to the clearing beyond: owner, Oct 18)
     watm = ndi.binary_fill_holes(np.array(im, bool))
     _wb = ndi.gaussian_filter(np.random.default_rng(seed + 7).normal(size=(bh, bw)), 0.7 * R8); _wb = (_wb - _wb.min()) / (_wb.max() - _wb.min())
     watm = (ndi.distance_transform_edt(~watm) / R8 <= 0.2 + 0.6 * _wb) & landm & ~sea   # (wavy edges)
@@ -209,7 +216,16 @@ def merge_mi(w, layout, edges, store, seed=SEED):
         if hull.volume < 0.45: continue
         dr.polygon([px(p) for p in pts[hull.vertices]], fill=255, outline=255)
     clear = ndi.binary_dilation(np.array(im, bool), structure=disk(int(PAD * R8)))
-    clear = (ndi.gaussian_filter(clear.astype(float), 0.45 * R8) > 0.5) & ~watm & ~sea
+    clear = ndi.gaussian_filter(clear.astype(float), 0.45 * R8) > 0.5
+    for S_ in EXTRA_CLEAR:                                                           # (owner, Oct 18) these rooms, the exits between them, holes filled: one clearing each
+        S_ = {v for v in S_ if shown(v)}; im = Image.new('L', (bw, bh), 0); dr = ImageDraw.Draw(im); s_ = int(SQ * R8)
+        for v in S_:
+            p = px(pos[v]); dr.rectangle([p[0] - s_ / 2, p[1] - s_ / 2, p[0] + s_ / 2, p[1] + s_ / 2], fill=255)
+        for a, b, k in E:
+            if a in S_ and b in S_ and k != 'ud': dr.line([px(pos[a]), px(pos[b])], fill=255, width=s_)
+        m_ = ndi.binary_fill_holes(ndi.binary_closing(np.array(im, bool), structure=disk(int(1.2 * R8))))
+        clear |= ndi.binary_dilation(m_, structure=disk(int(PAD * R8)))
+    clear &= ~watm & ~sea
     lab, n = ndi.label(clear); keep = np.zeros_like(clear)
     for i in range(1, n + 1):
         comp = lab == i

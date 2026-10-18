@@ -2,6 +2,7 @@
 
 ## In progress (after version 18)
 
+- The Mire (your requests): the Wading amongst the Reeds water carried over 8063 and 8081, and south over 8035, 8034/17864, 8033, 8032 and 8008 to meet the clearing beyond (water 632 sq, was 564); one clearing from east of 8081 to 8113 (8082-8113); the clearing at (-70.6, 84.4) taken west over 8118, 8119, 8120; 8060 joined to its clearing.
 - Sea work on the Mire removed (your request): the under-land sea layer and the Mire's own sea code are gone; the west-coast sea is as in version 18, kept off the Mire's land (the plain version 18 step drew a stripe of water across the map now that the Mire is there).
 - The west-coast sea redrawn from scratch (your request): one wide sea layer under the land along the whole west coast, from the Northern Plains down past the Mire's beach (6,192 sq); the land covers it, so there are no gaps at the shore. The old west sea is no longer drawn (its shack and dock stay).
 - The Mire's west coast (your review): rooms 8073-8079 a small island out at sea (2.2 rooms of water round it; 8072 A Shallow Channel in the water); The Small Beach (8038-8041) a thin strip; The Narrow Beach (8042-8043) and its tip 8044 a very thin peninsula; the west-coast sea fills the coast's bays (up to 10 rooms deep) from the Forest of Tears down to just below the beach, one even sea.
