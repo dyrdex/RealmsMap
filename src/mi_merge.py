@@ -596,6 +596,10 @@ def add_mi_places(w, layouts):
     if mc:                                                                           # a small, dull, grim old-map dragon just north of its marker (owner, Oct 18)
         e = mc['path'][-1]
         g.append({'k': 'dragon', 'at': 'xy', 'x': round(e[0], 2), 'y': round(e[1] - 0.85 - DRAGON[1] / 2, 2), 'w': DRAGON[0], 'h': DRAGON[1]})
+        g.append({'k': 'text', 'at': 'xy', 'x': round(e[0], 2), 'y': round(e[1] - 0.85 - DRAGON[1] / 2 - 0.76 * DRAGON[1] / 1.5 - 0.42, 2), 'text': "(Dragon's Pass Link)"})   # (a small label just north of the dragon: owner, Oct 18)
+    if any(p['name'] == "Dragon's Pass" for p in w['places']):                      # a smaller label just south of the Dragon's Pass name (owner, Oct 18): placed from the name as drawn
+        q = next(p for p in w['places'] if p['name'] == "Dragon's Pass")['path'][-1]   # (its name pinned at its solver spot: template LBL [.77, .175]; 4.84 wide at the bake's font, baseline + .33 to its foot)
+        g.append({'k': 'text', 'at': 'xy', 'x': round(q[0] + 0.77 + 4.84 / 2, 2), 'y': round(q[1] + 0.175 + 0.15 + 0.333 + 0.33, 2), 'text': '(The Mire Link)'})
     for b in g:                                                                      # nothing grows under the new buildings
         if b['k'] in ('shack', 'mansion', 'dragon'):
             for k in SPRITES: w[k] = [s for s in (w.get(k) or []) if not (abs(s[0] - b['x']) < b['w'] / 2 + 0.2 and abs(s[1] - b['y']) < b['h'] / 2 + 0.2)]
