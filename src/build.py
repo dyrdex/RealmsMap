@@ -148,15 +148,20 @@ _smr_win={_v:(_SML['xs'][_i],_SML['ys'][_i]) for _i,_v in enumerate(_SML['ids'])
 for _i,_v in enumerate(_SML['ids']):                              # the Southern Mountain Trade Route rooms the owner moved in the Wastelands editor
     if _v in _wlm.UN: _SML['xs'][_i],_SML['ys'][_i]=_wlp[_v]
 _wls={}
+_MIL=_json.load(open(os.path.join(_here,'mi_layout_final.json'))); _MIE=_json.load(open(os.path.join(_here,'mi_editor_edges.json')))   # The Mire layout (Oct 18)
+import mi_merge as _mim
+_mis={}
 _cdr={}
 from smr_merge import merge_smr                                    # the Southern Mountain Range, its Trade Route and links to the moved trail (Oct 14)
-_cdle=_cdm.land_edit(_CDL,_CDE,_SML,_cdr); _wlle=_wlm.wl_land(_WLL,_WLE,_wls)
-w,_sm=merge_smr(w,_SML,_SME,land_edit=lambda L,W,x,y:_wlle(_cdle(L,W,x,y),W,x,y),window_pos=_smr_win)
+_cdle=_cdm.land_edit(_CDL,_CDE,_SML,_cdr); _wlle=_wlm.wl_land(_WLL,_WLE,_wls); _mile=_mim.mi_land(_MIL,_MIE,_mis)
+w,_sm=merge_smr(w,_SML,_SME,land_edit=lambda L,W,x,y:_mile(_wlle(_cdle(L,W,x,y),W,x,y),W,x,y),window_pos=_smr_win)
 print('Southern Mountain Range merged:',_sm)
 w,_cd=_cdm.merge_cd(w,_CDL,_CDE,_SML)                              # the Coral Depths: its paths, the cliff, the sea, the ground (Oct 16)
 print('Coral Depths merged:',{**_cdr,**_cd})
 w,_wl=_wlm.merge_wl(w,_WLL,_WLE,_wls)                            # the Wastelands, from the owner's save (Oct 17)
 print('Wastelands merged:',_wl)
+w,_mi=_mim.merge_mi(w,_MIL,_MIE,_mis)                            # The Mire, from the owner's save (Oct 18)
+print('Mire merged:',_mi)
 _cdm_ids={r['id'] for r in _CDE['rooms'] if r.get('area')=='CD'}   # (only the rooms moved in that editor: they come first for the route tracers)
 _CDLm={k:[v for v,i in zip(_CDL[k],_CDL['ids']) if i in _cdm_ids] if k in ('ids','xs','ys') else _CDL[k] for k in _CDL}
 from smr_markers import add_smr_subareas                          # markers + traced routes for the areas that open off the range and its trade route (Oct 14)
@@ -164,7 +169,7 @@ w,_ssa=add_smr_subareas(w,_SML,_json.load(open(os.path.join(_here,'smr_marker_ro
 print('Southern Mountain Range sub-areas:',_ssa)
 print('Forest of Tears, Lake of Tich\'Pyga and Western Trade Route merged:',{k:v for k,v in _ft.items() if not k.startswith('_')})
 from west_sea import add_west_sea                                # the sea along the whole west coast + the small marina on it (Oct 13)
-w,_wsea=add_west_sea(w)
+w,_wsea=add_west_sea(w,avoid=_mim.avoid(_mis))
 print('west sea and marina:',_wsea)
 from pf_merge import merge_pf                                     # the Pixie Forest rooms and the moved Woods rooms 4017-4019, from the owner's save (Oct 15)
 _PFL=_json.load(open(os.path.join(_here,'pf_layout_final.json')))
