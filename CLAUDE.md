@@ -29,8 +29,9 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 - Oct 19: all 13 layout editors republished in the owner's current organization (links in REGION_NOTES; loaded with the latest
   saves). Read saves with ArtifactData get `<key>/current` on the new links; nothing from the old organization is used.
 - Next (owner's list): clearings assessment
-  (candidate room clusters per area for the owner to approve, then one general clearing change); Sesuadra's Rift rooms 2112,
-  21974, 21973, 13608 into a layout editor (directions `#9 w;nw;#2 w;nw;w;#2 n;#3 nw;w;#4 sw;w;#2 nw;w;sw;#13 w;n;cauldron;sw;enter`).
+  (candidate room clusters per area for the owner to approve, then one general clearing change); Sesuad'ra Rift rooms (2112, 21974, 21973, 13608, 21972, 21971,
+  21970, 13607, 2088, 2090) ADDED to the Forest of Tears editor Oct 19 (`tools/forest_of_tears_editor/add_sesuadra_rooms.py`; way in 1659 n 2086
+  cauldron 2112; 2086 not added): waiting for the owner's save; render with a change file, never via legacy ft_merge (directions `#9 w;nw;#2 w;nw;w;#2 n;#3 nw;w;#4 sw;w;#2 nw;w;sw;#13 w;n;cauldron;sw;enter`).
 
 ## Snapshots
 - New version: `python3 build.py --freeze`, delete the change files, edit `src/VERSION`, retitle the CHANGELOG's in-progress
