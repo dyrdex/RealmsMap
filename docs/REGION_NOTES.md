@@ -51,6 +51,8 @@ The other builders run inside `src/legacy`.
 - **Cities**: every city is the standard round marker + the `stonecity` drawing above it (`gfx` at 'above-pin'); no walled-town
   emblem (`kind: 'town'`) any more (Oct 19).
 - **Paths meeting a water route** end exactly on its line, never past it (Oct 19).
+- **Shortcuts in routes** (long straight lines): the Ofcol Shortcut (legacy route_fix, OFCOL) and the Nidaros Shortcut
+  (936 sw 5511 -> 5507; `changes/007`). A new shortcut: place its rooms in an editor, then join the routes' pieces at it (as 007).
 - **Trade routes** (Eastern, Northern, Western, Southern Mountain): one continuous formal road; off-ramp pads where paths or
   sub-area links join; dirt trails elsewhere. Spacer rooms drawn only between two real rooms.
 - **Barren Peaks**: no coasts unless the owner asks with a clear picture.
