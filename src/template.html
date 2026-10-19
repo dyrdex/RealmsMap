@@ -187,6 +187,7 @@ WILD+=(WD.hills||[]).slice().sort((a,b)=>a[1]-b[1]).map(r=>`<use href="#hl" tran
 WILD+=(WD.thorns||[]).map(r=>`<use href="#th" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
 WILD+=`<path d="${blobs(GEO.cliff)}" fill="var(--w-cliff)" fill-rule="evenodd" opacity=".8"/>`;
 WILD+=`<path d="${blobs(GEO.water)}" fill="var(--w-water)" fill-rule="evenodd" stroke="var(--w-shore)" stroke-width=".07"/>`;
+WILD+=`<path d="${blobs(GEO.seafill||[])}" fill="var(--w-water)" fill-rule="evenodd"/>`+(WD.seashore||[]).map(l=>`<path d="M${l.map(q=>q.join(' ')).join('L')}" fill="none" stroke="var(--w-shore)" stroke-width=".07" stroke-linejoin="round"/>`).join('');   /* sea filling the gaps a coast change left (no outline over the sea; a shore line only where it meets land) */
 WILD+=(WD.mistones||[]).map(r=>`<ellipse cx="${r[0]+.02}" cy="${r[1]+.03}" rx="${(r[2]*1.25).toFixed(3)}" ry="${(r[2]*.8).toFixed(3)}" fill="#000" opacity=".3"/><ellipse cx="${r[0]}" cy="${r[1]}" rx="${(r[2]*1.2).toFixed(3)}" ry="${(r[2]*.85).toFixed(3)}" fill="var(--boulder)" stroke="var(--crag-line)" stroke-width=".02"/>`).join('');   /* stones in the Mire's river (owner, Oct 18) */
 WILD+=`<g stroke="var(--w-hach)" stroke-width=".06" stroke-linecap="round" opacity=".8">`+WD.hach.map(l=>`<line x1="${l[0]}" y1="${l[1]}" x2="${l[2]}" y2="${l[3]}"/>`).join('')+`</g>`;
 WILD+=WD.reeds.map(r=>`<use href="#rd" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');

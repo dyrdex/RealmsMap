@@ -24,7 +24,8 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   save (14:29Z, then 14:50Z: road rooms 4165-4167 moved; `legacy/np_layout_final.json`). Changes since: 001 city graphics (New Ofcol, Salburg ->
   `stonecity`), 002 Wastelands shore path ends snapped to the water route, 003 Inahir Camp (old-map ink: palisade, 5 tents, long house,
   corral, fire pit, no animals; `wild.camps`, template CAMPS), legend icon = stone city, 004 Tall Trees grove (82 tall trees
-  round 4575; `wild.talltrees`, template TALL; old `grove` gfx removed).
+  round 4575; `wild.talltrees`, template TALL; old `grove` gfx removed), 005 sea gaps east of the Plains filled
+  (`geo.seafill` + `seashore`, drawn over the sea; rerun it, or a copy with its own box, after any coast change).
 - Oct 19: all 13 layout editors republished in the owner's current organization (links in REGION_NOTES; loaded with the latest
   saves). Read saves with ArtifactData get `<key>/current` on the new links; nothing from the old organization is used.
 - Next (owner's list): clearings assessment
