@@ -58,6 +58,8 @@ The other builders run inside `src/legacy`.
 - **Older-area clearings** (Forgotten Woods, Ashen Forest, Barren Peaks; Oct 19): only the clear-cut clumps the owner picks; ground of their own
   spot, a little lighter (`wild.clearings`, template CLEAR, drawn over the dirt trails, under the trade roads).
 - **Barren Peaks**: no coasts unless the owner asks with a clear picture.
+  Editor republished Oct 19 (v2) with all 592 Forgotten Woods rooms unlocked (green outline; `D.unlocked`, saves now v:3 so older
+  saves don't re-lock them). A save that moves or hides FW rooms means redrawing their Woods trails too.
 - **Azure Sea Coast**: the owner's name for the 49-room Azure Sea pathway; a blue water route at the foot of the cliff.
 - **Forest of Tears**: Fog Cliffs mountains reach 2 rooms east of the cliff path (Oct 19, so the Tree of Life is in the forest).
 - **Miden'nir**: the painting (Black Forest, brambles, Mount Doom) stays; the tunnels under Mount Doom are left out; Forest rooms
