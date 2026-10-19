@@ -19,8 +19,8 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   `docs/archive/`: full history (grep it, don't read it whole). `CHANGELOG.md`: owner-facing history (append to the top section).
 
 ## State (Oct 19, 2026)
-- Last version v20 (Oct 18; tag `v20` to be added by the owner on GitHub). Oct 19: Miden'nir routes drawn in full, Fog Cliffs
-  mountains thinner (Tree of Life in the forest), then the map was frozen into `src/base/map.json` (byte-identical rebuild).
+- Last version v21 (Oct 19, "A New Starting Point": Miden'nir routes in full, Fog Cliffs mountains thinner, the map frozen into
+  `src/base/map.json`; tag `v21` to be added by the owner on GitHub). No change files yet.
 - Next (owner's list): Inahir Village graphic (rooms 4672, 4677); every city drawn with the City of Revelation's graphic (show
   the owner the list of city/town graphics first, they pick); Wastelands -> Ahtborn Strait path overlap; clearings assessment
   (candidate room clusters per area for the owner to approve, then one general clearing change); Sesuadra's Rift rooms 2112,
