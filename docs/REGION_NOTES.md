@@ -46,6 +46,9 @@ The other builders run inside `src/legacy`.
 - **Everywhere**: routes and room counts are the owner's own (`data.py`: `MORE_DIRECTIONS`, `ROUTE_OPTIONS`), never computed;
   directions in numbered form. A route's marker goes where the route leaves the area. Asgard Nexus and World Housing stay off
   the map (Oct 12). Castle Darkhawk has no route yet.
+- **Cities**: every city is the standard round marker + the `stonecity` drawing above it (`gfx` at 'above-pin'); no walled-town
+  emblem (`kind: 'town'`) any more (Oct 19).
+- **Paths meeting a water route** end exactly on its line, never past it (Oct 19).
 - **Trade routes** (Eastern, Northern, Western, Southern Mountain): one continuous formal road; off-ramp pads where paths or
   sub-area links join; dirt trails elsewhere. Spacer rooms drawn only between two real rooms.
 - **Barren Peaks**: no coasts unless the owner asks with a clear picture.

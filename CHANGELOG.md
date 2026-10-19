@@ -1,5 +1,10 @@
 # Realm Map changelog
 
+## In progress (after Version 21)
+
+- Your request (Oct 19): New Ofcol and the City of Salburg drawn like Revelation City, Drow City and Thalos: the standard round marker with the stone-city drawing just above it (the white walled-town emblem is gone). Their names keep their spots; the one tree under Salburg's drawing removed. Their cards now say "Area" like the other cities, not "Town".
+- Your request (Oct 19): the Wastelands' paths down to the coast's water route now end exactly on it: the one at the far west ran 0.36 past it (the stub) and is cut back; three others ended 0.13 short, 0.06 past and 0.27 short and now meet it too. 5 junctions checked; the fifth was already exact.
+
 ## Version 21 · A New Starting Point · October 19, 2026
 
 - Your request (Oct 19): routes through Miden'nir now draw in full. The South routes of Transylvania, Emerald Hills, The Ruins of T'man, Old Pottswort's Fields, The Von Deusen Mausoleum and The Wilds, and Elemental Canyon's route, had a gap over 11 Miden'nir rooms (the bridge, the Black Forest, Gazing Upon Mount Doom): those rooms were placed on the map but not yet known to the route tracer. All 7 are one unbroken line now; Elemental Canyon's "part of your directions isn't drawn yet" note is gone.
