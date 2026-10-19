@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress (after Version 21)
+## Version 22 · The Inahir Camp and the Nidaros Shortcut · October 19, 2026
 
 - Your request (Oct 19): New Ofcol and the City of Salburg drawn like Revelation City, Drow City and Thalos: the standard round marker with the stone-city drawing just above it (the white walled-town emblem is gone). Their names keep their spots; the one tree under Salburg's drawing removed. Their cards now say "Area" like the other cities, not "Town".
 - Your request (Oct 19): the Wastelands' paths down to the coast's water route now end exactly on it: the one at the far west ran 0.36 past it (the stub) and is cut back; three others ended 0.13 short, 0.06 past and 0.27 short and now meet it too. 5 junctions checked; the fifth was already exact.

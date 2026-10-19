@@ -19,22 +19,16 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   `docs/archive/`: full history (grep it, don't read it whole). `CHANGELOG.md`: owner-facing history (append to the top section).
 
 ## State (Oct 19, 2026)
-- Last version v21 (Oct 19, "A New Starting Point": Miden'nir routes in full, Fog Cliffs mountains thinner, the map frozen into
-  `src/base/map.json`; tag `v21` to be added by the owner on GitHub). Oct 19: base rebuilt by legacy with the owner's Plains
-  save (14:29Z, then 14:50Z: road rooms 4165-4167 moved; `legacy/np_layout_final.json`). Changes since: 001 city graphics (New Ofcol, Salburg ->
-  `stonecity`), 002 Wastelands shore path ends snapped to the water route, 003 Inahir Camp (old-map ink: palisade, 5 tents, long house,
-  corral, fire pit, no animals; `wild.camps`, template CAMPS), legend icon = stone city, 004 Tall Trees grove (82 tall trees
-  round 4575; `wild.talltrees`, template TALL; old `grove` gfx removed), 005 sea gaps east of the Plains filled
-  (`geo.seafill` + `seashore`, drawn over the sea; rerun it, or a copy with its own box, after any coast change).
-- Oct 19: all 13 layout editors republished in the owner's current organization (links in REGION_NOTES; loaded with the latest
-  saves). Read saves with ArtifactData get `<key>/current` on the new links; nothing from the old organization is used.
-- Next (owner's list): clearings assessment
-  (candidate room clusters per area for the owner to approve, then one general clearing change); 006 Sesuad'ra Rift (FT save 15:42Z: 13 hidden rooms' spots into
-  room_pos, new place + V'laresch's new directions live in `changes/006_sesuadra_rift.py`, not data.py, so legacy still reproduces the base). Nidaros Shortcut rooms 5317, 935, 936, 5511, 5507 added
-  to the Forest of Tears editor (`add_nidaros.py`, grp 'ns'): rendered by 007 (FT save 17:09Z; 3 routes joined; 008 draws the short paths 5307-5317-935-936-5511 and 5510-5507, not the long one).
+- Last version v22 (Oct 19, "The Inahir Camp and the Nidaros Shortcut"; tag `v22` to be added by the owner on GitHub). Base = v21 +
+  the owner's Plains saves (14:29Z, 14:50Z) + changes 001-008 (city graphics, Wastelands shore paths, Inahir Camp, Tall Trees grove,
+  Plains sea gaps, Sesuad'ra Rift + V'laresch directions + 1984, Nidaros Shortcut routes + short paths), now in `src/changes/applied/v22/`.
+  The legacy pipeline reproduces the v21-era base only: after a legacy region redraw, re-apply `applied/v22/` (see changes/README).
+- All 13 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get
+  `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
+- Next (owner's list): clearings assessment (candidate room clusters per area for the owner to approve, then one general clearing change).
 
 ## Snapshots
-- New version: `python3 build.py --freeze`, delete the change files, edit `src/VERSION`, retitle the CHANGELOG's in-progress
+- New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/vN/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress
   section, rebuild twice (realm_map.html must match), commit.
 - Merge into `main` ONLY when the owner says to save a new version (Oct 16). Day to day: push to the session branch only. Then
   open a PR to `main`, merge it, and remind the owner: GitHub -> Releases -> Draft a new release -> tag `vN` -> Target `main` ->
