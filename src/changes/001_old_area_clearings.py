@@ -22,7 +22,7 @@ CLEARINGS = {
     'AF-2 In an Open Clearing (Eastern Trade Route)': ([1241, 1242, 1245, 1249, 1250], ASH),
     'BP-1 The Keep of the Huitz': ([18832, 18833, 18834, 18835, 18836, 18837, 18838, 18840, 18841, 18843, 18844, 18845, 18847], PEAKS),
     'BP-2 An Old Mining Camp': ([6722, 6723, 6724, 6867, 6868, 6869, 6870], PEAKS),
-    'BP-3 Border Guard Base': ([6917, 6918, 6919, 6920, 6921, 6922], PEAKWOOD),
+    'BP-3 Border Guard Base': ([6917, 6918, 6919, 6920, 6921, 6922, 5789, 5790, 5791], PEAKWOOD),   # (with the Forgotten Woods rooms joined to it: owner, Oct 19)
     'BP-4 A Deserted Route': ([7046, 7047, 7048, 7059, 7060], PEAKS),
 }
 EXTRA = {5399: 5394}                                            # rooms joined to their clearing by one exit only, taken in along it (owner, Oct 19: 5399, the last Flowing Plains of Grass room, NW)
