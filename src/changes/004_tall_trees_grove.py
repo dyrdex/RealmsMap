@@ -1,9 +1,11 @@
 """Owner, Oct 19: the Northern Plains' groves over the 'Tall Trees' and 'The Fringe of Trees' rooms (4 little groups of round trees running
-28 rooms north to south) replaced by one grove of tall green trees in a circle round the central Tall Trees room (4575), reaching south
-to the Valley of the Elves marker and as far north: semi-dense in the middle, sparser outward. The trade road through it stays clear
+28 rooms north to south) replaced by one grove of tall green trees in a circle round the central Tall Trees room (4575), 8.25 rooms
+across each way (as far as the Valley of the Elves marker was when it was drawn; kept at that size after the owner's Plains save of
+Oct 19): semi-dense in the middle, sparser outward. The trade road through it stays clear
 (no tree drawn over it), as do the Valley of the Elves marker and its name; the brush inside the circle is cleared."""
 import math, random
 
+RADIUS = 8.25                                                    # the grove's size: from 4575 to the Valley of the Elves marker as they were on Oct 19
 LABEL = (-9.28, -.62, -.68, .68)                                 # the Valley of the Elves name's box beside its marker on the site (anchor end, west of it)
 
 
@@ -12,7 +14,7 @@ def apply(town, wild, pos):
     C = tuple(pos['4575'])
     VALLEY = tuple(next(p for p in wild['places'] if p['name'] == 'Valley of the Elves')['path'][-1][:2])
     LB = (VALLEY[0] + LABEL[0], VALLEY[1] + LABEL[1], VALLEY[0] + LABEL[2], VALLEY[1] + LABEL[3])
-    R = math.dist(C, VALLEY)
+    R = RADIUS                                                   # (today's size, also after the Plains save of Oct 19 moved the Valley: owner)
     n0 = len(wild['gfx']); wild['gfx'] = [g for g in wild['gfx'] if g['k'] != 'grove']; groves = n0 - len(wild['gfx'])
     road = [q[:2] for L in wild['etrtracks'] for a, b in zip(L, L[1:]) for t in (0, .25, .5, .75) for q in [(a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)]
             if math.dist(q, C) < R + 3]

@@ -20,8 +20,8 @@ AT = {4671: (8.14, -153.28), 4672: (11.31, -153.39), 4673: (11.3, -156.66), 4674
 def apply(town, wild, pos):
     # the camp follows its rooms: everything is drawn relative to 4671; if the rooms were moved as one group it moves with them,
     # otherwise (rooms rearranged inside the camp) the build stops, so the camp can be redrawn to fit
-    dx, dy = pos['4671'][0] - AT[4671][0], pos['4671'][1] - AT[4671][1]
-    off = [v for v in CAMP if math.dist((pos[str(v)][0] - dx, pos[str(v)][1] - dy), AT[v]) > .05]
+    dx = sum(pos[str(v)][0] - AT[v][0] for v in CAMP) / len(CAMP); dy = sum(pos[str(v)][1] - AT[v][1] for v in CAMP) / len(CAMP)   # (the group's mean move)
+    off = [v for v in CAMP if math.dist((pos[str(v)][0] - dx, pos[str(v)][1] - dy), AT[v]) > .15]     # (a drag's rounding is fine)
     assert not off, f'Inahir Camp rooms rearranged (not moved as one group): {off}; redraw the camp to fit'
     S = lambda p: [round(p[0] + dx, 3), round(p[1] + dy, 3)] + list(p[2:])
     X0, X1, Y0, Y1 = globals()['X0'] + dx, globals()['X1'] + dx, globals()['Y0'] + dy, globals()['Y1'] + dy

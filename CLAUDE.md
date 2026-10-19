@@ -20,7 +20,8 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 
 ## State (Oct 19, 2026)
 - Last version v21 (Oct 19, "A New Starting Point": Miden'nir routes in full, Fog Cliffs mountains thinner, the map frozen into
-  `src/base/map.json`; tag `v21` to be added by the owner on GitHub). Changes since: 001 city graphics (New Ofcol, Salburg ->
+  `src/base/map.json`; tag `v21` to be added by the owner on GitHub). Oct 19: base rebuilt by legacy with the owner's Plains
+  save (14:29Z, `legacy/np_layout_final.json`). Changes since: 001 city graphics (New Ofcol, Salburg ->
   `stonecity`), 002 Wastelands shore path ends snapped to the water route, 003 Inahir Camp (old-map ink: palisade, 5 tents, long house,
   corral, fire pit, no animals; `wild.camps`, template CAMPS), legend icon = stone city, 004 Tall Trees grove (82 tall trees
   round 4575; `wild.talltrees`, template TALL; old `grove` gfx removed).
