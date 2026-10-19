@@ -35,7 +35,9 @@ def add_route_options(w, layouts, text):
             pts = []
             for v in walk(o['route']):
                 q = at(v); pts.append([round(q[0], 3), round(q[1], 3)] if q else 0)
-            idx = [i for i, q in enumerate(pts) if q and math.dist(q, end) < 0.02]
+            idx = [i for i, q in enumerate(pts) if q and math.dist(q, end) < 0.02]; tl = tail
+            if not idx and tail:                                                # (the marker is a room this route reaches itself: trace straight to it)
+                idx = [i for i, q in enumerate(pts) if q and math.dist(q, tail[0]) < 0.02]; tl = []
             if not idx: report['dropped'].append((p['name'], o['dir'], 'does not reach the marker')); continue
             segs = []; cur = []
             for q in pts[:idx[-1] + 1]:
@@ -43,7 +45,7 @@ def add_route_options(w, layouts, text):
                     if cur: segs.append(cur); cur = []
                 else: cur.append(q)
             if cur: segs.append(cur)
-            if tail: segs[-1] = segs[-1] + tail
+            if tl: segs[-1] = segs[-1] + tl
             kept.append(dict(o, segs=segs, gap=GAP_SENTENCE if len(segs) > 1 else None))
         if not kept or not kept[0]['default']:
             report['dropped'].append((p['name'], 'all', 'default route not traced')); continue

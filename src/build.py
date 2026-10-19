@@ -196,11 +196,14 @@ _nam={r['id'] for r in _NAE['rooms'] if r.get('area')=='NA'}        # (only the 
 _NALm={k:[v for v,i in zip(_NAL[k],_NAL['ids']) if i in _nam] if k in ('ids','xs','ys') else _NAL[k] for k in _NAL}
 w,_napl=add_na_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_NALm])   # Angel's Landing (owner, Oct 16)
 print('Angel\'s Landing place:',_napl)
+_MDL=_json.load(open(os.path.join(_here,'md_layout_final.json')))   # Miden'nir's rooms for the route tracers (owner, Oct 18: routes through Miden'nir drawn in full)
+_mdm={r['id'] for r in _json.load(open(os.path.join(_here,'md_editor_edges.json')))['rooms'] if r.get('area')=='MD'}
+_MDLm={k:[v for v,i in zip(_MDL[k],_MDL['ids']) if i in _mdm] if k in ('ids','xs','ys') else _MDL[k] for k in _MDL}
 from route_fix import fix_routes                                 # routes along the trade routes drawn unbroken; the Ofcol Shortcut portal (owner, Oct 13)
-w,_rf=fix_routes(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_NALm])
+w,_rf=fix_routes(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_NALm,_MDLm,_SML])
 print('routes traced again:',_rf)
 from route_options import add_route_options                       # places with a default and alternate routes you gave (Oct 15)
-w,_ro=add_route_options(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML],_data.ROUTE_OPTIONS)
+w,_ro=add_route_options(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_MDLm],_data.ROUTE_OPTIONS)
 print('route options:',_ro)
 from extra_places import add_extra_places                       # Suds 'n Stones, V'laresch under Mobs, A'enari (owner, Oct 15)
 w,_ep=add_extra_places(w,[_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML])

@@ -27,6 +27,7 @@ X0, Y0, W, H, R8 = GF.X0, GF.Y0, GF.W, GF.H, GF.R8
 WX, WY = GF.WX, GF.WY
 XE = -19.5                         # the east edge of what is redrawn (the old land, tints and trees east of it stay)
 FIELD_RE = re.compile(r'Misery|Drowning|Weeping|Trail of Tears')
+CLIFF_W = 2.0                                                         # how far the Fog Cliffs' mountains reach east of the cliff path (was 3.6; owner, Oct 18: the Tree of Life stands in the forest)
 CLIFF_RE = re.compile(r'Cliff|Wall|Edge|Rockslide|Canyon|Fault|Sandstone|Dry|Terrain')
 WIDOWS = [5634, 5635, 5636, 5637, 5638]            # Woods rooms the owner moved (joined to 5632 and 5639)
 # the new north-west coast: the west coast's curve (west_coast.CURVE, from the Woods' westernmost edge to the north coast of the forest), then on to the
@@ -298,7 +299,7 @@ def merge_ft(w, layout, edges, seed=53):
     clr = _samples(wlines, 0.15)
     ctree = cKDTree(np.r_[clr, np.array([pos[v] for v in (thread | RD | LK)])])
     # cliff zone along the Fog Cliffs path (land side), its sea edge, then the rest of the dense forest
-    cz = (d_fog <= 3.6) & (SX >= fsm[i_fog.reshape(SX.shape), 0] - 0.2) & (SY > ytop_f - 1.2) & (SY < ybot_f + 1.2)
+    cz = (d_fog <= CLIFF_W) & (SX >= fsm[i_fog.reshape(SX.shape), 0] - 0.2) & (SY > ytop_f - 1.2) & (SY < ybot_f + 1.2)
     cliffz = full(cz) & land_ft
     fieldf = full(fm) & land_ft & ~cliffz
     # the Lost Between Woods path west and the Fog Cliffs path ends: dense forest keeps one room clear beside paths
@@ -308,6 +309,11 @@ def merge_ft(w, layout, edges, seed=53):
     dsub = np.full(shape, 9.0); dsub[ys_, xs_] = dd; dd_all[sub] = dsub
     dense = land_ft & ~fieldf & ~cliffz & (dd_all > 1.0)
     dense = ndi.binary_opening(dense, iterations=R8 // 4)
+    # the same masks with the old 3.6 band (Oct 18): the sprites are drawn from these exactly as before, then the mountains past the new band are
+    # taken out and the strip they leave gets its own forest (a separate random draw, so nothing else on the map moves)
+    cliffz0 = full((d_fog <= 3.6) & (SX >= fsm[i_fog.reshape(SX.shape), 0] - 0.2) & (SY > ytop_f - 1.2) & (SY < ybot_f + 1.2)) & land_ft
+    fieldf0 = full(fm) & land_ft & ~cliffz0
+    dense0 = ndi.binary_opening(land_ft & ~fieldf0 & ~cliffz0 & (dd_all > 1.0), iterations=R8 // 4)
     report['dense_sq'] = round(float(dense.sum()) / R8 / R8, 1); report['field_sq'] = round(float(fieldf.sum()) / R8 / R8, 1); report['cliff_sq'] = round(float(cliffz.sum()) / R8 / R8, 1)
     # ---- land
     oldlake = (WX > -45.0) & (WX < -10.5) & (WY > -45.0) & (WY < -1.5)
@@ -362,7 +368,7 @@ def merge_ft(w, layout, edges, seed=53):
     report['cleared'] = cleared
 
     # ---- new trees and ground
-    def sample(mask, per_sq, spacing, ok=None, cap=None):
+    def sample(mask, per_sq, spacing, ok=None, cap=None, rng=rng):
         m = ndi.binary_erosion(mask, iterations=int(0.2 * R8)); yy, xx = np.nonzero(m); out = []
         if not len(xx): return out
         n = int(float(mask.sum()) / R8 / R8 * per_sq); placed = []; grid = defaultdict(list)
@@ -377,15 +383,15 @@ def merge_ft(w, layout, edges, seed=53):
     ctree1 = cKDTree(np.r_[clr, np.array([pos[v] for v in (thread | RD | LK) if not void(v)])])
     notpath = lambda r: (lambda x, y: ctree1.query([x, y])[0] > r)
     trees = []
-    for x, y in sample(dense, 3.0, 0.40, notpath(1.0)):
+    for x, y in sample(dense0, 3.0, 0.40, notpath(1.0)):
         trees.append([round(x, 3), round(y, 3), round(rng.uniform(0.85, 1.2), 2), 'x' if rng.random() < 0.3 else 'd', rng.randrange(3)])
     bg = ndi.gaussian_filter(nrng.normal(size=(hh, ww)), 1.8 * R8); bgf = full(bg > np.quantile(bg, 0.7))
-    for x, y in sample(fieldf, 1.7, 0.55, notpath(0.7)):
+    for x, y in sample(fieldf0, 1.7, 0.55, notpath(0.7)):
         r_ = rng.random(); inbog = inm(bogm, x, y)
         if inbog and r_ < 0.6: continue
         trees.append([round(x, 3), round(y, 3), round(rng.uniform(0.85, 1.2), 2), 'd' if r_ < 0.5 else ('w' if r_ < 0.92 else 'x'), rng.randrange(3)])
     w['trees'] = list(w['trees']) + trees
-    tufts = [[round(x, 3), round(y, 3), round(rng.uniform(0.8, 1.3), 2), 'g', rng.randrange(2)] for x, y in sample(fieldf, 0.9, 0.5, notpath(0.5))]
+    tufts = [[round(x, 3), round(y, 3), round(rng.uniform(0.8, 1.3), 2), 'g', rng.randrange(2)] for x, y in sample(fieldf0, 0.9, 0.5, notpath(0.5))]
     w['tufts'] = list(w['tufts']) + tufts
     report['trees'] = Counter(t[3] for t in trees); report['tufts'] = len(tufts)
 
@@ -393,9 +399,9 @@ def merge_ft(w, layout, edges, seed=53):
     fl = [[round(float(a), 3), round(float(b), 3)] for a, b in fsm[::3]]
     ftree2 = cKDTree(fsm)
     def peak_ok(x, y): d = ftree2.query([x, y])[0]; return 0.6 < d < 3.5 and ctree1.query([x, y])[0] > 0.45
-    peaks = [[round(x, 3), round(y, 3), round(rng.uniform(1.3, 2.1), 2), 'm', rng.randrange(2)] for x, y in sample(cliffz, 3.4, 0.75, peak_ok)]
-    crags = [[round(x, 3), round(y, 3), round(rng.uniform(0.75, 1.35), 2), rng.randrange(3)] for x, y in sample(cliffz, 2.6, 0.5, lambda x, y: ctree1.query([x, y])[0] > 0.4)]
-    rocks = [[round(x, 3), round(y, 3), round(rng.uniform(0.5, 0.95), 2)] for x, y in sample(cliffz, 1.4, 0.5, lambda x, y: ctree1.query([x, y])[0] > 0.4)]
+    peaks = [[round(x, 3), round(y, 3), round(rng.uniform(1.3, 2.1), 2), 'm', rng.randrange(2)] for x, y in sample(cliffz0, 3.4, 0.75, peak_ok)]
+    crags = [[round(x, 3), round(y, 3), round(rng.uniform(0.75, 1.35), 2), rng.randrange(3)] for x, y in sample(cliffz0, 2.6, 0.5, lambda x, y: ctree1.query([x, y])[0] > 0.4)]
+    rocks = [[round(x, 3), round(y, 3), round(rng.uniform(0.5, 0.95), 2)] for x, y in sample(cliffz0, 1.4, 0.5, lambda x, y: ctree1.query([x, y])[0] > 0.4)]
     # edge hachures: short ticks off the path toward the sea
     hach = []; arc = _samples([[pos[v] for v in sorted(fog, key=lambda v: pos[v][1])]], 0.33)
     for k_ in range(2, len(arc) - 2):
@@ -410,6 +416,18 @@ def merge_ft(w, layout, edges, seed=53):
         mist.append([round(float(arc[k_][0]) + rng.uniform(-0.5, 0.2), 2), round(float(arc[k_][1]), 2), round(rng.uniform(1.5, 2.2), 2)])
     for k_ in range(int(1.8 / 0.33), len(arc), int(5.0 / 0.33)):
         fog_.append([round(float(arc[k_][0]) + rng.uniform(0.6, 1.8), 2), round(float(arc[k_][1]), 2), round(rng.uniform(1.5, 2.1), 2)])
+    nb = len(peaks) + len(crags) + len(rocks)                                    # the mountains past the new band are left off (Oct 18)
+    peaks = [q for q in peaks if ftree2.query(q[:2])[0] < CLIFF_W - 0.1 and inm(cliffz, q[0], q[1])]
+    crags = [q for q in crags if inm(cliffz, q[0], q[1])]; rocks = [q for q in rocks if inm(cliffz, q[0], q[1])]
+    report['cliff_sprites_left_off'] = nb - len(peaks) - len(crags) - len(rocks)
+    r2 = random.Random(seed * 29 + 7); have = cKDTree(np.array([t[:2] for t in trees]))   # the freed strip: forest like the rest (its own draw)
+    gap_ok = lambda r_, d_: (lambda x, y: ctree1.query([x, y])[0] > r_ and have.query([x, y])[0] > d_)
+    t2 = [[round(x, 3), round(y, 3), round(r2.uniform(0.85, 1.2), 2), 'x' if r2.random() < 0.3 else 'd', r2.randrange(3)] for x, y in sample(dense & ~dense0, 3.0, 0.40, gap_ok(1.0, 0.40), rng=r2)]
+    t2 += [[round(x, 3), round(y, 3), round(r2.uniform(0.85, 1.2), 2), 'd' if r2.random() < 0.5 else 'w', r2.randrange(3)] for x, y in sample(fieldf & ~fieldf0, 1.7, 0.55, gap_ok(0.7, 0.55), rng=r2)]
+    u2 = [[round(x, 3), round(y, 3), round(r2.uniform(0.8, 1.3), 2), 'g', r2.randrange(2)] for x, y in sample(fieldf & ~fieldf0, 0.9, 0.5, notpath(0.5), rng=r2)]
+    w['trees'] = list(w['trees']) + t2; w['tufts'] = list(w['tufts']) + u2
+    strip_ids = {id(q) for q in t2 + u2}                                         # (kept clear of the markers once they are placed, below)
+    report['freed_strip'] = dict(trees=len(t2), tufts=len(u2), sq=round(float((cliffz0 & ~cliffz).sum()) / R8 / R8, 1))
     w['peaks'] = sorted(list(w['peaks']) + peaks, key=lambda q: q[1]); w['crags'] = sorted(list(w.get('crags') or []) + crags, key=lambda q: q[1])
     w['boulders'] = sorted(list(w.get('boulders') or []) + rocks, key=lambda q: q[1]); w['hach'] = list(w['hach']) + hach
     w['mist'] = list(w['mist']) + mist; w['darkfog'] = list(w['darkfog']) + fog_
@@ -503,10 +521,14 @@ def merge_ft(w, layout, edges, seed=53):
     w['lakelabel'] = dict(x=round(float((xs_l.min() + xs_l.max()) / 2 / R8 + X0), 2), y=round(float(ry / R8 + Y0 - 0.5), 2), a=-5.0, size=1.5, ls=0.28, drop=1.85, fixed=True)
     report['lakelabel'] = w['lakelabel']
     # ---- the forest's name, in the middle of the field
-    fy, fx = np.nonzero(fieldf)
+    fy, fx = np.nonzero(fieldf0)                                                 # (the field as it was with the old 3.6 band, so the name stays put)
     cxf = float(np.median(fx / R8 + X0)); cyf = float(np.median(fy / R8 + Y0))
     w['label'] = dict(x0=round(cxf - 24.5, 2), x1=round(cxf + 24.5, 2), y=round(cyf + 0.8, 2), fixed=True)
     report['label'] = w['label']
+    mk = [(p.get('at') or p['path'][-1])[:2] for p in w['places'] if p.get('at') or p.get('path')]   # the freed strip's trees and tufts stay clear of the markers
+    far = lambda q: min(math.dist(q[:2], m) for m in mk) > 0.5
+    for key in ('trees', 'tufts'): w[key] = [q for q in w[key] if id(q) not in strip_ids or far(q)]
+    report['freed_strip']['off_markers'] = len(strip_ids) - sum(id(q) in strip_ids for key in ('trees', 'tufts') for q in w[key])
     import os
     if os.environ.get('FT_DEBUG'): report['_masks'] = dict(land1=land1, lake=lake, sea=sea, dense=dense, fieldf=fieldf, cliffz=cliffz, Ez=Ez, beach=beach)
     return w, report

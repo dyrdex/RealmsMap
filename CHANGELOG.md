@@ -1,5 +1,10 @@
 # Realm Map changelog
 
+## In progress (after Version 20)
+
+- Your request (Oct 19): routes through Miden'nir now draw in full. The South routes of Transylvania, Emerald Hills, The Ruins of T'man, Old Pottswort's Fields, The Von Deusen Mausoleum and The Wilds, and Elemental Canyon's route, had a gap over 11 Miden'nir rooms (the bridge, the Black Forest, Gazing Upon Mount Doom): those rooms were placed on the map but not yet known to the route tracer. All 7 are one unbroken line now; Elemental Canyon's "part of your directions isn't drawn yet" note is gone.
+- Your request (Oct 19): the Fog Cliffs' mountains reach 2 rooms east of the cliff path instead of 3.6, so the Tree of Life stands in the forest again (nearest mountain sprite now 1.4 rooms away, was 0.2). 363 mountain sprites past the new band removed (88 peaks, 154 crags, 121 rocks); the freed strip (about 76 square rooms) has forest like the rest (117 trees, 51 tufts, kept clear of the markers). Nothing else on the map moved; the Forest of Tears name stays where it was.
+
 ## Version 20 · Dragon's Pass Link · October 18, 2026
 
 - Your requests (Oct 18): a small label "(Dragon's Pass Link)" just north of The Mire (Central)'s dragon; a smaller label "(The Mire Link)" just south of the Dragon's Pass name (that name now stays where it is, so the two can't drift apart). Both in the map's small-label style (italic, soft grey), clear of markers, names and paths.
