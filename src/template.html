@@ -973,7 +973,38 @@ document.getElementById('lanes').innerHTML=ln;
       +`<path d="M0 ${(-h).toFixed(3)} C${(w*.42).toFixed(3)} ${(-h*.93).toFixed(3)} ${(w*.5).toFixed(3)} ${(-h*.62).toFixed(3)} ${(w*.47).toFixed(3)} ${(-h*.42).toFixed(3)} C${(w*.44).toFixed(3)} ${(-h*.27).toFixed(3)} ${(w*.2).toFixed(3)} ${(-h*.2).toFixed(3)} 0 ${(-h*.22).toFixed(3)} C${(-w*.2).toFixed(3)} ${(-h*.2).toFixed(3)} ${(-w*.44).toFixed(3)} ${(-h*.27).toFixed(3)} ${(-w*.47).toFixed(3)} ${(-h*.42).toFixed(3)} C${(-w*.5).toFixed(3)} ${(-h*.62).toFixed(3)} ${(-w*.42).toFixed(3)} ${(-h*.93).toFixed(3)} 0 ${(-h).toFixed(3)}Z" fill="${c}" stroke="rgba(0,0,0,.55)" stroke-width=".035"/>`
       +`<path d="M${(w*.06).toFixed(3)} ${(-h*.97).toFixed(3)} C${(w*.42).toFixed(3)} ${(-h*.9).toFixed(3)} ${(w*.5).toFixed(3)} ${(-h*.62).toFixed(3)} ${(w*.47).toFixed(3)} ${(-h*.42).toFixed(3)} C${(w*.44).toFixed(3)} ${(-h*.27).toFixed(3)} ${(w*.2).toFixed(3)} ${(-h*.2).toFixed(3)} ${(w*.06).toFixed(3)} ${(-h*.22).toFixed(3)} C${(w*.2).toFixed(3)} ${(-h*.45).toFixed(3)} ${(w*.18).toFixed(3)} ${(-h*.75).toFixed(3)} ${(w*.06).toFixed(3)} ${(-h*.97).toFixed(3)}Z" fill="var(--t-dark)" opacity=".55"/>`
       +`<path d="M${(-w*.28).toFixed(3)} ${(-h*.72).toFixed(3)} q${(w*.12).toFixed(3)} ${(-h*.06).toFixed(3)} ${(w*.22).toFixed(3)} 0 M${(-w*.32).toFixed(3)} ${(-h*.5).toFixed(3)} q${(w*.12).toFixed(3)} ${(-h*.06).toFixed(3)} ${(w*.22).toFixed(3)} 0 M${(-w*.1).toFixed(3)} ${(-h*.86).toFixed(3)} q${(w*.1).toFixed(3)} ${(-h*.05).toFixed(3)} ${(w*.18).toFixed(3)} 0" stroke="#4E7342" stroke-width=".035" fill="none" stroke-linecap="round" opacity=".8"/></g>`}).join('');
-  let out=CAMPS(DATA.wild.camps)+TALL(DATA.wild.talltrees);
+  /* the Inahir Camp, plan view in Edel's manner (owner, Oct 19): yard, palisade of log tops, long house, corral, fire pit, worn paths */
+  const CAMP2=C=>(C||[]).map(c=>{const F=v=>v.toFixed(3),gw=(c.gatew||1)/2;let s='';
+    const W=[];{const P=c.wall,R=.9;for(let i=0;i<P.length;i++){const a=P[(i+P.length-1)%P.length],p=P[i],b=P[(i+1)%P.length];   /* the wall with rounded corners */
+      const la=Math.hypot(a[0]-p[0],a[1]-p[1]),lb=Math.hypot(b[0]-p[0],b[1]-p[1]),r=Math.min(R,la*.4,lb*.4),u=[(a[0]-p[0])/la,(a[1]-p[1])/la],v=[(b[0]-p[0])/lb,(b[1]-p[1])/lb];
+      for(let k=0;k<=6;k++){const t=k/6,q0=[p[0]+u[0]*r,p[1]+u[1]*r],q2=[p[0]+v[0]*r,p[1]+v[1]*r];W.push([(1-t)*(1-t)*q0[0]+2*t*(1-t)*p[0]+t*t*q2[0],(1-t)*(1-t)*q0[1]+2*t*(1-t)*p[1]+t*t*q2[1]])}}}
+    const ring='M'+W.map(p=>F(p[0])+' '+F(p[1])).join('L')+'Z';
+    s+=`<path d="${ring}" fill="none" stroke="var(--dirt)" stroke-width=".9" opacity=".25" stroke-linejoin="round"/><path d="${ring}" fill="var(--dirt)" opacity=".62"/><path d="${ring}" fill="var(--dirt-hi)" opacity=".07"/>`;   /* the yard: trodden earth, soft edge */
+    for(const p of c.paths||[]){const a=p[0],b=p[1],mx=(a[0]+b[0])/2+(b[1]-a[1])*.12,my=(a[1]+b[1])/2-(b[0]-a[0])*.12;s+=DIRT(`M${F(a[0])} ${F(a[1])}Q${F(mx)} ${F(my)} ${F(b[0])} ${F(b[1])}`,.3)}   /* worn paths, the map's trails */
+    if(c.corral){const[x0,y0,x1,y1]=c.corral.rect,g=c.corral.gate;
+      s+=`<rect x="${F(x0)}" y="${F(y0)}" width="${F(x1-x0)}" height="${F(y1-y0)}" rx=".15" fill="#4E4632" opacity=".5"/>`;   /* trampled ground */
+      const P=[[x0,y0],[x1,y0],[x1,y1],[x0,y1]];let rail='',posts='';
+      for(let i=0;i<4;i++){const a=P[i],b=P[(i+1)%4],L=Math.hypot(b[0]-a[0],b[1]-a[1]),n=Math.max(1,Math.round(L/.6));
+        for(let j=0;j<n;j++){const x=a[0]+(b[0]-a[0])*j/n,y=a[1]+(b[1]-a[1])*j/n,x2=a[0]+(b[0]-a[0])*(j+1)/n,y2=a[1]+(b[1]-a[1])*(j+1)/n,mx=(x+x2)/2,my=(y+y2)/2;
+          if(!(g&&Math.hypot(mx-g[0],my-g[1])<.4))rail+=`M${F(x)} ${F(y)}L${F(x2)} ${F(y2)}`;
+          if(!(g&&Math.hypot(x-g[0],y-g[1])<.3))posts+=`<circle cx="${F(x)}" cy="${F(y)}" r=".075"/>`}}
+      s+=`<path d="${rail}" stroke="#000" stroke-width=".12" opacity=".3" fill="none" transform="translate(-.02 .04)"/><path d="${rail}" stroke="var(--g-wood)" stroke-width=".07" fill="none"/><g fill="var(--g-wood)" stroke="var(--g-line)" stroke-width=".025">${posts}</g>`}
+    if(c.fire){const[x,y]=c.fire;s+=`<circle cx="${F(x)}" cy="${F(y)}" r=".45" fill="#2B2418" opacity=".3"/>`+Array.from({length:9},(_,i)=>{const a=i*2*Math.PI/9;return `<circle cx="${F(x+.27*Math.cos(a))}" cy="${F(y+.27*Math.sin(a))}" r=".075" fill="var(--g-stone)" stroke="var(--g-line)" stroke-width=".025"/>`}).join('')+`<circle cx="${F(x)}" cy="${F(y)}" r=".17" fill="#1E1812"/><circle cx="${F(x)}" cy="${F(y)}" r=".1" fill="#9C4A26" opacity=".8"/><circle cx="${F(x+.03)}" cy="${F(y-.02)}" r=".045" fill="var(--g-lit)" opacity=".75"/>`}
+    if(c.longhouse){const[x,y,w,h]=c.longhouse,hw=w/2,hh=h/2;   /* the long house: a thatched roof seen from above, like Edel's houses */
+      s+=`<g transform="translate(${F(x)},${F(y)})"><rect x="${F(-hw-.06)}" y="${F(-hh+.09)}" width="${F(w)}" height="${F(h)}" rx=".18" fill="#000" opacity=".3"/>`
+        +`<rect x="${F(-hw)}" y="${F(-hh)}" width="${F(w)}" height="${F(h)}" rx=".18" fill="#6B5A40" stroke="var(--g-line)" stroke-width=".05"/>`
+        +`<rect x="${F(-hw)}" y="0" width="${F(w)}" height="${F(hh)}" rx=".18" fill="#000" opacity=".2"/>`
+        +`<line x1="${F(-hw+.12)}" y1="0" x2="${F(hw-.12)}" y2="0" stroke="#00000070" stroke-width=".06"/>`
+        +`<circle cx="${F(-hw*.5)}" cy="0" r=".08" fill="#1E1812"/></g>`}
+    let stakes='',k=0;const gates=c.gates||[];   /* the palisade: a solid band of log tops, broken at the gates */
+    for(let i=0;i<W.length;i++){const a=W[i],b=W[(i+1)%W.length],L=Math.hypot(b[0]-a[0],b[1]-a[1]),n=Math.max(1,Math.round(L/.19));
+      for(let j=0;j<n;j++){const t=(j+.5)/n,x=a[0]+(b[0]-a[0])*t,y=a[1]+(b[1]-a[1])*t;if(gates.some(g=>Math.hypot(x-g[0],y-g[1])<gw))continue;k++;
+        stakes+=`<circle cx="${F(x)}" cy="${F(y)}" r="${['.1','.11','.095'][k%3]}"/>`}}
+    s+=`<path d="${ring}" fill="none" stroke="#000" stroke-width=".36" opacity=".28" transform="translate(-.05 .08)" stroke-linejoin="round"/>`;
+    s+=`<g fill="#5E4A30" stroke="var(--g-line)" stroke-width=".03">${stakes}</g>`;
+    for(const g of gates)for(const sg of [-1,1]){const ax=g[2]?0:1,x=g[0]+sg*(gw+.06)*ax,y=g[1]+sg*(gw+.06)*(1-ax);s+=`<circle cx="${F(x)}" cy="${F(y)}" r=".16" fill="#4A3A24" stroke="var(--g-line)" stroke-width=".04"/>`}
+    return s}).join('');
+  let out=CAMPS(DATA.wild.camps)+CAMP2(DATA.wild.camp2)+TALL(DATA.wild.talltrees);
   for(const g of G){
     let cx,cy,p=null;if(g.at!=='xy'){p=P.find(q=>q.name===g.label);if(!p)continue}
     if(g.at==='xy'){cx=g.x;cy=g.y}

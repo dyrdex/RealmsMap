@@ -57,6 +57,8 @@ The other builders run inside `src/legacy`.
   sub-area links join; dirt trails elsewhere. Spacer rooms drawn only between two real rooms.
 - **Older-area clearings** (Forgotten Woods, Ashen Forest, Barren Peaks; Oct 19): only the clear-cut clumps the owner picks; ground of their own
   spot, a little lighter (`wild.clearings`, template CLEAR, drawn over the dirt trails, under the trade roads).
+- **Settlement drawings** (owner, Oct 19): plan view like Edel (solid shapes, dark outlines, soft shadows, the map's own trails), not
+  thin side-view ink line-work. Inahir Camp: `wild.camp2`, template CAMP2 (`changes/003`).
 - **Barren Peaks**: no coasts unless the owner asks with a clear picture.
   Editor republished Oct 19 (v2) with all 592 Forgotten Woods rooms unlocked (green outline; `D.unlocked`, saves now v:3 so older
   saves don't re-lock them). A save that moves or hides FW rooms means redrawing their Woods trails too.
