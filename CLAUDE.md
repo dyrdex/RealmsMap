@@ -19,13 +19,13 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   `docs/archive/`: full history (grep it, don't read it whole). `CHANGELOG.md`: owner-facing history (append to the top section).
 
 ## State (Oct 19, 2026)
-- Last version v22 (Oct 19, "The Inahir Camp and the Nidaros Shortcut"; tag `v22` to be added by the owner on GitHub). Base = v21 +
-  the owner's Plains saves (14:29Z, 14:50Z) + changes 001-008 (city graphics, Wastelands shore paths, Inahir Camp, Tall Trees grove,
-  Plains sea gaps, Sesuad'ra Rift + V'laresch directions + 1984, Nidaros Shortcut routes + short paths), now in `src/changes/applied/v22/`.
-  The legacy pipeline reproduces the v21-era base only: after a legacy region redraw, re-apply `applied/v22/` (see changes/README).
+- Last version v23 (Oct 19, "Clearings in the Old Woods and a New Inahir Camp"; tag `v23` to be added by the owner on GitHub). Base = v22 +
+  changes 001-003 (9 clearings in FW/AF/BP + hut at 7041, the owner's BP save of 19:58Z (hidden/shown only), Inahir Camp redrawn in
+  plan view), now in `src/changes/applied/v23/`. Earlier: `applied/v22/`. The legacy pipeline reproduces the v21-era base only: after a
+  legacy region redraw, re-apply `applied/v22/` then `applied/v23/` (see changes/README).
 - All 13 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get
   `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
-- Next (owner's list): clearings assessment (candidate room clusters per area for the owner to approve, then one general clearing change).
+- In progress: nothing.
 
 ## Snapshots
 - New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/vN/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress
