@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress (after Version 22)
+## Version 23 · Clearings in the Old Woods and a New Inahir Camp · October 19, 2026
 
 - Your request (Oct 19): the Inahir Camp redrawn in a new, simpler style that matches the map (seen from above, like Edel): the yard as trodden earth with a soft edge; the palisade a solid band of log tops with rounded corners and a post either side of its two gates; the long house a thatched roof with its ridge and smoke hole, stretched east-west to 6.2 rooms (was 3.4); 5 small round thatched huts where the tents stood; the corral a post-and-rail pen of trampled ground; the fire pit a ring of stones with embers; no paths. The tents and the old thin-line drawing are gone. Same spot and size as before.
 - Your request (Oct 19): one clearing on the Woods–Peaks border west of the Peaks (12 rooms, 27.8 sq, the forest's green ground): 5733 Scraggly Trail, 5734 Smattering of Trees, 5735/5737 An Outcropping of Rocks, 5736 Forest Junction, 7038 Exposed Roots, 7039 Smooth Pathway, 7040 The Supply Post, 7043 A Serene Walk, 7044 Campside, View of the North, 7042 Burning Ashes (the V of trails north of the hovel, now inside), with 7041 Setgro's Hovel in it, drawn as the map's small hut on its room; 36 trees, 2 tufts and 2 mountain sprites cleared from it.
