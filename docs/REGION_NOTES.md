@@ -16,7 +16,7 @@ number, don't read it whole.
   (lists of [x, y, size, ...]); ground tints `geo.<name>` (polygons: land, deep, wheat, barren, cliff, ...); lines `fwtracks` (dirt
   trails), `etrtracks` (trade roads), `dirtroads`, `seaways`, `streams`, `smr*`, `mdfaint`, `pffaint`; drawings `gfx` (sprite
   name + spot, e.g. `stonecity`, `volcano`, `saloon`, `text`), `buildings`, `smrhouses`, `smrtowns`, `wltown`.
-  How each is drawn: `src/template.html`.
+  `camps` (palisade wall polygon + gates, tents, long house, corral, fire pit; template CAMPS). How each is drawn: `src/template.html`.
 - Changes go in `src/changes/NNN_name.py` (see its README). Never edit `base/map.json` by hand; `build.py --freeze` rewrites it.
 
 ## Layout editors

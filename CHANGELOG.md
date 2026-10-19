@@ -4,6 +4,7 @@
 
 - Your request (Oct 19): New Ofcol and the City of Salburg drawn like Revelation City, Drow City and Thalos: the standard round marker with the stone-city drawing just above it (the white walled-town emblem is gone). Their names keep their spots; the one tree under Salburg's drawing removed. Their cards now say "Area" like the other cities, not "Town".
 - Your request (Oct 19): the Wastelands' paths down to the coast's water route now end exactly on it: the one at the far west ran 0.36 past it (the stub) and is cut back; three others ended 0.13 short, 0.06 past and 0.27 short and now meet it too. 5 junctions checked; the fifth was already exact.
+- Your request (Oct 19): the Inahir Camp (Northern Plains) drawn: a palisade of sharpened wooden stakes around its 10 rooms (49 units of wall), with The Outskirts of the Camp (4671) outside it in a notch and a gate at each of its two ways in (east to 4672, south to 4680), taller posts beside each gate. Inside, from the room names: 10 hide tents in the camp's rooms, the long house over Inside the Long House (4679), a railed corral with two horses over The Corral (4676, 4681), and a fire pit in the middle of the yard. The ground inside is trodden earth; 34 trees, 25 rocks, 82 brush and 258 wheat tufts inside the wall removed.
 
 ## Version 21 · A New Starting Point · October 19, 2026
 
