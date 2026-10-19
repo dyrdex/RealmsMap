@@ -1,5 +1,5 @@
 # The layout editor for Miden'nir (owner, Oct 15: put Miden'nir's rooms in a layout editor so some of them can be displayed on the map; the painting stays).
-#   python3 build_md_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with md_editor_template.html beside it)
+#   python3 build_md_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src/legacy, with md_editor_template.html beside it)
 # Movable rooms (area 'MD'): Miden'nir's rooms except the tunnels under Mount Doom (owner: not needed), starting where fot_extract.py's painting puts them
 # (its layout from TinTin's exits, `mpos`; the arranger never moved Miden'nir), plus the spacer rooms that join two of them or one of them to a fixed room.
 # Fixed rooms: every room already on the finished map near enough to matter: Darkhaven, Shadow Grove, Forgotten Woods ('cx'), the Forest of Tears, lake ring
@@ -7,7 +7,7 @@
 # the Southern Mountain Range + its trade route (their save). Hidden rooms in those saves are left off.
 import sys, os, io, re, json, contextlib
 from collections import defaultdict, Counter, deque
-here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here)
+here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here); sys.path.insert(1, os.path.abspath('..'))   # (src/legacy is the working folder; src for editor_spread, maplib)
 import ashen_forest as AF
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]

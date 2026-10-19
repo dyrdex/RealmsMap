@@ -4,7 +4,7 @@
 # Movable rooms: the Northern Trade Route from its entrance, past the Shadow Grove, through the Woods, to the long bridge.
 import sys, os, json, math
 from collections import defaultdict, Counter, deque
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); sys.path.insert(1, os.path.abspath('..'))   # (src/legacy is the working folder; src for maplib)
 import ashen_forest as AF
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]

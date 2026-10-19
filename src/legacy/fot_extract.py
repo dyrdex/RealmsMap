@@ -2,7 +2,7 @@ import json, math, re, sys
 import numpy as np
 from scipy import ndimage as ndi
 from skimage import measure
-exec(open('parse_world.py').read())
+exec(open('../parse_world.py').read())
 from collections import deque, defaultdict, Counter
 R=lambda v:rooms[v]
 DV={1:(0,-1,0),2:(1,0,0),4:(0,1,0),8:(-1,0,0),3:(1,-1,0),9:(-1,-1,0),6:(1,1,0),12:(-1,1,0),16:(0,0,1),32:(0,0,-1)}

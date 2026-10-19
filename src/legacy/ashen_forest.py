@@ -26,13 +26,8 @@ _WORLD = None
 
 def _world():
     """the parsed world file: parsed once per build, then a fresh copy each call (callers may change what they get)"""
-    global _WORLD
-    if _WORLD is None:
-        ns = {}
-        for p in ('parse_world.py', '/home/claude/parse_world.py'):
-            if os.path.exists(p): exec(open(p).read(), ns); break
-        _WORLD = pickle.dumps((ns['rooms'], ns['exits']), protocol=pickle.HIGHEST_PROTOCOL)
-    return pickle.loads(_WORLD)
+    import maplib                                                # (src/maplib.py: the same parse, from any folder)
+    return maplib.world()
 
 
 def layout():

@@ -1,13 +1,13 @@
 # The layout editor for the rooms the owner calls "Coral Depths" (Oct 16): 47 listed rooms (Azure Sea, Coral Depths, and 2522 of the Asgard Nexus) that tie
 # the Ashen Forest and the Southern Mountains together, plus rooms on the map unlocked so they can be moved: Southern Mountain Range 7, 8, 9, 10, 572, 6365, 19863, then 569-571, and Ashen Forest 14360 (Oct 16).
-#   python3 build_cd_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with cd_editor_template.html beside it)
+#   python3 build_cd_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src/legacy, with cd_editor_template.html beside it)
 # Movable (area 'CD'): exactly the listed rooms, grp 'cd' (game area kept in 'ga'), plus the spacer rooms that join two of them or one of them to a fixed
 # room (dead-end spacer stubs left off), and grp 'un' (the unlocked rooms, starting at their spots in the Southern Mountain or Ashen save). The others start where
 # TinTin's exits put them, one room apart, from rooms 10 and 572; a room on another level is offset LV diagonally (up = north-east).
 # Fixed: every room already on the finished map near enough to matter (as the Pixie Forest editor).
 import sys, os, json
 from collections import defaultdict, Counter, deque
-here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here)
+here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here); sys.path.insert(1, os.path.abspath('..'))   # (src/legacy is the working folder; src for editor_spread, maplib)
 import ashen_forest as AF
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]

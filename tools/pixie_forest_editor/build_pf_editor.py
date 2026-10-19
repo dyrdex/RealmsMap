@@ -1,13 +1,13 @@
 # The layout editor for the Pixie Forest rooms the owner listed (Oct 15: the rooms the paths to A'enari and Reomyr Village run through, so they can be laid
 # out and the routes shown in full), plus Forgotten Woods rooms 4017-4019 unlocked so they can be moved.
-#   python3 build_pf_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with pf_editor_template.html beside it)
+#   python3 build_pf_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src/legacy, with pf_editor_template.html beside it)
 # Movable (area 'PF'): exactly the listed rooms (no others, no spacers: none are needed, they join directly), grp 'pf' (Pixie Forest), 'an' (Asgard Nexus),
 # 'fw' (4017-4019, starting where the map has them). The others start where TinTin's exits put them, one room apart, from 4019's spot on the map; the
 # Asgard Nexus is entered with 'enter' (no direction), so 5019 starts one step north-east of 5018.
 # Fixed: every room already on the finished map near enough to matter (as the Miden'nir editor).
 import sys, os, json
 from collections import defaultdict, Counter, deque
-here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here)
+here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here); sys.path.insert(1, os.path.abspath('..'))   # (src/legacy is the working folder; src for editor_spread, maplib)
 import ashen_forest as AF
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]

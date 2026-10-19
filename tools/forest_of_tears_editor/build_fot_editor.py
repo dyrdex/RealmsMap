@@ -1,5 +1,5 @@
 # The layout editor for the Forest of Tears and the Lake of Tich'Pyga (owner, Oct 12: configure both areas together; the whole section is redrawn afterwards).
-#   python3 build_fot_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with fot_editor_template.html beside it)
+#   python3 build_fot_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src/legacy, with fot_editor_template.html beside it)
 # Fixed rooms (cannot move): every Darkhaven, Shadow Grove and Forgotten Woods room (w['track'] 'cx<id>', source in w['ctxsrc']), exactly where it is on the finished map.
 # Movable too (grp 'wt', unlocked on request Oct 12): the Western Trade Route's drawn road (w['track'] 'wt<id>', fot_extract.py's _WTCHAIN), starting where it is on the map.
 # Movable rooms (area 'FT'):
@@ -11,7 +11,7 @@
 import sys, os, json
 from collections import defaultdict, Counter, deque
 import numpy as np
-here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here)
+here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here); sys.path.insert(1, os.path.abspath('..'))   # (src/legacy is the working folder; src for editor_spread, maplib)
 import ashen_forest as AF
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]

@@ -1,12 +1,12 @@
 # The layout editor for the Wastelands (owner, Oct 16): all its 351 rooms (underwater and tunnel rooms included), off the Southern Mountain Range
 # (34-36) and the Southern Mountain Trade Route (9339, 9346). Its exits into the Blood Sea, the Sea of Sorrows and the other areas it leads to are left off.
-#   python3 build_wl_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with wl_editor_template.html beside it)
+#   python3 build_wl_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src/legacy, with wl_editor_template.html beside it)
 # Movable (area 'WL', grp 'wl'): the Wastelands rooms plus the spacer rooms that join two of them or one of them to a fixed room (dead-end spacer stubs
 # and spacer branches that only lead off to the seas left off). Starting spots: editor_spread.spread_clear (TinTin's exits, STEP rooms apart, spread
 # so no rooms overlap, the whole area then moved next to its anchors clear of the map). Fixed: the rooms on the finished map within NEAR rooms of these.
 import sys, os, json, math
 from collections import defaultdict, Counter, deque
-here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here)
+here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here); sys.path.insert(1, os.path.abspath('..'))   # (src/legacy is the working folder; src for editor_spread, maplib)
 import ashen_forest as AF, editor_spread as ES
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]
