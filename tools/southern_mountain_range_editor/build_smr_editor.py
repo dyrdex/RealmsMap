@@ -1,5 +1,5 @@
 # The layout editor for the Southern Mountain Range (owner, Oct 13: set up the area layout editor first, adjust room configurations, render the map afterwards).
-#   python3 build_smr_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with smr_editor_template.html beside it)
+#   python3 build_smr_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src/legacy, with smr_editor_template.html beside it)
 # Fixed rooms (cannot move), exactly where they are on the finished map (w['track']):
 #   every Darkhaven, Shadow Grove and Forgotten Woods room (w['track'] 'cx<id>', source in w['ctxsrc']), every Forest of Tears / Lake of Tich'Pyga room ('ft<id>')
 #   and the Western Trade Route's drawn road ('wt<id>').
@@ -11,7 +11,7 @@
 import sys, os, json
 from collections import defaultdict, Counter, deque
 import numpy as np
-here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here)
+here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here); sys.path.insert(1, os.path.abspath('..'))   # (src/legacy is the working folder; src for editor_spread, maplib)
 import ashen_forest as AF
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]

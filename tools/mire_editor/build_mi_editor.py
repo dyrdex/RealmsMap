@@ -13,7 +13,7 @@
 import sys, os, json, math
 import numpy as np, networkx as nx
 from collections import defaultdict, Counter, deque
-here = os.path.dirname(os.path.abspath(__file__)); SRCDIR = os.path.normpath(os.path.join(here, '..', '..', 'src')); sys.path.insert(0, SRCDIR)
+here = os.path.dirname(os.path.abspath(__file__)); SRCDIR = os.path.normpath(os.path.join(here, '..', '..', 'src', 'legacy')); sys.path[:0] = [SRCDIR, os.path.dirname(SRCDIR)]
 import ashen_forest as AF, editor_spread as ES
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]

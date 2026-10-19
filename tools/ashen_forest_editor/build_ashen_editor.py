@@ -3,7 +3,7 @@
 # Nothing is filtered: every room of the area, every spacer room joined to it, every exit between them.
 import sys, os, json, math
 from collections import defaultdict, Counter, deque
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); sys.path.insert(1, os.path.abspath('..'))   # (src/legacy is the working folder; src for maplib)
 import ashen_forest as AF
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]

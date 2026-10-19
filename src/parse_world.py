@@ -16,7 +16,8 @@ def fields(line):
     return out
 rooms={}; exits=defaultdict(list); landmarks=[]
 cur=None
-for line in open('world',encoding='utf-8'):
+import os as _osw
+for line in open('world' if _osw.path.exists('world') else '../world',encoding='utf-8'):
     line=line.rstrip('\n')
     if line.startswith('R '):
         f=fields(line[2:]); v=int(f[0]); cur=v

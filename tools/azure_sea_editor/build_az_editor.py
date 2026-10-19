@@ -1,6 +1,6 @@
 # The layout editor for the Azure Sea rooms that join the map (owner, Oct 12: only the Azure Sea rooms linked to rooms already
 # mapped, plus the rooms that join those to each other).
-#   python3 build_az_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with az_editor_template.html beside it)
+#   python3 build_az_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src/legacy, with az_editor_template.html beside it)
 # Fixed rooms: every shown room on the finished map, where it is: the Northern Plains save (Darkhaven, Grove, Woods, NTR, Barren Peaks,
 #   Plains, road) and the Ashen Forest save (forest, Eastern Trade Route, Ocean Keep / Azure beach rooms).
 # Movable rooms (area 'AZ'), found from the TinTin map:
@@ -13,7 +13,7 @@
 #     the Peaks cliffs (14270 -> 14271) to Azure room 14254, already on the map by the Ashen beach: 14257, spacer 14293, 14259, spacer 14295, 14261..14270.
 import sys, os, json
 from collections import defaultdict, Counter, deque
-here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here)
+here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here); sys.path.insert(1, os.path.abspath('..'))   # (src/legacy is the working folder; src for editor_spread, maplib)
 import ashen_forest as AF
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]

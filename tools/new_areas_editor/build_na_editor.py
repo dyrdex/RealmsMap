@@ -1,13 +1,13 @@
 # The layout editor for three areas the owner added on Oct 16: Angel's Landing (22 rooms + Blood Sea room 16226, shown only with its links ne to 5667 and
 # nw to 21135), The Village of Edo (77 rooms, off 7746 on the Azure Sea Coast) and The Grimdog Port Authority (29 rooms + Western Trade Route room 21076,
 # the only way in, off road room 2356).
-#   python3 build_na_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src, with na_editor_template.html beside it)
+#   python3 build_na_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (run inside src/legacy, with na_editor_template.html beside it)
 # Movable (area 'NA'): grp 'al' / 'edo' / 'gp' (game area kept in 'ga'), plus the spacer rooms that join two of their rooms or one of them to a fixed room
 # (dead-end spacer stubs left off). They start where TinTin's exits put them, one room apart, from 5667, 7746 and 2356; a room on another level is offset LV
 # diagonally (up = north-east). Fixed: the rooms on the finished map within NEAR rooms of these starts.
 import sys, os, json, math
 from collections import defaultdict, Counter, deque
-here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here)
+here = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, here); sys.path.insert(1, os.path.abspath('..'))   # (src/legacy is the working folder; src for editor_spread, maplib)
 import ashen_forest as AF
 
 w = json.load(open(sys.argv[1])); out = sys.argv[2]
