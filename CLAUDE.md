@@ -25,7 +25,7 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   The legacy pipeline reproduces the v21-era base only: after a legacy region redraw, re-apply `applied/v22/` (see changes/README).
 - All 13 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get
   `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
-- Next (owner's list): clearings assessment (candidate room clusters per area for the owner to approve, then one general clearing change).
+- In progress: `changes/001_old_area_clearings.py` (8 clearings in FW/AF/BP the owner picked, Oct 19). Not yet a version.
 
 ## Snapshots
 - New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/vN/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress

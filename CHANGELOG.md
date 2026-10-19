@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## In progress (after Version 22)
+
+- Your request (Oct 19): clearings added in the older areas, the clear-cut ones you picked (rooms all joined to each other, as in the Southern Mountains), each in the ground of its own spot, a little lighter, over the trails inside it: Forgotten Woods: Flowing Plains of Grass (16 rooms, 12.8 sq) and Wandering Aimlessly through the Forest (10 rooms, 20.6 sq); Ashen Forest: In an Open Clearing by the Bald Hillock (11 rooms, 16.4 sq) and by the Eastern Trade Route (5 rooms, 8.5 sq); Barren Peaks: The Keep of the Huitz (13 rooms, 25.2 sq, its name stays inside), An Old Mining Camp (7 rooms, 8.7 sq), the Border Guard Base (6 rooms, 6.8 sq, on the forest ground there) and A Deserted Route (5 rooms, 10.3 sq). 31 trees in them cleared; nothing else moved.
+
 ## Version 22 · The Inahir Camp and the Nidaros Shortcut · October 19, 2026
 
 - Your request (Oct 19): New Ofcol and the City of Salburg drawn like Revelation City, Drow City and Thalos: the standard round marker with the stone-city drawing just above it (the white walled-town emblem is gone). Their names keep their spots; the one tree under Salburg's drawing removed. Their cards now say "Area" like the other cities, not "Town".

@@ -55,6 +55,8 @@ The other builders run inside `src/legacy`.
   (936 sw 5511 -> 5507; `changes/007`). A new shortcut: place its rooms in an editor, then join the routes' pieces at it (as 007).
 - **Trade routes** (Eastern, Northern, Western, Southern Mountain): one continuous formal road; off-ramp pads where paths or
   sub-area links join; dirt trails elsewhere. Spacer rooms drawn only between two real rooms.
+- **Older-area clearings** (Forgotten Woods, Ashen Forest, Barren Peaks; Oct 19): only the clear-cut clumps the owner picks; ground of their own
+  spot, a little lighter (`wild.clearings`, template CLEAR, drawn over the dirt trails, under the trade roads).
 - **Barren Peaks**: no coasts unless the owner asks with a clear picture.
 - **Azure Sea Coast**: the owner's name for the 49-room Azure Sea pathway; a blue water route at the foot of the cliff.
 - **Forest of Tears**: Fog Cliffs mountains reach 2 rooms east of the cliff path (Oct 19, so the Tree of Life is in the forest).
