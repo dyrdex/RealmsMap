@@ -24,7 +24,10 @@ CLEARINGS = {
     'BP-2 An Old Mining Camp': ([6722, 6723, 6724, 6867, 6868, 6869, 6870], PEAKS),
     'BP-3 Border Guard Base': ([6917, 6918, 6919, 6920, 6921, 6922, 5789, 5790, 5791], PEAKWOOD),   # (with the Forgotten Woods rooms joined to it: owner, Oct 19)
     'BP-4 A Deserted Route': ([7046, 7047, 7048, 7059, 7060], PEAKS),
+    'BP-5 The Supply Post and Campside (Woods border)': ([5733, 5734, 5735, 5736, 5737, 7038, 7039, 7040, 7041, 7043, 7044], WOODS),   # (owner, Oct 19: one clearing)
 }
+BRIDGES = {'BP-5 The Supply Post and Campside (Woods border)': [(5734, 5735, 7040, 7043)]}   # cells filled to join two clumps into one (owner's choice), over 908 and 7041
+HUTS = [7041]                                                   # Setgro's Hovel: the map's small hut drawing on its room (owner, Oct 19)
 EXTRA = {5399: 5394}                                            # rooms joined to their clearing by one exit only, taken in along it (owner, Oct 19: 5399, the last Flowing Plains of Grass room, NW)
 SPRITES = ('trees', 'tufts', 'brush', 'boulders', 'crags', 'hills', 'peaks', 'wheattufts', 'thorns', 'reeds')
 
@@ -65,6 +68,8 @@ def apply(town, wild, pos):
             except Exception: continue                           # (three in a line: no area)
             if hull.volume < .45: continue
             dr.polygon([px(p) for p in pts[hull.vertices]], fill=255, outline=255); used += 1
+        for cell in BRIDGES.get(name, []):
+            dr.polygon([px(P[v]) for v in cell], fill=255, outline=255); used += 1
         for a, b in EXTRA.items():
             if a in P and b in P: dr.line([px(P[a]), px(P[b])], fill=255, width=3); used += 1
         m = ndi.binary_dilation(np.array(im, bool), structure=disk(int(PAD * R8)))
@@ -96,4 +101,7 @@ def apply(town, wild, pos):
     tt = wild.get('talltrees') or []; keep = [q for q in tt if not hit(q[0], q[1])]
     if len(keep) != len(tt): cleared['talltrees'] = len(tt) - len(keep); wild['talltrees'] = keep
     report['sprites cleared'] = cleared
+    for v in HUTS:
+        x, y = at(v); wild['gfx'].append({'k': 'hut', 'at': 'xy', 'x': round(x, 2), 'y': round(y, 2), 'w': .72, 'h': .62})
+    report['huts'] = len(HUTS)
     return report
