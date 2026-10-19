@@ -20,6 +20,8 @@ number, don't read it whole.
 - Changes go in `src/changes/NNN_name.py` (see its README). Never edit `base/map.json` by hand; `build.py --freeze` rewrites it.
 
 ## Layout editors
+Republished Oct 19 in the owner's current claude.ai organization (the old links in `docs/archive/` are in another organization and are not
+used any more); each was loaded with the owner's latest save (its `<key>/current` document), so it opens where the owner left off.
 New areas: rooms go into a layout editor first; drawn only after the owner places them and saves (owner, Oct 18).
 Starting spots from `src/editor_spread.py` (`spread_clear`), with its numbers reported (owner, Oct 16).
 To make a new editor: copy the newest builder (`tools/mire_editor/build_mi_editor.py`, run from anywhere; it reads the old saves
@@ -28,19 +30,19 @@ The other builders run inside `src/legacy`.
 
 | Region | Editor | Save key | Save on file (`src/legacy/`) |
 |---|---|---|---|
-| Ashen Forest + Eastern Trade Route | https://claude.ai/artifact/9U2KgrE14tjNxdFRakG3KU | `ashlayout2/current` | `ashen_layout_final.json` |
-| Northern Trade Route | https://claude.ai/artifact/3mg5TZWL3Zr4Md8teuUwXa | `ntrlayout/current` | `ntr_layout_final.json` |
-| Barren Peaks | https://claude.ai/artifact/Lvq3Uyx6C4PsUpoUCQpAFR | `bplayout/current` | `bp_layout_final.json` |
-| Northern Plains | https://claude.ai/artifact/5xmGGYXraZz9SyrNPfpwr9 | `nplayout/current` | `np_layout_final.json` |
-| Azure Sea Coast | https://claude.ai/artifact/6ksoWjUqzQVCL8oyhStJvn | `azlayout/current` | `az_layout_final.json` |
-| Forest of Tears + Lake + Western Trade Route | https://claude.ai/artifact/CcEMjEHhwhkidQ8JjGhW3h | `ftlayout/current` | `ft_layout_final.json` |
-| Southern Mountain Range + its Trade Route | https://claude.ai/artifact/38TYfjjTGLAESYAcbt9kmJ | `smrlayout/current` | `smr_layout_final.json` |
-| Miden'nir | https://claude.ai/artifact/KmxfRdqCbH8wqGi1HKyiEf | `mdlayout/current` | `md_layout_final.json` |
-| Pixie Forest | https://claude.ai/artifact/8wteY9NKDSf4S916L1rdrp | `pflayout/current` | `pf_layout_final.json` |
-| Coral Depths | https://claude.ai/artifact/79LKix1gF8uJHU2GhiEY4r | `cdlayout/current` | `cd_layout_final.json` |
-| Angel's Landing, Village of Edo, Grimdog | https://claude.ai/artifact/4cb43ysdsf4dH9cdgJCjpk | `nalayout/current` | `na_layout_final.json` |
-| Wastelands | https://claude.ai/artifact/2yna7daYADcMC8Sh9xcsin | `wllayout/current` | `wl_layout_final.json` |
-| The Mire | https://claude.ai/artifact/2vc9DVUVAnNRPZ3PzZBQv5 | `milayout/current` | `mi_layout_final.json` |
+| Ashen Forest + Eastern Trade Route | https://claude.ai/artifact/SGxdtXWz9KmTx136HRoqXp | `ashlayout2/current` | `ashen_layout_final.json` |
+| Northern Trade Route | https://claude.ai/artifact/TCMYDB44YJcBNyHHCbncEi | `ntrlayout/current` | `ntr_layout_final.json` |
+| Barren Peaks | https://claude.ai/artifact/5ew6mZt2c4uTadZffTyYsW | `bplayout/current` | `bp_layout_final.json` |
+| Northern Plains | https://claude.ai/artifact/WRfbZ3YQQoFZznCYY7Utbe | `nplayout/current` | `np_layout_final.json` |
+| Azure Sea Coast | https://claude.ai/artifact/QzE74CZTXFsz5x9LjVpgP7 | `azlayout/current` | `az_layout_final.json` |
+| Forest of Tears + Lake + Western Trade Route | https://claude.ai/artifact/84fj2gshfLkwJHdiWoGG5P | `ftlayout/current` | `ft_layout_final.json` |
+| Southern Mountain Range + its Trade Route | https://claude.ai/artifact/CGhes5s64FvHYSJgKQaiJk | `smrlayout/current` | `smr_layout_final.json` |
+| Miden'nir | https://claude.ai/artifact/AQ6TJxfjMapiknTNtij2XA | `mdlayout/current` | `md_layout_final.json` |
+| Pixie Forest | https://claude.ai/artifact/3MJzJ4g1ezZKRgZR8H3A2M | `pflayout/current` | `pf_layout_final.json` |
+| Coral Depths | https://claude.ai/artifact/Mjng42RvVc8q3s44UEKjEa | `cdlayout/current` | `cd_layout_final.json` |
+| Angel's Landing, Village of Edo, Grimdog | https://claude.ai/artifact/M8TS87UDLLEyPDgKUKRLFD | `nalayout/current` | `na_layout_final.json` |
+| Wastelands | https://claude.ai/artifact/XtoCQTMrpPQCLZREeczD7L | `wllayout/current` | `wl_layout_final.json` |
+| The Mire | https://claude.ai/artifact/QAUXkaXfwFS1fgDRiXzHmo | `milayout/current` | `mi_layout_final.json` |
 
 ## Standing owner rules, by region
 - **Everywhere**: routes and room counts are the owner's own (`data.py`: `MORE_DIRECTIONS`, `ROUTE_OPTIONS`), never computed;
