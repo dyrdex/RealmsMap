@@ -24,9 +24,9 @@ CLEARINGS = {
     'BP-2 An Old Mining Camp': ([6722, 6723, 6724, 6867, 6868, 6869, 6870], PEAKS),
     'BP-3 Border Guard Base': ([6917, 6918, 6919, 6920, 6921, 6922, 5789, 5790, 5791], PEAKWOOD),   # (with the Forgotten Woods rooms joined to it: owner, Oct 19)
     'BP-4 A Deserted Route': ([7046, 7047, 7048, 7059, 7060], PEAKS),
-    'BP-5 The Supply Post and Campside (Woods border)': ([5733, 5734, 5735, 5736, 5737, 7038, 7039, 7040, 7041, 7043, 7044], WOODS),   # (owner, Oct 19: one clearing)
+    'BP-5 The Supply Post and Campside (Woods border)': ([5733, 5734, 5735, 5736, 5737, 7038, 7039, 7040, 7041, 7042, 7043, 7044], WOODS),   # (owner, Oct 19: one clearing)
 }
-BRIDGES = {'BP-5 The Supply Post and Campside (Woods border)': [(5734, 5735, 7040, 7043)]}   # cells filled to join two clumps into one (owner's choice), over 908 and 7041
+BRIDGES = {'BP-5 The Supply Post and Campside (Woods border)': [(5734, 5735, 7040, 7043), (7043, 7042, 7040)]}   # (7042 Burning Ashes, the V north of the hovel: owner, Oct 19)   # cells filled to join two clumps into one (owner's choice), over 908 and 7041
 HUTS = [7041]                                                   # Setgro's Hovel: the map's small hut drawing on its room (owner, Oct 19)
 EXTRA = {5399: 5394}                                            # rooms joined to their clearing by one exit only, taken in along it (owner, Oct 19: 5399, the last Flowing Plains of Grass room, NW)
 SPRITES = ('trees', 'tufts', 'brush', 'boulders', 'crags', 'hills', 'peaks', 'wheattufts', 'thorns', 'reeds')
