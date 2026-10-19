@@ -19,15 +19,16 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   `docs/archive/`: full history (grep it, don't read it whole). `CHANGELOG.md`: owner-facing history (append to the top section).
 
 ## State (Oct 19, 2026)
-- Last version v21 (Oct 19, "A New Starting Point": Miden'nir routes in full, Fog Cliffs mountains thinner, the map frozen into
-  `src/base/map.json`; tag `v21` to be added by the owner on GitHub). No change files yet.
-- Next (owner's list): Inahir Village graphic (rooms 4672, 4677); every city drawn with the City of Revelation's graphic (show
-  the owner the list of city/town graphics first, they pick); Wastelands -> Ahtborn Strait path overlap; clearings assessment
-  (candidate room clusters per area for the owner to approve, then one general clearing change); Sesuadra's Rift rooms 2112,
-  21974, 21973, 13608 into a layout editor (directions `#9 w;nw;#2 w;nw;w;#2 n;#3 nw;w;#4 sw;w;#2 nw;w;sw;#13 w;n;cauldron;sw;enter`).
+- Last version v22 (Oct 19, "The Inahir Camp and the Nidaros Shortcut"; tag `v22` to be added by the owner on GitHub). Base = v21 +
+  the owner's Plains saves (14:29Z, 14:50Z) + changes 001-008 (city graphics, Wastelands shore paths, Inahir Camp, Tall Trees grove,
+  Plains sea gaps, Sesuad'ra Rift + V'laresch directions + 1984, Nidaros Shortcut routes + short paths), now in `src/changes/applied/v22/`.
+  The legacy pipeline reproduces the v21-era base only: after a legacy region redraw, re-apply `applied/v22/` (see changes/README).
+- All 13 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get
+  `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
+- Next (owner's list): clearings assessment (candidate room clusters per area for the owner to approve, then one general clearing change).
 
 ## Snapshots
-- New version: `python3 build.py --freeze`, delete the change files, edit `src/VERSION`, retitle the CHANGELOG's in-progress
+- New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/vN/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress
   section, rebuild twice (realm_map.html must match), commit.
 - Merge into `main` ONLY when the owner says to save a new version (Oct 16). Day to day: push to the session branch only. Then
   open a PR to `main`, merge it, and remind the owner: GitHub -> Releases -> Draft a new release -> tag `vN` -> Target `main` ->
