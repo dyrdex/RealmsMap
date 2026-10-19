@@ -21,8 +21,8 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 ## State (Oct 19, 2026)
 - Last version v21 (Oct 19, "A New Starting Point": Miden'nir routes in full, Fog Cliffs mountains thinner, the map frozen into
   `src/base/map.json`; tag `v21` to be added by the owner on GitHub). Changes since: 001 city graphics (New Ofcol, Salburg ->
-  `stonecity`), 002 Wastelands shore path ends snapped to the water route, 003 Inahir Camp (palisade, tents, long house,
-  corral, fire pit; `wild.camps`, drawn by CAMPS in template.html).
+  `stonecity`), 002 Wastelands shore path ends snapped to the water route, 003 Inahir Camp (old-map ink: palisade, 5 tents, long house,
+  corral, fire pit, no animals; `wild.camps`, drawn by CAMPS in template.html).
 - Next (owner's list): clearings assessment
   (candidate room clusters per area for the owner to approve, then one general clearing change); Sesuadra's Rift rooms 2112,
   21974, 21973, 13608 into a layout editor (directions `#9 w;nw;#2 w;nw;w;#2 n;#3 nw;w;#4 sw;w;#2 nw;w;sw;#13 w;n;cauldron;sw;enter`).
