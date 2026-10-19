@@ -20,13 +20,16 @@ CLEARINGS = {
     'FW-2 Wandering Aimlessly through the Forest': (list(range(5947, 5957)), WOODS),
     'AF-1 In an Open Clearing (Bald Hillock)': ([2924, 2925, 2926, 2928, 2929, 2930, 2931, 2932, 2933, 2936, 2937], ASH),
     'AF-2 In an Open Clearing (Eastern Trade Route)': ([1241, 1242, 1245, 1249, 1250], ASH),
-    'BP-1 The Keep of the Huitz': ([18832, 18833, 18834, 18835, 18836, 18837, 18838, 18840, 18841, 18843, 18844, 18845, 18847], PEAKS),
+    'BP-1 The Keep of the Huitz': ([18832, 18833, 18834, 18835, 18836, 18837, 18838, 18840, 18841, 18843, 18844, 18845, 18847, 18852, 18853], PEAKS),
     'BP-2 An Old Mining Camp': ([6722, 6723, 6724, 6867, 6868, 6869, 6870], PEAKS),
     'BP-3 Border Guard Base': ([6917, 6918, 6919, 6920, 6921, 6922, 5789, 5790, 5791], PEAKWOOD),   # (with the Forgotten Woods rooms joined to it: owner, Oct 19)
     'BP-4 A Deserted Route': ([7046, 7047, 7048, 7059, 7060], PEAKS),
     'BP-5 The Supply Post and Campside (Woods border)': ([5733, 5734, 5735, 5736, 5737, 7038, 7039, 7040, 7041, 7042, 7043, 7044], WOODS),   # (owner, Oct 19: one clearing)
 }
-BRIDGES = {'BP-5 The Supply Post and Campside (Woods border)': [(5734, 5735, 7040, 7043), (7043, 7042, 7040)]}   # (7042 Burning Ashes, the V north of the hovel: owner, Oct 19)   # cells filled to join two clumps into one (owner's choice), over 908 and 7041
+BRIDGES = {                                                     # cells filled where the owner asked rooms in that the rule leaves out (Oct 19)
+    'BP-1 The Keep of the Huitz': [(18845, 18853, 18852, 18844)],                                   # 18853 Revenance, 18852 A Darkened Cabin, north
+    'BP-5 The Supply Post and Campside (Woods border)': [(5734, 5735, 7040, 7043), (7043, 7042, 7040)],   # the two clumps joined over 908 and 7041; 7042 Burning Ashes
+}
 HUTS = [7041]                                                   # Setgro's Hovel: the map's small hut drawing on its room (owner, Oct 19)
 EXTRA = {5399: 5394}                                            # rooms joined to their clearing by one exit only, taken in along it (owner, Oct 19: 5399, the last Flowing Plains of Grass room, NW)
 SPRITES = ('trees', 'tufts', 'brush', 'boulders', 'crags', 'hills', 'peaks', 'wheattufts', 'thorns', 'reeds')
