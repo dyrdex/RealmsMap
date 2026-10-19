@@ -16,7 +16,7 @@ DIRS = ('n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw')
 # fill, edge: the ground under each spot (sampled from the map) a little lighter, and darker for the rim
 WOODS, ASH, PEAKS, PEAKWOOD = ('#33432F', '#1E281F'), ('#484C43', '#2A2D27'), ('#5D4E39', '#352C20'), ('#33452F', '#1E281F')
 CLEARINGS = {
-    'FW-1 Flowing Plains of Grass': ([5078, 5182, 5315] + list(range(5386, 5399)), WOODS),
+    'FW-1 Flowing Plains of Grass': ([5078, 5182, 5315] + list(range(5386, 5400)), WOODS),
     'FW-2 Wandering Aimlessly through the Forest': (list(range(5947, 5957)), WOODS),
     'AF-1 In an Open Clearing (Bald Hillock)': ([2924, 2925, 2926, 2928, 2929, 2930, 2931, 2932, 2933, 2936, 2937], ASH),
     'AF-2 In an Open Clearing (Eastern Trade Route)': ([1241, 1242, 1245, 1249, 1250], ASH),
@@ -25,6 +25,7 @@ CLEARINGS = {
     'BP-3 Border Guard Base': ([6917, 6918, 6919, 6920, 6921, 6922], PEAKWOOD),
     'BP-4 A Deserted Route': ([7046, 7047, 7048, 7059, 7060], PEAKS),
 }
+EXTRA = {5399: 5394}                                            # rooms joined to their clearing by one exit only, taken in along it (owner, Oct 19: 5399, the last Flowing Plains of Grass room, NW)
 SPRITES = ('trees', 'tufts', 'brush', 'boulders', 'crags', 'hills', 'peaks', 'wheattufts', 'thorns', 'reeds')
 
 
@@ -64,6 +65,8 @@ def apply(town, wild, pos):
             except Exception: continue                           # (three in a line: no area)
             if hull.volume < .45: continue
             dr.polygon([px(p) for p in pts[hull.vertices]], fill=255, outline=255); used += 1
+        for a, b in EXTRA.items():
+            if a in P and b in P: dr.line([px(P[a]), px(P[b])], fill=255, width=3); used += 1
         m = ndi.binary_dilation(np.array(im, bool), structure=disk(int(PAD * R8)))
         m = ndi.gaussian_filter(m.astype(float), .45 * R8) > .5
         polys = []
