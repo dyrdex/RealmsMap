@@ -30,7 +30,8 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   saves). Read saves with ArtifactData get `<key>/current` on the new links; nothing from the old organization is used.
 - Next (owner's list): clearings assessment
   (candidate room clusters per area for the owner to approve, then one general clearing change); 006 Sesuad'ra Rift (FT save 15:42Z: 13 hidden rooms' spots into
-  room_pos, new place + V'laresch's new directions live in `changes/006_sesuadra_rift.py`, not data.py, so legacy still reproduces the base).
+  room_pos, new place + V'laresch's new directions live in `changes/006_sesuadra_rift.py`, not data.py, so legacy still reproduces the base). Nidaros Shortcut rooms 5317, 935, 936, 5511, 5507 added
+  to the Forest of Tears editor (`add_nidaros.py`, grp 'ns'): waiting for the owner's save (Valley of Mysts route: 936 sw 5511 -> 5507, a long line).
 
 ## Snapshots
 - New version: `python3 build.py --freeze`, delete the change files, edit `src/VERSION`, retitle the CHANGELOG's in-progress
