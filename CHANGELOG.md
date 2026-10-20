@@ -2,6 +2,7 @@
 
 ## In progress
 
+- Your request (Oct 20): River routes added as the default for Desert of Despair, Great Eastern Desert, Blasted Lands, Thul Ab'hara, The Dungeon and Barren Wastes. The route each had before is now the alternate "East: May encounter mobs (requires hide)". Each line is drawn in one piece to the place's marker; picking East on the card draws the old line. You gave no room counts, so none are shown (the card reads "River" / "East: ..."). The Dungeon's River route ends at 6516 A musty cave; its line runs on to the marker at 929 (the East route goes on with "pick e;open e;e;d").
 - Your request (Oct 20): Shattered Temple of Naetrelle's directions are the same as the ones already on file, so they're unchanged. Its drawn route was broken in 3 pieces where it crosses the desert, because it was traced before the desert's rooms had spots. It's now traced again as one line to the same marker; Tayalardian Rangelands, on the same way, is fixed the same way (3 pieces to 1).
 - Your request (Oct 20): Daichaal's directions replaced with yours (#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;#2 s;w;nw;#3 w;sw;#2 w;sw;#3 s;se;sw;se). They now come down the docks and through the desert's north (6366 to 6371) to 6520, drawn in one piece; the marker is unchanged.
 - Your request (Oct 20): the area name "Desert / Of / Despair", one word per line in the map's big-name style, in the open middle of the desert (centred x 72.5, y 97.2 to 106.2). It's 1.65 clear of the nearest path and 7.3 or more from any marker, drawing or maze.

@@ -26,6 +26,17 @@ MAZES = [(4050, (0, 0), 2.7, 2.3, dict(top=True, name='Traveling the sands...', 
          (22145, (0, 0), 1.4, 1.19, dict(fill='#352C1E', edge='#EAD9AE'))]
 AREA_NAME = dict(x=72.5, y=99.5, lh=2.8, sag=0.5, hw=6, lines=['Desert', 'Of', 'Despair'])   # one word per line, in the open ground between the trails at x 65 and x 80 (owner, Oct 20)
 OASIS = (13630, 3.2, 2.2)                                    # the oasis round 13630 (owner, Oct 20): a medium drawing centred on it
+# Route options (owner, Oct 20): the River route (the owner's, condensed) becomes each place's default; the route it had becomes the alternate
+# 'East: May encounter mobs (requires hide)'. No room counts given: none shown. Each line drawn to the place's marker (as its route was).
+RIVER = {
+    'Desert of Despair': 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w',
+    'Great Eastern Desert': 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w;sw;s;sw;sw;w;sw;sw;nw;d;d;sw;d;n;ne;e;e;e;e;e;e;e;e',
+    'Blasted Lands': 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w;sw;s;sw;sw;w;sw;sw;nw;d;d;sw;d;n;ne;e;e;e;e;e;e;e;e;scan for entrance',
+    "Thul Ab'hara": 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w;sw;s;sw;sw;w;sw;sw;nw;d;d;sw;d;s;se;se;se;s;sw;se;s;w',
+    'The Dungeon': 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w;sw;s;sw;sw;w;sw;sw;s;sw;s;se;se;s;e;e;e;e;e;n;n;n;w;w;n;d',
+    'Barren Wastes': "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;se;se;s;sw;s;sw;n;w;sw;w;s;sw;w;sw;nw;w;nw;nw;w;n;se;scan/move to 'A crumbling dusty stone';dig down;d",
+}
+DUNGEON_TO_MARKER = (6516, 929)                              # (The Dungeon's River route ends at 6516; its marker is on 929 beyond the locked door: the line runs on to it)
 BOULDERS = [6403, 6391, 6459, 6395]                          # the quest's large boulders (owner, Oct 20), one on each room
 LABEL_ROOM, LABEL_DX = 6366, -1.9                            # "(Emerald Hills)": centred this far west of 6366, on its line (0.48 clear of the Tayalardian Rangelands name, 0.34 of the trail)
 
@@ -102,4 +113,26 @@ def apply(town, wild, pos):
     g = {'k': 'text', 'at': 'xy', 'x': round(q[0] + LABEL_DX, 2), 'y': round(q[1] + 0.13, 2), 'text': '(Emerald Hills)'}
     wild['gfx'] = list(wild['gfx']) + [g]
     rep['label'] = g
+    rep['route_options'] = {}
+    for p in wild['places']:
+        if p['name'] not in RIVER: continue
+        river = maplib.condense(RIVER[p['name']]); tr = walk(river); end = p['path'][-1]
+        k = max((i for i, v in enumerate(tr) if at(v) and math.dist(at(v), end) < 0.05), default=None)
+        extra = None
+        if k is None:                                                               # (the marker is a step beyond the route's end: Blasted Lands on 22145, The Dungeon on 929)
+            k = len(tr) - 1
+            while at(tr[k]) is None: k -= 1
+            extra = end
+        segs, cur = [], []
+        for v in tr[:k + 1]:
+            q = at(v)
+            if q is None:
+                if cur: segs.append(cur); cur = []
+            else: cur.append(R(q))
+        if cur: segs.append(cur)
+        if extra is not None: segs[-1].append(R(extra))
+        east = dict(dir='East', rooms=None, note='May encounter mobs (requires hide)', route=p['route'], segs=p['segs'], gap=p.get('note'))
+        p['opts'] = [dict(dir='River', rooms=None, note=None, route=river, segs=segs, gap=None if len(segs) == 1 else GAP), east]
+        p['route'] = river; p['segs'] = segs; p['path'] = [q for s in segs for q in s]; p['note'] = None if len(segs) == 1 else GAP
+        rep['route_options'][p['name']] = dict(river_rooms_walked=len(tr), drawn_to=k + 1, to_marker_after=extra, pieces=len(segs))
     return rep

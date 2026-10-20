@@ -169,7 +169,7 @@ function select(p){
   const steps=p.path.length-1;
   let html=`<h2>${esc(p.name)}</h2><p class="kind">${({guild:'Guild',structure:'Landmark',mob:'Mob',town:'Town'})[p.kind]||'Area'} ${p.group==='fot'?'in the Forest of Tears':p.group==='wtr'?'on the Western Trade Route':p.group==='mid'?'off Miden\'nir':p.group==='sg'?'off the Shadow Grove':p.group==='af'?(p.where||'off the Ashen Forest'):p.group==='fw'?(p.kind?'in the Forgotten Woods':'off the Forgotten Woods'):'in New Darkhaven'} · ${p.kind==='mob'?'found at':p.dir==='here'?'reached at':'entrance at'} ${esc(p.room)}</p>`;
   if(p.note)html+=`<p class="note">${esc(p.note)}</p>`;
-  const opt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k?'':' checked'}><span>${esc(o.dir)} (${o.rooms} rooms)${o.note?': '+esc(o.note):''}</span></label><code>${esc(o.route)}</code>${o.gap?`<p class="note">${esc(o.gap)}</p>`:''}</div>`;
+  const opt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k?'':' checked'}><span>${esc(o.dir)}${o.rooms!=null?` (${o.rooms} rooms)`:''}${o.note?': '+esc(o.note):''}</span></label><code>${esc(o.route)}</code>${o.gap?`<p class="note">${esc(o.gap)}</p>`:''}</div>`;
   if(p.opts)html+=`<p>Full directions from Darkhaven Square:</p>`+opt(p.opts[0],0)+(p.opts.length>1?`<p class="ralt">Alternate routes:</p>`+p.opts.slice(1).map((o,k)=>opt(o,k+1)).join(''):'');
   else html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>Full directions from Darkhaven Square:</p><code>${esc(p.route)}</code>`;
   if(p.alt&&p.alt.length)html+=`<p>Another way:</p>`+p.alt.map(a=>`<code>${esc(a)}</code>`).join('');
