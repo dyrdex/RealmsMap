@@ -2,6 +2,8 @@
 
 ## In progress
 
+- Your request (Oct 20): Daichaal's directions replaced with yours (#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;#2 s;w;nw;#3 w;sw;#2 w;sw;#3 s;se;sw;se). They now come down the docks and through the desert's north (6366 to 6371) to 6520, drawn in one piece; the marker is unchanged.
+- Your request (Oct 20): the area name "Desert / Of / Despair", one word per line in the map's big-name style, in the open middle of the desert (centred x 72.5, y 97.2 to 106.2). It's 1.65 clear of the nearest path and 7.3 or more from any marker, drawing or maze.
 - Your request (Oct 20): the Traveling the sands... maze is bigger, 5.8 x 4.4 rooms (was 3.3 x 2.5). It grew to the north, east and west; its south edge is where it was (y 135.84). It stays 0.44 clear of the ruins' clearing to the north. Its name is larger (0.62, was 0.42).
 - Your request (Oct 20): the maze at 4050 is now drawn over the paths, with its name "Traveling the sands..." on it.
 - Your request (Oct 20): an oasis drawing (3.2 x 2.2) centred on 13630: a still pool in a ring of green, reeds at its edge, five date palms round it.

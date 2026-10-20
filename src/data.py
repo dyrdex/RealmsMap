@@ -26,7 +26,7 @@ Curse of Prosperity|#7 w;sw;s;w;#2 sw;s;#2 w;se;#3 w;sw;se;sw;se;#2 sw;se;#2 s;s
 Cursed Lands|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;s;sw;#2 s;w;sw;d;nw;s;#2 e;#2 se;e;#4 se;#6 sw;#2 w;#2 nw;ne;e;nw;n
 Darkhaven Art Gallery|#4 s;w;#2 n;give 5000 coin recep;unlock n;open n;n;drop key
 D'Morian Lands|#32 w;#6 s
-Daichaal|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#3 s;#5 se;#3 s;d;s;se;s;#3 se;e;#3 s;ne;e;s;#2 se;#3 e;#2 se;#3 e;se
+Daichaal|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;#2 s;w;nw;#3 w;sw;#2 w;sw;#3 s;se;sw;se
 Dawn to Dusk|#7 w;sw;s;w;#2 sw;s;#2 w;se;#3 w;sw;se;sw;se;#2 sw;se;#2 s;sw;s;sw;s;se;s;sw;#2 s;sw;s;sw;#3 s;sw;n
 Desert of Despair|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se
 Domain of the World Eater|#13 e;#3 s;w;s;#2 w,n,#2 w,#2 s,se,#2 e,ne,w,s,#3 d;scan/scry for "Formless Void" maze.

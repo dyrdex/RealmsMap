@@ -8,7 +8,7 @@ Markers (routes from data.py, traced from Darkhaven Square; one piece each):
   - Thul Ab'hara: the marker on hidden 6561 The mouth of a cave; The Dungeon: on hidden 929 A roughly hewn tunnel. The rooms stay hidden;
     the routes run over them.
 Mazes: sandy maze blobs (fwmazes, style 'desert', no name) round 4050 (Traveling the sands...), 9057 and 22145.
-Label: "(Emerald Hills)", small text west of 6366 Wandering the Desert (its exit west leads to the Emerald Hills)."""
+Area name: Desert / Of / Despair in the middle. Label: "(Emerald Hills)", small text west of 6366 Wandering the Desert (its exit west leads to the Emerald Hills)."""
 import math, random, re
 import maplib, data
 
@@ -24,6 +24,7 @@ PLACES = [('Daichaal', None, None), ('Barren Wastes', 13061, None), ('Great East
 MAZES = [(4050, (0, 0), 2.7, 2.3, dict(top=True, name='Traveling the sands...', nolabel=False, fs=0.62, bottom=135.842)),   # (bigger to the north, east and west, its south edge kept: owner, Oct 20)
          (9057, (1.9, -2.15), 3.45, 3.75, {}),
          (22145, (0, 0), 1.4, 1.19, dict(fill='#352C1E', edge='#EAD9AE'))]
+AREA_NAME = dict(x=72.5, y=99.5, lh=2.8, sag=0.5, hw=6, lines=['Desert', 'Of', 'Despair'])   # one word per line, in the open ground between the trails at x 65 and x 80 (owner, Oct 20)
 OASIS = (13630, 3.2, 2.2)                                    # the oasis round 13630 (owner, Oct 20): a medium drawing centred on it
 BOULDERS = [6403, 6391, 6459, 6395]                          # the quest's large boulders (owner, Oct 20), one on each room
 LABEL_ROOM, LABEL_DX = 6366, -1.9                            # "(Emerald Hills)": centred this far west of 6366, on its line (0.48 clear of the Tayalardian Rangelands name, 0.34 of the trail)
@@ -78,6 +79,8 @@ def apply(town, wild, pos):
     wild['gfx'] = list(wild['gfx']) + [{'k': 'oasis', 'at': 'xy', 'x': round(q[0], 2), 'y': round(q[1], 2), 'w': OASIS[1], 'h': OASIS[2]}] + \
         [{'k': 'bigboulder', 'at': 'xy', 'x': round(at(v)[0], 2), 'y': round(at(v)[1], 2), 'w': 1.65, 'h': 1.32} for v in BOULDERS]
     rep['oasis'] = q; rep['boulders'] = {v: at(v) for v in BOULDERS}
+    wild['arealabels'] = list(wild.get('arealabels') or []) + [AREA_NAME]          # the area's name in the empty middle of the desert (owner, Oct 20)
+    rep['area_name'] = AREA_NAME
     q = at(LABEL_ROOM)
     g = {'k': 'text', 'at': 'xy', 'x': round(q[0] + LABEL_DX, 2), 'y': round(q[1] + 0.13, 2), 'text': '(Emerald Hills)'}
     wild['gfx'] = list(wild['gfx']) + [g]
