@@ -43,6 +43,7 @@ The other builders run inside `src/legacy`.
 | Angel's Landing, Village of Edo, Grimdog | https://claude.ai/artifact/M8TS87UDLLEyPDgKUKRLFD | `nalayout/current` | `na_layout_final.json` |
 | Wastelands | https://claude.ai/artifact/XtoCQTMrpPQCLZREeczD7L | `wllayout/current` | `wl_layout_final.json` |
 | The Mire | https://claude.ai/artifact/QAUXkaXfwFS1fgDRiXzHmo | `milayout/current` | `mi_layout_final.json` |
+| Desert of Despair | https://claude.ai/artifact/JKaM8hA8ih8XHfNJQifgqA | `ddlayout/current` | `dd_layout_final.json` |
 
 ## Standing owner rules, by region
 - **Everywhere**: routes and room counts are the owner's own (`data.py`: `MORE_DIRECTIONS`, `ROUTE_OPTIONS`), never computed;
@@ -71,4 +72,24 @@ The other builders run inside `src/legacy`.
 - **Wastelands**: quick, broad-strokes work. Never change the Southern Mountains (clearings, ground, sprites) when working here.
   One ground (`wheat`) under everything, no other tint over it. Coast path is a water route in the sea. Hidden: 8700, 8754;
   rooms 8722-8889 not drawn. Open: Mulciber's Forge's directions break at 8557 ('#3 s' after 8562): ask the owner.
+- **Desert of Despair** (editor Oct 20, `tools/desert_of_despair_editor/`): builder reads `base/map.json`'s room_pos directly (not the legacy saves):
+  `FINAL_DUMP=<f> NO_TILES=1 python3 build.py`, then `python3 build_dd_editor.py <f> desert_of_despair_editor.html` (~1 min; RES 0.2). Unlocked (Oct 20): grp 'un' 6365; grp 'wl' the 198 Wastelands rooms shown round the desert (spacers incl.); grp 'cd' the 34 rooms shown from the Coral Depths editor. Moving them means redrawing their trails.
+  Drawn (Oct 20, save 14:39Z) by the LEGACY pipeline: `legacy/dd_merge.py` (land chained last into smr_merge's land_edit, kept off the WL south
+  sea; one `sand` ground; clearings by the range's cell rule; `fwtracks`), wired in `build_legacy.py`: the save's 'wl' rooms (+ hidden) go into
+  the WL layout, 'cd'/'un' rooms into the CD layout (6365 then into the SMR layout; smr's window pinned at 6365's old spot so the range doesn't
+  re-roll). smr_merge's grid: x to GF.X1 + 24, y to 170. cd_merge's sea reaches 2 rooms past its swimming rooms. New base = `BASE_DUMP=<f>
+  NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json` (re-applies applied/v22 + v23; without the
+  DD save this reproduces the old base exactly). No sprites/labels yet (not asked).
+  Owner (Oct 20): desert trails straight through every room (`exact`, no smoothing). Arid Steppes clearing grows over rooms reached from the
+  steppes by n/s/e/w exits <= 2.6 inside `STX_BOX` (44..56, 88..116), merged with the old steppes polygon. DD rooms named An Ancient Road =
+  `dirtroads` (+ their links to WL road rooms).
+  The template draws lines as curves through midpoints (they cut corners): `ntr_merge._sharp` doubles a room's point so the curve passes it
+  exactly (all desert lines; cd_merge for rooms in `EXACT` = moved in the DD editor). `dd_merge.drop_dangling`: trails left ending at a
+  spacer whose far room moved away (181-19863) are removed.
+  Editor v5 (Oct 20): grp 'ge' = 10 added Great Eastern Desert tunnel rooms (6549-9070, 9057, spacers 22630, 22145), start spread from the save;
+  rebuild with `DD_BASE=<git show ae3db68:src/base/map.json>` (the pre-desert base) so the other starts stay. dd_merge draws 'ge' as desert rooms (not in the steppes' grid search).
+  Desert route options (River default, East alt, no room counts: card shows none) in `changes/applied/v24/001_desert_places.py` `RIVER`, not data.py.
+  Desert places, mazes, the (Emerald Hills) label: `changes/applied/v24/001_desert_places.py` (frozen into the base in v24; rebase.py re-applies it after a legacy redraw). Mazes:
+  fwmazes style 'desert' + `nolabel` (template). Owner's marker rules: Barren Wastes ends at 13061; markers on hidden 6561 / 929 (routes over them).
+  `dd_merge.EXTRA_CLEAR`: hand-picked clearings (rooms + exits, holes filled), e.g. the ruins round 6464 with its east/west single rooms.
 - **The Mire**: no Mire sea; don't touch the sea unless asked (Oct 18). Unsaved editor rooms are never drawn.

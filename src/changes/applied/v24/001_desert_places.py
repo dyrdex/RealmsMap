@@ -1,0 +1,141 @@
+"""Owner, Oct 20: the Desert of Despair's sub-areas, mazes and a link label.
+Markers (routes from data.py, traced from Darkhaven Square; one piece each):
+  - Daichaal: leaves the desert at 6520 Wastelands road, south-east (as traced);
+  - Barren Wastes: the marker at 13061 Traveling the sands...., the drawn route ends there (its directions on file go on: dig down);
+  - Great Eastern Desert: the marker on 9057 The Great Eastern Desert, on a sandy maze blob round it;
+  - Blasted Lands: the marker on spacer 22145 (north of 9057), on a sandy maze blob round it; the route runs on from 9057 to it
+    ('scan for entrance');
+  - Thul Ab'hara: the marker on hidden 6561 The mouth of a cave; The Dungeon: on hidden 929 A roughly hewn tunnel. The rooms stay hidden;
+    the routes run over them.
+Mazes: sandy maze blobs (fwmazes, style 'desert', no name) round 4050 (Traveling the sands...), 9057 and 22145.
+Area name: Desert / Of / Despair in the middle. Label: "(Emerald Hills)", small text west of 6366 Wandering the Desert (its exit west leads to the Emerald Hills)."""
+import math, random, re
+import maplib, data
+
+R = lambda q: [round(q[0], 3), round(q[1], 3)]
+GAP = "Part of your directions passes through areas that aren't drawn yet, so the traced line breaks there."
+WHERE = 'off the Desert of Despair'
+# name, marker room (the drawn route ends there), extra point after it (or None)
+PLACES = [('Daichaal', None, None), ('Barren Wastes', 13061, None), ('Great Eastern Desert', 9057, None),
+          ('Blasted Lands', 9057, 22145), ("Thul Ab'hara", 6561, None), ('The Dungeon', 929, None)]
+# mazes: (room, centre offset, rx, ry, extra fields). Traveling the sands... over the paths, with its name (owner, Oct 20); the Great Eastern Desert's
+# much bigger, round the Blasted Lands' (a maze within a maze: owner, Oct 20), kept clear of the steppes' clearing (its east edge ~52.1); Blasted
+# Lands' drawn after it, darker, so it reads as a maze inside it
+MAZES = [(4050, (0, 0), 2.7, 2.3, dict(top=True, name='Traveling the sands...', nolabel=False, fs=0.62, bottom=135.842)),   # (bigger to the north, east and west, its south edge kept: owner, Oct 20)
+         (9057, (1.9, -2.15), 3.45, 3.75, {}),
+         (22145, (0, 0), 1.4, 1.19, dict(fill='#352C1E', edge='#EAD9AE'))]
+AREA_NAME = dict(x=72.5, y=99.5, lh=2.8, sag=0.5, hw=6, lines=['Desert', 'Of', 'Despair'])   # one word per line, in the open ground between the trails at x 65 and x 80 (owner, Oct 20)
+OASIS = (13630, 3.2, 2.2)                                    # the oasis round 13630 (owner, Oct 20): a medium drawing centred on it
+# Route options (owner, Oct 20): the River route (the owner's, condensed) becomes each place's default; the route it had becomes the alternate
+# 'East: May encounter mobs (requires hide)'; the River one reads 'River: Safest Route' (owner, Oct 20). No room counts given: none shown. Each line drawn to the place's marker (as its route was).
+RIVER = {
+    'Desert of Despair': 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w',
+    'Great Eastern Desert': 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w;sw;s;sw;sw;w;sw;sw;nw;d;d;sw;d;n;ne;e;e;e;e;e;e;e;e',
+    'Blasted Lands': 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w;sw;s;sw;sw;w;sw;sw;nw;d;d;sw;d;n;ne;e;e;e;e;e;e;e;e;scan for entrance',
+    "Thul Ab'hara": 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w;sw;s;sw;sw;w;sw;sw;nw;d;d;sw;d;s;se;se;se;s;sw;se;s;w',
+    'The Dungeon': 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w;sw;s;sw;sw;w;sw;sw;s;sw;s;se;se;s;e;e;e;e;e;n;n;n;w;w;n;d',
+    'Barren Wastes': "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;se;se;s;sw;s;sw;n;w;sw;w;s;sw;w;sw;nw;w;nw;nw;w;n;se;scan/move to 'A crumbling dusty stone';dig down;d",
+}
+DUNGEON_TO_MARKER = (6516, 929)                              # (The Dungeon's River route ends at 6516; its marker is on 929 beyond the locked door: the line runs on to it)
+CAMP = [('dtent', 6324, 2.4, 1.9), ('dcart', 6321, 2.8, 1.9)]   # a small nomad tent just north of 6324, a caravan cart just north of 6321 (owner, Oct 20)
+BOULDERS = [6403, 6391, 6459, 6395]                          # the quest's large boulders (owner, Oct 20), one on each room
+LABEL_ROOM, LABEL_DX = 6366, -1.9                            # "(Emerald Hills)": centred this far west of 6366, on its line (0.48 clear of the Tayalardian Rangelands name, 0.34 of the trail)
+
+
+def blob(cx, cy, rx, ry, rng, n=26):
+    ph = [rng.uniform(0, 6.28) for _ in range(3)]
+    pts = []
+    for i in range(n):
+        a = 6.2832 * i / n
+        k = 1 + 0.07 * math.sin(2 * a + ph[0]) + 0.05 * math.sin(3 * a + ph[1]) + 0.03 * math.sin(5 * a + ph[2])
+        pts.append([round(cx + rx * k * math.cos(a), 3), round(cy + ry * k * math.sin(a), 3)])
+    return pts
+
+
+def apply(town, wild, pos):
+    rooms, exits = maplib.world()
+    walk, at = maplib.tracer(pos, wild)
+    routes = dict(l.split('|', 1) for l in data.AREAS.strip().splitlines() if '|' in l)
+    rep = {}
+    for name, end, extra in PLACES:
+        assert not any(p['name'] == name for p in wild['places']), name
+        route = maplib.condense(routes[name].strip().rstrip(';'))
+        t = walk(route)
+        if end is None: k = max(i for i, v in enumerate(t) if at(v))
+        else: k = t.index(end)
+        upto = t[:k + 1]
+        segs, cur = [], []
+        for v in upto:
+            q = at(v)
+            if q is None:
+                if cur: segs.append(cur); cur = []
+            else: cur.append(R(q))
+        if cur: segs.append(cur)
+        if extra is not None: segs[-1].append(R(at(extra)))
+        last = upto[-1] if extra is None else extra
+        d = 'here' if (end is not None or k == len(t) - 1) else re.sub(r'^#\s*\d+\s*', '', route.split(';')[-1].strip())
+        wild['places'].append(dict(name=name, route=route, room=rooms[last]['name'] or rooms[upto[-1]]['name'], dir=d, path=[q for s in segs for q in s], segs=segs,
+                                   group='af', where=WHERE, note=None if len(segs) == 1 else GAP))
+        rep[name] = dict(marker_room=last, at=segs[-1][-1], dir=d, pieces=len(segs), walked=len(t), drawn_to=len(upto))
+    # routes traced by the old pipeline before the desert's rooms had spots (Wastelands sub-areas through the desert's north: owner, Oct 20) break
+    # where they cross it: traced again with the rooms' spots now, to the same marker, when that joins pieces
+    rep['retraced'] = {}
+    for p in wild['places']:
+        if not p.get('route') or p['name'] in [n for n, _, _ in PLACES] or len(p.get('segs') or []) < 2: continue
+        t = walk(p['route']); pts = [at(v) for v in t]; end = p['path'][-1]
+        k = max((i for i, q in enumerate(pts) if q and math.dist(q, end) < 0.05), default=None)
+        if k is None: continue
+        segs, cur = [], []
+        for q in pts[:k + 1]:
+            if q is None:
+                if cur: segs.append(cur); cur = []
+            else: cur.append(R(q))
+        if cur: segs.append(cur)
+        if len(segs) < len(p['segs']):
+            rep['retraced'][p['name']] = (len(p['segs']), len(segs))
+            p['segs'] = segs; p['path'] = [q for s in segs for q in s]; p['note'] = None if len(segs) == 1 else GAP
+    rng = random.Random(2010)                                   # (its own random numbers: nothing else moves)
+    rep['mazes'] = []
+    for v, (ox, oy), rx, ry, extra in MAZES:
+        cx, cy = at(v)[0] + ox, at(v)[1] + oy
+        m = dict(name='', nolabel=True, style='desert', cx=round(cx, 3), cy=round(cy, 3), poly=blob(cx, cy, rx, ry, rng)); m.update(extra)
+        if 'bottom' in m:                                                           # (moved up so its south edge stays where it was)
+            dy = m.pop('bottom') - max(q[1] for q in m['poly'])
+            m['poly'] = [[q[0], round(q[1] + dy, 3)] for q in m['poly']]; m['cy'] = round(m['cy'] + dy, 3)
+        if not m['nolabel']: del m['nolabel']
+        wild['fwmazes'].append(m); rep['mazes'].append((v, m['cx'], m['cy'], rx, ry))
+    q = at(OASIS[0])
+    wild['gfx'] = list(wild['gfx']) + [{'k': 'oasis', 'at': 'xy', 'x': round(q[0], 2), 'y': round(q[1], 2), 'w': OASIS[1], 'h': OASIS[2]}] + \
+        [{'k': 'bigboulder', 'at': 'xy', 'x': round(at(v)[0], 2), 'y': round(at(v)[1], 2), 'w': 1.65, 'h': 1.32} for v in BOULDERS]
+    wild['gfx'] = list(wild['gfx']) + [{'k': k, 'at': 'xy', 'x': round(at(v)[0], 2), 'y': round(at(v)[1] - 0.35 - h / 2, 2), 'w': w_, 'h': h} for k, v, w_, h in CAMP]   # (0.35 clear of the room)
+    rep['camp'] = [(k, v) for k, v, _, _ in CAMP]
+    rep['oasis'] = q; rep['boulders'] = {v: at(v) for v in BOULDERS}
+    wild['arealabels'] = list(wild.get('arealabels') or []) + [AREA_NAME]          # the area's name in the empty middle of the desert (owner, Oct 20)
+    rep['area_name'] = AREA_NAME
+    q = at(LABEL_ROOM)
+    g = {'k': 'text', 'at': 'xy', 'x': round(q[0] + LABEL_DX, 2), 'y': round(q[1] + 0.13, 2), 'text': '(Emerald Hills)'}
+    wild['gfx'] = list(wild['gfx']) + [g]
+    rep['label'] = g
+    rep['route_options'] = {}
+    for p in wild['places']:
+        if p['name'] not in RIVER: continue
+        river = maplib.condense(RIVER[p['name']]); tr = walk(river); end = p['path'][-1]
+        k = max((i for i, v in enumerate(tr) if at(v) and math.dist(at(v), end) < 0.05), default=None)
+        extra = None
+        if k is None:                                                               # (the marker is a step beyond the route's end: Blasted Lands on 22145, The Dungeon on 929)
+            k = len(tr) - 1
+            while at(tr[k]) is None: k -= 1
+            extra = end
+        segs, cur = [], []
+        for v in tr[:k + 1]:
+            q = at(v)
+            if q is None:
+                if cur: segs.append(cur); cur = []
+            else: cur.append(R(q))
+        if cur: segs.append(cur)
+        if extra is not None: segs[-1].append(R(extra))
+        east = dict(dir='East', rooms=None, note='May encounter mobs (requires hide)', route=p['route'], segs=p['segs'], gap=p.get('note'))
+        p['opts'] = [dict(dir='River', rooms=None, note='Safest Route', route=river, segs=segs, gap=None if len(segs) == 1 else GAP), east]
+        p['route'] = river; p['segs'] = segs; p['path'] = [q for s in segs for q in s]; p['note'] = None if len(segs) == 1 else GAP
+        rep['route_options'][p['name']] = dict(river_rooms_walked=len(tr), drawn_to=k + 1, to_marker_after=extra, pieces=len(segs))
+    return rep

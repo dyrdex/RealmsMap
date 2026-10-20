@@ -18,14 +18,14 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 - `docs/REGION_NOTES.md`: data layout of the base, editor links, standing owner rules per region (read the part you need).
   `docs/archive/`: full history (grep it, don't read it whole). `CHANGELOG.md`: owner-facing history (append to the top section).
 
-## State (Oct 19, 2026)
-- Last version v23 (Oct 19, "Clearings in the Old Woods and a New Inahir Camp"; tag `v23` to be added by the owner on GitHub). Base = v22 +
-  changes 001-003 (9 clearings in FW/AF/BP + hut at 7041, the owner's BP save of 19:58Z (hidden/shown only), Inahir Camp redrawn in
-  plan view), now in `src/changes/applied/v23/`. Earlier: `applied/v22/`. The legacy pipeline reproduces the v21-era base only: after a
-  legacy region redraw, re-apply `applied/v22/` then `applied/v23/` (see changes/README).
-- All 13 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get
-  `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
-- In progress: site camera fix (Oct 20, `flyTo` in site_template aims inside maxBounds; no map change).
+## State (Oct 20, 2026)
+- Last version v24 (Oct 20, "The Desert of Despair"; tag `v24` to be added by the owner on GitHub). Base = a legacy redraw (Desert of Despair
+  from the owner's save in `legacy/dd_layout_final.json` via `legacy/dd_merge.py`; Wastelands/Coral Depths rooms moved in that editor) +
+  `applied/v22/` + `applied/v23/` + `applied/v24/` (001: the desert's markers, River/East route options, mazes, oasis, boulders, tent, cart,
+  area name, Emerald Hills label). After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then
+  `python3 legacy/rebase.py <f> base/map.json` (see changes/README).
+- All 14 layout editors live in the owner's current organization (links in REGION_NOTES; Desert of Despair added Oct 20). Read saves with
+  ArtifactData get `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
 
 ## Snapshots
 - New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/vN/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress
