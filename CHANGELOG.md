@@ -2,6 +2,7 @@
 
 ## In progress
 
+- Your request (Oct 20): a small nomad tent (pale striped cloth, dark doorway, a red pennant; 1.2 x 0.95) just north of 6324, and a small caravan cart (canvas cover, a crate, one big wheel, the drawbar; 1.4 x 0.95) just north of 6321. Each sits 0.35 above its room, clear of the paths.
 - Your request (Oct 20): the River routes of the six desert places now read "River: Safest Route" on their cards.
 - Your request (Oct 20): River routes added as the default for Desert of Despair, Great Eastern Desert, Blasted Lands, Thul Ab'hara, The Dungeon and Barren Wastes. The route each had before is now the alternate "East: May encounter mobs (requires hide)". Each line is drawn in one piece to the place's marker; picking East on the card draws the old line. You gave no room counts, so none are shown (the card reads "River" / "East: ..."). The Dungeon's River route ends at 6516 A musty cave; its line runs on to the marker at 929 (the East route goes on with "pick e;open e;e;d").
 - Your request (Oct 20): Shattered Temple of Naetrelle's directions are the same as the ones already on file, so they're unchanged. Its drawn route was broken in 3 pieces where it crosses the desert, because it was traced before the desert's rooms had spots. It's now traced again as one line to the same marker; Tayalardian Rangelands, on the same way, is fixed the same way (3 pieces to 1).
