@@ -25,6 +25,7 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   legacy region redraw, re-apply `applied/v22/` then `applied/v23/` (see changes/README).
 - All 13 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get
   `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
+- In progress: Desert of Despair layout editor published Oct 20 (link in REGION_NOTES; save key `ddlayout/current`), waiting for the owner's save.
 - In progress: site camera fix (Oct 20, `flyTo` in site_template aims inside maxBounds; no map change).
 
 ## Snapshots
