@@ -188,6 +188,21 @@ WILD+=(WD.thorns||[]).map(r=>`<use href="#th" transform="translate(${r[0]},${r[1
 WILD+=`<path d="${blobs(GEO.cliff)}" fill="var(--w-cliff)" fill-rule="evenodd" opacity=".8"/>`;
 WILD+=`<path d="${blobs(GEO.water)}" fill="var(--w-water)" fill-rule="evenodd" stroke="var(--w-shore)" stroke-width=".07"/>`;
 WILD+=`<path d="${blobs(GEO.seafill||[])}" fill="var(--w-water)" fill-rule="evenodd"/>`+(WD.seashore||[]).map(l=>`<path d="M${l.map(q=>q.join(' ')).join('L')}" fill="none" stroke="var(--w-shore)" stroke-width=".07" stroke-linejoin="round"/>`).join('');   /* sea filling the gaps a coast change left (no outline over the sea; a shore line only where it meets land) */
+(WD.snowisles||[]).forEach(I=>{   /* SNOWISLE: Winterlight Island (owner, Oct 20): snow-covered, little shacks in the north-east, snowy firs in the south-west */
+  const d='M'+I.poly.map(q=>q.join(' ')).join('L')+'Z';
+  WILD+=`<path d="${d}" fill="none" stroke="#9FC3CF" stroke-width=".22" opacity=".25" stroke-linejoin="round"/>`;   /* the surf round it */
+  WILD+=`<path d="${d}" fill="#B9C4C9" stroke="var(--w-shore)" stroke-width=".07" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#E2EAED" stroke-width=".09" opacity=".5" transform="translate(-.03 -.04)" stroke-linejoin="round"/>`;
+  for(const [x,y,s] of I.trees){const F=v=>v.toFixed(3);   /* a snowy fir: dark tiers, snow on each */
+    WILD+=`<g transform="translate(${x},${y}) scale(${s})"><ellipse cx=".08" cy=".5" rx=".32" ry=".07" fill="#5D6E78" opacity=".35"/><rect x="-.035" y=".34" width=".07" height=".16" fill="#4A3A2A"/>`+
+      `<path d="M0 -.62 L.2 -.28 L.12 -.28 L.3 .04 L.2 .04 L.38 .38 L-.38 .38 L-.2 .04 L-.3 .04 L-.12 -.28 L-.2 -.28 Z" fill="#2E4A3C" stroke="#1E3028" stroke-width=".03" stroke-linejoin="round"/>`+
+      `<path d="M0 -.62 L.13 -.4 Q0 -.34 -.13 -.4 Z M-.2 -.2 Q0 -.1 .2 -.2 L.12 -.28 Q0 -.22 -.12 -.28 Z M-.29 .1 Q0 .22 .29 .1 L.2 .04 Q0 .12 -.2 .04 Z M-.36 .36 Q0 .44 .36 .36 L.3 .3 Q0 .37 -.3 .3 Z" fill="#E6EEF1"/></g>`}
+  for(const [x,y,s,f] of I.shacks)   /* a little shack: log walls, a snow-laden roof, a stone chimney */
+    WILD+=`<g transform="translate(${x},${y}) scale(${s*f},${s})"><ellipse cx=".05" cy=".33" rx=".5" ry=".07" fill="#5D6E78" opacity=".4"/>`+
+      `<rect x="-.36" y="-.06" width=".72" height=".38" fill="#6B5334" stroke="#2A2018" stroke-width=".03"/><path d="M-.36 .06 H.36 M-.36 .18 H.36" stroke="#4A3A26" stroke-width=".02"/>`+
+      `<rect x="-.08" y=".1" width=".14" height=".22" fill="#2A2018"/><rect x=".16" y=".02" width=".12" height=".1" fill="#E8C27A" opacity=".85"/>`+
+      `<rect x=".18" y="-.42" width=".1" height=".24" fill="#7D7766" stroke="#3A3630" stroke-width=".02"/><rect x=".17" y="-.45" width=".12" height=".05" fill="#EEF3F5"/>`+
+      `<path d="M-.46 -.04 L0 -.36 L.46 -.04 Z" fill="#E6EEF1" stroke="#8A9AA2" stroke-width=".03" stroke-linejoin="round"/><path d="M-.46 -.04 Q-.3 .02 -.14 -.03 Q0 .02 .14 -.03 Q.3 .02 .46 -.04" fill="#E6EEF1" stroke="#8A9AA2" stroke-width=".02"/></g>`;
+});
 WILD+=(WD.mistones||[]).map(r=>`<ellipse cx="${r[0]+.02}" cy="${r[1]+.03}" rx="${(r[2]*1.25).toFixed(3)}" ry="${(r[2]*.8).toFixed(3)}" fill="#000" opacity=".3"/><ellipse cx="${r[0]}" cy="${r[1]}" rx="${(r[2]*1.2).toFixed(3)}" ry="${(r[2]*.85).toFixed(3)}" fill="var(--boulder)" stroke="var(--crag-line)" stroke-width=".02"/>`).join('');   /* stones in the Mire's river (owner, Oct 18) */
 WILD+=`<g stroke="var(--w-hach)" stroke-width=".06" stroke-linecap="round" opacity=".8">`+WD.hach.map(l=>`<line x1="${l[0]}" y1="${l[1]}" x2="${l[2]}" y2="${l[3]}"/>`).join('')+`</g>`;
 WILD+=WD.reeds.map(r=>`<use href="#rd" transform="translate(${r[0]},${r[1]}) scale(${r[2]})"/>`).join('');
@@ -375,6 +390,8 @@ FWPATHS+=(WD.seadash||[]).map(p=>`<path d="M${p.map(q=>q.join(' ')).join('L')}" 
   FWPATHS+=L(.5,'var(--seaway-edge)','',.55)+L(.32,'var(--seaway)','',1)+L(.07,'var(--seaway-hi)','stroke-dasharray=".35 .3"',.5);}}
 {const SF=(WD.seawaysfaint||[]).map(p=>p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L'));if(SF.length){const L=(sw,col,extra,op)=>`<g opacity="${op}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" ${extra||''}>`+SF.map(d=>`<path d="${d}"/>`).join('')+`</g>`;   /* SEAFAINT: the open-sea routes, faint (owner, Oct 20) */
   FWPATHS+=`<g opacity=".4">`+L(.5,'var(--seaway-edge)','',.55)+L(.32,'var(--seaway)','',1)+L(.07,'var(--seaway-hi)','stroke-dasharray=".35 .3"',.5)+`</g>`;}}
+{const SC=WD.seacurrents||[];if(SC.length){const d=SC.map(c=>'M'+c.pts.map(q=>q.join(' ')).join('L')).join(''),h=SC.map(c=>'M'+c.head.map(q=>q.join(' ')).join('L')+'Z').join('');   /* SEACUR: one-way sea currents, wavy, an arrowhead short of the room they lead to (owner, Oct 20) */
+  FWPATHS+=`<g opacity=".5" stroke-linecap="round" stroke-linejoin="round"><path d="${d}" fill="none" stroke="var(--seaway-edge)" stroke-width=".3" opacity=".55"/><path d="${d}" fill="none" stroke="var(--seaway)" stroke-width=".17"/><path d="${h}" fill="var(--seaway)" stroke="var(--seaway-edge)" stroke-width=".05"/></g>`;}}
 WILD+=FWPATHS;
 /* the Darkhaven River's tunnel: an underground river, drawn as if seen through the ground (owner, Oct 14) */
 WILD+=(()=>{const P=a=>a.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' ')+' Z',L=a=>a.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' ');let g='';

@@ -3,6 +3,7 @@ placed where saved, and the 7 beach rooms the save moved (the beach water route 
 routes ('seaways'): every flat exit between two new rooms, or between a new room and a beach room (up/down exits not drawn). Lines run straight
 from room to room (spacers included), as in the editor; drawn faint ('seawaysfaint', owner Oct 20). A line from a beach room starts at the room. The bay's sea is extended under the new rooms (inside BOX, never over land) and the map grows south to fit."""
 import json, math, os
+from maplib import world
 from shapely.geometry import Polygon, LineString, Point, box
 from shapely.ops import unary_union
 from collections import defaultdict
@@ -11,6 +12,9 @@ HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..'
 BOX = (4.0, 117.0, 53.0, 161.0)                     # (x0, y0, x1, y1): the sea added only inside this box
 COAST = 16                                          # wild['seaways'][16]: the beach coast route (9928 ... 9934)
 COAST_PTS = {15: 18070, 16: 9929, 17: 18073, 19: 9931, 20: 9932, 21: 9933, 22: 9934}   # its points that sit at a room the save moved
+CURRENTS = [9837, 9838, 9929, 9931, 9932, 9933, 9934]   # their south exits are one way (north to south, owner Oct 20): drawn as wavy currents
+CUR_GAP, CUR_HEAD, CUR_HALF = 0.4, 0.42, 0.2         # the arrow's tip stops this short of the room it leads to; arrowhead length, half-width
+CUR_AMP, CUR_WAVE = 0.13, 1.0                        # the wave: amplitude, wavelength
 SEA_R = 2.6                                         # sea reaches this far round each new room and water route
 
 
@@ -38,6 +42,22 @@ def _chains(G, P):
     return out
 
 
+def _current(pts):
+    """a wavy line along pts that stops short of its last point, and an arrowhead pointing at that point"""
+    ls = LineString(pts); end = ls.length - CUR_GAP; base = end - CUR_HEAD
+    tip = ls.interpolate(end); b = ls.interpolate(base); ux, uy = (tip.x - b.x) / CUR_HEAD, (tip.y - b.y) / CUR_HEAD
+    n = max(8, int(base / 0.04)); out = []
+    for i in range(n + 1):
+        s = base * i / n; q = ls.interpolate(s)
+        a = ls.interpolate(max(0, s - 0.3)); c = ls.interpolate(min(ls.length, s + 0.3))       # (the direction, averaged over a short stretch)
+        dx, dy = c.x - a.x, c.y - a.y; L = math.hypot(dx, dy) or 1
+        taper = min(1, s / 0.5, (base - s) / 0.3) if base > 0.8 else 0.5
+        o = CUR_AMP * math.sin(2 * math.pi * s / CUR_WAVE) * max(0, taper)
+        out.append([round(q.x - dy / L * o, 3), round(q.y + dx / L * o, 3)])
+    head = [[round(tip.x, 3), round(tip.y, 3)], [round(b.x - uy * CUR_HALF, 3), round(b.y + ux * CUR_HALF, 3)], [round(b.x + uy * CUR_HALF, 3), round(b.y - ux * CUR_HALF, 3)]]
+    return {'pts': out, 'head': head}
+
+
 def apply(town, wild, pos):
     S = json.load(open(os.path.join(LEG, 'wl3_layout_final.json'))); E = json.load(open(os.path.join(LEG, 'wl3_editor_edges.json')))
     R = {r['id']: r for r in E['rooms']}
@@ -63,6 +83,17 @@ def apply(town, wild, pos):
         if not (a in SS or b in SS) or not ({a, b} <= SS | WL): continue
         if k == 'ud': ud += 1; continue
         G[a].add(b); G[b].add(a)
+    rooms, exits = world(); cur = []                                                   # one-way currents: south from the beach room through its spacers
+    for v in CURRENTS:
+        ch = [v]; u = [e['to'] for e in exits[v] if e['name'] == 's'][0]
+        while R[u]['void']: ch.append(u); u = [e['to'] for e in exits[u] if e['name'] == 's'][0]
+        ch.append(u); assert not any(e['to'] == ch[-2] for e in exits[u]), ch       # (no way back from the room it leads to)
+        for a, b in zip(ch, ch[1:]): G[a].discard(b); G[b].discard(a)
+        pts = [list(P[c]) for c in ch]
+        if 0.05 < coast.distance(Point(P[v])) < 1.5: q = coast.interpolate(coast.project(Point(P[v]))); pts[0] = [q.x, q.y]
+        cur.append((ch, _current(pts)))
+    for v in [v for v in G if not G[v]]: del G[v]
+    wild['seacurrents'] = list(wild.get('seacurrents') or []) + [c for _, c in cur]       # template SEACUR
     new = []
     for ch, line in _chains(G, P):
         for end in (0, -1):                                                             # a line from a beach room on the coast route starts at the room
@@ -75,7 +106,7 @@ def apply(town, wild, pos):
     geo = wild['geo']; W = [Polygon(p) for p in geo['water']]
     bay = [i for i, g in enumerate(W) if g.bounds[0] > -5 and g.bounds[1] > 118][0]
     solid = unary_union([Polygon(p).buffer(0) for k in ('land',) for p in geo[k] if len(p) > 2])
-    reach = unary_union([Point(P[v]).buffer(SEA_R) for v in SS] + [LineString(l).buffer(SEA_R) for l in new if len(l) > 1])
+    reach = unary_union([Point(P[v]).buffer(SEA_R) for v in SS] + [LineString(l).buffer(SEA_R) for l in new + [c['pts'] for _, c in cur] if len(l) > 1])
     add = reach.buffer(1.2).buffer(-1.2).intersection(box(*BOX)).difference(solid.buffer(0.15))
     sea = unary_union([W[bay].buffer(0), add]).buffer(0.4).buffer(-0.4).difference(solid.buffer(0.05))
     if sea.geom_type != 'Polygon': sea = max(sea.geoms, key=lambda g: g.area)
@@ -90,7 +121,8 @@ def apply(town, wild, pos):
     dry = [v for v in SS if not wet.contains(Point(P[v]))]
     overland = sum(1 for l in new for a, c in zip(l, l[1:]) if LineString([a, c]).intersects(solid))
     spr = {k: sum(1 for q in wild.get(k) or [] if add.contains(Point(q[:2]))) for k in ('trees', 'tufts', 'boulders', 'crags', 'hills', 'peaks', 'brush', 'reeds', 'wheattufts', 'thorns')}
-    return {'rooms placed (new; beach rooms moved)': (len(SS), {v: (moved[v][0], moved[v][1]) for v in sorted(moved)}),
+    return {'currents (from, to, arrow tip to room)': [(ch[0], ch[-1], round(math.dist(c['head'][0], P[ch[-1]]), 2)) for ch, c in cur],
+            'rooms placed (new; beach rooms moved)': (len(SS), {v: (moved[v][0], moved[v][1]) for v in sorted(moved)}),
             'water routes added (lines, exits; up/down not drawn)': (len(new), sum(len(G[v]) for v in G) // 2, ud),
             'bay sea area (was, now)': (round(old_area, 1), round(sea.area, 1)), 'sea box': BOX, 'bounds': wild['bounds'],
             'new rooms not in the sea': dry, 'route segments over land': overland, 'sprites inside the added sea': {k: n for k, n in spr.items() if n},
