@@ -63,6 +63,7 @@ svg.names-on .nd .lbl,svg.names-zoom.zoomed .nd .lbl{display:block}
 .nd.dd rect,.nd.dd circle.shape{stroke:#E6C36A}
 .nd.un rect,.nd.un circle.shape{stroke:#6FC3E8}
 .nd.wl rect,.nd.wl circle.shape{stroke:#D98A5B}
+.nd.cd rect,.nd.cd circle.shape{stroke:#E07A9A}
 
 
 .nd .hx{display:none}.nd.hid .hx{display:block}.nd.hid{opacity:.32}.nd.hid .shape,.nd.hid rect{stroke-dasharray:.16 .12}
@@ -83,7 +84,7 @@ svg line.cxe{pointer-events:none}
     <li><b>Scroll</b> to zoom, drag empty space to pan.</li>
   </ul>
   <p id="audit" class="stat" style="color:var(--ink)"></p>
-  <p id="ntrNote" style="margin:4px 0 8px"><b style="color:#E6C36A">Desert of Despair</b>: all its rooms and the spacer rooms that join them. Its exits into the Azure Sea, Great Eastern Desert, Emerald Hills, The Dungeon, Thul Ab'hara, Daichaal and The Barren Wastes are left off. It joins the map at its entrance 6365 (off the Southern Mountain Range, where the route ends) and at the Wastelands' desert fringe (west). The Wastelands rooms round the desert are unlocked too (rust outline), starting where they are on the map. The area is split into <b>sections</b> (parts with only a few exits between them). Each section starts where TinTin's exits put its rooms, two rooms apart; the sections are spread out over the empty ground east of the Wastelands with gaps between them, so some exits between sections (and to the map) are stretched. Rooms on another level are offset diagonally (up = north-east). Hide any room you don't want on the map. <b>Select a section</b> grabs a whole section to move it; <b>Select the whole piece</b> grabs the sections of the rooms you have selected; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms back to their starting spots.</p>
+  <p id="ntrNote" style="margin:4px 0 8px"><b style="color:#E6C36A">Desert of Despair</b>: all its rooms and the spacer rooms that join them. Its exits into the Azure Sea, Great Eastern Desert, Emerald Hills, The Dungeon, Thul Ab'hara, Daichaal and The Barren Wastes are left off. It joins the map at its entrance 6365 (off the Southern Mountain Range, where the route ends) and at the Wastelands' desert fringe (west). The Wastelands rooms round the desert (rust outline) and the Coral Depths editor's rooms north of it (pink outline) are unlocked too, starting where they are on the map. The area is split into <b>sections</b> (parts with only a few exits between them). Each section starts where TinTin's exits put its rooms, two rooms apart; the sections are spread out over the empty ground east of the Wastelands with gaps between them, so some exits between sections (and to the map) are stretched. Rooms on another level are offset diagonally (up = north-east). Hide any room you don't want on the map. <b>Select a section</b> grabs a whole section to move it; <b>Select the whole piece</b> grabs the sections of the rooms you have selected; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms back to their starting spots.</p>
   <p><b>The fixed rooms</b> (small round dots: grey-blue for Darkhaven, violet for the Shadow Grove, green for the Forgotten Woods, olive for the Forest of Tears, blue for the Lake of Tich'Pyga, gold for the Western Trade Route, brown for the Ashen Forest, copper for the Southern Mountain Range and its trade route, tan for the Wastelands) are the rooms already on the finished map, exactly where they are. They can't be moved. Hover one to see its name. The faint lines between them are the exits between those rooms. The finished map (land, lake, trails) is faintly behind.</p>
   <p style="color:var(--soft)">North is up. Up and down exits are dashed purple lines.</p>
 
@@ -105,7 +106,7 @@ svg line.cxe{pointer-events:none}
   <label class="l"><input type="checkbox" id="snap"> Snap to grid</label>
   <div class="row"><select id="snapStep"><option value=".25">¼ room</option><option value=".5" selected>½ room</option><option value="1">1 room</option></select></div>
   <div class="row">
-    <button id="selPiece">Select the whole piece</button><button id="selDd">Select the desert rooms</button><button id="selWl">Select the Wastelands rooms</button></div>
+    <button id="selPiece">Select the whole piece</button><button id="selDd">Select the desert rooms</button><button id="selWl">Select the Wastelands rooms</button><button id="selCd">Select the Coral Depths rooms</button></div>
   <div class="row"><select id="selSec" aria-label="Select a section"><option value="">Select a section…</option></select>
   </div>
   <div class="row">
@@ -130,6 +131,7 @@ svg line.cxe{pointer-events:none}
     <i style="background:var(--t-Desert);border:2px solid #E6C36A"></i><span>Desert of Despair room (movable)</span>
     <i style="background:var(--t-Hills);border:2px solid #6FC3E8"></i><span>Unlocked map room: the entrance 6365 (movable, starts at its spot on the map)</span>
     <i style="background:var(--t-Desert);border:2px solid #D98A5B"></i><span>Unlocked Wastelands room: those round the desert, spacer rooms included (movable, start at their spots on the map)</span>
+    <i style="background:var(--t-Water);border:2px solid #E07A9A"></i><span>Unlocked room from the Coral Depths editor: Coral Depths 2518-2531, the Azure Sea rooms north of the desert and their spacers (movable, start at their spots on the map)</span>
     <i style="background:var(--t-other);border-radius:50%;width:8px;height:8px;border:1px solid #B3541E"></i><span>Spacer room (invisible in the game, free to move)</span>
     <i style="background:var(--cx-DH);border-radius:50%"></i><span>Fixed room in Darkhaven</span>
     <i style="background:var(--cx-Grove);border-radius:50%"></i><span>Fixed room in the Shadow Grove</span>
@@ -390,7 +392,7 @@ $('unlock').onclick=()=>{sel.forEach(id=>{if(!byId.get(id).fixed)locked.delete(i
 $('selnone').onclick=()=>{sel.clear();refreshSel()};
 $('baseSel').onclick=()=>setTo([...sel],base);$('rawSel').onclick=()=>setTo([...sel],raw);
 const selGrp=g=>{sel.clear();rooms.forEach(r=>{if(r.grp===g)sel.add(r.id)});refreshSel();const P=[...sel].map(id=>pos.get(id));if(!P.length)return;const x0=Math.min(...P.map(p=>p[0]))-6,x1=Math.max(...P.map(p=>p[0]))+6,y0=Math.min(...P.map(p=>p[1]))-6,y1=Math.max(...P.map(p=>p[1]))+6;cam={x:(x0+x1)/2,y:(y0+y1)/2,k:Math.max(3,Math.min(140,Math.min(VW/(x1-x0),VH/(y1-y0))))};applyCam()};
-$('selDd').onclick=()=>selGrp('dd');$('selWl').onclick=()=>selGrp('wl');
+$('selDd').onclick=()=>selGrp('dd');$('selWl').onclick=()=>selGrp('wl');$('selCd').onclick=()=>selGrp('cd');
 (D.secs||[]).forEach(s=>{const o=document.createElement('option');o.value=s.i;o.textContent=`${s.i+1}. ${s.name} (${s.n})`;$('selSec').appendChild(o)});
 $('selSec').onchange=e=>{const v=e.target.value;if(v==='')return;const i=+v;sel.clear();rooms.forEach(r=>{if(!r.fixed&&r.piece===i)sel.add(r.id)});refreshSel();e.target.value=''};
 $('selPiece').onclick=()=>{const ps=new Set([...sel].map(id=>byId.get(id).piece).filter(p=>p!=null));if(!ps.size){toast('Select a room of the piece first');return}rooms.forEach(r=>{if(ps.has(r.piece))sel.add(r.id)});refreshSel()};

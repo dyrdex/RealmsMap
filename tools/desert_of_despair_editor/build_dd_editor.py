@@ -1,6 +1,7 @@
 # The layout editor for the Desert of Despair (owner, Oct 20): all its rooms and the spacer rooms that join them, in the empty ground east of the
 # Wastelands' desert fringe (8934-8946, 6538, 8772) and south-east of its entrance 6365 (off the Southern Mountain Range, already on the map).
-# Unlocked (owner, Oct 20; start at their map spots): grp 'un' the entrance 6365; grp 'wl' the Wastelands rooms shown round the desert.
+# Unlocked (owner, Oct 20; start at their map spots): grp 'un' the entrance 6365; grp 'wl' the Wastelands rooms shown round the desert;
+# grp 'cd' the rooms shown that were placed in the Coral Depths editor.
 # Its exits into the Azure Sea, Great Eastern Desert, Emerald Hills, The Dungeon, Thul Ab'hara, Daichaal and The Barren Wastes are left off.
 #   python3 build_dd_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (dd_editor_template.html beside this file)
 # Owner (Oct 20): space things to avoid overlaps; exits may be stretched to keep sections apart.
@@ -229,7 +230,10 @@ UN = [ENTRY]
 WLR = sorted(v for v, s in CTX.items() if s == 'WL') + [v for v in (8605, 8607, 8609, 8714, 6538) if CTX.get(v) != 'WL']
 for v in UN: GRP[v] = 'un'
 for v in WLR: GRP[v] = 'wl'
-UNL = set(UN) | set(WLR)
+CDE = {r['id'] for r in J('cd_editor_edges.json')['rooms'] if not r.get('fixed')}                # grp 'cd' (owner, Oct 20): the rooms shown that were placed in the Coral Depths editor
+CDR = sorted(v for v in CTX if v in CDE and v not in WLR and v not in UN)
+for v in CDR: GRP[v] = 'cd'
+UNL = set(UN) | set(WLR) | set(CDR)
 for v in UNL: start[v] = [round(POS[v][0], 2), round(POS[v][1], 2)]; CTX.pop(v, None)
 S = S | UNL
 # ---- rooms and exits ----
@@ -279,7 +283,7 @@ t = open(os.path.join(here, 'dd_editor_template.html'), encoding='utf-8').read()
 open(out, 'w', encoding='utf-8').write(t.replace('__DATA__', json.dumps(D, separators=(',', ':'))))
 json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed', 'src', 'area', 'grp', 'piece', 'ga', 'x0', 'y0') if k in r and not (k in ('x0', 'y0') and r.get('fixed'))} for r in R], edges=EDG, secs=secs),
           open(os.path.join(SRCDIR, 'dd_editor_edges.json'), 'w'), separators=(',', ':'))
-print('AUDIT', audit, '| unlocked Wastelands rooms', len(WLR), '(spacers', sum(1 for v in WLR if isspacer(v) or rooms[v]['area'] == ''), ')')
+print('AUDIT', audit, '| unlocked Coral Depths editor rooms', len(CDR), '| unlocked Wastelands rooms', len(WLR), '(spacers', sum(1 for v in WLR if isspacer(v) or rooms[v]['area'] == ''), ')')
 print('spacers kept', len(keep), '| stubs left off', len(stubs))
 print('links to the map', lk, '| no exit at all', lone)
 for i, c in enumerate(SEC):
