@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## In progress
+
+- Your request (Oct 20): the Wastelands layout editor now holds 47 of the rooms you listed from the Sea of Sorrows and the Blood Sea (Winterlight Island 9841 and 9842 included) and 45 spacer rooms that join them to each other and to the beaches. They start south of the beaches, in one piece. 17768 was left out: it's "A Cemetery Path" in Machine Dreams, with no exit to any of the others. The 22 Beaches of Sorrow / Wasted Shores of Ahtborne rooms and the 38 spacer rooms joined to them are unlocked, starting where they are on the map. Everything else in the editor is fixed where it is on today's map.
+
 ## Version 24 · The Desert of Despair · October 20, 2026
 
 - Your request (Oct 20): the tent and the caravan cart are twice as large (tent 2.4 x 1.9, cart 2.8 x 1.9), still 0.35 above their rooms, 0.35 clear of the paths and 0.9 apart.
