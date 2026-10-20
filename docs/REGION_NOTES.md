@@ -56,6 +56,8 @@ The other builders run inside `src/legacy`.
   emblem (`kind: 'town'`) any more (Oct 19).
 - **East coast cliff (Coral Depths to the north)**: the sea meets the cliff-top path's hachures directly from y 13 to the bay north of the
   Coral Depths marker (owner, Oct 20; `changes/005`): no land between cliff and sea there.
+- **Desert of Despair terrain** (owner, Oct 20; `changes/007`, `wild.ddsand`, template DDSAND, over geo.sand 16): grain + wind texture,
+  ripple fields, dunes, dry lake beds, rocks, scrub, very few cacti; its own look, not the Wastelands' (no grass tufts or crags).
 - **Paths meeting a water route** end exactly on its line, never past it (Oct 19).
 - **Shortcuts in routes** (long straight lines): the Ofcol Shortcut (legacy route_fix, OFCOL) and the Nidaros Shortcut
   (936 sw 5511 -> 5507; `changes/007`). A new shortcut: place its rooms in an editor, then join the routes' pieces at it (as 007).

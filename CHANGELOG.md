@@ -2,6 +2,7 @@
 
 ## In progress
 
+- Your request (Oct 20): the Desert of Despair's ground has its own desert terrain, unlike the Wastelands. All its sand (3,529 square rooms) has a fine grain and faint wind marks. On top are 110 wind-ripple patches, 26 sand dunes (a pale crest and a shaded lee side), 3 dry cracked lake beds, 34 small rock clusters, 42 dry scrub and just 4 cacti. All of it stays clear of paths, rooms, clearings, mazes, drawings, markers and names.
 - Your request (Oct 20): the large boulders on 6403 and 6395 moved south (1.5 and 1.39 rooms) so each sits centred in its clearing.
 - Your request (Oct 20): the filled gap north of the Wastelands no longer shows an outline. Instead of a separate piece of ground, the Wastelands' own ground is extended north over the gap's south part (404 square rooms added to it), so it's one continuous piece with no seam.
 - Your request (Oct 20): on the east coast north of the Coral Depths, the green land between the cliff-top path and the sea is gone. The sea now comes right up to the cliff, its shore running just past the cliff's edge marks, from where the coast already met the path (y 13) down to the small bay just north of the Coral Depths marker (y 35.8). The green land starts at that bay. 73.5 square rooms of land became sea; no paths, rooms or drawings were in it.
