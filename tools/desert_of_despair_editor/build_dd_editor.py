@@ -31,7 +31,7 @@ J = lambda f: json.load(open(os.path.join(SRCDIR, f)))
 cnt0 = len(GRP); assert cnt0 == 244, cnt0
 
 # ---- rooms on the finished map, at their final positions ----
-B = json.load(open(os.path.join(SRCDIR, '..', 'base', 'map.json')))
+B = json.load(open(os.environ.get('DD_BASE') or os.path.join(SRCDIR, '..', 'base', 'map.json')))   # (DD_BASE: the base before the desert was drawn, so the starting layout stays as it was: `git show ae3db68:src/base/map.json`)
 ACODE = {'Wastelands': 'WL', 'Southern Mountain Range': 'SM', 'Desert of Despair': 'DD', 'The Mire': 'MI', 'Forest of Tears': 'FT', 'Ashen Forest': 'AF'}
 POS = {}; SRC = {}
 for k, src in w['ctxsrc'].items():
@@ -236,6 +236,15 @@ for v in CDR: GRP[v] = 'cd'
 UNL = set(UN) | set(WLR) | set(CDR)
 for v in UNL: start[v] = [round(POS[v][0], 2), round(POS[v][1], 2)]; CTX.pop(v, None)
 S = S | UNL
+# ---- added later (owner, Oct 20): rooms of the Great Eastern Desert's tunnel and their spacers (grp 'ge'), movable, starting next to the rooms
+# they join in the owner's saved layout (6548 at the west end, 6369's one-way exit east into 9057), spread from there, clear of everything else
+ADD = [22630, 6549, 9058, 9059, 9061, 9068, 9069, 9070, 9057, 22145]
+SAVED = {v: (x, y) for v, x, y in zip(*(J('dd_layout_final.json')[k] for k in ('ids', 'xs', 'ys')))}
+FIX2 = dict(POS); FIX2.update(SAVED)
+roots2 = sorted({t for v in ADD for t, _ in links2(v) if t in SAVED})
+sp2 = ES.spread(set(ADD), lambda v: [(t, d) for t, d in links2(v) if t in ADD or t in FIX2], FIX2, roots2, step=STEP)
+for v in ADD: start[v] = [round(sp2[v][0], 2), round(sp2[v][1], 2)]; GRP[v] = 'ge'
+S = S | set(ADD)
 # ---- rooms and exits ----
 def exlist(v):
     res = []
@@ -283,6 +292,7 @@ t = open(os.path.join(here, 'dd_editor_template.html'), encoding='utf-8').read()
 open(out, 'w', encoding='utf-8').write(t.replace('__DATA__', json.dumps(D, separators=(',', ':'))))
 json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed', 'src', 'area', 'grp', 'piece', 'ga', 'x0', 'y0') if k in r and not (k in ('x0', 'y0') and r.get('fixed'))} for r in R], edges=EDG, secs=secs),
           open(os.path.join(SRCDIR, 'dd_editor_edges.json'), 'w'), separators=(',', ':'))
+print('added (ge)', {v: start[v] for v in ADD}, '| roots', roots2)
 print('AUDIT', audit, '| unlocked Coral Depths editor rooms', len(CDR), '| unlocked Wastelands rooms', len(WLR), '(spacers', sum(1 for v in WLR if isspacer(v) or rooms[v]['area'] == ''), ')')
 print('spacers kept', len(keep), '| stubs left off', len(stubs))
 print('links to the map', lk, '| no exit at all', lone)
