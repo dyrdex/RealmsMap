@@ -18,17 +18,24 @@ WHERE = 'off the Desert of Despair'
 # name, marker room (the drawn route ends there), extra point after it (or None)
 PLACES = [('Daichaal', None, None), ('Barren Wastes', 13061, None), ('Great Eastern Desert', 9057, None),
           ('Blasted Lands', 9057, 22145), ("Thul Ab'hara", 6561, None), ('The Dungeon', 929, None)]
-MAZES = [(4050, 1.55), (9057, 1.4), (22145, 1.4)]            # (room, radius): small blobs (9057's kept clear of the steppes' clearing 1.9 west of it)
+# mazes: (room, centre offset, rx, ry, extra fields). Traveling the sands... over the paths, with its name (owner, Oct 20); the Great Eastern Desert's
+# much bigger, round the Blasted Lands' (a maze within a maze: owner, Oct 20), kept clear of the steppes' clearing (its east edge ~52.1); Blasted
+# Lands' drawn after it, darker, so it reads as a maze inside it
+MAZES = [(4050, (0, 0), 1.55, 1.32, dict(top=True, name='Traveling the sands...', nolabel=False, fs=0.42)),
+         (9057, (1.9, -2.15), 3.45, 3.75, {}),
+         (22145, (0, 0), 1.4, 1.19, dict(fill='#352C1E', edge='#EAD9AE'))]
+OASIS = (13630, 3.2, 2.2)                                    # the oasis round 13630 (owner, Oct 20): a medium drawing centred on it
+BOULDERS = [6403, 6391, 6459, 6395]                          # the quest's large boulders (owner, Oct 20), one on each room
 LABEL_ROOM, LABEL_DX = 6366, -1.9                            # "(Emerald Hills)": centred this far west of 6366, on its line (0.48 clear of the Tayalardian Rangelands name, 0.34 of the trail)
 
 
-def blob(cx, cy, r, rng, n=22):
+def blob(cx, cy, rx, ry, rng, n=26):
     ph = [rng.uniform(0, 6.28) for _ in range(3)]
     pts = []
     for i in range(n):
         a = 6.2832 * i / n
-        k = 1 + 0.09 * math.sin(2 * a + ph[0]) + 0.06 * math.sin(3 * a + ph[1]) + 0.04 * math.sin(5 * a + ph[2])
-        pts.append([round(cx + r * k * math.cos(a), 3), round(cy + r * k * 0.85 * math.sin(a), 3)])
+        k = 1 + 0.07 * math.sin(2 * a + ph[0]) + 0.05 * math.sin(3 * a + ph[1]) + 0.03 * math.sin(5 * a + ph[2])
+        pts.append([round(cx + rx * k * math.cos(a), 3), round(cy + ry * k * math.sin(a), 3)])
     return pts
 
 
@@ -58,10 +65,16 @@ def apply(town, wild, pos):
                                    group='af', where=WHERE, note=None if len(segs) == 1 else GAP))
         rep[name] = dict(marker_room=last, at=segs[-1][-1], dir=d, pieces=len(segs), walked=len(t), drawn_to=len(upto))
     rng = random.Random(2010)                                   # (its own random numbers: nothing else moves)
-    for v, r in MAZES:
-        cx, cy = at(v)
-        wild['fwmazes'].append(dict(name='', nolabel=True, style='desert', cx=round(cx, 3), cy=round(cy, 3), poly=blob(cx, cy, r, rng)))
-    rep['mazes'] = [(v, at(v), r) for v, r in MAZES]
+    rep['mazes'] = []
+    for v, (ox, oy), rx, ry, extra in MAZES:
+        cx, cy = at(v)[0] + ox, at(v)[1] + oy
+        m = dict(name='', nolabel=True, style='desert', cx=round(cx, 3), cy=round(cy, 3), poly=blob(cx, cy, rx, ry, rng)); m.update(extra)
+        if not m['nolabel']: del m['nolabel']
+        wild['fwmazes'].append(m); rep['mazes'].append((v, m['cx'], m['cy'], rx, ry))
+    q = at(OASIS[0])
+    wild['gfx'] = list(wild['gfx']) + [{'k': 'oasis', 'at': 'xy', 'x': round(q[0], 2), 'y': round(q[1], 2), 'w': OASIS[1], 'h': OASIS[2]}] + \
+        [{'k': 'bigboulder', 'at': 'xy', 'x': round(at(v)[0], 2), 'y': round(at(v)[1], 2), 'w': 1.65, 'h': 1.32} for v in BOULDERS]
+    rep['oasis'] = q; rep['boulders'] = {v: at(v) for v in BOULDERS}
     q = at(LABEL_ROOM)
     g = {'k': 'text', 'at': 'xy', 'x': round(q[0] + LABEL_DX, 2), 'y': round(q[1] + 0.13, 2), 'text': '(Emerald Hills)'}
     wild['gfx'] = list(wild['gfx']) + [g]

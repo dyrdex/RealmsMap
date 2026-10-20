@@ -2,6 +2,10 @@
 
 ## In progress
 
+- Your request (Oct 20): the maze at 4050 is now drawn over the paths, with its name "Traveling the sands..." on it.
+- Your request (Oct 20): an oasis drawing (3.2 x 2.2) centred on 13630: a still pool in a ring of green, reeds at its edge, five date palms round it.
+- Your request (Oct 20): the Great Eastern Desert maze is now much bigger (about 6.8 x 7.7 rooms) and holds the Blasted Lands maze inside it, drawn darker with a pale edge, so it reads as a maze within a maze. Both markers stay on 9057 and 22145. The big maze keeps 0.55 clear of the Arid Steppes clearing.
+- Your request (Oct 20): a large boulder drawing (1.65 x 1.3, grey stone with a lit top, shaded side, cracks and a couple of pebbles) on each of 6403, 6391, 6459 and 6395.
 - Your request (Oct 20): sub-area markers off the Desert of Despair, each route drawn in one piece:
   - Daichaal at 6520 Wastelands road, leaving south-east (the name's spelling corrected in your list).
   - Barren Wastes at 13061 Traveling the sands.... Its drawn route ends there; the directions on file are unchanged.
