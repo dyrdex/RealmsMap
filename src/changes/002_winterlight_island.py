@@ -1,4 +1,4 @@
-"""Owner, Oct 20: Winterlight Island. Room 9842 is its north-east tip: the island starts narrow there and widens back to the south-west into the
+"""Owner, Oct 20: Winterlight Island. Room 9842 is its north-east tip: the island starts narrower there (a rounded end, not a point: owner, Oct 20) and widens back to the south-west into the
 open sea between the paths, with an irregular, natural shore (owner: not a perfect oval, not following the paths). As large as it can be while
 keeping CLEAR from every path. Snow covered, a few little shacks in the north-east, a snow-covered forest in the south-west, drawn in the map's
 old style (muted snow, ink-line shacks, flat dark firs with a touch of snow; template SNOWISLE). No label (owner, Oct 20)."""
@@ -10,6 +10,7 @@ TIP = 9842
 BOX = (15.0, 138.0, 34.0, 150.0)                   # (the space between the routes round it)
 CLEAR = 0.9                                         # from any path's centre line or room (owner: not so close to the paths)
 N_SHACKS, TREE_STEP = 3, 0.6
+OPEN, CAP = 0.75, 0.7                               # rounding radius of the outline; radius of the rounded end at 9842
 
 
 def apply(town, wild, pos):
@@ -37,22 +38,27 @@ def apply(town, wild, pos):
         W = Ln * k; n = 70; left = []; right = []
         for i in range(n + 1):
             t = i / n
-            f = (t ** 1.3) * ((1 - t) ** 0.45) / (0.743 ** 1.3 * 0.257 ** 0.45)          # 0 at both ends, a narrow neck at the tip, 1 at t = 0.743
+            f = (t ** 0.9) * ((1 - t) ** 0.45) / (0.667 ** 0.9 * 0.333 ** 0.45)          # 0 at both ends, narrower at the tip, 1 at t = 0.667
             bend = 0.07 * Ln * math.sin(math.pi * t) * math.sin(ph[3] + 1.3)
             cx, cy = tip[0] + ux * Ln * t + nx_ * bend, tip[1] + uy * Ln * t + ny_ * bend
             left.append((cx + nx_ * W * f * wob(t, 0), cy + ny_ * W * f * wob(t, 0)))
             right.append((cx - nx_ * W * f * wob(t, 1), cy - ny_ * W * f * wob(t, 1)))
         g = Polygon(left + right[::-1]).buffer(0)
-        return g.buffer(0.18).buffer(-0.18)                                              # (rounded off a little)
+        g = g.buffer(-OPEN).buffer(OPEN)                                                 # rounded: no narrow points or spits (owner, Oct 20)
+        if g.is_empty: return g
+        if g.geom_type != 'Polygon': g = max(g.geoms, key=lambda h: h.area)
+        c = (tip[0] + ux * CAP, tip[1] + uy * CAP)                                       # a rounded end at the room, joined smoothly to the rest
+        neck = unary_union([Point(c).buffer(CAP), g.intersection(Point(c).buffer(1.5))]).convex_hull
+        return unary_union([g, neck]).buffer(0.25).buffer(-0.25)
     best = None
     for phi_d in range(-80, -9, 4):
-        for k in (0.26, 0.3, 0.34, 0.38, 0.42):
+        for k in (0.28, 0.32, 0.36, 0.4, 0.44):
             lo, hi = 1.0, 14.0
             for _ in range(16):
                 m = (lo + hi) / 2
                 if allowed.contains(shape(math.radians(phi_d), m, k)): lo = m
                 else: hi = m
-            a = shape(math.radians(phi_d), lo, k).area
+            a = shape(math.radians(phi_d), lo, k).area if lo > 1.0 else 0
             if best is None or a > best[0]: best = (a, phi_d, lo, k)
     _, phi_d, Ln, K = best
     isle = shape(math.radians(phi_d), Ln, K)
