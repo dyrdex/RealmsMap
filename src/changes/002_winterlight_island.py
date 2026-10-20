@@ -24,25 +24,30 @@ def apply(town, wild, pos):
     comps = list(free.geoms) if free.geom_type != 'Polygon' else [free]
     space = min(comps, key=lambda g: g.distance(Point(tip)))
     assert space.distance(Point(tip)) < CLEAR + 0.05
-    isle = space.buffer(-0.35).buffer(0.35)                                          # (rounded off)
-    if isle.geom_type != 'Polygon': isle = max(isle.geoms, key=lambda g: g.area)
-    # the north-east tip reaches the room: a tapering point from the island to 9842 (the path from 9841 ends there)
-    c = isle.exterior.interpolate(isle.exterior.project(Point(tip)))
-    horn = unary_union([Point(tip).buffer(0.08), Point(c.x, c.y).buffer(0.55)]).convex_hull
-    isle = unary_union([isle, horn]).buffer(0.12).buffer(-0.12)
-    # an organic shore: the outline nudged in by a little noise (never out, so it stays clear of the paths)
-    ring = isle.exterior; n = max(60, int(ring.length / 0.18)); ph = [rng.uniform(0, 6.3) for _ in range(3)]
-    pts = []
-    for i in range(n):
-        q = ring.interpolate(ring.length * i / n); s = i / n * 2 * math.pi
-        d = 0.12 + 0.1 * math.sin(5 * s + ph[0]) + 0.06 * math.sin(11 * s + ph[1]) + 0.04 * math.sin(19 * s + ph[2])
-        if q.distance(Point(tip)) < 0.6: d = 0.0                                          # (the tip stays on the room)
-        r = ring.interpolate(ring.length * ((i / n + 0.003) % 1)); dx, dy = r.x - q.x, r.y - q.y; ll = math.hypot(dx, dy) or 1
-        nx_, ny_ = -dy / ll, dx / ll
-        if not isle.contains(Point(q.x + nx_ * 0.05, q.y + ny_ * 0.05)): nx_, ny_ = -nx_, -ny_          # (inward)
-        pts.append((q.x + nx_ * max(0, d), q.y + ny_ * max(0, d)))
-    isle = Polygon(pts).buffer(0)
-    if isle.geom_type != 'Polygon': isle = max(isle.geoms, key=lambda g: g.area)
+    # the island: the largest regular oval (a gently wobbled ellipse) in that open space, its north-east end on the room (owner, Oct 20: an oval
+    # blob, its shores not following the paths). Searched over the long axis' direction, length and the oval's width.
+    allowed = space.union(Point(tip).buffer(0.55)).buffer(0)
+    ph = [rng.uniform(0, 6.3) for _ in range(2)]
+    def oval(phi, a, k):
+        b = a * k; ca, sa = math.cos(phi), math.sin(phi); cx, cy = tip[0] - a * ca, tip[1] - a * sa; out = []
+        for i in range(120):
+            t = 2 * math.pi * i / 120; w = 1 + (0.05 * math.sin(3 * t + ph[0]) + 0.03 * math.sin(5 * t + ph[1])) * math.sin(t / 2) ** 2
+            x, y = a * math.cos(t) * w, b * math.sin(t) * w
+            out.append((cx + x * ca - y * sa, cy + x * sa + y * ca))
+        return Polygon(out)
+    best = None; BYK = {}
+    for phi_d in range(-85, -4, 3):
+        for k in (0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8):
+            lo, hi = 0.5, 9.0
+            for _ in range(18):                                                          # the longest that fits, this direction and width
+                m = (lo + hi) / 2
+                if allowed.contains(oval(math.radians(phi_d), m, k)): lo = m
+                else: hi = m
+            if best is None or lo * lo * k > best[0]: best = (lo * lo * k, phi_d, lo, k)
+            BYK[k] = max(BYK.get(k, (0,)), (round(math.pi * lo * lo * k, 1), phi_d, round(lo, 2)))
+    top = max(v[0] for v in BYK.values()); K = max(k for k, v in BYK.items() if v[0] >= 0.95 * top)   # the roundest oval within 5% of the biggest
+    _, phi_d, A = BYK[K]
+    isle = oval(math.radians(phi_d), A, K)
     poly = [[round(x, 3), round(y, 3)] for x, y in list(isle.exterior.coords)[:-1]]
     # the NE / SW split: along the island's long axis from the tip
     far = max(isle.exterior.coords, key=lambda q: math.dist(q, tip)); ax_, ay_ = far[0] - tip[0], far[1] - tip[1]; AL = math.hypot(ax_, ay_)
@@ -78,6 +83,6 @@ def apply(town, wild, pos):
     wild['snowisles'] = list(wild.get('snowisles') or []) + [{'poly': poly, 'trees': trees, 'shacks': shacks}]
     wild['gfx'] = list(wild['gfx']) + [{'k': 'text', 'at': 'xy', 'x': lab[0], 'y': lab[1], 'text': 'Winterlight Island'}]
     gap = min(isle.distance(g) for g in L if g.distance(Point(tip)) > 0.6 or not g.intersects(Point(tip).buffer(0.6)))
-    return {'island (area, box, tip)': (round(isle.area, 1), [round(b, 2) for b in isle.bounds], tip),
-            'closest path (excluding the one ending at the tip)': round(gap, 2), 'shacks': len(shacks), 'snowy firs': len(trees),
+    return {'island (area, box, tip; long axis direction, half-length, width ratio)': (round(isle.area, 1), [round(b, 2) for b in isle.bounds], tip, (phi_d, round(A, 2), K)),
+            'closest path (excluding the one ending at the tip)': round(gap, 2), 'by width ratio (area, direction, half-length)': BYK, 'shacks': len(shacks), 'snowy firs': len(trees),
             'label': lab[:2], 'label inside the island': isle.buffer(0.3).contains(lab[2])}

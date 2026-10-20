@@ -78,7 +78,8 @@ The other builders run inside `src/legacy`.
   straight room to room (every point doubled), in `seawaysfaint` (template SEAFAINT, opacity .4: open-sea routes are faint, owner Oct 20); bay water
   extended inside a box; bounds y1 161.
   One-way exits (owner, Oct 20): wavy currents with an arrowhead 0.4 short of the room (`seacurrents`, template SEACUR). Winterlight Island
-  (`changes/002`, `snowisles`, template SNOWISLE): fills the space SW of 9842 clear of the paths; shacks NE, snowy firs SW.
+  (`changes/002`, `snowisles`, template SNOWISLE): a regular oval (owner: not following the paths), the biggest
+  that fits 0.5 clear of them with its NE end on 9842 (roundest within 5% of the max area); shacks NE, snowy firs SW.
 - **Desert of Despair** (editor Oct 20, `tools/desert_of_despair_editor/`): builder reads `base/map.json`'s room_pos directly (not the legacy saves):
   `FINAL_DUMP=<f> NO_TILES=1 python3 build.py`, then `python3 build_dd_editor.py <f> desert_of_despair_editor.html` (~1 min; RES 0.2). Unlocked (Oct 20): grp 'un' 6365; grp 'wl' the 198 Wastelands rooms shown round the desert (spacers incl.); grp 'cd' the 34 rooms shown from the Coral Depths editor. Moving them means redrawing their trails.
   Drawn (Oct 20, save 14:39Z) by the LEGACY pipeline: `legacy/dd_merge.py` (land chained last into smr_merge's land_edit, kept off the WL south
