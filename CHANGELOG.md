@@ -2,6 +2,7 @@
 
 ## In progress
 
+- Your request (Oct 20): the Traveling the sands... maze is bigger, 5.8 x 4.4 rooms (was 3.3 x 2.5). It grew to the north, east and west; its south edge is where it was (y 135.84). It stays 0.44 clear of the ruins' clearing to the north. Its name is larger (0.62, was 0.42).
 - Your request (Oct 20): the maze at 4050 is now drawn over the paths, with its name "Traveling the sands..." on it.
 - Your request (Oct 20): an oasis drawing (3.2 x 2.2) centred on 13630: a still pool in a ring of green, reeds at its edge, five date palms round it.
 - Your request (Oct 20): the Great Eastern Desert maze is now much bigger (about 6.8 x 7.7 rooms) and holds the Blasted Lands maze inside it, drawn darker with a pale edge, so it reads as a maze within a maze. Both markers stay on 9057 and 22145. The big maze keeps 0.55 clear of the Arid Steppes clearing.

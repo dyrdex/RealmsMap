@@ -21,7 +21,7 @@ PLACES = [('Daichaal', None, None), ('Barren Wastes', 13061, None), ('Great East
 # mazes: (room, centre offset, rx, ry, extra fields). Traveling the sands... over the paths, with its name (owner, Oct 20); the Great Eastern Desert's
 # much bigger, round the Blasted Lands' (a maze within a maze: owner, Oct 20), kept clear of the steppes' clearing (its east edge ~52.1); Blasted
 # Lands' drawn after it, darker, so it reads as a maze inside it
-MAZES = [(4050, (0, 0), 1.55, 1.32, dict(top=True, name='Traveling the sands...', nolabel=False, fs=0.42)),
+MAZES = [(4050, (0, 0), 2.7, 2.3, dict(top=True, name='Traveling the sands...', nolabel=False, fs=0.62, bottom=135.842)),   # (bigger to the north, east and west, its south edge kept: owner, Oct 20)
          (9057, (1.9, -2.15), 3.45, 3.75, {}),
          (22145, (0, 0), 1.4, 1.19, dict(fill='#352C1E', edge='#EAD9AE'))]
 OASIS = (13630, 3.2, 2.2)                                    # the oasis round 13630 (owner, Oct 20): a medium drawing centred on it
@@ -69,6 +69,9 @@ def apply(town, wild, pos):
     for v, (ox, oy), rx, ry, extra in MAZES:
         cx, cy = at(v)[0] + ox, at(v)[1] + oy
         m = dict(name='', nolabel=True, style='desert', cx=round(cx, 3), cy=round(cy, 3), poly=blob(cx, cy, rx, ry, rng)); m.update(extra)
+        if 'bottom' in m:                                                           # (moved up so its south edge stays where it was)
+            dy = m.pop('bottom') - max(q[1] for q in m['poly'])
+            m['poly'] = [[q[0], round(q[1] + dy, 3)] for q in m['poly']]; m['cy'] = round(m['cy'] + dy, 3)
         if not m['nolabel']: del m['nolabel']
         wild['fwmazes'].append(m); rep['mazes'].append((v, m['cx'], m['cy'], rx, ry))
     q = at(OASIS[0])
