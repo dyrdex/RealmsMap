@@ -19,11 +19,14 @@ import gap_fill as GF
 from ntr_merge import _chains, _samples
 from smr_merge import _drawn
 from mi_merge import _put
+import ashen_forest as AF
 
 R8 = GF.R8
 LAND_R = 4.2
 INLET = 60.0                                     # (sq) narrow inlets in the desert's coast smaller than this are filled
-PAD, CELL_MAX, MIN_PATCH = 0.55, 6.0, 3.0
+PAD, SQ, CELL_MAX, MIN_PATCH = 0.55, 1.1, 6.0, 3.0
+STEP_GRID = 2.6                                  # (the steppes' grid: exits this short)
+STX_BOX = (44.0, 88.0, 56.0, 116.0)              # (the Arid Steppes clearing grows only here: the desert side)
 WAVY = 8.0                                       # (links longer than this: still straight; the owner placed them)
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
 SEED = 307
@@ -152,10 +155,60 @@ def merge_dd(w, layout, edges, store):
         comp = lab == i
         if comp.sum() / R8 / R8 >= MIN_PATCH: keep |= comp
     clear = keep
-    patches = AA._contours(clear, box[0], box[1], sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
-    w['smrpatch'] = list(w.get('smrpatch') or []) + patches
-    patchm = AA._raster(patches, box[0], box[1], bw, bh)
-    rep['clearings'] = dict(cells=len(cells), patches=len(patches), sq=sqm(clear))
+    rep['clearings'] = dict(cells=len(cells), sq=sqm(clear))
+
+    # ---------------------------------------------------------------- the Arid Steppes clearing carried on over the rooms that join its grid (owner, Oct 20):
+    # the rooms reached from the Arid Steppes by short n/s/e/w exits on the desert side (the Wastelands' Fringes of the Desert and the desert's rooms
+    # beside them), exactly those rooms and the exits between them, holes filled (as the steppes); joined with the steppes' clearing and the desert's
+    rooms, exits = AF._world()
+    WLR = {v for v, r in info.items() if r.get('grp') == 'wl' and shown(v)}
+    seed_ = {v for v in WLR if rooms[v]['name'] == 'Arid Steppes'}
+    STX = set(); q_ = list(seed_); seen_ = set(seed_)
+    while q_:
+        v = q_.pop()
+        for e in exits.get(v, []):
+            t_ = e['to']
+            if t_ in seen_ or e['name'] not in ('n', 's', 'e', 'w') or not shown(t_) or t_ not in (DD | WLR) or math.dist(pos[v], pos[t_]) > STEP_GRID: continue
+            seen_.add(t_); q_.append(t_)
+            if STX_BOX[0] <= pos[t_][0] <= STX_BOX[2] and STX_BOX[1] <= pos[t_][1] <= STX_BOX[3]: STX.add(t_)
+    near_ = STX | {v for v in seed_ if any(e['to'] in STX for e in exits.get(v, []))}
+    im = Image.new('L', (bw, bh), 0); dr = ImageDraw.Draw(im); s_ = int(SQ * R8)
+    for v in near_:
+        p = px(pos[v]); dr.rectangle([p[0] - s_ / 2, p[1] - s_ / 2, p[0] + s_ / 2, p[1] + s_ / 2], fill=255)
+    for v in near_:
+        for e in exits.get(v, []):
+            if e['to'] in near_ and e['dir'] in AF.DV and not AF.DV[e['dir']][2]: dr.line([px(pos[v]), px(pos[e['to']])], fill=255, width=s_)
+    stx = ndi.gaussian_filter(ndi.binary_fill_holes(np.array(im, bool)).astype(float), 0.3 * R8) > 0.5
+    stx = ndi.binary_fill_holes(ndi.binary_closing(np.pad(stx, R8), structure=disk(R8))[R8:-R8, R8:-R8]) & landm
+    rep['arid_steppes_extended'] = dict(desert_rooms=sorted(v for v in STX if v in DD), wastelands_rooms=sorted(v for v in STX if v in WLR), sq=sqm(stx))
+    old_ = [p for p in (w.get('smrpatch') or []) if any(box[0] <= q[0] < box[2] and box[1] <= q[1] < box[3] for q in p)]
+    grow = ndi.binary_dilation(stx | clear, iterations=2)
+    hit = [p for p in old_ if (AA._raster([p], box[0], box[1], bw, bh) & grow).any()]
+    bb = lambda p: (min(q[0] for q in p), min(q[1] for q in p), max(q[0] for q in p), max(q[1] for q in p))
+    gb = [math.floor(min([bb(p)[0] for p in hit] + [box[0]])) - 1, math.floor(min([bb(p)[1] for p in hit] + [box[1]])) - 1,
+          math.ceil(max([bb(p)[2] for p in hit] + [box[2]])) + 1, math.ceil(max([bb(p)[3] for p in hit] + [box[3]])) + 1]   # (a grid round them all: the steppes' clearing traced whole)
+    gw, gh = int((gb[2] - gb[0]) * R8), int((gb[3] - gb[1]) * R8)
+    c0, r0 = int(round((box[0] - gb[0]) * R8)), int(round((box[1] - gb[1]) * R8))
+    m0 = AA._raster(hit, gb[0], gb[1], gw, gh) if hit else np.zeros((gh, gw), bool)
+    mn = m0.copy(); mn[r0:r0 + bh, c0:c0 + bw] |= stx | clear
+    w['smrpatch'] = [p for p in (w.get('smrpatch') or []) if not any(p is h for h in hit)] + AA._contours(mn, gb[0], gb[1], sigma=1.0, tol=0.35, minarea=MIN_PATCH * 0.5)
+    patchm = mn[r0:r0 + bh, c0:c0 + bw]
+    added_clear = patchm & ~m0[r0:r0 + bh, c0:c0 + bw]                              # (new clearing ground: older trails and sprites there go)
+    rep['clearings']['joined_with_old'] = len(hit); rep['clearings']['new_clearing_sq'] = sqm(added_clear)
+
+    # ---------------------------------------------------------------- the Ancient Road carried on over the desert's rooms of that name (owner, Oct 20): a wide dirt road
+    ROAD = {v for v in DD if shown(v) and rooms[v]['name'] == 'An Ancient Road'}
+    GR = defaultdict(set)
+    for a in list(GD):
+        for b in list(GD[a]):
+            if a in ROAD and b in ROAD: GR[a].add(b); GD[a].discard(b)
+    for v in [v for v in GD if not GD[v]]: del GD[v]
+    roadl = _chains(GR, pos, set(), 0.8, exact=set(GR)) if GR else []
+    for a, b in list(links):                                                          # (its links to the Wastelands' road: road too)
+        if {a, b} & ROAD and rooms[a]['name'] == rooms[b]['name'] == 'An Ancient Road':
+            links.remove((a, b)); roadl.append([[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]])
+    w['dirtroads'] = list(w.get('dirtroads') or []) + roadl
+    rep['road'] = dict(rooms=sorted(ROAD), lines=len(roadl))
 
     # ---------------------------------------------------------------- lines: trails (clipped at the clearings), links, up/down exits
     def trails(G):
@@ -170,7 +223,7 @@ def merge_dd(w, layout, edges, store):
                     if not (0 <= r < bh and 0 <= c < bw and patchm[r, c]): inside = False; break
                 if not inside: Tg[a].add(b); Tg[b].add(a)
         return Tg
-    dirt = _chains(trails(GD), pos, set(), 0.8)
+    dirt = _chains(trails(GD), pos, set(), 0.8, exact=set(GD))                      # (straight through every room: the owner placed them exactly, Oct 20)
     for a, b in links + uds:
         dirt.append([[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]])
     def clip(lines, mask):
@@ -195,6 +248,8 @@ def merge_dd(w, layout, edges, store):
                 else: run.append(pt)
         return out
     dirt = clip(dirt, patchm)
+    n0 = len(w['fwtracks']); w['fwtracks'] = clip(w['fwtracks'], added_clear)          # (older trails inside the new clearing ground)
+    rep['old_trails_clipped'] = dict(before=n0, after=len(w['fwtracks']))
     w['fwtracks'] = list(w['fwtracks']) + dirt
     rep['lines'] = dict(trails=len(dirt), links_to_map=len(links), up_down=len(uds))
     rep['land'] = dict(new_sq=store.get('land_new_sq'), enclosed_gaps_sq=store.get('gap_pieces'), holes_left=store.get('holes_left'), all_gaps_and_inlets_sq=sqm(store['gaps']))
@@ -227,7 +282,7 @@ def merge_dd(w, layout, edges, store):
     # ---------------------------------------------------------------- old sprites make way for the desert's ground and paths
     def off(q):
         c, r = int((q[0] - box[0]) * R8), int((q[1] - box[1]) * R8)
-        return 0 <= r < bh and 0 <= c < bw and bool(own[r, c] or patchm[r, c])
+        return 0 <= r < bh and 0 <= c < bw and bool(own[r, c] or patchm[r, c] or added_clear[r, c])
     cl = {}
     for k in SPRITES:
         n0 = len(w.get(k) or []); w[k] = [q for q in (w.get(k) or []) if not off(q)]

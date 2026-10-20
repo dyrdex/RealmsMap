@@ -80,4 +80,7 @@ The other builders run inside `src/legacy`.
   re-roll). smr_merge's grid: x to GF.X1 + 24, y to 170. cd_merge's sea reaches 2 rooms past its swimming rooms. New base = `BASE_DUMP=<f>
   NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json` (re-applies applied/v22 + v23; without the
   DD save this reproduces the old base exactly). No sprites/labels yet (not asked).
+  Owner (Oct 20): desert trails straight through every room (`exact`, no smoothing). Arid Steppes clearing grows over rooms reached from the
+  steppes by n/s/e/w exits <= 2.6 inside `STX_BOX` (44..56, 88..116), merged with the old steppes polygon. DD rooms named An Ancient Road =
+  `dirtroads` (+ their links to WL road rooms).
 - **The Mire**: no Mire sea; don't touch the sea unless asked (Oct 18). Unsaved editor rooms are never drawn.
