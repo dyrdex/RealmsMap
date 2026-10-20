@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress
+## Version 24 · The Desert of Despair · October 20, 2026
 
 - Your request (Oct 20): the tent and the caravan cart are twice as large (tent 2.4 x 1.9, cart 2.8 x 1.9), still 0.35 above their rooms, 0.35 clear of the paths and 0.9 apart.
 - Your request (Oct 20): a small nomad tent (pale striped cloth, dark doorway, a red pennant; 1.2 x 0.95) just north of 6324, and a small caravan cart (canvas cover, a crate, one big wheel, the drawbar; 1.4 x 0.95) just north of 6321. Each sits 0.35 above its room, clear of the paths.
