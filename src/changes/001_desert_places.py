@@ -27,7 +27,7 @@ MAZES = [(4050, (0, 0), 2.7, 2.3, dict(top=True, name='Traveling the sands...', 
 AREA_NAME = dict(x=72.5, y=99.5, lh=2.8, sag=0.5, hw=6, lines=['Desert', 'Of', 'Despair'])   # one word per line, in the open ground between the trails at x 65 and x 80 (owner, Oct 20)
 OASIS = (13630, 3.2, 2.2)                                    # the oasis round 13630 (owner, Oct 20): a medium drawing centred on it
 # Route options (owner, Oct 20): the River route (the owner's, condensed) becomes each place's default; the route it had becomes the alternate
-# 'East: May encounter mobs (requires hide)'. No room counts given: none shown. Each line drawn to the place's marker (as its route was).
+# 'East: May encounter mobs (requires hide)'; the River one reads 'River: Safest Route' (owner, Oct 20). No room counts given: none shown. Each line drawn to the place's marker (as its route was).
 RIVER = {
     'Desert of Despair': 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w',
     'Great Eastern Desert': 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;s;w;nw;w;w;w;sw;s;sw;sw;w;sw;sw;nw;d;d;sw;d;n;ne;e;e;e;e;e;e;e;e',
@@ -132,7 +132,7 @@ def apply(town, wild, pos):
         if cur: segs.append(cur)
         if extra is not None: segs[-1].append(R(extra))
         east = dict(dir='East', rooms=None, note='May encounter mobs (requires hide)', route=p['route'], segs=p['segs'], gap=p.get('note'))
-        p['opts'] = [dict(dir='River', rooms=None, note=None, route=river, segs=segs, gap=None if len(segs) == 1 else GAP), east]
+        p['opts'] = [dict(dir='River', rooms=None, note='Safest Route', route=river, segs=segs, gap=None if len(segs) == 1 else GAP), east]
         p['route'] = river; p['segs'] = segs; p['path'] = [q for s in segs for q in s]; p['note'] = None if len(segs) == 1 else GAP
         rep['route_options'][p['name']] = dict(river_rooms_walked=len(tr), drawn_to=k + 1, to_marker_after=extra, pieces=len(segs))
     return rep
