@@ -1,5 +1,6 @@
 # The layout editor for the Desert of Despair (owner, Oct 20): all its rooms and the spacer rooms that join them, in the empty ground east of the
-# Wastelands' desert fringe (8934-8946, 6538, 8772) and south-east of its entrance 6365 (off the Southern Mountain Range, already on the map: fixed).
+# Wastelands' desert fringe (8934-8946, 6538, 8772) and south-east of its entrance 6365 (off the Southern Mountain Range, already on the map).
+# Unlocked (owner, Oct 20; grp 'un', start at their map spots): 6365 and Wastelands 8605, 8607, 8609, 8714, 6538.
 # Its exits into the Azure Sea, Great Eastern Desert, Emerald Hills, The Dungeon, Thul Ab'hara, Daichaal and The Barren Wastes are left off.
 #   python3 build_dd_editor.py <final map state (json, from FINAL_DUMP=...)> <out html>     (dd_editor_template.html beside this file)
 # Owner (Oct 20): space things to avoid overlaps; exits may be stretched to keep sections apart.
@@ -19,7 +20,7 @@ w = json.load(open(sys.argv[1])); out = sys.argv[2]
 rooms, exits = AF._world(); DV = AF.DV
 DN = {1: 'n', 2: 'e', 4: 's', 8: 'w', 3: 'ne', 9: 'nw', 6: 'se', 12: 'sw', 16: 'u', 32: 'd', 0: '?'}
 isspacer = lambda v: v in rooms and bool(rooms[v]['flags'] & 8) and rooms[v]['area'] == ''
-ENTRY = 6365                                                                              # on the map already (the route's end): fixed
+ENTRY = 6365                                                                              # on the map already (the route's end): laid out round it, unlocked below
 GRP = {v: 'dd' for v, r in rooms.items() if r['area'] == 'Desert of Despair' and v != ENTRY}
 STEP = float(os.environ.get('STEP', 2.0))
 RES, GAP, FIXGAP, CROSS, THRU, PASSES, CELL = float(os.environ.get('RES', 0.2)), float(os.environ.get('GAP', 6.0)), 4.0, float(os.environ.get('CROSS', 30.0)), 8.0, 4, 0.5
@@ -222,6 +223,10 @@ xcross = sum(1 for a in range(len(XL)) for b in range(a + 1, len(XL)) if segx(at
 # ---- fixed rooms near the new ones ----
 pts = [start[v] for v in S]
 CTX = {v: SRC[v] for v, p in POS.items() if min(math.hypot(p[0] - a[0], p[1] - a[1]) for a in pts) <= NEAR}
+UN = [6365, 8605, 8607, 8609, 8714, 6538]   # unlocked map rooms (owner, Oct 20): the entrance 6365; Wastelands 8605, 8607, 8609, 8714, 6538; movable, starting at their spots on the map
+assert all(v in POS for v in UN), [(v, rooms[v]['area'], v in POS) for v in UN]
+for v in UN: start[v] = [round(POS[v][0], 2), round(POS[v][1], 2)]; GRP[v] = 'un'; CTX.pop(v, None)
+S = S | set(UN)
 # ---- rooms and exits ----
 def exlist(v):
     res = []

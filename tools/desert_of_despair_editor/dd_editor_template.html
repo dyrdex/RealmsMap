@@ -61,6 +61,7 @@ svg.names-on .nd .lbl,svg.names-zoom.zoomed .nd .lbl{display:block}
 .nd.ntr rect,.nd.ntr circle.shape{stroke:#B3541E;stroke-width:.17}
 .nd.rd rect,.nd.rd circle.shape{stroke:#D4B44A}
 .nd.dd rect,.nd.dd circle.shape{stroke:#E6C36A}
+.nd.un rect,.nd.un circle.shape{stroke:#6FC3E8}
 
 
 .nd .hx{display:none}.nd.hid .hx{display:block}.nd.hid{opacity:.32}.nd.hid .shape,.nd.hid rect{stroke-dasharray:.16 .12}
@@ -81,7 +82,7 @@ svg line.cxe{pointer-events:none}
     <li><b>Scroll</b> to zoom, drag empty space to pan.</li>
   </ul>
   <p id="audit" class="stat" style="color:var(--ink)"></p>
-  <p id="ntrNote" style="margin:4px 0 8px"><b style="color:#E6C36A">Desert of Despair</b>: all its rooms and the spacer rooms that join them. Its exits into the Azure Sea, Great Eastern Desert, Emerald Hills, The Dungeon, Thul Ab'hara, Daichaal and The Barren Wastes are left off. It joins the map at its entrance 6365 (off the Southern Mountain Range, fixed where the route ends) and at the Wastelands' desert fringe (west). The area is split into <b>sections</b> (parts with only a few exits between them). Each section starts where TinTin's exits put its rooms, two rooms apart; the sections are spread out over the empty ground east of the Wastelands with gaps between them, so some exits between sections (and to the map) are stretched. Rooms on another level are offset diagonally (up = north-east). Hide any room you don't want on the map. <b>Select a section</b> grabs a whole section to move it; <b>Select the whole piece</b> grabs the sections of the rooms you have selected; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms back to their starting spots.</p>
+  <p id="ntrNote" style="margin:4px 0 8px"><b style="color:#E6C36A">Desert of Despair</b>: all its rooms and the spacer rooms that join them. Its exits into the Azure Sea, Great Eastern Desert, Emerald Hills, The Dungeon, Thul Ab'hara, Daichaal and The Barren Wastes are left off. It joins the map at its entrance 6365 (off the Southern Mountain Range, where the route ends) and at the Wastelands' desert fringe (west). The area is split into <b>sections</b> (parts with only a few exits between them). Each section starts where TinTin's exits put its rooms, two rooms apart; the sections are spread out over the empty ground east of the Wastelands with gaps between them, so some exits between sections (and to the map) are stretched. Rooms on another level are offset diagonally (up = north-east). Hide any room you don't want on the map. <b>Select a section</b> grabs a whole section to move it; <b>Select the whole piece</b> grabs the sections of the rooms you have selected; <b>Selected → where TinTin's exits suggest</b> moves the selected rooms back to their starting spots.</p>
   <p><b>The fixed rooms</b> (small round dots: grey-blue for Darkhaven, violet for the Shadow Grove, green for the Forgotten Woods, olive for the Forest of Tears, blue for the Lake of Tich'Pyga, gold for the Western Trade Route, brown for the Ashen Forest, copper for the Southern Mountain Range and its trade route, tan for the Wastelands) are the rooms already on the finished map, exactly where they are. They can't be moved. Hover one to see its name. The faint lines between them are the exits between those rooms. The finished map (land, lake, trails) is faintly behind.</p>
   <p style="color:var(--soft)">North is up. Up and down exits are dashed purple lines.</p>
 
@@ -126,6 +127,7 @@ svg line.cxe{pointer-events:none}
     <select id="names"><option value="zoom" selected>when zoomed in</option><option value="on">always</option><option value="off">never</option></select></div>
   <div class="legend">
     <i style="background:var(--t-Desert);border:2px solid #E6C36A"></i><span>Desert of Despair room (movable)</span>
+    <i style="background:var(--t-Hills);border:2px solid #6FC3E8"></i><span>Unlocked map room: the entrance 6365; Wastelands 8605, 8607, 8609, 8714, 6538 (movable, start at their spots on the map)</span>
     <i style="background:var(--t-other);border-radius:50%;width:8px;height:8px;border:1px solid #B3541E"></i><span>Spacer room (invisible in the game, free to move)</span>
     <i style="background:var(--cx-DH);border-radius:50%"></i><span>Fixed room in Darkhaven</span>
     <i style="background:var(--cx-Grove);border-radius:50%"></i><span>Fixed room in the Shadow Grove</span>
@@ -136,7 +138,6 @@ svg line.cxe{pointer-events:none}
     <i style="background:var(--cx-WT);border-radius:50%"></i><span>Fixed room on the Western Trade Route</span>
     <i style="background:var(--cx-SM);border-radius:50%"></i><span>Fixed room in the Southern Mountain Range or on its trade route</span>
     <i style="background:var(--cx-WL);border-radius:50%"></i><span>Fixed room in the Wastelands</span>
-    <i style="background:var(--cx-DD);border-radius:50%"></i><span>The desert's entrance 6365 (fixed, where the route ends)</span>
     <i style="background:var(--cx-MI);border-radius:50%"></i><span>Fixed room in the Mire</span>
     <i style="background:var(--cx-N);border-radius:50%"></i><span>Other fixed room on the map</span>
     <i style="border:2px dashed var(--ud);background:none"></i><span>On a level above or below ground</span>

@@ -2,6 +2,7 @@
 
 ## In progress
 
+- Your request (Oct 20): in the Desert of Despair editor, 6 map rooms unlocked so you can move them (blue outline, starting at their spots on the map): the entrance 6365 Dry foothills, and Wastelands 8605 and 8607 Along the River, 8609 Plundering the Darkness, 8714 Arid Steppes and 6538 Entering the Desert. No other room's starting spot changed.
 - Your request (Oct 20): a layout editor for the Desert of Despair (https://claude.ai/artifact/JKaM8hA8ih8XHfNJQifgqA), nothing drawn on the map yet: its 244 rooms (all but the entrance 6365, which stays where the route ends) and the 56 spacer rooms that join them, in 12 sections spread over the empty ground east of the Wastelands' desert fringe; no two rooms closer than 0.8; 76 exits stretched past 2 rooms to keep the sections apart (all of them between sections), 3 of the 29 links between sections cross. Exits into the Azure Sea, Great Eastern Desert, Emerald Hills, The Dungeon, Thul Ab'hara, Daichaal and The Barren Wastes are left off; 4 rooms with no exit (6295, 6296, 6407, 6414, "Salt and waves....") are parked nearby. Save with "Save for Claude" and the area gets drawn from your save.
 - Your report (Oct 20): picking a place near the map's edge (the Kingdom of Juargan, for one) no longer flies past and then jumps back; the map now goes straight to where it ends up. Checked on all 144 places in the list: each now moves once.
 
