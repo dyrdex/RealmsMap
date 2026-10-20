@@ -18,7 +18,8 @@ number, don't read it whole.
   name + spot, e.g. `stonecity`, `volcano`, `saloon`, `text`), `buildings`, `smrhouses`, `smrtowns`, `wltown`.
   `geo.seafill` + `seashore` (sea filling gaps after a coast change, drawn over the sea), `talltrees` ([x, foot y, height, variant]; template TALL), `camps` (palisade wall polygon + gates, tents, long house, corral, fire pit; template CAMPS). How each is drawn: `src/template.html`.
 - `geo.land` is drawn as one evenodd path: a land polygon inside another cancels it (bare holes; `changes/004` removed three). Never add an
-  overlapping land piece: union it into the big one.
+  overlapping land piece: union it into the big one. Same for ground tints: extend the area's own polygon, never a separate piece (seams;
+  owner, Oct 20).
 - Changes go in `src/changes/NNN_name.py` (see its README). Never edit `base/map.json` by hand; `build.py --freeze` rewrites it.
 
 ## Layout editors

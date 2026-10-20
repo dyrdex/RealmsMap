@@ -3,7 +3,7 @@ polygons (geo.land 1, 2, 4) lie inside the big one (0), so they cancel it and sh
 covers them):
   - land 1, by the trail from Miden'nir to the Ashen Forest (x 12.5-17.7, y 9-18.1): now the plain dark-green land of Miden'nir round it;
   - land 2, north of the Wastelands where the Southern Mountains, the Wastelands and the Desert of Despair meet (x 14.9-53, y 61-89): the owner's
-    split: Wastelands ground (wheat) in the south part, the Southern Mountains' ground (plain land) in the north part, divided where the Wastelands'
+    split: the Wastelands' own ground (its wheat polygon, extended north: no separate piece) in the south part, the Southern Mountains' ground (plain land) in the north part, divided where the Wastelands'
     wheat edge meets the hole on its west and the desert's sand on its east;
   - land 4 (x -2.9 to -1.4, y 75-78.5), under the Wastelands' wheat: the same fault, small (land under it again).
 Each new piece of ground gets the sprites of the ground beside it, at the same density (own random.Random)."""
@@ -33,9 +33,16 @@ def apply(town, wild, pos):
     wl_new = wl.difference(old_wheat)
     G['land'] = [p for i, p in enumerate(G['land']) if i not in DROP]
     ring = lambda g: [[round(x, 3), round(y, 3)] for x, y in list(g.exterior.coords)[:-1]]
-    added = []
-    for g in getattr(wl_new, 'geoms', [wl_new]):
-        if g.area > 0.05: G['wheat'].append(ring(g)); added.append(round(g.area, 1))
+    # the Wastelands' own ground raised north over it (owner, Oct 20: extend the native terrain, not a separate piece, so there's no seam):
+    # merged into the wheat polygon it borders most
+    j = max(range(len(G['wheat'])), key=lambda k: mk(G['wheat'][k]).buffer(0.2).intersection(wl_new).area)
+    merged = unary_union([mk(G['wheat'][j]), wl.buffer(0.02)]).buffer(0.05).buffer(-0.05)
+    assert merged.geom_type == 'Polygon', merged.geom_type
+    gaps = [round(Polygon(h).area, 3) for h in merged.interiors]                    # (slivers between the old edge and the hole's: closed)
+    assert all(a < 0.5 for a in gaps), gaps
+    merged = Polygon(merged.exterior)
+    added = [round(merged.area - mk(G['wheat'][j]).area, 1), 'into wheat %d' % j, 'slivers closed: %s' % gaps]
+    G['wheat'][j] = ring(merged)
     # ---- sprites, as on the ground beside each new piece ----
     lines = [LineString([q[:2] for q in l]) for k in ('fwtracks', 'swtracks', 'dirtroads', 'etrtracks', 'seaways', 'streams') for l in (wild.get(k) or [])
              if isinstance(l, list) and len(l) > 1 and isinstance(l[0], (list, tuple))]
@@ -65,4 +72,4 @@ def apply(town, wild, pos):
                 t = list(rng.choice(src)); t[0], t[1] = round(x, 2), round(y, 2); new.append(t)
             wild[k] = list(L) + new; got[k] = len(new)
         rep[name] = dict(area=round(area.area, 1), sprites=got)
-    return {'land pieces removed (bare holes)': {i: [round(b, 1) for b in holes[i].bounds] for i in DROP}, 'wheat added (areas)': added, 'filled': rep}
+    return {'land pieces removed (bare holes)': {i: [round(b, 1) for b in holes[i].bounds] for i in DROP}, 'wheat extended (area, polygon)': added, 'filled': rep}
