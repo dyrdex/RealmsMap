@@ -87,6 +87,6 @@ The other builders run inside `src/legacy`.
   exactly (all desert lines; cd_merge for rooms in `EXACT` = moved in the DD editor). `dd_merge.drop_dangling`: trails left ending at a
   spacer whose far room moved away (181-19863) are removed.
   Editor v5 (Oct 20): grp 'ge' = 10 added Great Eastern Desert tunnel rooms (6549-9070, 9057, spacers 22630, 22145), start spread from the save;
-  rebuild with `DD_BASE=<git show ae3db68:src/base/map.json>` (the pre-desert base) so the other starts stay. dd_merge doesn't draw 'ge' yet.
+  rebuild with `DD_BASE=<git show ae3db68:src/base/map.json>` (the pre-desert base) so the other starts stay. dd_merge draws 'ge' as desert rooms (not in the steppes' grid search).
   `dd_merge.EXTRA_CLEAR`: hand-picked clearings (rooms + exits, holes filled), e.g. the ruins round 6464 with its east/west single rooms.
 - **The Mire**: no Mire sea; don't touch the sea unless asked (Oct 18). Unsaved editor rooms are never drawn.

@@ -38,7 +38,7 @@ def _setup(layout, edges):
     pos = dict(zip(layout['ids'], zip(layout['xs'], layout['ys'])))
     info = {r['id']: r for r in edges['rooms']}
     hidden = set(layout.get('hidden', []))
-    DD = {v for v, r in info.items() if r.get('grp') == 'dd' and v in pos}
+    DD = {v for v, r in info.items() if r.get('grp') in ('dd', 'ge') and v in pos}       # ('ge': the Great Eastern Desert rooms added Oct 20, drawn as the desert's)
     shown = lambda v: v in pos and v not in hidden
     void = lambda v: bool(info.get(v, {}).get('void'))
     E = [(a, b, k) for a, b, k in edges['edges'] if shown(a) and shown(b) and {a, b} & DD]
@@ -178,7 +178,7 @@ def merge_dd(w, layout, edges, store):
         v = q_.pop()
         for e in exits.get(v, []):
             t_ = e['to']
-            if t_ in seen_ or e['name'] not in ('n', 's', 'e', 'w') or not shown(t_) or t_ not in (DD | WLR) or math.dist(pos[v], pos[t_]) > STEP_GRID: continue
+            if t_ in seen_ or e['name'] not in ('n', 's', 'e', 'w') or not shown(t_) or t_ not in ({u for u in DD if info[u].get('grp') == 'dd'} | WLR) or math.dist(pos[v], pos[t_]) > STEP_GRID: continue
             seen_.add(t_); q_.append(t_)
             if STX_BOX[0] <= pos[t_][0] <= STX_BOX[2] and STX_BOX[1] <= pos[t_][1] <= STX_BOX[3]: STX.add(t_)
     near_ = STX | {v for v in seed_ if any(e['to'] in STX for e in exits.get(v, []))}
