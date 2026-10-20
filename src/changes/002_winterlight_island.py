@@ -11,6 +11,7 @@ BOX = (15.0, 138.0, 34.0, 150.0)                   # (the space between the rout
 CLEAR = 0.9                                         # from any path's centre line or room (owner: not so close to the paths)
 N_SHACKS, TREE_STEP = 3, 0.6
 OPEN, CAP = 0.75, 0.7                               # rounding radius of the outline; radius of the rounded end at 9842
+SE_W = 0.55                                         # the south-east shore's distance from the long axis (x the widest half-width)
 
 
 def apply(town, wild, pos):
@@ -42,7 +43,10 @@ def apply(town, wild, pos):
             bend = 0.07 * Ln * math.sin(math.pi * t) * math.sin(ph[3] + 1.3)
             cx, cy = tip[0] + ux * Ln * t + nx_ * bend, tip[1] + uy * Ln * t + ny_ * bend
             left.append((cx + nx_ * W * f * wob(t, 0), cy + ny_ * W * f * wob(t, 0)))
-            right.append((cx - nx_ * W * f * wob(t, 1), cy - ny_ * W * f * wob(t, 1)))
+            rise = math.sin(math.pi / 2 * min(1, t / 0.2)); fall = min(1, math.sqrt(max(0, (1 - t) / 0.15)))
+            fr = SE_W * rise * fall * (1 + 0.025 * math.sin(2 * math.pi * 1.2 * t + ph[4]))   # the south-east shore: an even, nearly straight run (owner, Oct 20)
+            sx, sy = tip[0] + ux * Ln * t, tip[1] + uy * Ln * t
+            right.append((sx - nx_ * W * fr, sy - ny_ * W * fr))
         g = Polygon(left + right[::-1]).buffer(0)
         g = g.buffer(-OPEN).buffer(OPEN)                                                 # rounded: no narrow points or spits (owner, Oct 20)
         if g.is_empty: return g
