@@ -2,6 +2,14 @@
 
 ## In progress
 
+- Your request (Oct 20): sub-area markers off the Desert of Despair, each route drawn in one piece:
+  - Daichaal at 6520 Wastelands road, leaving south-east (the name's spelling corrected in your list).
+  - Barren Wastes at 13061 Traveling the sands.... Its drawn route ends there; the directions on file are unchanged.
+  - Great Eastern Desert on 9057, on a sandy maze blob.
+  - Blasted Lands on 22145, on a sandy maze blob. Its directions as given started with a single "e", which stops after 3 rooms in Darkhaven; I used "#8 e" (the same opening as Great Eastern Desert) and added "scan for entrance".
+  - Thul Ab'hara on 6561 and The Dungeon on 929. Those rooms stay hidden; the routes are drawn over them.
+- Your request (Oct 20): a small sandy maze blob centred on 4050 Traveling the sands.... All three desert mazes are drawn in a new desert style (sand fill, pale maze lines, dashed edge), with no name on them.
+- Your request (Oct 20): a small label "(Emerald Hills)" west of 6366 Wandering the Desert, 0.48 clear of the Tayalardian Rangelands name.
 - Your Desert of Despair save of Oct 20 (18:25): 9057 The Great Eastern Desert is on the map at (54, 106), on the desert's sand, with a path from the Arid Steppes clearing's edge at 6369. The 8 tunnel rooms (6549–9070 and spacer 22630) and 6548 are hidden as you saved them. Spacer 22145 is not drawn: its only other exit leads to 22141 (A nomad camp), which isn't in the editor yet. No other change.
 - Your request (Oct 20): 10 rooms added to the Desert of Despair editor (purple outline, "Select the added rooms"): the Great Eastern Desert's tunnel 6549, 9058, 9059, 9061, 9068 (An underground lake), 9069, 9070, 9057 (The Great Eastern Desert) and spacers 22630, 22145. They start beside the rooms they join in your saved layout (6548 at the west end; 6369's exit east into 9057), at least 1.6 rooms from your rooms; your layout loads as you saved it. Not drawn on the map until you place them and save.
 - Your request (Oct 20): the ruins' clearing round 6464 now takes in the single rooms on either side of it: 23735, 6462 (with spacer 6494) and 23736 to the west, 23734, 6466 and 23737 to the east. Their stub paths are gone; the clearing grew from 9 to 16 rooms (desert clearings 54.5 to 70.3 sq). The path in from 6461 meets its west edge.

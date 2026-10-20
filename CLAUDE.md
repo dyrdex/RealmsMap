@@ -26,7 +26,8 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 - All 13 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get
   `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
 - In progress (Oct 20): Desert of Despair drawn from the owner's save (14:39Z) by a legacy redraw (`legacy/dd_merge.py`) + rebase; base/map.json
-  rewritten (= legacy + applied/v22 + v23). Wastelands/Coral Depths rooms moved in that editor redrawn too. Awaiting owner review.
+  rewritten (= legacy + applied/v22 + v23). Wastelands/Coral Depths rooms moved in that editor redrawn too. Desert places/mazes in
+  `changes/001_desert_places.py`. Awaiting owner review.
 - In progress: site camera fix (Oct 20, `flyTo` in site_template aims inside maxBounds; no map change).
 
 ## Snapshots
