@@ -20,7 +20,7 @@ from scipy.spatial import cKDTree
 from skimage import measure
 import arrange_apply as AA
 import gap_fill as GF
-from ntr_merge import _chains, _samples
+from ntr_merge import _chains, _samples, _sharp
 from smr_merge import _drawn, _hash
 
 R8 = GF.R8
@@ -38,6 +38,7 @@ PLATEAU = (24.0, 8.0, 67.0, 41.5)               # the high ground NW of the clif
 BLACK = {669, 6302, 1495, 6288}                 # 'Black Sand Beach(es)': dark ash-grey sand
 SANDY = {6303, 2516, 2521, 2523, 2524, 6292, 6329, 2818, 6419, 24174}   # beaches, the sandy path, the pale sandy coastline
 SEED = 97
+EXACT = set()                                   # rooms the owner moved in a later editor (build_legacy sets it: the Desert of Despair editor's, Oct 20)
 
 _cache = {}
 
@@ -209,8 +210,11 @@ def merge_cd(w, layout, edges, smr_layout, seed=SEED):
         G = GW if (a in wet or b in wet) else GD
         G[a].add(b); G[b].add(a)
     pinned = {v for v in pos if v not in CD} | {2806} | (set(GW) & set(GD)) | {v for e in uds for v in e}   # (where a water route meets a dirt path, or an up/down path joins a trail, the lines run exactly through the room)
-    dirt = _chains(GD, pos, pinned, 0.5)
-    seaw = _chains(GW, pos, pinned, 0.6)
+    _ex = set(EXACT) | {u for v in EXACT for u in list(GD.get(v, ())) + list(GW.get(v, ()))}   # (rooms moved in a later editor: paths run through them exactly)
+    dirt = _chains(GD, pos, pinned, 0.5, exact=_ex)
+    seaw = _chains(GW, pos, pinned, 0.6, exact=_ex)
+    _xp = [pos[v] for v in EXACT if v in pos]
+    if _xp: dirt = [_sharp(l, _xp) for l in dirt]; seaw = [_sharp(l, _xp) for l in seaw]   # (the moved rooms reached exactly: the template draws curves)
     udl = []
     for a, b in uds:                                                               # up/down exits (owner, Oct 16): dirt lines; a long one with a bend, like 7 to 8
         A_, B_ = np.array(pos[a], float), np.array(pos[b], float); d = np.linalg.norm(B_ - A_)

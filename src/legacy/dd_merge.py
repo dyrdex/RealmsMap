@@ -16,7 +16,7 @@ from scipy.spatial import cKDTree, ConvexHull
 from skimage.morphology import disk
 import arrange_apply as AA
 import gap_fill as GF
-from ntr_merge import _chains, _samples
+from ntr_merge import _chains, _samples, _sharp
 from smr_merge import _drawn
 from mi_merge import _put
 import ashen_forest as AF
@@ -207,7 +207,7 @@ def merge_dd(w, layout, edges, store):
     for a, b in list(links):                                                          # (its links to the Wastelands' road: road too)
         if {a, b} & ROAD and rooms[a]['name'] == rooms[b]['name'] == 'An Ancient Road':
             links.remove((a, b)); roadl.append([[round(pos[a][0], 2), round(pos[a][1], 2)], [round(pos[b][0], 2), round(pos[b][1], 2)]])
-    w['dirtroads'] = list(w.get('dirtroads') or []) + roadl
+    w['dirtroads'] = list(w.get('dirtroads') or []) + [_sharp(l) for l in roadl]      # (through every room exactly: points doubled, the template draws curves)
     rep['road'] = dict(rooms=sorted(ROAD), lines=len(roadl))
 
     # ---------------------------------------------------------------- lines: trails (clipped at the clearings), links, up/down exits
@@ -250,7 +250,7 @@ def merge_dd(w, layout, edges, store):
     dirt = clip(dirt, patchm)
     n0 = len(w['fwtracks']); w['fwtracks'] = clip(w['fwtracks'], added_clear)          # (older trails inside the new clearing ground)
     rep['old_trails_clipped'] = dict(before=n0, after=len(w['fwtracks']))
-    w['fwtracks'] = list(w['fwtracks']) + dirt
+    w['fwtracks'] = list(w['fwtracks']) + [_sharp(l) for l in dirt]                  # (through every room exactly: points doubled, the template draws curves)
     rep['lines'] = dict(trails=len(dirt), links_to_map=len(links), up_down=len(uds))
     rep['land'] = dict(new_sq=store.get('land_new_sq'), enclosed_gaps_sq=store.get('gap_pieces'), holes_left=store.get('holes_left'), all_gaps_and_inlets_sq=sqm(store['gaps']))
 
@@ -296,3 +296,16 @@ def merge_dd(w, layout, edges, store):
     rep['bounds'] = [b0, w['bounds']]
     rep['rooms'] = dict(shown=len([v for v in DD if shown(v) and not void(v)]), hidden=len([v for v in DD if v in hidden]))
     return w, rep
+
+
+def drop_dangling(w, pts):
+    """trails that now end at nothing (owner, Oct 20): a fwtracks line with an end at one of pts (spacer rooms whose room on the far side was moved
+    away) where no other line passes is removed"""
+    def touches(L, p): return any(math.dist(q[:2], p) < 0.3 for q in L)
+    gone = []
+    for p in pts:
+        ends = [L for L in w['fwtracks'] if math.dist(L[0][:2], p) < 0.05 or math.dist(L[-1][:2], p) < 0.05]
+        others = [L for L in w['fwtracks'] if touches(L, p) and not any(L is e for e in ends)]
+        if len(ends) == 1 and not others:
+            w['fwtracks'] = [L for L in w['fwtracks'] if L is not ends[0]]; gone.append([ends[0][0], ends[0][-1]])
+    return gone

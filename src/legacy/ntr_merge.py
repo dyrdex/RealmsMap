@@ -34,6 +34,16 @@ def _chains(G, pos, pinned, sigma, exact=()):
     return out
 
 
+def _sharp(line, at=None):
+    """the template draws a line as a curve through the midpoints between its points: a point given twice is passed exactly (a room the line must
+    reach, Oct 20). at: the points to double (all inner points when None)"""
+    out = [line[0]]
+    for q in line[1:-1]:
+        out.append(q)
+        if at is None or any(abs(q[0] - a[0]) < 1e-6 and abs(q[1] - a[1]) < 1e-6 for a in at): out.append(list(q))
+    return out + [line[-1]] if len(line) > 1 else out
+
+
 def _samples(lines, step=0.15):
     out = []
     for ln in lines:

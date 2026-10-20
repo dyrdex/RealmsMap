@@ -141,7 +141,9 @@ _DDL=_json.load(open(os.path.join(_here,'dd_layout_final.json'))); _DDE=_json.lo
 _ddg={r['id']:r.get('grp') for r in _DDE['rooms']}; _ddp=dict(zip(_DDL['ids'],zip(_DDL['xs'],_DDL['ys'])))
 _cdl0={_v:(_x,_y) for _v,_x,_y in zip(_CDL['ids'],_CDL['xs'],_CDL['ys']) if _v in _cdm.SM_DRAWN}   # (their spots before: smr's window kept as it was, so the range's patterns don't re-roll)
 for _i,_v in enumerate(_CDL['ids']):                              # the Coral Depths editor's rooms (and 6365) the owner moved in the Desert of Despair editor
-    if _ddg.get(_v) in ('cd','un') and _v in _ddp: _CDL['xs'][_i],_CDL['ys'][_i]=_ddp[_v]
+    if _ddg.get(_v) in ('cd','un') and _v in _ddp:
+        if (_CDL['xs'][_i],_CDL['ys'][_i])!=tuple(_ddp[_v]): _cdm.EXACT.add(_v)
+        _CDL['xs'][_i],_CDL['ys'][_i]=_ddp[_v]
 _cdp=dict(zip(_CDL['ids'],zip(_CDL['xs'],_CDL['ys'])))
 for _i,_v in enumerate(_SML['ids']):                              # the Southern Mountain Range rooms the owner moved in the Coral Depths editor
     if _v in _cdm.SM_DRAWN: _SML['xs'][_i],_SML['ys'][_i]=_cdp[_v]
@@ -189,6 +191,9 @@ w,_mi=_mim.merge_mi(w,_MIL,_MIE,_mis)                            # The Mire, fro
 print('Mire merged:',_mi)
 w,_dd=_ddm.merge_dd(w,_DDL,_DDE,_dds)                            # the Desert of Despair, from the owner's save (Oct 20)
 print('Desert of Despair merged:',_dd)
+_sp0={_v:(_SML['xs'][_i],_SML['ys'][_i]) for _i,_v in enumerate(_SML['ids'])}   # the spacers beside the desert's entrance whose far side moved away: their trails end at nothing (owner, Oct 20)
+_dang=[_sp0[_e['to']] for _v in _cdl0 if _ddg.get(_v)=='un' and _cdl0[_v]!=_ddp.get(_v) for _e in _ddm.AF._world()[1].get(_v,[]) if _e['to'] in _sp0 and not _ddm.AF._world()[0][_e['to']]['area']]
+print('trails left ending at nothing, removed:',_ddm.drop_dangling(w,_dang))
 _cdm_ids={r['id'] for r in _CDE['rooms'] if r.get('area')=='CD'}   # (only the rooms moved in that editor: they come first for the route tracers)
 _CDLm={k:[v for v,i in zip(_CDL[k],_CDL['ids']) if i in _cdm_ids] if k in ('ids','xs','ys') else _CDL[k] for k in _CDL}
 from smr_markers import add_smr_subareas                          # markers + traced routes for the areas that open off the range and its trade route (Oct 14)

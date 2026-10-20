@@ -83,4 +83,7 @@ The other builders run inside `src/legacy`.
   Owner (Oct 20): desert trails straight through every room (`exact`, no smoothing). Arid Steppes clearing grows over rooms reached from the
   steppes by n/s/e/w exits <= 2.6 inside `STX_BOX` (44..56, 88..116), merged with the old steppes polygon. DD rooms named An Ancient Road =
   `dirtroads` (+ their links to WL road rooms).
+  The template draws lines as curves through midpoints (they cut corners): `ntr_merge._sharp` doubles a room's point so the curve passes it
+  exactly (all desert lines; cd_merge for rooms in `EXACT` = moved in the DD editor). `dd_merge.drop_dangling`: trails left ending at a
+  spacer whose far room moved away (181-19863) are removed.
 - **The Mire**: no Mire sea; don't touch the sea unless asked (Oct 18). Unsaved editor rooms are never drawn.
