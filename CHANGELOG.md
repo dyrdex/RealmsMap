@@ -2,6 +2,7 @@
 
 ## In progress
 
+- Your Desert of Despair save of Oct 20 (17:13): 77 desert rooms moved and redrawn. The southern ruins and prison block are 2 rooms further north; on the north row 6306, 6321 and 6324 moved east; the 6366 group was spread apart. 21 trails and one clearing redrawn; the desert's land is 7.9 sq bigger. Every exit is still connected and no other area changed.
 - Your request (Oct 20): the desert's trails are now drawn straight through every room you placed (they were smoothed, which cut corners and left gaps where rooms are stacked or turn sharply). Every exit between the desert's shown rooms and the Wastelands, Coral Depths and Azure Sea rooms is now a drawn path or lies inside a clearing (checked on every exit). Fixed gaps include 4026–6372, 6366–6367, 6320–6305/6304 and 8925–8947.
 - Your request (Oct 20): the Arid Steppes clearing now runs east over the rooms that join its grid (151.5 sq more). That covers 15 desert rooms (6367–6370, 6520, 6528–6531, 6533–6537, 8947) and the 17 Wastelands rooms between them and the steppes (Fringes of the Desert 8897, 8934, 8936–8938, 8940–8946; Entering the Desert 6538 and 8939; spacers 8931–8933). The desert's own clearing there is merged into it. Trails inside it are cleared as in the rest of the steppes, along with 24 wheat tufts and 3 brush.
 - Your request (Oct 20): the Ancient Road carries on from 8925 over the desert's An Ancient Road rooms 8947, 6535, 6534 and 6533, drawn as the same wide dirt road.
