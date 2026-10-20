@@ -2,6 +2,7 @@
 
 ## In progress
 
+- Your request (Oct 20): the tent and the caravan cart are twice as large (tent 2.4 x 1.9, cart 2.8 x 1.9), still 0.35 above their rooms, 0.35 clear of the paths and 0.9 apart.
 - Your request (Oct 20): a small nomad tent (pale striped cloth, dark doorway, a red pennant; 1.2 x 0.95) just north of 6324, and a small caravan cart (canvas cover, a crate, one big wheel, the drawbar; 1.4 x 0.95) just north of 6321. Each sits 0.35 above its room, clear of the paths.
 - Your request (Oct 20): the River routes of the six desert places now read "River: Safest Route" on their cards.
 - Your request (Oct 20): River routes added as the default for Desert of Despair, Great Eastern Desert, Blasted Lands, Thul Ab'hara, The Dungeon and Barren Wastes. The route each had before is now the alternate "East: May encounter mobs (requires hide)". Each line is drawn in one piece to the place's marker; picking East on the card draws the old line. You gave no room counts, so none are shown (the card reads "River" / "East: ..."). The Dungeon's River route ends at 6516 A musty cave; its line runs on to the marker at 929 (the East route goes on with "pick e;open e;e;d").

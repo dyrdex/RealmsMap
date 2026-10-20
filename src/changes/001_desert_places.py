@@ -37,7 +37,7 @@ RIVER = {
     'Barren Wastes': "s;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;se;se;s;sw;s;sw;n;w;sw;w;s;sw;w;sw;nw;w;nw;nw;w;n;se;scan/move to 'A crumbling dusty stone';dig down;d",
 }
 DUNGEON_TO_MARKER = (6516, 929)                              # (The Dungeon's River route ends at 6516; its marker is on 929 beyond the locked door: the line runs on to it)
-CAMP = [('dtent', 6324, 1.2, 0.95), ('dcart', 6321, 1.4, 0.95)]   # a small nomad tent just north of 6324, a caravan cart just north of 6321 (owner, Oct 20)
+CAMP = [('dtent', 6324, 2.4, 1.9), ('dcart', 6321, 2.8, 1.9)]   # a small nomad tent just north of 6324, a caravan cart just north of 6321 (owner, Oct 20)
 BOULDERS = [6403, 6391, 6459, 6395]                          # the quest's large boulders (owner, Oct 20), one on each room
 LABEL_ROOM, LABEL_DX = 6366, -1.9                            # "(Emerald Hills)": centred this far west of 6366, on its line (0.48 clear of the Tayalardian Rangelands name, 0.34 of the trail)
 
