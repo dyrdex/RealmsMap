@@ -65,6 +65,23 @@ def apply(town, wild, pos):
         wild['places'].append(dict(name=name, route=route, room=rooms[last]['name'] or rooms[upto[-1]]['name'], dir=d, path=[q for s in segs for q in s], segs=segs,
                                    group='af', where=WHERE, note=None if len(segs) == 1 else GAP))
         rep[name] = dict(marker_room=last, at=segs[-1][-1], dir=d, pieces=len(segs), walked=len(t), drawn_to=len(upto))
+    # routes traced by the old pipeline before the desert's rooms had spots (Wastelands sub-areas through the desert's north: owner, Oct 20) break
+    # where they cross it: traced again with the rooms' spots now, to the same marker, when that joins pieces
+    rep['retraced'] = {}
+    for p in wild['places']:
+        if not p.get('route') or p['name'] in [n for n, _, _ in PLACES] or len(p.get('segs') or []) < 2: continue
+        t = walk(p['route']); pts = [at(v) for v in t]; end = p['path'][-1]
+        k = max((i for i, q in enumerate(pts) if q and math.dist(q, end) < 0.05), default=None)
+        if k is None: continue
+        segs, cur = [], []
+        for q in pts[:k + 1]:
+            if q is None:
+                if cur: segs.append(cur); cur = []
+            else: cur.append(R(q))
+        if cur: segs.append(cur)
+        if len(segs) < len(p['segs']):
+            rep['retraced'][p['name']] = (len(p['segs']), len(segs))
+            p['segs'] = segs; p['path'] = [q for s in segs for q in s]; p['note'] = None if len(segs) == 1 else GAP
     rng = random.Random(2010)                                   # (its own random numbers: nothing else moves)
     rep['mazes'] = []
     for v, (ox, oy), rx, ry, extra in MAZES:
