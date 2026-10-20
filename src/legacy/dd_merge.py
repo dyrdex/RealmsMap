@@ -30,6 +30,8 @@ STX_BOX = (44.0, 88.0, 56.0, 116.0)              # (the Arid Steppes clearing gr
 WAVY = 8.0                                       # (links longer than this: still straight; the owner placed them)
 SPRITES = ('trees', 'tufts', 'peaks', 'hills', 'boulders', 'crags', 'brush', 'wheattufts', 'ripples', 'reeds', 'thorns')
 SEED = 307
+EXTRA_CLEAR = [{6495, 6498, 6499, 6463, 6464, 6465, 6496, 6497, 6500,                     # the ruins' clearing round 6464 ...
+                23735, 6462, 6494, 23736, 23734, 6466, 23737}]                        # ... with the single rooms east and west of it (owner, Oct 20)
 
 
 def _setup(layout, edges):
@@ -149,6 +151,14 @@ def merge_dd(w, layout, edges, store):
         dr.polygon([px(p) for p in pts[hull.vertices]], fill=255, outline=255)
     clear = ndi.binary_dilation(np.array(im, bool), structure=disk(int(PAD * R8)))
     clear = ndi.gaussian_filter(clear.astype(float), 0.45 * R8) > 0.5
+    for S_ in EXTRA_CLEAR:                                                           # (owner) these rooms, the exits between them, holes filled: one clearing each
+        S_ = {v for v in S_ if shown(v)}; im = Image.new('L', (bw, bh), 0); dr = ImageDraw.Draw(im); s_ = int(SQ * R8)
+        for v in S_:
+            p = px(pos[v]); dr.rectangle([p[0] - s_ / 2, p[1] - s_ / 2, p[0] + s_ / 2, p[1] + s_ / 2], fill=255)
+        for a, b, k in E:
+            if a in S_ and b in S_ and k != 'ud': dr.line([px(pos[a]), px(pos[b])], fill=255, width=s_)
+        m_ = ndi.binary_fill_holes(ndi.binary_closing(np.pad(np.array(im, bool), R8), structure=disk(int(1.2 * R8)))[R8:-R8, R8:-R8])
+        clear |= ndi.gaussian_filter(ndi.binary_dilation(m_, structure=disk(int(PAD * R8))).astype(float), 0.45 * R8) > 0.5
     clear &= landm
     lab, n = ndi.label(clear); keep = np.zeros_like(clear)
     for i in range(1, n + 1):

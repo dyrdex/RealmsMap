@@ -2,6 +2,7 @@
 
 ## In progress
 
+- Your request (Oct 20): the ruins' clearing round 6464 now takes in the single rooms on either side of it: 23735, 6462 (with spacer 6494) and 23736 to the west, 23734, 6466 and 23737 to the east. Their stub paths are gone; the clearing grew from 9 to 16 rooms (desert clearings 54.5 to 70.3 sq). The path in from 6461 meets its west edge.
 - Your report (Oct 20): the docks path 6288–6289–6290 now runs through 6289, so the way south from 6289 to 6323 is joined. The map draws paths as smooth curves that cut sharp corners; paths now pass exactly through every desert room and through the Coral Depths and Azure Sea rooms you moved (the desert's road too). The corner at 6320 and others like it are now exact.
 - Your report (Oct 20): the leftover trail from the Southern Mountains (181) to the spacer room 19863, which used to meet the path into the desert's entrance before you moved 6365, is removed. The desert's own link from the mountains to 6365 stays.
 - Your Desert of Despair save of Oct 20 (17:13): 77 desert rooms moved and redrawn. The southern ruins and prison block are 2 rooms further north; on the north row 6306, 6321 and 6324 moved east; the 6366 group was spread apart. 21 trails and one clearing redrawn; the desert's land is 7.9 sq bigger. Every exit is still connected and no other area changed.
