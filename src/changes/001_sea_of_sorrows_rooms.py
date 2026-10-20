@@ -1,8 +1,7 @@
 """Owner's Wastelands save of Oct 20 (20:39Z, editor v3): the new Sea of Sorrows / Blood Sea rooms (grp 'ss': the owner's 47 rooms + 45 spacers)
 placed where saved, and the 7 beach rooms the save moved (the beach water route follows them). Owner: all the new rooms are joined by blue water
-routes ('seaways'): every flat exit between two new rooms, or between a new room and a beach room (up/down exits not drawn). Lines run through
-the rooms' spots, exactly through every real room, rounding off only at spacer rooms; a line from a beach room on the coast route
-ends on the coast route's line. The bay's sea is extended under the new rooms (inside BOX, never over land) and the map grows south to fit."""
+routes ('seaways'): every flat exit between two new rooms, or between a new room and a beach room (up/down exits not drawn). Lines run straight
+from room to room (spacers included), as in the editor; drawn faint ('seawaysfaint', owner Oct 20). A line from a beach room starts at the room. The bay's sea is extended under the new rooms (inside BOX, never over land) and the map grows south to fit."""
 import json, math, os
 from shapely.geometry import Polygon, LineString, Point, box
 from shapely.ops import unary_union
@@ -15,9 +14,9 @@ COAST_PTS = {15: 18070, 16: 9929, 17: 18073, 19: 9931, 20: 9932, 21: 9933, 22: 9
 SEA_R = 2.6                                         # sea reaches this far round each new room and water route
 
 
-def _chains(G, P, real):
-    """lines between junctions; points at the rooms. The template draws a line as a curve through the midpoints of its points, so each real
-    (non-spacer) room inside a line is given twice: the line passes it exactly; it rounds off only at spacer rooms."""
+def _chains(G, P):
+    """lines between junctions; points at the rooms. The template draws a line as a curve through the midpoints of its points, so each room
+    inside a line is given twice: the line runs straight from room to room, as in the editor (owner, Oct 20)."""
     chains = []; seen = set()
     for v in [v for v in G if len(G[v]) != 2] + sorted(G):
         for u in sorted(G[v]):
@@ -34,7 +33,7 @@ def _chains(G, P, real):
         line = []
         for i, v in enumerate(ch):
             q = [round(P[v][0], 2), round(P[v][1], 2)]
-            line += [q, list(q)] if 0 < i < len(ch) - 1 and v in real else [q]
+            line += [q, list(q)] if 0 < i < len(ch) - 1 else [q]
         out.append((ch, line))
     return out
 
@@ -65,14 +64,13 @@ def apply(town, wild, pos):
         if k == 'ud': ud += 1; continue
         G[a].add(b); G[b].add(a)
     new = []
-    for ch, line in _chains(G, P, {v for v in SS | WL if not R[v]['void']}):
-        for end, nxt in ((0, 1), (-1, -2)):                                             # a line from a beach room on the coast route ends on it
-            v = ch[end]
-            if v in WL and coast.distance(Point(P[v])) < 1.5:
-                q = coast.interpolate(coast.project(Point(line[nxt]))) if len(line) > 2 else coast.interpolate(coast.project(Point(P[v])))
-                line[end] = [round(q.x, 2), round(q.y, 2)]
+    for ch, line in _chains(G, P):
+        for end in (0, -1):                                                             # a line from a beach room on the coast route starts at the room
+            v = ch[end]                                                                 # (on the route's line already), or else where the route
+            if v in WL and 0.05 < coast.distance(Point(P[v])) < 1.5:                    # passes closest to the room
+                q = coast.interpolate(coast.project(Point(P[v]))); line[end] = [round(q.x, 2), round(q.y, 2)]
         new.append(line)
-    wild['seaways'] = list(wild['seaways']) + new
+    wild['seawaysfaint'] = list(wild.get('seawaysfaint') or []) + new                  # owner, Oct 20: faint, semi-translucent (template SEAFAINT)
     # ---- the sea under them ----
     geo = wild['geo']; W = [Polygon(p) for p in geo['water']]
     bay = [i for i, g in enumerate(W) if g.bounds[0] > -5 and g.bounds[1] > 118][0]
