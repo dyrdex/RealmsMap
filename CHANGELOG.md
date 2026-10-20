@@ -2,6 +2,7 @@
 
 ## In progress
 
+- Your request (Oct 20): your Wastelands save (20:39Z) is drawn. The 92 new Sea of Sorrows / Blood Sea rooms (47 rooms + 45 spacers) are on the map where you placed them, all joined by blue water routes: 25 lines covering all 104 exits between them and to the beaches. Each line passes exactly through every room. The 7 beach rooms you moved (9929, 9931-9934, 18070, 18073; 9934 by 12.75 rooms) moved, and the beach water route follows them. The bay's sea now reaches under the new rooms (771.9 to 1326.2 square rooms, never over land), and the map's south edge moved from y 151 to 161 to fit them.
 - Your request (Oct 20): the Wastelands layout editor now holds 47 of the rooms you listed from the Sea of Sorrows and the Blood Sea (Winterlight Island 9841 and 9842 included) and 45 spacer rooms that join them to each other and to the beaches. They start south of the beaches, in one piece. 17768 was left out: it's "A Cemetery Path" in Machine Dreams, with no exit to any of the others. The 22 Beaches of Sorrow / Wasted Shores of Ahtborne rooms and the 38 spacer rooms joined to them are unlocked, starting where they are on the map. Everything else in the editor is fixed where it is on today's map.
 
 ## Version 24 · The Desert of Despair · October 20, 2026

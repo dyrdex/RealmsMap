@@ -74,6 +74,8 @@ The other builders run inside `src/legacy`.
   rooms 8722-8889 not drawn. Open: Mulciber's Forge's directions break at 8557 ('#3 s' after 8562): ask the owner.
   Editor v3 (Oct 20, `tools/wastelands_editor/build_wl3_editor.py`, reads base/map.json; save format 'wl-layout-3'): grp 'ss' the owner's 47 Sea of
   Sorrows / Blood Sea rooms + 45 joining spacers (17768, Machine Dreams, left off); grp 'wl' the 22 beach rooms + 38 placed spacers unlocked; rest fixed.
+  Drawn (save 20:39Z, `legacy/wl3_layout_final.json`) by `changes/001_sea_of_sorrows_rooms.py`: seaways through every real room exactly (doubled points),
+  ending on the coast route (seaway 16); bay water extended inside a box; bounds y1 161.
 - **Desert of Despair** (editor Oct 20, `tools/desert_of_despair_editor/`): builder reads `base/map.json`'s room_pos directly (not the legacy saves):
   `FINAL_DUMP=<f> NO_TILES=1 python3 build.py`, then `python3 build_dd_editor.py <f> desert_of_despair_editor.html` (~1 min; RES 0.2). Unlocked (Oct 20): grp 'un' 6365; grp 'wl' the 198 Wastelands rooms shown round the desert (spacers incl.); grp 'cd' the 34 rooms shown from the Coral Depths editor. Moving them means redrawing their trails.
   Drawn (Oct 20, save 14:39Z) by the LEGACY pipeline: `legacy/dd_merge.py` (land chained last into smr_merge's land_edit, kept off the WL south
