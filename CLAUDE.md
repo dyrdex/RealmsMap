@@ -26,7 +26,7 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   `python3 legacy/rebase.py <f> base/map.json` (see changes/README).
 - All 14 layout editors live in the owner's current organization (links in REGION_NOTES; Desert of Despair added Oct 20). Read saves with
   ArtifactData get `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
-- In progress (Oct 20): `changes/001_sea_of_sorrows_rooms.py` draws the Wastelands editor v3 save (92 new sea rooms, faint water routes, one-way currents, sea extended south); `002_winterlight_island.py`.
+- In progress (Oct 20): `changes/001_sea_of_sorrows_rooms.py` draws the Wastelands editor v3 save (92 new sea rooms, faint water routes, one-way currents, sea extended south); `002_winterlight_island.py`; `003_sea_of_sorrows_places.py` (markers 12272, 9842).
 
 ## Snapshots
 - New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/vN/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress

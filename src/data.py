@@ -100,7 +100,7 @@ Redferne's Residence|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se
 Reign of Madness|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;s;e;#3 ne;se;#4 e;#2 se;#3 e;n;#5 ne;#4 nw;ne;e;#3 ne;#4 e;#4 n;#3 e;n;#2 nw;#2 w;#4 nw;scry/move to room with a down exit;d
 Revelation City|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;#5 nw;w;#2 n
 Scourge of Time|#8 u;n;unlock n;open n;n;track Malsangre (say back in time)
-Sea of Sorrows|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s;sw;w;sw;d
+Sea of Sorrows|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#3 sw;#2 s;sw;#2 s;#4 se;#2 s;se;d;s;se;s;#3 se;e;#2 s;e;se;e;d;se;s;e
 Sentinel|#9 w;#2 nw;n;w;nw;w;nw;w;#2 s
 Serpentine Coils|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;s;e;#3 ne;se;#4 e;#2 se;#3 e;n;#5 ne;#4 nw;ne;e;d
 Sesuadra's Rift|#42 west;#7 n;enter;sw;enter;s;w;s;onslaught
@@ -149,7 +149,7 @@ Wendle Mansion|#8 n;nw;w;n
 White Pine Camp|#8 e;#3 ne;#3 e;ne;se
 Wild Tundra|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s;sw;w;sw;d;nw;s;#2 e;#2 se;w;nw;sw;#2 w;s;d
 The Wilds|#8 e;#2 se;s;#4 se;#2 s;sw;w;#2 nw;u;sw;nw
-Winterlight Island|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;s;se;s;#3 se;#3 e;#2 s;#2 e;d;se;ne;s;d;se;s
+Winterlight Island|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#3 sw;#2 s;sw;#2 s;#4 se;#2 s;se;d;s;se;s;#3 se;e;#2 s;e;se;#2 e;d;se;ne;s;d;se;s
 The Wolf's Den|#6 n;#3 nw;#2 n;#2 nw;n;ne;n;ne;#2 n;#2 ne;n;e
 Wyvern's Tower|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;sw;#3 w;ne
 The Ziggurat|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s;sw;w;sw;d;nw;s;#2 e;#2 se;w;nw;sw;w;s
