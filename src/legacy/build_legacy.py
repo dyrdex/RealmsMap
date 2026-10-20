@@ -137,6 +137,11 @@ for _r in _SME['rooms']:                                          # the Sparse W
 w,_ft=merge_ft(w,_FTL,_FTE)
 _CDL=_json.load(open(os.path.join(_here,'cd_layout_final.json'))); _CDE=_json.load(open(os.path.join(_here,'cd_editor_edges.json')))   # the Coral Depths layout (Oct 16)
 import cd_merge as _cdm
+_DDL=_json.load(open(os.path.join(_here,'dd_layout_final.json'))); _DDE=_json.load(open(os.path.join(_here,'dd_editor_edges.json')))   # the Desert of Despair layout (Oct 20)
+_ddg={r['id']:r.get('grp') for r in _DDE['rooms']}; _ddp=dict(zip(_DDL['ids'],zip(_DDL['xs'],_DDL['ys'])))
+_cdl0={_v:(_x,_y) for _v,_x,_y in zip(_CDL['ids'],_CDL['xs'],_CDL['ys']) if _v in _cdm.SM_DRAWN}   # (their spots before: smr's window kept as it was, so the range's patterns don't re-roll)
+for _i,_v in enumerate(_CDL['ids']):                              # the Coral Depths editor's rooms (and 6365) the owner moved in the Desert of Despair editor
+    if _ddg.get(_v) in ('cd','un') and _v in _ddp: _CDL['xs'][_i],_CDL['ys'][_i]=_ddp[_v]
 _cdp=dict(zip(_CDL['ids'],zip(_CDL['xs'],_CDL['ys'])))
 for _i,_v in enumerate(_SML['ids']):                              # the Southern Mountain Range rooms the owner moved in the Coral Depths editor
     if _v in _cdm.SM_DRAWN: _SML['xs'][_i],_SML['ys'][_i]=_cdp[_v]
@@ -149,6 +154,8 @@ _smr_win={_v:(_SML['xs'][_i],_SML['ys'][_i]) for _i,_v in enumerate(_SML['ids'])
 for _i,_v in enumerate(_SML['ids']):                              # the Southern Mountain Trade Route rooms the owner moved in the Wastelands editor
     if _v in _wlm.UN: _SML['xs'][_i],_SML['ys'][_i]=_wlp[_v]
 _wls={}
+for _v,_p in _cdl0.items():
+    if _ddg.get(_v)=='un' and _p!=_ddp.get(_v): _smr_win.setdefault(_v,_p)
 _MIL0=_json.load(open(os.path.join(_here,'mi_layout_final.json'))); _mip=dict(zip(_MIL0['ids'],zip(_MIL0['xs'],_MIL0['ys'])))
 MI_UN=list(range(110,117))                                       # Southern Mountain Range rooms the owner may move in the Mire editor (Oct 18)
 for _i,_v in enumerate(_SML['ids']):
@@ -157,6 +164,10 @@ for _i,_v in enumerate(_SML['ids']):
 WL_UN=[8606,8608,10049,8610,8611,8614,10045]                      # Wastelands rooms the owner may move in the Mire editor (Oct 18)
 for _i,_v in enumerate(_WLL['ids']):
     if _v in WL_UN and _v in _mip: _WLL['xs'][_i],_WLL['ys'][_i]=_mip[_v]
+for _i,_v in enumerate(_WLL['ids']):                              # the Wastelands rooms the owner moved (or hid) in the Desert of Despair editor (Oct 20)
+    if _ddg.get(_v)=='wl' and _v in _ddp:
+        _WLL['xs'][_i],_WLL['ys'][_i]=_ddp[_v]
+        if _v in _DDL['hidden'] and _v not in _WLL['hidden']: _WLL['hidden'].append(_v)
 _MIL=_json.load(open(os.path.join(_here,'mi_layout_final.json'))); _MIE=_json.load(open(os.path.join(_here,'mi_editor_edges.json')))   # The Mire layout (Oct 18)
 _MIX={'ids':[],'xs':[],'ys':[],'hidden':[]}                         # rooms added to the Mire editor but not saved yet: never drawn (owner, Oct 18); their starting spots only guide the route tracer
 for _r in _MIE['rooms']:
@@ -166,7 +177,9 @@ _mis={}
 _cdr={}
 from smr_merge import merge_smr                                    # the Southern Mountain Range, its Trade Route and links to the moved trail (Oct 14)
 _cdle=_cdm.land_edit(_CDL,_CDE,_SML,_cdr); _wlle=_wlm.wl_land(_WLL,_WLE,_wls); _mile=_mim.mi_land(_MIL,_MIE,_mis)
-w,_sm=merge_smr(w,_SML,_SME,land_edit=lambda L,W,x,y:_mile(_wlle(_cdle(L,W,x,y),W,x,y),W,x,y),window_pos=_smr_win)
+import dd_merge as _ddm
+_dds={}; _ddle=_ddm.dd_land(_DDL,_DDE,_dds,seas=[_wls])
+w,_sm=merge_smr(w,_SML,_SME,land_edit=lambda L,W,x,y:_ddle(_mile(_wlle(_cdle(L,W,x,y),W,x,y),W,x,y),W,x,y),window_pos=_smr_win)
 print('Southern Mountain Range merged:',_sm)
 w,_cd=_cdm.merge_cd(w,_CDL,_CDE,_SML)                              # the Coral Depths: its paths, the cliff, the sea, the ground (Oct 16)
 print('Coral Depths merged:',{**_cdr,**_cd})
@@ -174,6 +187,8 @@ w,_wl=_wlm.merge_wl(w,_WLL,_WLE,_wls)                            # the Wasteland
 print('Wastelands merged:',_wl)
 w,_mi=_mim.merge_mi(w,_MIL,_MIE,_mis)                            # The Mire, from the owner's save (Oct 18)
 print('Mire merged:',_mi)
+w,_dd=_ddm.merge_dd(w,_DDL,_DDE,_dds)                            # the Desert of Despair, from the owner's save (Oct 20)
+print('Desert of Despair merged:',_dd)
 _cdm_ids={r['id'] for r in _CDE['rooms'] if r.get('area')=='CD'}   # (only the rooms moved in that editor: they come first for the route tracers)
 _CDLm={k:[v for v,i in zip(_CDL[k],_CDL['ids']) if i in _cdm_ids] if k in ('ids','xs','ys') else _CDL[k] for k in _CDL}
 from smr_markers import add_smr_subareas                          # markers + traced routes for the areas that open off the range and its trade route (Oct 14)
@@ -255,7 +270,7 @@ for _p in w['places']:
         if _o.get('route'): _o['route']=_cond(_o['route'])
 if os.environ.get('BASE_DUMP'):                                  # the frozen map (Oct 19): town, wild and every placed room's spot (earlier layouts win, as in the route tracers)
     _pos={}
-    for _L in [_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_WLL,_MIL,_NALm,_MDLm]:
+    for _L in [_CDLm,_PFL,_FTL,_NPL,_bp_layout()[0],_ntr_layout(),_json.load(open(os.path.join(_here,'az_layout_final.json'))),_ASHL(),_SML,_WLL,_MIL,_NALm,_MDLm,_DDL]:
         for _v,_x,_y in zip(_L['ids'],_L['xs'],_L['ys']): _pos.setdefault(str(_v),[_x,_y])
     json.dump(dict(town={k:v for k,v in nd.items() if k!='wild'},wild=w,room_pos=_pos),open(os.environ['BASE_DUMP'],'w'),separators=(',',':'))
 if os.environ.get('FINAL_DUMP'):                                 # (used to build the layout editors)

@@ -43,7 +43,7 @@ The other builders run inside `src/legacy`.
 | Angel's Landing, Village of Edo, Grimdog | https://claude.ai/artifact/M8TS87UDLLEyPDgKUKRLFD | `nalayout/current` | `na_layout_final.json` |
 | Wastelands | https://claude.ai/artifact/XtoCQTMrpPQCLZREeczD7L | `wllayout/current` | `wl_layout_final.json` |
 | The Mire | https://claude.ai/artifact/QAUXkaXfwFS1fgDRiXzHmo | `milayout/current` | `mi_layout_final.json` |
-| Desert of Despair | https://claude.ai/artifact/JKaM8hA8ih8XHfNJQifgqA | `ddlayout/current` | (none yet) |
+| Desert of Despair | https://claude.ai/artifact/JKaM8hA8ih8XHfNJQifgqA | `ddlayout/current` | `dd_layout_final.json` |
 
 ## Standing owner rules, by region
 - **Everywhere**: routes and room counts are the owner's own (`data.py`: `MORE_DIRECTIONS`, `ROUTE_OPTIONS`), never computed;
@@ -74,4 +74,10 @@ The other builders run inside `src/legacy`.
   rooms 8722-8889 not drawn. Open: Mulciber's Forge's directions break at 8557 ('#3 s' after 8562): ask the owner.
 - **Desert of Despair** (editor Oct 20, `tools/desert_of_despair_editor/`): builder reads `base/map.json`'s room_pos directly (not the legacy saves):
   `FINAL_DUMP=<f> NO_TILES=1 python3 build.py`, then `python3 build_dd_editor.py <f> desert_of_despair_editor.html` (~1 min; RES 0.2). Unlocked (Oct 20): grp 'un' 6365; grp 'wl' the 198 Wastelands rooms shown round the desert (spacers incl.); grp 'cd' the 34 rooms shown from the Coral Depths editor. Moving them means redrawing their trails.
+  Drawn (Oct 20, save 14:39Z) by the LEGACY pipeline: `legacy/dd_merge.py` (land chained last into smr_merge's land_edit, kept off the WL south
+  sea; one `sand` ground; clearings by the range's cell rule; `fwtracks`), wired in `build_legacy.py`: the save's 'wl' rooms (+ hidden) go into
+  the WL layout, 'cd'/'un' rooms into the CD layout (6365 then into the SMR layout; smr's window pinned at 6365's old spot so the range doesn't
+  re-roll). smr_merge's grid: x to GF.X1 + 24, y to 170. cd_merge's sea reaches 2 rooms past its swimming rooms. New base = `BASE_DUMP=<f>
+  NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json` (re-applies applied/v22 + v23; without the
+  DD save this reproduces the old base exactly). No sprites/labels yet (not asked).
 - **The Mire**: no Mire sea; don't touch the sea unless asked (Oct 18). Unsaved editor rooms are never drawn.

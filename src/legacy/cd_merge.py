@@ -136,6 +136,8 @@ def masks(layout, edges, land0, water0, smr_layout=None):
     land = ndi.gaussian_filter(land.astype(float), 0.5 * R8) > 0.5
     band = water0 & (Y >= SEA_N - 2) & (Y <= SEA_N + 2)
     east = float(X[band].max()) if band.any() else SEA_E                      # (the old sea's east edge where the new stretch starts)
+    _wx = [S['pos'][v][0] for v in S['wet'] if v in S['pos'] and SEA_N <= S['pos'][v][1] <= SEA_S]
+    if _wx: east = max(east, max(_wx) + 2.0)                                   # (and past the swimming rooms the owner moved east: Desert of Despair editor, Oct 20)
     sea = (X >= SEA_X) & (X <= east + 2.0 * (wob2 - 0.5)) & (Y >= SEA_N) & (Y <= SEA_S + 3.0 * (wob - 0.5)) & ~land & ~land0 & ~water0
     sea = ndi.gaussian_filter(sea.astype(float), 0.4 * R8) > 0.5
     sea &= ~(land | land0 | water0)

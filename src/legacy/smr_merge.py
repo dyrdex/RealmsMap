@@ -25,7 +25,7 @@ import gap_fill as GF
 from ntr_merge import _chains, _samples, _nearest_on
 
 R8 = GF.R8
-X0, X1 = GF.X0 - 20.0, GF.X1                                            # (20 rooms further west than the gap_fill grid, Oct 18: room for the Mire; aligned to its pixels)
+X0, X1 = GF.X0 - 20.0, GF.X1 + 24.0                                     # (20 rooms further west than the gap_fill grid, Oct 18: room for the Mire; 24 further east, Oct 20: the Desert of Despair; aligned to its pixels)
 YN = -215.0
 W = int((X1 - X0) * R8)
 SQ = 1.1             # a room's square (rooms are 1 x 1; a little more so that neighbours merge)
@@ -555,8 +555,9 @@ def merge_smr(w, layout, edges, seed=71, land_edit=None, window_pos=None):
     d_path = ndi.distance_transform_edt(~(skel | dwide | rwide | climbmask)) / R8
 
     # ---------------------------------------------------------------- the land
-    land0 = AA._raster(w['geo']['land'], X0, YN, W, int((wy1 + 40 - YN) * R8))           # (the grid reaches 40 rooms below the window)
-    water0 = AA._raster(w['geo']['water'], X0, YN, W, int((wy1 + 40 - YN) * R8))
+    HN = int((max(wy1 + 40, 170) - YN) * R8)                                     # (the grid reaches 40 rooms below the window; to y 170 at least, Oct 20: the Desert of Despair)
+    land0 = AA._raster(w['geo']['land'], X0, YN, W, HN)
+    water0 = AA._raster(w['geo']['water'], X0, YN, W, HN)
     c0, r0 = int((wx0 - X0) * R8), int((wy0 - YN) * R8)
     sub = (slice(r0, r0 + hw), slice(c0, c0 + ww))
     wob = ndi.gaussian_filter(nrng.normal(size=(hw, ww)), 1.8 * R8); wob = (wob - wob.min()) / (wob.max() - wob.min())
