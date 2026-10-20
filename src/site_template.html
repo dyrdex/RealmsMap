@@ -139,7 +139,9 @@ L.svgOverlay(svg,B,{interactive:false}).addTo(map);
 function fitB(a,b,c,d,pad=40){return {b:L.latLngBounds([b,a],[d,c]),pad}}
 function padOpt(pad){const VW=map.getSize().x,det=document.getElementById('detail').classList.contains('open')&&VW>760?380:0,bp=VW<=760?64:0;
   return {paddingTopLeft:[pad,pad],paddingBottomRight:[pad+det,pad+bp]}}
-function flyTo(t){const o={...padOpt(t.pad),maxZoom:D.zmax};if(reduce)map.fitBounds(t.b,o);else map.flyToBounds(t.b,{...o,duration:.6})}
+function flyTo(t){const o={...padOpt(t.pad),maxZoom:D.zmax},{center,zoom}=map._getBoundsCenterZoom(t.b,o);
+  const c=map._limitCenter(center,zoom,map.options.maxBounds);   /* aim inside maxBounds up front, or the map lands and then gets pulled back */
+  if(reduce)map.setView(c,zoom,{animate:false});else map.flyTo(c,zoom,{duration:.6})}
 const fitAll=()=>fitB(x0,y0,x1,y1,24);
 document.getElementById('zin').onclick=()=>map.zoomIn();
 document.getElementById('zout').onclick=()=>map.zoomOut();

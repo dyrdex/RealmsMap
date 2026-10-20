@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## In progress
+
+- Your report (Oct 20): picking a place near the map's edge (the Kingdom of Juargan, for one) no longer flies past and then jumps back; the map now goes straight to where it ends up. Checked on all 144 places in the list: each now moves once.
+
 ## Version 23 · Clearings in the Old Woods and a New Inahir Camp · October 19, 2026
 
 - Your request (Oct 19): the Inahir Camp redrawn in a new, simpler style that matches the map (seen from above, like Edel): the yard as trodden earth with a soft edge; the palisade a solid band of log tops with rounded corners and a post either side of its two gates; the long house a thatched roof with its ridge and smoke hole, stretched east-west to 6.2 rooms (was 3.4); 5 small round thatched huts where the tents stood; the corral a post-and-rail pen of trampled ground; the fire pit a ring of stones with embers; no paths. The tents and the old thin-line drawing are gone. Same spot and size as before.
