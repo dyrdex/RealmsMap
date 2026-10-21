@@ -18,7 +18,7 @@ SAND = 16                                           # geo.sand[16] (= ddsand.pol
 TRACK = 625                                         # fwtracks[625]: 6293 - 6328 - 6294 - 6334 - 6332 - 6333 - 6310 (6294, 6332, 6334 moved)
 TRACK_ROOMS = [6293, 6328, 6294, 6334, 6332, 6333, 6310]
 WET = {'Swimming', 'WideSwim', 'Water'}
-WAVE_AMP, WAVE_LEN = 0.12, 1.0                       # the water routes' wave: amplitude, wavelength (about; a whole number of waves per stretch)
+WAVE_AMP, WAVE_LEN = 0.12, 2.5                       # the water routes' wave: amplitude, wavelength (about; a whole number of waves per stretch)
 SEA_R = 2.6                                         # sea reaches this far round each water room and water route
 CLOSE = 4.0                                         # the sea's outline smoothed: pockets between routes, or between routes and the coast, narrower than 8 rooms filled
 LAND_R = 1.1                                        # land reaches this far round a coastline room or trail that lies off the land
