@@ -2,7 +2,8 @@
 south of the Docks (grp 'az': 38 rooms + 78 spacers) placed where saved, and the 3 shown desert rooms the save moved (6294, 6332, 6334; their trail
 follows them; 20290, hidden, only moved). Drawn as the Sea of Sorrows was (applied/v2.2/001):
   - exits between land rooms (the sandy coastline rooms and the desert rooms), through their spacers: desert trails (`fwtracks`), straight room to room;
-  - every other exit of a new room (into the water rooms): faint water routes (`seawaysfaint`), straight room to room; up/down exits not drawn;
+  - every other exit of a new room (into the water rooms): fainter, wavy water routes (`seawaves`, template SEAWAVE; owner, Oct 21: even fainter than the Sea of Sorrows' and wavy, being in the ocean):
+    each stretch from room to room a gentle wave that is flat at both rooms; up/down exits not drawn;
   - land (desert sand) added round the coastline rooms and trails that lie off the land; the sea (the north-east sea, water 9) carried on south under
     the water rooms and routes, inside BOX, never over land; the map grows east and south to fit."""
 import json, math, os
@@ -17,6 +18,7 @@ SAND = 16                                           # geo.sand[16] (= ddsand.pol
 TRACK = 625                                         # fwtracks[625]: 6293 - 6328 - 6294 - 6334 - 6332 - 6333 - 6310 (6294, 6332, 6334 moved)
 TRACK_ROOMS = [6293, 6328, 6294, 6334, 6332, 6333, 6310]
 WET = {'Swimming', 'WideSwim', 'Water'}
+WAVE_AMP, WAVE_LEN = 0.12, 1.0                       # the water routes' wave: amplitude, wavelength (about; a whole number of waves per stretch)
 SEA_R = 2.6                                         # sea reaches this far round each water room and water route
 CLOSE = 4.0                                         # the sea's outline smoothed: pockets between routes, or between routes and the coast, narrower than 8 rooms filled
 LAND_R = 1.1                                        # land reaches this far round a coastline room or trail that lies off the land
@@ -42,6 +44,19 @@ def _chains(G, P):
             q = [round(P[v][0], 2), round(P[v][1], 2)]
             line += [q, list(q)] if 0 < i < len(ch) - 1 else [q]
         out.append((ch, line))
+    return out
+
+
+def _wave(line):
+    """the line through its rooms (each point once), each stretch between two rooms a sine wave with a whole number of waves: flat at the rooms"""
+    pts = [line[0]] + [q for a, q in zip(line, line[1:]) if math.dist(a, q) > 1e-6]
+    out = [[round(pts[0][0], 3), round(pts[0][1], 3)]]
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        L = math.hypot(bx - ax, by - ay); n = max(1, round(L / WAVE_LEN)); m = max(4, int(L / 0.06))
+        nx, ny = -(by - ay) / L, (bx - ax) / L
+        for i in range(1, m + 1):
+            t = i / m; o = WAVE_AMP * math.sin(2 * math.pi * n * t) * min(1, L / 0.8)
+            out.append([round(ax + (bx - ax) * t + nx * o, 3), round(ay + (by - ay) * t + ny * o, 3)])
     return out
 
 
@@ -87,7 +102,7 @@ def apply(town, wild, pos):
             (GW if wetedge(a, b) else GL)[a].add(b)
     trails = [l for _, l in _chains(GL, P)]; water = [l for _, l in _chains(GW, P)]
     wild['fwtracks'] = list(wild['fwtracks']) + trails
-    wild['seawaysfaint'] = list(wild.get('seawaysfaint') or []) + water
+    wild['seawaves'] = list(wild.get('seawaves') or []) + [_wave(l) for l in water]
     # ---- land under the coastline rooms and trails that lie off it ----
     geo = wild['geo']; Bx = box(*BOX)
     L0 = Polygon(geo['land'][0]).buffer(0); land_all = unary_union([Polygon(p).buffer(0) for p in geo['land'] if len(p) > 2])
