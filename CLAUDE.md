@@ -18,14 +18,14 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 - `docs/REGION_NOTES.md`: data layout of the base, editor links, standing owner rules per region (read the part you need).
   `docs/archive/`: full history (grep it, don't read it whole). `CHANGELOG.md`: owner-facing history (append to the top section).
 
-## State (Oct 20, 2026)
-- Last version v24 (Oct 20, "The Desert of Despair"; tag `v24` to be added by the owner on GitHub). Base = a legacy redraw (Desert of Despair
-  from the owner's save in `legacy/dd_layout_final.json` via `legacy/dd_merge.py`; Wastelands/Coral Depths rooms moved in that editor) +
-  `applied/v22/` + `applied/v23/` + `applied/v24/` (001: the desert's markers, River/East route options, mazes, oasis, boulders, tent, cart,
-  area name, Emerald Hills label). After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then
-  `python3 legacy/rebase.py <f> base/map.json` (see changes/README).
-- All 14 layout editors live in the owner's current organization (links in REGION_NOTES; Desert of Despair added Oct 20). Read saves with
+## State (Oct 21, 2026)
+- Last version v25 (Oct 21, "The Sea of Sorrows"; tag `v25` to be added by the owner on GitHub). Base = a legacy redraw + `applied/v22/` to
+  `applied/v25/` (v25: the Wastelands editor v3 save's 92 sea rooms with faint routes and one-way currents, sea extended south; Winterlight
+  Island; Sea of Sorrows / Winterlight markers; land holes filled; east coast cliff; boulders centred; desert terrain; desert south routes).
+  After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
+- All 14 layout editors live in the owner's current organization (links in REGION_NOTES; Wastelands editor v3 since Oct 20). Read saves with
   ArtifactData get `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
+- Nothing in progress.
 
 ## Snapshots
 - New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/vN/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress

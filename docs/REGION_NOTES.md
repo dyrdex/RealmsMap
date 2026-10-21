@@ -17,6 +17,9 @@ number, don't read it whole.
   trails), `etrtracks` (trade roads), `dirtroads`, `seaways`, `streams`, `smr*`, `mdfaint`, `pffaint`; drawings `gfx` (sprite
   name + spot, e.g. `stonecity`, `volcano`, `saloon`, `text`), `buildings`, `smrhouses`, `smrtowns`, `wltown`.
   `geo.seafill` + `seashore` (sea filling gaps after a coast change, drawn over the sea), `talltrees` ([x, foot y, height, variant]; template TALL), `camps` (palisade wall polygon + gates, tents, long house, corral, fire pit; template CAMPS). How each is drawn: `src/template.html`.
+- `geo.land` is drawn as one evenodd path: a land polygon inside another cancels it (bare holes; `changes/004` removed three). Never add an
+  overlapping land piece: union it into the big one. Same for ground tints: extend the area's own polygon, never a separate piece (seams;
+  owner, Oct 20).
 - Changes go in `src/changes/NNN_name.py` (see its README). Never edit `base/map.json` by hand; `build.py --freeze` rewrites it.
 
 ## Layout editors
@@ -51,6 +54,10 @@ The other builders run inside `src/legacy`.
   the map (Oct 12). Castle Darkhawk has no route yet.
 - **Cities**: every city is the standard round marker + the `stonecity` drawing above it (`gfx` at 'above-pin'); no walled-town
   emblem (`kind: 'town'`) any more (Oct 19).
+- **East coast cliff (Coral Depths to the north)**: the sea meets the cliff-top path's hachures directly from y 13 to the bay north of the
+  Coral Depths marker (owner, Oct 20; `changes/005`): no land between cliff and sea there.
+- **Desert of Despair terrain** (owner, Oct 20; `changes/007`, `wild.ddsand`, template DDSAND, over geo.sand 16): grain + wind texture,
+  ripple fields, dunes, dry lake beds, rocks, scrub, very few cacti; its own look, not the Wastelands' (no grass tufts or crags).
 - **Paths meeting a water route** end exactly on its line, never past it (Oct 19).
 - **Shortcuts in routes** (long straight lines): the Ofcol Shortcut (legacy route_fix, OFCOL) and the Nidaros Shortcut
   (936 sw 5511 -> 5507; `changes/007`). A new shortcut: place its rooms in an editor, then join the routes' pieces at it (as 007).
@@ -72,6 +79,15 @@ The other builders run inside `src/legacy`.
 - **Wastelands**: quick, broad-strokes work. Never change the Southern Mountains (clearings, ground, sprites) when working here.
   One ground (`wheat`) under everything, no other tint over it. Coast path is a water route in the sea. Hidden: 8700, 8754;
   rooms 8722-8889 not drawn. Open: Mulciber's Forge's directions break at 8557 ('#3 s' after 8562): ask the owner.
+  Editor v3 (Oct 20, `tools/wastelands_editor/build_wl3_editor.py`, reads base/map.json; save format 'wl-layout-3'): grp 'ss' the owner's 47 Sea of
+  Sorrows / Blood Sea rooms + 45 joining spacers (17768, Machine Dreams, left off); grp 'wl' the 22 beach rooms + 38 placed spacers unlocked; rest fixed.
+  Drawn (save 20:39Z, `legacy/wl3_layout_final.json`) by `changes/001_sea_of_sorrows_rooms.py`: water routes
+  straight room to room (every point doubled), in `seawaysfaint` (template SEAFAINT, opacity .4: open-sea routes are faint, owner Oct 20); bay water
+  extended inside a box; bounds y1 161.
+  One-way exits (owner, Oct 20): wavy currents with an arrowhead 0.4 short of the room (`seacurrents`, template SEACUR). Winterlight Island
+  (`changes/002`, `snowisles`, template SNOWISLE): an irregular teardrop, a rounded end at 9842 (not a point), widening SW,
+  outline rounded (no spits), its SE coast an even, nearly straight run NE-SW (owner: natural,
+  not an oval, not following the paths), the biggest that fits 0.9 clear of them; old-map style (muted, ink lines, no glossy art); no label.
 - **Desert of Despair** (editor Oct 20, `tools/desert_of_despair_editor/`): builder reads `base/map.json`'s room_pos directly (not the legacy saves):
   `FINAL_DUMP=<f> NO_TILES=1 python3 build.py`, then `python3 build_dd_editor.py <f> desert_of_despair_editor.html` (~1 min; RES 0.2). Unlocked (Oct 20): grp 'un' 6365; grp 'wl' the 198 Wastelands rooms shown round the desert (spacers incl.); grp 'cd' the 34 rooms shown from the Coral Depths editor. Moving them means redrawing their trails.
   Drawn (Oct 20, save 14:39Z) by the LEGACY pipeline: `legacy/dd_merge.py` (land chained last into smr_merge's land_edit, kept off the WL south
