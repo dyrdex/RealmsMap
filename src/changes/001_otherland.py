@@ -2,10 +2,13 @@
 customised later):
   - the shown Otherland rooms placed where saved (hidden rooms left off); the 28 unlocked map rooms moved to their saved spots, and the sea lines
     through them (`seawaysfaint` straight, `seawaves` re-waved) follow them;
-  - every exit of a shown Otherland room (spacers included, up/down not drawn) a plain dirt trail (`fwtracks`), straight room to room;
-  - plain snow ground (`geo.snow`, template) on a new land piece round the rooms and trails, kept off the existing land and sea;
+  - every exit of a shown Otherland room (spacers included) a plain dirt trail (`fwtracks`), straight room to room; not drawn (owner, Oct 21): up/down
+    exits and one-way exits (both dashed in the editor), then spacer rooms left as dead ends by that, repeatedly;
+  - snow ground (`geo.snow`, template --snow) on a new land piece round the rooms and trails, kept off the existing land and sea; on it (owner, Oct 21:
+    a soft white snow texture with little drifts and icy spots; `wild.olsnow`, template OLSNOW): sparkle grain and faint wind wisps, snow drifts,
+    icy patches, all clear of the trails and rooms (their own random.Random);
   - Winterlight Island's drawing (`snowisles`) removed for now (owner: to be re-fitted later); its marker stays."""
-import json, math, os
+import json, math, os, random
 from collections import defaultdict
 from shapely.geometry import Polygon, LineString, Point
 from shapely.ops import unary_union
@@ -14,6 +17,8 @@ HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..'
 SNOW_R = 1.6                                        # snow reaches this far round each room and trail
 CLOSE = 3.0                                         # gaps narrower than 6 rooms between pieces filled
 WAVE_AMP, WAVE_LEN = 0.12, 2.5                       # as applied/v2.3/001
+DRIFT_AREA, DRIFT_GAP, DRIFT_CLEAR = 14.0, 1.6, 0.7  # one drift per this many square rooms; apart; from trails and rooms
+ICE_N, ICE_GAP, ICE_CLEAR = 30, 4.0, 1.0            # icy patches: how many; apart; from trails and rooms
 
 
 def _wave(line):
@@ -81,11 +86,20 @@ def apply(town, wild, pos):
         else: wild['track']['cx%d' % v] = [P[v][0], P[v][1]]
     for v in OL: pos[str(v)] = [P[v][0], P[v][1]]
     # ---- exits: plain trails ----
-    G = defaultdict(set); ud = 0
+    G = defaultdict(set); ud = one = 0
     for a, b, k in E['edges']:
         if not ({a, b} & OL) or {a, b} & H: continue
         if k == 'ud': ud += 1; continue
+        if k == 'one': one += 1; continue
         G[a].add(b); G[b].add(a)
+    stub = 0
+    while True:                                         # spacer rooms left as dead ends
+        dead = [v for v in G if R[v]['void'] and v in OL and len(G[v]) <= 1]
+        if not dead: break
+        for v in dead:
+            for u in G.pop(v): G[u].discard(v)
+            stub += 1
+    G = defaultdict(set, {v: n for v, n in G.items() if n})
     trails = _chains(G, P)
     wild['fwtracks'] = list(wild['fwtracks']) + trails
     # ---- snow ground ----
@@ -104,13 +118,40 @@ def apply(town, wild, pos):
     allsnow = unary_union(pieces)
     b = wild['bounds']; xb = allsnow.bounds
     wild['bounds'] = [min(b[0], math.floor(xb[0] - 1)), b[1], max(b[2], math.ceil(xb[2] + 1)), max(b[3], math.ceil(xb[3] + 1))]
+    # ---- the snow's texture ----
+    rng = random.Random(22534)
+    lines = unary_union([LineString(l) for l in trails if len(l) > 1] + [Point(P[v]) for v in OL])
+    inner = allsnow.buffer(-0.5)
+    x0, y0, x1, y1 = inner.bounds
+    def spots(n, gap, clear, tries):
+        out = []
+        for _ in range(tries):
+            if len(out) >= n: break
+            q = (rng.uniform(x0, x1), rng.uniform(y0, y1))
+            if not inner.contains(Point(q)) or lines.distance(Point(q)) < clear or any(math.dist(q, o) < gap for o in out): continue
+            out.append(q)
+        return out
+    ice = []
+    for x, y in spots(ICE_N, ICE_GAP, ICE_CLEAR, 20000):
+        rx, ry, r = rng.uniform(0.35, 0.8), rng.uniform(0.2, 0.45), rng.uniform(0, math.pi)
+        poly = []
+        for i in range(10):
+            a = 2 * math.pi * i / 10; k = rng.uniform(0.8, 1.15)
+            px, py = rx * k * math.cos(a), ry * k * math.sin(a)
+            poly.append([round(x + px * math.cos(r) - py * math.sin(r), 3), round(y + px * math.sin(r) + py * math.cos(r), 3)])
+        if lines.distance(Polygon(poly)) >= 0.4 and inner.contains(Polygon(poly)): ice.append(poly)
+    icy = unary_union([Polygon(p).buffer(0.6) for p in ice]) if ice else Point(-9e9, -9e9)
+    drifts = [[round(x, 3), round(y, 3), round(rng.uniform(0.7, 1.25), 2), round(rng.uniform(-0.35, 0.35), 3)]
+              for x, y in spots(int(allsnow.area / DRIFT_AREA), DRIFT_GAP, DRIFT_CLEAR, 60000) if not icy.contains(Point(x, y))]
+    wild['olsnow'] = {'poly': [list(map(list, p)) for p in geo['snow']], 'drifts': drifts, 'ice': ice}
     # ---- Winterlight Island's drawing, for now ----
     isles = len(wild.get('snowisles') or []); wild['snowisles'] = []
     # ---- checks ----
     offsnow = sorted(v for v in OL if not allsnow.buffer(0.01).contains(Point(P[v])))
     inwater = sorted(v for v in offsnow if water.contains(Point(P[v])))
     return {'rooms placed (Otherland shown; hidden; unlocked moved)': (len(OL), len(H), len(moved)),
-            'trails added (lines, exits; up/down not drawn)': (len(trails), sum(len(G[v]) for v in G) // 2, ud),
+            'trails added (lines, exits; not drawn: up/down, one-way, dead-end spacer rooms)': (len(trails), sum(len(G[v]) for v in G) // 2, ud, one, stub),
+            'snow texture (drifts, icy patches)': (len(drifts), len(ice)),
             'sea lines moved with their rooms (faint points, wave lines)': (nf, nw),
             'snow (pieces, area; holes filled)': (len(pieces), round(allsnow.area, 1), holes),
             'rooms not on the snow (in the sea; elsewhere)': (inwater, [v for v in offsnow if v not in inwater]),

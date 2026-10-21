@@ -120,4 +120,5 @@ The other builders run inside `src/legacy`.
   Frost Mansion 22248-22250 (Asgard Nexus) is in the Otherland editor (grp 'an', owner Oct 21), joined at 22247 and 21819.
   Unlocked there (grp 'un', owner Oct 21): 18052-18075, 6174, 18047, 13379, 13380, 6166, 6180, 6650, 15410-15418; a save may move these map rooms.
   Drawn Oct 21 as a BASIC render (`changes/001_otherland.py`): plain trails, plain snow (`geo.snow`, template --snow, also a `geo.land` piece);
-  the owner will customise later (water rooms, sub-areas, graphics): don't add any unasked. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
+  the owner will customise later (water rooms, sub-areas, graphics): don't add any unasked.
+  Not drawn (owner, Oct 21): up/down AND one-way exits (both dashed in the editor). Snow texture: `wild.olsnow` (template OLSNOW). Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
