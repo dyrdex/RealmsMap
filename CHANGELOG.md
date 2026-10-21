@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## Version 2.3 · in progress
+
+- Your request (Oct 21): the Azure Sea coast south of the Docks is added to the Desert of Despair layout editor for you to place: 25 new rooms (11 "A Pale, Sandy Coastline" and "Azure and Green" rooms of the string that starts at 6329, 6307 and 12986, and the 14 "Azure and Green" rooms joined to it) plus 70 spacer rooms between them, with 130 exits. The string's other 11 rooms were already in the editor and stay where you saved them. Nothing is drawn on the map until you place them and save.
+
 ## Version 2.2 · The Sea of Sorrows · October 21, 2026
 
 - Your request (Oct 21): new south directions for Blasted Lands and the Great Eastern Desert. They replace each place's default "River: Safest Route" option: #6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;#2 s;w;nw;#3 w;sw;#2 w;sw;#2 s;e (67 rooms, to 9057; Blasted Lands adds "scan for entrance" and its line runs on to its marker as before). Each is drawn in one piece. The East option is unchanged.
