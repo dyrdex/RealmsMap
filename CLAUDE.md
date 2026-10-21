@@ -19,8 +19,8 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   `docs/archive/`: full history (grep it, don't read it whole). `CHANGELOG.md`: owner-facing history (append to the top section).
 
 ## State (Oct 21, 2026)
-- Last version v25 (Oct 21, "The Sea of Sorrows"; tag `v25` to be added by the owner on GitHub). Base = a legacy redraw + `applied/v22/` to
-  `applied/v25/` (v25: the Wastelands editor v3 save's 92 sea rooms with faint routes and one-way currents, sea extended south; Winterlight
+- Last version 2.2 (Oct 21, "The Sea of Sorrows"; tag `v2.2` to be added by the owner on GitHub). Base = a legacy redraw + `applied/v22/`,
+  `v23/`, `v24/`, `v2.2/` (2.2: the Wastelands editor v3 save's 92 sea rooms with faint routes and one-way currents, sea extended south; Winterlight
   Island; Sea of Sorrows / Winterlight markers; land holes filled; east coast cliff; boulders centred; desert terrain; desert south routes).
   After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
 - All 14 layout editors live in the owner's current organization (links in REGION_NOTES; Wastelands editor v3 since Oct 20). Read saves with
@@ -28,10 +28,12 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 - Nothing in progress.
 
 ## Snapshots
-- New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/vN/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress
+- Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.2, the next is 2.3
+  (footer `Version 2.3 · <title> · <date>`, tag `v2.3`, folder `applied/v2.3/`).
+- New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/v2.N/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress
   section, rebuild twice (realm_map.html must match), commit.
 - Merge into `main` ONLY when the owner says to save a new version (Oct 16). Day to day: push to the session branch only. Then
-  open a PR to `main`, merge it, and remind the owner: GitHub -> Releases -> Draft a new release -> tag `vN` -> Target `main` ->
+  open a PR to `main`, merge it, and remind the owner: GitHub -> Releases -> Draft a new release -> tag `v2.N` -> Target `main` ->
   title + notes from the CHANGELOG -> Publish. (Cloud sessions can't push tags.)
 
 ## Conventions (owner preferences)
