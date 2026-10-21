@@ -47,7 +47,7 @@ The other builders run inside `src/legacy`.
 | Wastelands | https://claude.ai/artifact/XtoCQTMrpPQCLZREeczD7L | `wllayout/current` | `wl_layout_final.json` |
 | The Mire | https://claude.ai/artifact/QAUXkaXfwFS1fgDRiXzHmo | `milayout/current` | `mi_layout_final.json` |
 | Desert of Despair | https://claude.ai/artifact/JKaM8hA8ih8XHfNJQifgqA | `ddlayout/current` | `dd_layout_final.json` |
-| Otherland (Oct 21; `tools/otherland_editor/`) | https://claude.ai/artifact/5B5NWTeurkdsVpDwuPFphX | `ollayout/current` | (none yet) |
+| Otherland (Oct 21; `tools/otherland_editor/`) | https://claude.ai/artifact/5B5NWTeurkdsVpDwuPFphX | `ollayout/current` | `ol_layout_final.json` |
 
 ## Standing owner rules, by region
 - **Everywhere**: routes and room counts are the owner's own (`data.py`: `MORE_DIRECTIONS`, `ROUTE_OPTIONS`), never computed;
@@ -119,3 +119,5 @@ The other builders run inside `src/legacy`.
   The owner's map flattens it: an up/down exit to the same room as a flat exit is ignored (the flat one is drawn).
   Frost Mansion 22248-22250 (Asgard Nexus) is in the Otherland editor (grp 'an', owner Oct 21), joined at 22247 and 21819.
   Unlocked there (grp 'un', owner Oct 21): 18052-18075, 6174, 18047, 13379, 13380, 6166, 6180, 6650, 15410-15418; a save may move these map rooms.
+  Drawn Oct 21 as a BASIC render (`changes/001_otherland.py`): plain trails, plain snow (`geo.snow`, template --snow, also a `geo.land` piece);
+  the owner will customise later (water rooms, sub-areas, graphics): don't add any unasked. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
