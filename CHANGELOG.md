@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## Version 2.4 (in progress)
+
+- Your request (Oct 21): a new layout editor for Otherland, for you to place (https://claude.ai/artifact/5B5NWTeurkdsVpDwuPFphX). It has all 503 Otherland rooms, 27 unnamed rooms that lead only back into it, and 109 spacer rooms that join them (24 dead-end spacer rooms left off). It joins the map only at 22534 and 22535 (east to 13379 and 13380). Its other 111 exits (Blood Sea 52, Azure Sea 13, Sea of Sorrows 12, Wild Tundra 12, Cursed Lands 5, Asgard Nexus 4, unnamed and spacer rooms 13) are left off. 200 up/down exits that join the same rooms as a flat exit are ignored, so the flat exit is used. 67 up/down exits have no flat exit and are kept. The rooms are split into 16 sections, spread over the sea west and south of the link rooms (x -42 to 110, y 155 to 247). Sections are at least 8.8 apart and stay at least 5 away from the map's rooms. No two rooms are closer than 0.8, and none of the 17 exits between sections or to the map cross. Nothing is drawn on the map until you place the rooms and save.
+
 ## Version 2.3 · The Azure Sea · October 21, 2026
 
 - Your request (Oct 21): the Azure Sea coast's water routes are smoother and even fainter. Each wave is now about 2.5 rooms long (was 1), so a short stretch is one gentle bend. They're drawn at 15% opacity (was 25%).

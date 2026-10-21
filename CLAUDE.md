@@ -23,9 +23,9 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   `v23/`, `v24/`, `v2.2/`, `v2.3/` (2.3: the Desert of Despair save of Oct 21: 38 Azure Sea coast rooms + 78 spacers, grp 'az'; desert trails, very faint
   wavy water routes `seawaves`, sea carried south down the east coast, sand under off-land coastline rooms; bounds x1 113, y1 186).
   After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
-- All 14 layout editors live in the owner's current organization (links in REGION_NOTES; Wastelands editor v3 since Oct 20). Read saves with
+- All 15 layout editors live in the owner's current organization (links in REGION_NOTES; Wastelands editor v3 since Oct 20). Read saves with
   ArtifactData get `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
-- Nothing in progress.
+- In progress (2.4): Otherland editor published Oct 21 (`ollayout`), waiting for the owner's save; then draw it with a change file.
 
 ## Snapshots
 - Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.3, the next is 2.4
