@@ -237,7 +237,7 @@ pts = [start[v] for v in S]
 CTX = {v: SRC[v] for v, p in POS.items() if min(math.hypot(p[0] - a[0], p[1] - a[1]) for a in pts) <= NEAR}
 # ---- unlocked map rooms (owner, Oct 21; grp 'un'): movable, starting at their spots on the map; Otherland's exits to them stay off but the two links
 UN = [18064, 18067, 18068, 18066, 18072, 18075, 18071, 13379, 13380, 6166, 6180, 15418, 15417, 15416, 15415, 15414, 15413, 15412, 15411, 15410,
-      18052, 6174, 18047, 18059, 18058, 18062, 18063]                                     # (+ Oct 21, second set)
+      18052, 6174, 18047, 18059, 18058, 18062, 18063, 6650]                                     # (+ Oct 21, second set)
 assert all(v in CTX for v in UN), [v for v in UN if v not in CTX]
 UNL = set(UN)
 LINK2 = {(18071, 22511), (18066, 22512)}                                                 # also shown (owner, Oct 21): the Ahtborne Straights south into Otherland
