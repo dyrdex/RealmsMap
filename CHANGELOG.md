@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## Version 25 · The Sea of Sorrows · October 21, 2026
+## Version 2.2 · The Sea of Sorrows · October 21, 2026
 
 - Your request (Oct 21): new south directions for Blasted Lands and the Great Eastern Desert. They replace each place's default "River: Safest Route" option: #6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;#2 s;w;nw;#3 w;sw;#2 w;sw;#2 s;e (67 rooms, to 9057; Blasted Lands adds "scan for entrance" and its line runs on to its marker as before). Each is drawn in one piece. The East option is unchanged.
 - Your request (Oct 20): the Desert of Despair's ground has its own desert terrain, unlike the Wastelands. All its sand (3,529 square rooms) has a fine grain and faint wind marks. On top are 110 wind-ripple patches, 26 sand dunes (a pale crest and a shaded lee side), 3 dry cracked lake beds, 34 small rock clusters, 42 dry scrub and just 4 cacti. All of it stays clear of paths, rooms, clearings, mazes, drawings, markers and names.
