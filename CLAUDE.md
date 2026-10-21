@@ -25,7 +25,7 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
 - All 14 layout editors live in the owner's current organization (links in REGION_NOTES; Wastelands editor v3 since Oct 20). Read saves with
   ArtifactData get `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
-- In progress: 25 Azure Sea coast rooms (+70 spacers, grp 'az') added to the Desert of Despair editor (Oct 21); draw them after the owner saves.
+- In progress: 26 Azure Sea coast rooms (+75 spacers, grp 'az') added to the Desert of Despair editor (Oct 21); draw them after the owner saves.
 
 ## Snapshots
 - Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.2, the next is 2.3

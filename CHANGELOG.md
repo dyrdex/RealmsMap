@@ -3,6 +3,7 @@
 ## Version 2.3 · in progress
 
 - Your request (Oct 21): the Azure Sea coast south of the Docks is added to the Desert of Despair layout editor for you to place: 25 new rooms (11 "A Pale, Sandy Coastline" and "Azure and Green" rooms of the string that starts at 6329, 6307 and 12986, and the 14 "Azure and Green" rooms joined to it) plus 70 spacer rooms between them, with 130 exits. The string's other 11 rooms were already in the editor and stay where you saved them. Nothing is drawn on the map until you place them and save.
+- Your request (Oct 21): 6 more rooms in the Desert of Despair editor's Azure Sea coast: 12988 (Azure and Green) and the spacer rooms 15038, 15049, 15055, 15054, 15056 that join it to 12987, 15047 and 12989 (8 exits). They start between those rooms; none is closer than 2.57 to another room it doesn't join.
 
 ## Version 2.2 · The Sea of Sorrows · October 21, 2026
 

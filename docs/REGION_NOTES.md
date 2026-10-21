@@ -92,7 +92,7 @@ The other builders run inside `src/legacy`.
   `FINAL_DUMP=<f> NO_TILES=1 python3 build.py`, then `python3 build_dd_editor.py <f> desert_of_despair_editor.html` (~1 min; RES 0.2). Unlocked (Oct 20): grp 'un' 6365; grp 'wl' the 198 Wastelands rooms shown round the desert (spacers incl.); grp 'cd' the 34 rooms shown from the Coral Depths editor. Moving them means redrawing their trails.
   Added Oct 21 (`add_azure_coast.py`, run once on the built editor): grp 'az', the Azure Sea coast south of the Docks (25 rooms: the Pale, Sandy Coastline /
   Salt and waves string from 6329, 6307, 12986 + the Azure and Green rooms joined to it; 70 spacers); start spots spread from dd_layout_final.json.
-  Rebuilding with build_dd_editor.py drops them: rerun the add script after. Not drawn yet (waiting on the owner's save).
+  Rebuilding with build_dd_editor.py drops them: rerun the add script after, then `add_dd_rooms.py 15038 12988 15049 15055 15054 15056` (owner's extra rooms, Oct 21). Not drawn yet (waiting on the owner's save).
   Drawn (Oct 20, save 14:39Z) by the LEGACY pipeline: `legacy/dd_merge.py` (land chained last into smr_merge's land_edit, kept off the WL south
   sea; one `sand` ground; clearings by the range's cell rule; `fwtracks`), wired in `build_legacy.py`: the save's 'wl' rooms (+ hidden) go into
   the WL layout, 'cd'/'un' rooms into the CD layout (6365 then into the SMR layout; smr's window pinned at 6365's old spot so the range doesn't
