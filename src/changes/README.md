@@ -9,4 +9,4 @@ Helpers: `maplib.world()`, `maplib.tracer(pos)`, `maplib.condense(route)`.
 When a new version is saved, the changes are folded into a new base (`python3 build.py --freeze`) and their files removed.
 
 After a legacy region redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`
-(re-applies `applied/v22/`, `v23/`, `v24/`, then `v2.2/` (and later `v2.N/`) on it, in order). Diff the new base against the old one and list what changed where.
+(re-applies `applied/v22/`, `v23/`, `v24/`, then `v2.2/`, `v2.3/` (and later `v2.N/`) on it, in order). Diff the new base against the old one and list what changed where.
