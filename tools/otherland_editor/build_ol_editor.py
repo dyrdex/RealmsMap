@@ -216,6 +216,17 @@ seglen = [math.hypot(at(v)[0] - at(t)[0], at(v)[1] - at(t)[1]) for v, t in XL]
 xcross = sum(1 for a in range(len(XL)) for b in range(a + 1, len(XL)) if segx(at(XL[a][0]), at(XL[a][1]), at(XL[b][0]), at(XL[b][1])))
 secgap = min(math.dist(start[u], start[v]) for i in range(len(SEC)) for j in range(i + 1, len(SEC)) for u in SEC[i] for v in SEC[j]) if len(SEC) > 1 else 0
 
+# ---- added later (owner, Oct 21): Frost Mansion 22248-22250 (Asgard Nexus; grp 'an'), joined to Otherland at 22247 (n) and 21819 (s), movable,
+# spread from those rooms after the layout above, so it stays as it was; their exits to Otherland are kept
+ADD = [22248, 22249, 22250]
+S = S | set(ADD)
+for v in ADD: GRP[v] = 'an'
+FIX2 = dict(POS); FIX2.update({v: tuple(p) for v, p in start.items()})
+roots2 = sorted({t for v in ADD for t, _ in links2(v) if t in start})
+sp2 = ES.spread(set(ADD), lambda v: [(t, d) for t, d in links2(v) if t in ADD or t in FIX2], FIX2, roots2, step=STEP)
+for v in ADD: start[v] = [round(sp2[v][0], 2), round(sp2[v][1], 2)]
+addnear = {v: round(min(math.dist(start[v], start[u]) for u in start if u != v and u not in {t for t, _ in links2(v)}), 2) for v in ADD}
+
 # ---- fixed rooms near the new ones ----
 pts = [start[v] for v in S]
 CTX = {v: SRC[v] for v, p in POS.items() if min(math.hypot(p[0] - a[0], p[1] - a[1]) for a in pts) <= NEAR}
@@ -257,7 +268,7 @@ offc = Counter()
 for v in S:
     for e in exits.get(v, []):
         if not ok(v, e['to']): offc[rooms.get(e['to'], {}).get('area') or 'unnamed/spacer rooms'] += 1
-audit = dict(ol=cnt0, oln=len(REAL), ols=len(keep) - len(REAL), flat=nflat, ud=nud, secs=len(SEC), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), fixed=len(CTX),
+audit = dict(ol=cnt0, an=len(ADD), oln=len(REAL), ols=len(keep) - len(REAL), flat=nflat, ud=nud, secs=len(SEC), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), fixed=len(CTX),
              off=', '.join(f'{a} {n}' for a, n in sorted(offc.items())))
 rd = lambda poly: [[round(x, 2), round(y, 2)] for x, y in poly]
 trk = list(w['fwtracks']) + list(w['swtracks']) + [w['road'], w['southpath'], w['link']] + list(w['ring']) + [t for t in w.get('etrtracks', []) if len(t) > 1] \
@@ -274,6 +285,7 @@ json.dump(dict(rooms=[{k: r[k] for k in ('id', 'terrain', 'void', 'lvl', 'fixed'
           open(os.path.join(SRCDIR, 'ol_editor_edges.json'), 'w'), separators=(',', ':'))
 print('AUDIT', audit)
 print('unnamed real rooms kept', len(REAL), sorted(REAL), '| left off (exit off Otherland)', sorted(leadout), '| spacers kept', len(keep) - len(REAL), '| stubs left off', len(stubs))
+print('added (an)', {v: start[v] for v in ADD}, '| roots', roots2, '| nearest room not joined', addnear)
 print('links to the map', lk, '| no exit at all', lone)
 for i, c in enumerate(SEC):
     xs = [start[v][0] for v in c]; ys = [start[v][1] for v in c]

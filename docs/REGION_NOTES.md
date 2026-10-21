@@ -117,3 +117,4 @@ The other builders run inside `src/legacy`.
 - **The Mire**: no Mire sea; don't touch the sea unless asked (Oct 18). Unsaved editor rooms are never drawn.
 - **Otherland** (owner, Oct 21): joins the map ONLY at 22534 -> 13379 and 22535 -> 13380; all its other exits out are left off for now.
   The owner's map flattens it: an up/down exit to the same room as a flat exit is ignored (the flat one is drawn).
+  Frost Mansion 22248-22250 (Asgard Nexus) is in the Otherland editor (grp 'an', owner Oct 21), joined at 22247 and 21819.
