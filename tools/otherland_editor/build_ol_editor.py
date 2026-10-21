@@ -64,7 +64,12 @@ stubs = cand - keep
 REAL = {v for v in keep if not isspacer(v)}
 S = K | keep
 GRP = {v: 'ol' for v in S}
-ok = lambda v, t: (v in S and t in S) or (v, t) in LINKS                                  # exits kept
+UNL = set()                                                                              # unlocked map rooms (set below)
+def ok(v, t):                                                                            # exits kept
+    if (v, t) in LINKS: return True
+    a, b = v in UNL, t in UNL
+    if a or b: return (a or v in POS) and (b or t in POS)                               # unlocked rooms: only their exits to other map rooms
+    return v in S and t in S
 # up/down ignored where a flat exit joins the same two rooms (either way)
 FLATP = {frozenset((v, e['to'])) for v, l in exits.items() for e in l if e['dir'] in DV and e['dir'] not in (16, 32) and e['to'] != v}
 nflat = sum(1 for v in S for e in exits.get(v, []) if e['dir'] in (16, 32) and ok(v, e['to']) and frozenset((v, e['to'])) in FLATP)
@@ -230,6 +235,12 @@ addnear = {v: round(min(math.dist(start[v], start[u]) for u in start if u != v a
 # ---- fixed rooms near the new ones ----
 pts = [start[v] for v in S]
 CTX = {v: SRC[v] for v, p in POS.items() if min(math.hypot(p[0] - a[0], p[1] - a[1]) for a in pts) <= NEAR}
+# ---- unlocked map rooms (owner, Oct 21; grp 'un'): movable, starting at their spots on the map; Otherland's exits to them stay off but the two links
+UN = [18064, 18067, 18068, 18066, 18072, 18075, 18071, 13379, 13380, 6166, 6180, 15418, 15417, 15416, 15415, 15414, 15413, 15412, 15411, 15410]
+assert all(v in CTX for v in UN), [v for v in UN if v not in CTX]
+UNL = set(UN)
+for v in UN: GRP[v] = 'un'; start[v] = [round(POS[v][0], 2), round(POS[v][1], 2)]; CTX.pop(v)
+S = S | UNL
 # ---- rooms and exits ----
 def exlist(v):
     res = []
@@ -254,7 +265,7 @@ for v in V:
     for e in exits.get(v, []):
         t = e['to']
         if t not in V or t == v: continue
-        if (v in S or t in S) and not ok(v, t): continue                                 # Otherland's exits off it: left off
+        if not ok(v, t) and (v in S or t in S): continue                                 # Otherland's exits off it: left off
         if e['dir'] in (16, 32) and frozenset((v, t)) in FLATP: continue                 # ignored up/down
         k = (min(v, t), max(v, t)); pair[k][0 if v == k[0] else 1] = True
         if e['dir'] not in (16, 32): pair[k][2] = True
@@ -265,10 +276,10 @@ EDG = [[a, b, 'two' if (f and r and flat) else ('one' if flat else 'ud')] for (a
 lk = sorted(k for k in pair if (k[0] in S) != (k[1] in S))
 cnt = Counter(CTX.values())
 offc = Counter()
-for v in S:
+for v in S - UNL:
     for e in exits.get(v, []):
         if not ok(v, e['to']): offc[rooms.get(e['to'], {}).get('area') or 'unnamed/spacer rooms'] += 1
-audit = dict(ol=cnt0, an=len(ADD), oln=len(REAL), ols=len(keep) - len(REAL), flat=nflat, ud=nud, secs=len(SEC), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), fixed=len(CTX),
+audit = dict(ol=cnt0, an=len(ADD), un=len(UN), oln=len(REAL), ols=len(keep) - len(REAL), flat=nflat, ud=nud, secs=len(SEC), exits=sum(1 for k in pair if k[0] in S and k[1] in S), links=len(lk), fixed=len(CTX),
              off=', '.join(f'{a} {n}' for a, n in sorted(offc.items())))
 rd = lambda poly: [[round(x, 2), round(y, 2)] for x, y in poly]
 trk = list(w['fwtracks']) + list(w['swtracks']) + [w['road'], w['southpath'], w['link']] + list(w['ring']) + [t for t in w.get('etrtracks', []) if len(t) > 1] \

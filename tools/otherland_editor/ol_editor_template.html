@@ -62,6 +62,7 @@ svg.names-on .nd .lbl,svg.names-zoom.zoomed .nd .lbl{display:block}
 .nd.rd rect,.nd.rd circle.shape{stroke:#D4B44A}
 .nd.ol rect,.nd.ol circle.shape{stroke:#9FD3F0}
 .nd.an rect,.nd.an circle.shape{stroke:#B58CE6}
+.nd.un rect,.nd.un circle.shape{stroke:#6FC3E8}
 
 
 .nd .hx{display:none}.nd.hid .hx{display:block}.nd.hid{opacity:.32}.nd.hid .shape,.nd.hid rect{stroke-dasharray:.16 .12}
@@ -104,7 +105,7 @@ svg line.cxe{pointer-events:none}
   <label class="l"><input type="checkbox" id="snap"> Snap to grid</label>
   <div class="row"><select id="snapStep"><option value=".25">¼ room</option><option value=".5" selected>½ room</option><option value="1">1 room</option></select></div>
   <div class="row">
-    <button id="selPiece">Select the whole piece</button><button id="selOl">Select the Otherland rooms</button><button id="selAn">Select the added rooms</button></div>
+    <button id="selPiece">Select the whole piece</button><button id="selOl">Select the Otherland rooms</button><button id="selAn">Select the added rooms</button><button id="selUn">Select the unlocked map rooms</button></div>
   <div class="row"><select id="selSec" aria-label="Select a section"><option value="">Select a section…</option></select>
   </div>
   <div class="row">
@@ -128,6 +129,7 @@ svg line.cxe{pointer-events:none}
   <div class="legend">
     <i style="background:var(--t-Mountains);border:2px solid #9FD3F0"></i><span>Otherland room (movable)</span>
     <i style="background:var(--t-other);border:2px solid #B58CE6"></i><span>Added Oct 21: Frost Mansion 22248-22250 (Asgard Nexus), off 22247 and 21819 (movable, start next to the rooms they join)</span>
+    <i style="background:var(--t-Water);border:2px solid #6FC3E8"></i><span>Unlocked map room (Oct 21): the Ahtborne Straights 18064-18075 (Blood Sea, spacers included), 13379 and 13380, Among the Icebergs 6166 and 6180, Afloat on the Azure Sea 15410-15418 (movable, start at their spots on the map)</span>
     <i style="background:var(--t-other);border-radius:50%;width:8px;height:8px;border:1px solid #B3541E"></i><span>Spacer room (invisible in the game, free to move)</span>
     <i style="background:var(--cx-DH);border-radius:50%"></i><span>Fixed room in Darkhaven</span>
     <i style="background:var(--cx-Grove);border-radius:50%"></i><span>Fixed room in the Shadow Grove</span>
@@ -240,7 +242,7 @@ function placeEntrance(){}
   for(const t of C.tracks)el('path',{d:'M'+t.map(q=>q[0]+' '+q[1]).join('L'),fill:'none',stroke:'var(--dirt)','stroke-width':.26,opacity:.8,'stroke-linecap':'round','stroke-linejoin':'round'},gCtx);
   el('rect',{x:C.town[0],y:C.town[1],width:C.town[2]-C.town[0],height:C.town[3]-C.town[1],fill:'var(--panel)',stroke:'var(--ink)','stroke-width':.12,opacity:.92,rx:.4},gCtx);
   (C.labels||[]).forEach(l=>{const t=el('text',{x:l[0],y:l[1],'text-anchor':'middle','font-size':l[3]||1.5,'font-style':'italic',fill:'var(--soft)',style:'font-family:var(--serif);paint-order:stroke;stroke:var(--paper);stroke-width:.3px'},gCtx);t.textContent=l[2]})})();
-(function(){const a=D.audit;if(!a)return;$('audit').innerHTML=`<b>Import check against your TinTin map:</b><br>Otherland rooms: ${a.ol} · added Frost Mansion rooms ${a.an} · unnamed rooms ${a.oln} · spacers ${a.ols}<br>Up/down exits ignored (a flat exit joins the same rooms): ${a.flat} · up/down exits kept: ${a.ud}<br>Sections: ${a.secs}<br>Exits between these rooms: ${a.exits}<br>Exits to rooms on the map: ${a.links}<br>Exits left off: ${a.off}<br><br>Fixed rooms already on the finished map (near Otherland): ${a.fixed}`})();
+(function(){const a=D.audit;if(!a)return;$('audit').innerHTML=`<b>Import check against your TinTin map:</b><br>Otherland rooms: ${a.ol} · added Frost Mansion rooms ${a.an} · unlocked map rooms ${a.un} · unnamed rooms ${a.oln} · spacers ${a.ols}<br>Up/down exits ignored (a flat exit joins the same rooms): ${a.flat} · up/down exits kept: ${a.ud}<br>Sections: ${a.secs}<br>Exits between these rooms: ${a.exits}<br>Exits to rooms on the map: ${a.links}<br>Exits left off: ${a.off}<br><br>Fixed rooms already on the finished map (near Otherland): ${a.fixed}`})();
 
 /* ---------- moving things ---------- */
 function setNode(id,x,y){
@@ -389,7 +391,7 @@ $('unlock').onclick=()=>{sel.forEach(id=>{if(!byId.get(id).fixed)locked.delete(i
 $('selnone').onclick=()=>{sel.clear();refreshSel()};
 $('baseSel').onclick=()=>setTo([...sel],base);$('rawSel').onclick=()=>setTo([...sel],raw);
 const selGrp=g=>{sel.clear();rooms.forEach(r=>{if(r.grp===g)sel.add(r.id)});refreshSel();const P=[...sel].map(id=>pos.get(id));if(!P.length)return;const x0=Math.min(...P.map(p=>p[0]))-6,x1=Math.max(...P.map(p=>p[0]))+6,y0=Math.min(...P.map(p=>p[1]))-6,y1=Math.max(...P.map(p=>p[1]))+6;cam={x:(x0+x1)/2,y:(y0+y1)/2,k:Math.max(3,Math.min(140,Math.min(VW/(x1-x0),VH/(y1-y0))))};applyCam()};
-$('selOl').onclick=()=>selGrp('ol');$('selAn').onclick=()=>selGrp('an');
+$('selOl').onclick=()=>selGrp('ol');$('selAn').onclick=()=>selGrp('an');$('selUn').onclick=()=>selGrp('un');
 (D.secs||[]).forEach(s=>{const o=document.createElement('option');o.value=s.i;o.textContent=`${s.i+1}. ${s.name} (${s.n})`;$('selSec').appendChild(o)});
 $('selSec').onchange=e=>{const v=e.target.value;if(v==='')return;const i=+v;sel.clear();rooms.forEach(r=>{if(!r.fixed&&r.piece===i)sel.add(r.id)});refreshSel();e.target.value=''};
 $('selPiece').onclick=()=>{const ps=new Set([...sel].map(id=>byId.get(id).piece).filter(p=>p!=null));if(!ps.size){toast('Select a room of the piece first');return}rooms.forEach(r=>{if(ps.has(r.piece))sel.add(r.id)});refreshSel()};
