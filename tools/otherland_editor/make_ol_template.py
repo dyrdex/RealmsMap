@@ -18,7 +18,7 @@ rep('<button id="selDd">Select the desert rooms</button><button id="selWl">Selec
 rep(r'    <i style="background:var\(--t-Desert\);border:2px solid #E6C36A"></i>.*?\(movable, start next to the rooms they join in your saved layout\)</span>\n',
     f'    <i style="background:var(--t-Mountains);border:2px solid {OLC}"></i><span>Otherland room (movable)</span>\n'
     f'    <i style="background:var(--t-other);border:2px solid {ANC}"></i><span>Added Oct 21: Frost Mansion 22248-22250 (Asgard Nexus), off 22247 and 21819 (movable, start next to the rooms they join)</span>\n'
-    f'    <i style="background:var(--t-Water);border:2px solid {UNC}"></i><span>Unlocked map room (Oct 21): the Ahtborne Straights 18064-18075 (Blood Sea, spacers included), 13379 and 13380, Among the Icebergs 6166 and 6180, Afloat on the Azure Sea 15410-15418 (movable, start at their spots on the map)</span>\n', regex=True)
+    f'    <i style="background:var(--t-Water);border:2px solid {UNC}"></i><span>Unlocked map room (Oct 21): the Ahtborne Straights 18052-18075 (Blood Sea, spacers included), 6174, 18047, 13379 and 13380, Among the Icebergs 6166 and 6180, Afloat on the Azure Sea 15410-15418 (movable, start at their spots on the map)</span>\n', regex=True)
 rep('    <i style="background:var(--cx-MI);border-radius:50%"></i><span>Fixed room in the Mire</span>\n',
     '    <i style="background:var(--cx-MI);border-radius:50%"></i><span>Fixed room in the Mire</span>\n    <i style="background:var(--cx-AZ);border-radius:50%"></i><span>Fixed room on the Azure Sea Coast</span>\n')
 rep('--cx-DD:#F2E2A0;--cx-MI:#7FCB8E;--cx-N:#8C8C8C', f'--cx-DD:#F2E2A0;--cx-MI:#7FCB8E;--cx-AZ:{AZX};--cx-OL:{OLX};--cx-N:{NX}')

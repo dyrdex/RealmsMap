@@ -118,4 +118,4 @@ The other builders run inside `src/legacy`.
 - **Otherland** (owner, Oct 21): joins the map ONLY at 22534 -> 13379, 22535 -> 13380, 18071 -> 22511 and 18066 -> 22512; all its other exits out are left off for now.
   The owner's map flattens it: an up/down exit to the same room as a flat exit is ignored (the flat one is drawn).
   Frost Mansion 22248-22250 (Asgard Nexus) is in the Otherland editor (grp 'an', owner Oct 21), joined at 22247 and 21819.
-  Unlocked there (grp 'un', owner Oct 21): 18064-18075, 13379, 13380, 6166, 6180, 15410-15418; a save may move these map rooms.
+  Unlocked there (grp 'un', owner Oct 21): 18052-18075, 6174, 18047, 13379, 13380, 6166, 6180, 15410-15418; a save may move these map rooms.
