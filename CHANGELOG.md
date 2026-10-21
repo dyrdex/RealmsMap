@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## Version 2.3 · in progress
+## Version 2.3 · The Azure Sea · October 21, 2026
 
 - Your request (Oct 21): the Azure Sea coast's water routes are smoother and even fainter. Each wave is now about 2.5 rooms long (was 1), so a short stretch is one gentle bend. They're drawn at 15% opacity (was 25%).
 - Your request (Oct 21): the Azure Sea coast's 43 water routes are fainter (40% to 25% opacity) and wavy, since they're in the ocean. Each stretch from room to room is a gentle wave, about one wave per room's length, 0.12 rooms high, flat where it meets each room. The faint dashed highlight down their middle is left off. The Sea of Sorrows routes are unchanged.

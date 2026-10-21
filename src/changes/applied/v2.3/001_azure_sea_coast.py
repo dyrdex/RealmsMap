@@ -11,7 +11,7 @@ from collections import defaultdict
 from shapely.geometry import Polygon, LineString, Point, box
 from shapely.ops import unary_union
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 BOX = (74.0, 55.0, 118.0, 190.0)                    # (x0, y0, x1, y1): land and sea added only inside this box
 SEA = 9                                             # geo.water[9]: the sea north-east of the desert (ends at y 65)
 SAND = 16                                           # geo.sand[16] (= ddsand.poly): the desert's ground

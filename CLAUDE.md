@@ -19,17 +19,17 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   `docs/archive/`: full history (grep it, don't read it whole). `CHANGELOG.md`: owner-facing history (append to the top section).
 
 ## State (Oct 21, 2026)
-- Last version 2.2 (Oct 21, "The Sea of Sorrows"; tag `v2.2` to be added by the owner on GitHub). Base = a legacy redraw + `applied/v22/`,
-  `v23/`, `v24/`, `v2.2/` (2.2: the Wastelands editor v3 save's 92 sea rooms with faint routes and one-way currents, sea extended south; Winterlight
-  Island; Sea of Sorrows / Winterlight markers; land holes filled; east coast cliff; boulders centred; desert terrain; desert south routes).
+- Last version 2.3 (Oct 21, "The Azure Sea"; tag `v2.3` to be added by the owner on GitHub). Base = a legacy redraw + `applied/v22/`,
+  `v23/`, `v24/`, `v2.2/`, `v2.3/` (2.3: the Desert of Despair save of Oct 21: 38 Azure Sea coast rooms + 78 spacers, grp 'az'; desert trails, very faint
+  wavy water routes `seawaves`, sea carried south down the east coast, sand under off-land coastline rooms; bounds x1 113, y1 186).
   After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
 - All 14 layout editors live in the owner's current organization (links in REGION_NOTES; Wastelands editor v3 since Oct 20). Read saves with
   ArtifactData get `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
-- In progress (2.3): `changes/001_azure_sea_coast.py` draws the owner's Oct 21 Desert of Despair save (38 Azure Sea coast rooms + 78 spacers, grp 'az').
+- Nothing in progress.
 
 ## Snapshots
-- Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.2, the next is 2.3
-  (footer `Version 2.3 · <title> · <date>`, tag `v2.3`, folder `applied/v2.3/`).
+- Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.3, the next is 2.4
+  (footer `Version 2.4 · <title> · <date>`, tag `v2.4`, folder `applied/v2.4/`; add the folder to `legacy/rebase.py`).
 - New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/v2.N/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress
   section, rebuild twice (realm_map.html must match), commit.
 - Merge into `main` ONLY when the owner says to save a new version (Oct 16). Day to day: push to the session branch only. Then

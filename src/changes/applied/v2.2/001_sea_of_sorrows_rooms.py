@@ -8,7 +8,7 @@ from shapely.geometry import Polygon, LineString, Point, box
 from shapely.ops import unary_union
 from collections import defaultdict
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 BOX = (4.0, 117.0, 53.0, 161.0)                     # (x0, y0, x1, y1): the sea added only inside this box
 COAST = 16                                          # wild['seaways'][16]: the beach coast route (9928 ... 9934)
 COAST_PTS = {15: 18070, 16: 9929, 17: 18073, 19: 9931, 20: 9932, 21: 9933, 22: 9934}   # its points that sit at a room the save moved
