@@ -144,4 +144,5 @@ The other builders run inside `src/legacy`.
   Gorge (owner, Oct 23): never touches the A Tunnel in the Snow maze (wall cut back, `changes/004`); its floor carries rocks/gravel/cracks (`olgorge.rocks/gravel/cracks`, `005`), clear of its trail.
   East coast (owner, Oct 23; `007`): bay east of Morte's Peak filled (closed r 5 in BAY), sea EBOX SEA_W 6 (seafill + seashore); its ice `008` (006's placement).
   Trail crossings without a room (owner, Oct 23; `009`): electrical-style jumpers (half-circle hop, up-left; tunnel or shorter line hops); NO gaps or marks.
+  Plants (owner, Oct 23; `010`, `wild.olflora` [x,y,scale,kind p/b/s/g,variant], template OLFLORA sprites op*/ob*/os*/og*): density by the nearest room name's land kind (DENS).
   Shore ice (owner, Oct 23): floes + small bergs along the WHOLE sea coast at the south shore's density (`006`, appended to `olsouth.floes` / `olharbor.bergs`).
