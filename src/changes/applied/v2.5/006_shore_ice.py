@@ -8,7 +8,7 @@ from maplib import world
 
 REACH = 3.5                                     # out to this far from the coast
 SOUTH_ICE = {'An Ocean of Floating Ice', 'Among the Icebergs'}
-SBOX = box(-12 + 3.0, 228, 56, 264)                  # (its west edge 3 east with the rooms: owner's save of Oct 22 18:39Z)
+SBOX = box(-12, 228, 56, 264)
 
 
 def apply(town, wild, pos):
