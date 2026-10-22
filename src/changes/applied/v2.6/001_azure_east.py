@@ -22,7 +22,7 @@ from shapely.geometry import Polygon, LineString, Point, MultiPoint, box
 from shapely.ops import unary_union, voronoi_diagram
 import maplib
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 WET = {'Swimming', 'Underwater', 'Water', 'Seafloor'}
 ICEBERG = [22531, 22532, 22533, 22534, 22535, 6166, 13379, 13380, 6180]      # land: the Iceberg island (applied/v2.4/001)
 AS_LAND = {6147, 6148}

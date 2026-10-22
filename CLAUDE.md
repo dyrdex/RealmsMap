@@ -19,19 +19,19 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   `docs/archive/`: full history (grep it, don't read it whole). `CHANGELOG.md`: owner-facing history (append to the top section).
 
 ## State (Oct 22, 2026)
-- Last version 2.5 (Oct 22, "Otherland's Wilds"; tag `v2.5` to be added by the owner on GitHub). Base = a legacy redraw + `applied/v22/`, `v23/`, `v24/`,
-  `v2.2/` ... `v2.5/` (2.4: Otherland from the owner's save, `legacy/ol_layout_final.json`; 2.5: Over the Cliff Maze offshore, Morte's Peak plain
-  (shading and relief both rejected), dashed Heart path, gorge rocks + gap to the maze, shore ice all round, east coast sea + bay filled, trail
-  jumpers, snowy plants; Winterlight Island's drawing still removed until re-fitted). Details and standing rules: REGION_NOTES (Otherland).
-  After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
+- Last version 2.6 (Oct 22, "The Azure Coast"; tag `v2.6` to be added by the owner on GitHub). Base = a legacy redraw + `applied/v22/`, `v23/`, `v24/`,
+  `v2.2/` ... `v2.6/` (2.4: Otherland from the owner's save, `legacy/ol_layout_final.json`, now the save of Oct 22 19:24Z; 2.5: Otherland's wilds;
+  2.6: the Azure Sea east coast (coast, sea, routes, cliff + climbs, iceberg 15154) and the Fissure as clefts down to the gorge floor). Saves since
+  Oct 22 18:39Z have the west/south 3 east: applied v2.4/001 `WS`. Details and standing rules: REGION_NOTES (Otherland).
+  After a legacy redraw or a new Otherland save: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
 - All 15 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get `<key>/current`.
-  Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
-- In progress (2.6): base rebased on the owner's Otherland save of Oct 22 19:24Z (west/south 3 east: applied v2.4/001 `WS`); `changes/001_azure_east.py` draws the
-  Azure Sea east coast (coast, sea, routes, cliff + climbs); `002_fissure.py`: the Fissure as clefts down to the gorge floor. Waiting for review.
+  Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`; Azure Sea rooms via `tools/otherland_editor/add_azure_east.py`.
+- Nothing in progress.
 
 ## Snapshots
-- Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.5, the next is 2.6
-  (footer `Version 2.6 · <title> · <date>`, tag `v2.6`, folder `applied/v2.6/`; add the folder to `legacy/rebase.py`).
+- Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.6, the next is 2.7
+  (footer `Version 2.7 · <title> · <date>`, tag `v2.7`, folder `applied/v2.7/`; add the folder to `legacy/rebase.py`; change files that read
+  `legacy/` need their path one level deeper once moved).
 - New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/v2.N/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress
   section, rebuild twice (realm_map.html must match), commit.
 - Merge into `main` ONLY when the owner says to save a new version (Oct 16). Day to day: push to the session branch only. Then

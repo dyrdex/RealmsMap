@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## Version 2.6 (in progress)
+## Version 2.6 · The Azure Coast · October 22, 2026
 
 - Your save (Oct 22): Otherland is redrawn from it: the 164 rooms you moved (most of Morte's Peak, the Forsaken Trail and the east side, up to 22 rooms east) and the rooms you hid or showed (6093 hidden; The Iceberg 15154 and Base of the Cliff 15741 shown). Everything drawn on Otherland so far (trails, snow, gorge, mazes, plants, shore ice, jumpers) follows them.
 - Your request (Oct 22): the Azure Sea rooms you placed are on the map, 180 rooms out at sea. The coast between them and the Otherland rooms is now worked out in a single pass. Near the Azure Sea, the land is whatever is nearer an Otherland room or trail than an Azure Sea room or route. That cut 11.3 square rooms and added 79.6, and the odd strip out to Out in the Cold 15657 is gone. 15657 now sits on a broad piece of the coast. The notches your move left in the east coast are closed, including the bay east of Morte's Peak (8 pieces, 73.2 square rooms, no straight edges left there). The south shore's inlets and the sea between the Iceberg island and the mainland are unchanged. Every east-coast Otherland room is on land, the nearest 0.73 from the coast. The nearest Azure Sea room is 1.5 from it, or 0.5 and 0.6 for 6167 and 6179 beside the Iceberg island.
