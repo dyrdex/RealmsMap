@@ -429,6 +429,13 @@ FWPATHS+=(WD.olharborways||[]).length?`<path d="${WD.olharborways.map(p=>'M'+p.m
   WILD+=`<path d="${G.hach.map(h=>'M'+h[0].join(' ')+'L'+h[1].join(' ')).join('')}" stroke="#414B51" stroke-width=".04" stroke-linecap="round" opacity=".75"/>`;
   WILD+=`<path d="${G.floor.map(P).join('')}" fill-rule="evenodd" fill="#4F5A60" stroke="#434D53" stroke-width=".04" stroke-linejoin="round" opacity=".95"/>`;
 }}
+{const S=WD.olsouth;if(S){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z';   /* OLSOUTH: the south shore (owner, Oct 22): a frozen beach, pack ice offshore (its icebergs are in OLHARBOR's) */
+  WILD+=`<path d="${S.beach.map(P).join('')}" fill="#A1ABB0" fill-rule="evenodd" opacity=".75"/>`;
+  WILD+=`<path d="${S.floes.map(P).join('')}" fill="#9EAAB0" stroke="#C3CCD0" stroke-width=".03" stroke-linejoin="round" opacity=".9"/>`;
+}}
+{const R=WD.olrunoff;if(R){const d='M'+R.map(q=>q.join(' ')).join('L');   /* Bed of the Runoff (owner, Oct 22): a short frozen streambed */
+  WILD+=`<path d="${d}" fill="none" stroke="#5C676D" stroke-width=".34" stroke-linecap="round" stroke-linejoin="round" opacity=".45"/><path d="${d}" fill="none" stroke="#A9BAC3" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>`;
+}}
 {const H=WD.olhill;if(H){   /* OLHILL: Morte's Peak (owner, Oct 22): the snow shaded as seen from above, lit from the north-west; blurred so it rises gently */
   WILD+=`<defs><filter id="olblur" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation=".3"/></filter></defs><g filter="url(#olblur)">`+H.levels.map(L=>`<path d="${L.rings.map(a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z').join('')}" fill="${L.fill}" fill-rule="evenodd" opacity="${L.op}"/>`).join('')+`</g>`;
 }}

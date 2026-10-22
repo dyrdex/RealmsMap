@@ -2,6 +2,12 @@
 
 ## Version 2.4 (in progress)
 
+- Your request (Oct 22, "do them all"), more Otherland terrain, all shaped in the snow (no objects) except the shore:
+  - The heights of the Gods (21 rooms): a flat-topped plateau, shaded like Morte's Peak. Its edges are steep, steepest on the west (the Icy Cliffs, the Western Face), with the Gully (the Gullet of the Gods, Mouth of / Deep Within the Gully) cut down it.
+  - The hills: low, soft, rounded rises between the trails. The Hills of Desolation have 25 (29 rooms), the Hills of Maedar 18, plus one long low crest along Maedar Ridge (18 rooms), and the foothills 8 (5 rooms). Much gentler than the mountain.
+  - The Mountain over the tunnels: a smaller tall mountain shaded over Tunneling through the Mountain, the Dank Tunnel, the Lair and the Black Pit of Desolation, and the Dark Crawl Space (13 rooms). The tunnel trails are drawn as normal.
+  - The Base of Death's Spire: one very sharp rise. A Spacious Den in the Snow: a small mound. Bed of the Runoff: a short frozen streambed, 5.8 rooms, from the room down to the north coast's sea.
+  - The south shore has its sea, like the north and west: its 3 water rooms (Nearing the Shore, the Heart Stopping Cold of the BloodSea, the Arctic Waters of the Azure Sea) are in it, and no land room is. A pale frozen beach runs along the coast (118 square rooms). Off An Ocean of Floating Ice and Among the Icebergs float 50 pieces of pack ice and 10 icebergs, all in the sea, clear of the rooms and routes. The map grows south to y 259. 5 snow drifts on the beach dropped.
 - Your requests (Oct 22), Otherland:
   - Morte's Peak's shading now follows its trails. Each of its 48 rooms (spacer rooms included) is as high as the climb to it along the trails from where they enter the mountain (up to 45 rooms of trail), and the Heart is the top. Every trail stretch raises a sharp ridge between its rooms' heights, over a broad base. With steep sides, stronger light and shadow (8 levels, up to 31% light and 42% shadow) and a crisper blur, it reads as a very tall mountain from above. Still no objects.
   - Tirebaen's Gorge and the Fissure are twice as wide: 3 rooms each side of the trails (the long Fissure connectors 2.2), with the floor 0.8 in from the rims (791 square rooms). It now also takes in 5 neighbouring named rooms (one each of The Harrowing Track, The Faint Trail, A Tunnel of Ice, Wandering the Forsaken Trail and Embracing the Fear of Morte's Peak) and 38 spacer rooms. The Tunnel in the Snow clearing stays drawn over it. 31 more snow drifts under it are dropped.

@@ -27,7 +27,8 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   ArtifactData get `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
 - In progress (2.4): `changes/001_otherland.py`, a basic render of the owner's Otherland save (plain trails + snow); Winterlight Island's drawing
   removed until re-fitted. Done on request (Oct 22): no one-way/up-down exits, snow texture + snow-track trails, north + west coast sea, iceberg isle,
-  2 clearings, 2 shacks, the Harbor of Icebergs (ice, bergs, dock).
+  2 clearings, 2 shacks, the Harbor of Icebergs (ice, bergs, dock), terrain shaded in the snow (Morte's Peak, Gods, hills, the Mountain),
+  the gorge, the south shore.
 
 ## Snapshots
 - Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.3, the next is 2.4
