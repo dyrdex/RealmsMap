@@ -3,6 +3,10 @@
 ## Version 2.4 (in progress)
 
 - Your requests (Oct 22), Otherland:
+  - The Cramped Tunnel shows now. Its 9 tunnel lines had been worked out but left out of the map data, so nothing was drawn.
+  - The Ledge of Life's cliff is lighter and blends into the snow: a soft grey-blue face (#6E797F, was near-black #3F494F) with lighter hachures. Its danger dash is a muted dusty red (#7E5A55, 70%, a little thinner), not a bold one.
+  - Over the Cliff Maze: its label is at the maze's centre, and the blob now takes in both of its paths in full (152 square rooms). It also covers a third Pass Through the Foothills room (14476); its trail shows over it.
+- Your requests (Oct 22), Otherland:
   - The elevation shading on the west and south land is gone: the Gods' plateau, the Den, the foothills, the Hills of Maedar and of Desolation, and the Mountain over the tunnels. The sea coasts (with the south shore's beach and floating ice), Morte's Peak, Death's Spire and the Bed of the Runoff stay.
   - The Cramped Tunnel: the 15 "A Dark, Cramped Tunnel..." rooms, and 2 rooms that lead only to them, are a tunnel seen into the snow (9 lines). Each is a dark hollow under a soft snow crust, about 0.7 rooms wide, with the thin path visible inside it.
   - Over the Cliff Maze: an icy maze blob (145 square rooms) along the coast from 14428 down to 683, both inside it, labelled "Over / the Cliff / Maze" on three lines. It also covers Pass Through the Foothills (14477, 14478) and The Icy Cliffs (15162), whose trails still show over it.

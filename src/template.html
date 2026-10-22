@@ -442,7 +442,7 @@ FWPATHS+=(WD.olharborways||[]).length?`<path d="${WD.olharborways.map(p=>'M'+p.m
 }}
 WILD+=`<defs><filter id="olblur2" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation=".12"/></filter></defs>`;
 {const E=WD.olledge;if(E){const P=a=>'M'+a.map(q=>q.join(' ')).join('L');   /* OLLEDGE: The Ledge of Life (owner, Oct 22): a cliff face falling away south of its path */
-  WILD+=`<path d="${P(E.face)}Z" fill="#3F494F" stroke="#2B3237" stroke-width=".04" stroke-linejoin="round"/><path d="${E.hach.map(h=>'M'+h[0].join(' ')+'L'+h[1].join(' ')).join('')}" stroke="#262D31" stroke-width=".05" stroke-linecap="round" opacity=".85"/><path d="${P(E.face.slice(0,Math.floor(E.face.length/2)))}" fill="none" stroke="#C3CCD0" stroke-width=".07" stroke-linecap="round" opacity=".9"/>`;
+  WILD+=`<path d="${P(E.face)}Z" fill="#6E797F" stroke="#5E696F" stroke-width=".04" stroke-linejoin="round" opacity=".85"/><path d="${E.hach.map(h=>'M'+h[0].join(' ')+'L'+h[1].join(' ')).join('')}" stroke="#4D575D" stroke-width=".05" stroke-linecap="round" opacity=".7"/><path d="${P(E.face.slice(0,Math.floor(E.face.length/2)))}" fill="none" stroke="#C3CCD0" stroke-width=".07" stroke-linecap="round" opacity=".9"/>`;
 }}
 {const H=WD.olhill;if(H){   /* OLHILL: Morte's Peak (owner, Oct 22): the snow shaded as seen from above, lit from the north-west; blurred so it rises gently */
   WILD+=`<defs><filter id="olblur" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation=".3"/></filter></defs><g filter="url(#olblur)">`+H.levels.map(L=>`<path d="${L.rings.map(a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z').join('')}" fill="${L.fill}" fill-rule="evenodd" opacity="${L.op}"/>`).join('')+`</g>`;
@@ -455,7 +455,7 @@ WILD+=FWPATHS;
     D.posts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r=".085" fill="#3A2C20" stroke="#9FB3BE" stroke-width=".03"/>`).join('');
 }}
 {const E=WD.olledge;if(E){const d='M'+E.path.map(q=>q.join(' ')).join('L');   /* the Ledge of Life's path: danger: a red-brown warning dash along it, its south edge crumbling */
-  WILD+=`<path d="${d}" fill="none" stroke="#8E3B31" stroke-width=".11" stroke-dasharray=".2 .14" stroke-linecap="round" opacity=".95"/><path d="${d}" transform="translate(0,.2)" fill="none" stroke="#C3CCD0" stroke-width=".05" stroke-dasharray=".12 .1 .05 .14" opacity=".8"/>`;}}
+  WILD+=`<path d="${d}" fill="none" stroke="#7E5A55" stroke-width=".09" stroke-dasharray=".2 .14" stroke-linecap="round" opacity=".7"/><path d="${d}" transform="translate(0,.2)" fill="none" stroke="#C3CCD0" stroke-width=".05" stroke-dasharray=".12 .1 .05 .14" opacity=".8"/>`;}}
 {const M=WD.olmansion;if(M){const [x,y,w,h]=M;   /* OLMANSION: Frost Mansion (owner, Oct 22): very ancient, stone, cracked, frost-bound, in a 2 x 2 box scaled to w x h */
   WILD+=`<g transform="translate(${x},${y}) scale(${w/2},${h/2})" stroke-linejoin="round"><ellipse cx=".05" cy=".97" rx="1.0" ry=".1" fill="#000" opacity=".28"/>`+
     `<path d="M-.95 .92 V-.2 H-.7 V-.62 L-.62 -.7 L-.54 -.62 L-.46 -.7 L-.38 -.62 V-.2 H.38 V-.62 L.46 -.7 L.54 -.62 L.62 -.7 L.7 -.62 V-.2 H.95 V.92Z" fill="#5D6368" stroke="#2A2F33" stroke-width=".04"/>`+
