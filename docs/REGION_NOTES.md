@@ -152,6 +152,9 @@ The other builders run inside `src/legacy`.
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
   Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; west edge one smooth concave curve, no juts; owner Oct 22), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
   South of 6143 (FILL_S; 6147, 6148 as land): regular land, no beach, no inlet (owner, Oct 22).
+  Fissure vs gorge (owner, Oct 22; `changes/002_fissure.py`): 'The Fissure' rooms are DOWN paths to the gorge floor: the descents 13180->13179,
+  13222->13221 = narrow clefts widening downwards (`wild.olfissure`, template OLFISSURE) with steps + down chevrons; `olgorge` only round the
+  Floor of Tirebaen's Gorge rooms (flat ground at the bottom).
   Gorge (owner, Oct 22): never touches the A Tunnel in the Snow maze (wall cut back, `v2.5/004`); its floor carries rocks/gravel/cracks (`olgorge.rocks/gravel/cracks`, `v2.5/005`), clear of its trail.
   East coast (owner, Oct 22; `v2.5/007`): bay east of Morte's Peak filled (closed r 5 in BAY), sea EBOX SEA_W 6 (seafill + seashore); its ice `v2.5/008` (v2.5/006).
   Trail crossings without a room (owner, Oct 22; `v2.5/009`): electrical-style jumpers (half-circle hop, up-left; tunnel or shorter line hops); NO gaps or marks.

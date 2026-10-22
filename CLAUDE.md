@@ -27,7 +27,7 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 - All 15 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get `<key>/current`.
   Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
 - In progress (2.6): base rebased on the owner's Otherland save of Oct 22 15:52Z (164 rooms moved); `changes/001_azure_east.py` draws the
-  Azure Sea east coast (coast between sea and land rooms, sea, coastal path + routes east). Waiting for the owner's review.
+  Azure Sea east coast (coast, sea, routes, cliff + climbs); `002_fissure.py`: the Fissure as clefts down to the gorge floor. Waiting for review.
 
 ## Snapshots
 - Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.5, the next is 2.6
