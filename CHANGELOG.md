@@ -2,6 +2,12 @@
 
 ## Version 2.4 (in progress)
 
+- Your request (Oct 22), the Harbor of Icebergs:
+  - The harbour is open sea, joined to the new sea along Otherland's west coast, from the Over the Cliff room 683 down past the Desolate Outpost. That's 2,707 square rooms of new sea in all (north coast included), and it ends in rounded edges, never a straight box line.
+  - Its 19 water rooms are in the sea, and no land room is. Their exits are faint straight water routes, like the Sea of Sorrows routes.
+  - It's partly frozen: shore ice along the harbour's south-east shore by the Desolate Outpost (10 square rooms), with crack lines. 8 icebergs float in the open water, each with a dark waterline, a grey body and a lighter sunlit top.
+  - The 3 Harbor of Icebergs rooms (13101, 13102, 13105) are a wooden dock, snow covered and frozen, running from Before the Dock (13100) out over the water: planks, posts with frost, patchy snow, an icy collar on the water. It's 12.4 rooms long.
+  - A 16-square-room pocket of bare ground shut in by the snow and the new sea is sea now.
 - Your requests (Oct 22), Otherland:
   - 22530 and 22531 are joined by a water path, drawn like the Sea of Sorrows routes, across the channel to the Iceberg. It was left off because the exit is one-way in your map.
   - A log shack over The Desolate Outpost's main section (13087, 13089-13093; 2.0 x 3.45 rooms). It's cladded against the winter: a snow-laden roof with icicles, frosted log walls, a door and a frosted window, a chimney, and snow drifted round its base. The back-door trail west through the Athas Hunter Stronghold and on south stays visible, 0.45-0.5 rooms clear of it. 1 snow drift under it dropped.

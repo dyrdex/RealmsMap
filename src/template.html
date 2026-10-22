@@ -215,6 +215,12 @@ WILD+=(WD.thorns||[]).map(r=>`<use href="#th" transform="translate(${r[0]},${r[1
 WILD+=`<path d="${blobs(GEO.cliff)}" fill="var(--w-cliff)" fill-rule="evenodd" opacity=".8"/>`;
 WILD+=`<path d="${blobs(GEO.water)}" fill="var(--w-water)" fill-rule="evenodd" stroke="var(--w-shore)" stroke-width=".07"/>`;
 WILD+=`<path d="${blobs(GEO.seafill||[])}" fill="var(--w-water)" fill-rule="evenodd"/>`+(WD.seashore||[]).map(l=>`<path d="M${l.map(q=>q.join(' ')).join('L')}" fill="none" stroke="var(--w-shore)" stroke-width=".07" stroke-linejoin="round"/>`).join('');   /* sea filling the gaps a coast change left (no outline over the sea; a shore line only where it meets land) */
+{const O=WD.olharbor;if(O){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z';   /* OLHARBOR: the Harbor of Icebergs (owner, Oct 22): shore ice with cracks, icebergs floating in the open water */
+  WILD+=`<path d="${O.ice.map(P).join('')}" fill="#93A0A7" stroke="#B4BEC3" stroke-width=".05" stroke-linejoin="round" opacity=".92"/>`;
+  WILD+=`<path d="${O.cracks.map(c=>'M'+c.map(q=>q.join(' ')).join('L')).join('')}" fill="none" stroke="#66737B" stroke-width=".035" stroke-linecap="round" opacity=".8"/>`;
+  for(const [p,top] of O.bergs)   /* an iceberg: a dark waterline, its body, the sunlit top */
+    WILD+=`<path d="${P(p)}" fill="#3F5966" stroke="#3F5966" stroke-width=".16" stroke-linejoin="round" opacity=".55"/><path d="${P(p)}" fill="#76848C" stroke="#56646C" stroke-width=".04" stroke-linejoin="round"/><path d="${P(top)}" fill="#A9B4BA" stroke="#C3CCD0" stroke-width=".03" stroke-linejoin="round"/>`;
+}}
 (WD.snowisles||[]).forEach(I=>{   /* SNOWISLE: Winterlight Island (owner, Oct 20), in the map's old style: muted snow, ripple lines round the shore, flat dark firs with a touch of snow, ink-line shacks */
   const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z',d=P(I.poly);
   (I.rip||[]).forEach((r,i)=>{WILD+=`<path d="${P(r)}" fill="none" stroke="var(--w-shore)" stroke-width=".035" opacity="${i?.22:.4}" stroke-linejoin="round"/>`});
@@ -418,6 +424,12 @@ FWPATHS+=(WD.seadash||[]).map(p=>`<path d="M${p.map(q=>q.join(' ')).join('L')}" 
 {const SC=WD.seacurrents||[];if(SC.length){const d=SC.map(c=>'M'+c.pts.map(q=>q.join(' ')).join('L')).join(''),h=SC.map(c=>'M'+c.head.map(q=>q.join(' ')).join('L')+'Z').join('');   /* SEACUR: one-way sea currents, wavy, an arrowhead short of the room they lead to (owner, Oct 20) */
   FWPATHS+=`<g opacity=".5" stroke-linecap="round" stroke-linejoin="round"><path d="${d}" fill="none" stroke="var(--seaway-edge)" stroke-width=".3" opacity=".55"/><path d="${d}" fill="none" stroke="var(--seaway)" stroke-width=".17"/><path d="${h}" fill="var(--seaway)" stroke="var(--seaway-edge)" stroke-width=".05"/></g>`;}}
 WILD+=FWPATHS;
+{const D=WD.olharbor&&WD.olharbor.dock;if(D){const d='M'+D.pts.map(q=>q.join(' ')).join('L'),w=D.w;   /* OLDOCK: the Harbor of Icebergs' dock (owner, Oct 22): wooden, snow covered and frozen */
+  WILD+=`<g fill="none" stroke-linejoin="round" stroke-linecap="butt"><path d="${d}" stroke="#9FB3BE" stroke-width="${w+.16}" opacity=".35"/><path d="${d}" transform="translate(.05,.07)" stroke="#000" stroke-width="${w}" opacity=".25"/>`+
+    `<path d="${d}" stroke="#2C2118" stroke-width="${w+.06}"/><path d="${d}" stroke="#5A4431" stroke-width="${w}"/><path d="${d}" stroke="#3B2D20" stroke-width="${w}" stroke-dasharray=".035 .15"/>`+
+    `<path d="${d}" stroke="#AEB8BD" stroke-width="${w*.55}" stroke-dasharray=".7 .22 .35 .3 .9 .2" opacity=".85"/><path d="${d}" stroke="#C3CDD2" stroke-width="${w*.2}" stroke-dasharray=".4 .5 .25 .7" opacity=".7"/></g>`+
+    D.posts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r=".085" fill="#3A2C20" stroke="#9FB3BE" stroke-width=".03"/>`).join('');
+}}
 for(const [x,y,w,h] of (WD.olshacks||[]))   /* OLSHACK: Otherland's shacks (owner, Oct 22): a log shack cladded against the winter, snow on the roof, icicles, frost, drifts round its base; drawn in a 2 x 2 box scaled to w x h */
   WILD+=`<g transform="translate(${x},${y}) scale(${w/2},${h/2})" stroke-linejoin="round"><ellipse cx=".06" cy=".98" rx="1.0" ry=".12" fill="#000" opacity=".25"/>`+
     `<rect x="-.82" y="-.12" width="1.64" height=".98" fill="#5A4431" stroke="#2C2118" stroke-width=".05"/>`+
