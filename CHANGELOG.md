@@ -1,5 +1,12 @@
 # Realm Map changelog
 
+## In progress (Version 2.7)
+
+- Your request (Oct 22): Morte's Peak is drawn as a mountain seen from straight above, like your examples, with several peaks in one massif. Terraces step up 1.25 rooms at a time to three peaks: The Fury of Morte's Peak (the summit, 7 steps), an east peak over Entombed within Morte's Peak and a south peak over the Heart (5 steps each). They join on the lower terraces; Nestled Between the Peaks and A Snow Clogged Pass sit in the saddles, step 4 of 7. Each step has a short hatched cliff face below it, deepest on the lower-right side. Each summit has a faceted cap (13 creases). There's no height shading.
+  - Your request: every line on it is extremely subtle (thin, pale grey, faint hatching), so the paths on top stand out.
+  - Your request: it blends into the snow. The base circle has no outline, and the ledges aren't filled, so they are the snow itself.
+  - Your request: the ground round it keeps its usual plants, drifts and ice (13 plants on the 83.7 square rooms of open ground between the base and the first terrace step, 0.155 per square room, the same as on the land outside it, 0.158). Only the terraces are bare (32 plants, 19 drifts).
+
 ## Version 2.6 · The Azure Coast · October 22, 2026
 
 - Your save (Oct 22): Otherland is redrawn from it: the 164 rooms you moved (most of Morte's Peak, the Forsaken Trail and the east side, up to 22 rooms east) and the rooms you hid or showed (6093 hidden; The Iceberg 15154 and Base of the Cliff 15741 shown). Everything drawn on Otherland so far (trails, snow, gorge, mazes, plants, shore ice, jumpers) follows them.
