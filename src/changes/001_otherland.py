@@ -377,9 +377,11 @@ def apply(town, wild, pos):
         g = unary_union([Point(P[v]).buffer(CLEAR_R) for v in c] + [LineString([P[a], P[b]]).buffer(CLEAR_TR) for a in c for b in nb[a] if a < b])
         g = g.buffer(0.25).buffer(-0.25).intersection(onsnow)
         gs = [Polygon(h.exterior) for h in getattr(g, 'geoms', [g]) if h.area > 0.2]
-        wild['clearings'] = list(wild.get('clearings') or []) + [{'polys': [rd(h) for h in gs], 'fill': CLEAR_FILL, 'edge': CLEAR_EDGE}]
+        if seed == 13322:                               # owner (Oct 22): A Tunnel in the Snow is a maze: an icy maze blob filling exactly that clearing's outline
+            for h in gs: wild['fwmazes'] = list(wild['fwmazes']) + [{'name': '', 'nolabel': True, 'style': 'ice', 'poly': rd(h), 'cx': round(h.centroid.x, 2), 'cy': round(h.centroid.y, 2)}]
+        else: wild['clearings'] = list(wild.get('clearings') or []) + [{'polys': [rd(h) for h in gs], 'fill': CLEAR_FILL, 'edge': CLEAR_EDGE}]
         clr[name] = (len(c), round(sum(h.area for h in gs), 1), len(gs), sorted(v for v in c if not onsnow.contains(Point(P[v]))))
-    cl_all = unary_union([Polygon(h) for c in wild['clearings'][-len(CLEAR_SEEDS):] for h in c['polys']]).buffer(0.5)
+    cl_all = unary_union([Polygon(h) for c in wild['clearings'][-1:] for h in c['polys']] + [Polygon(m['poly']) for m in wild['fwmazes'] if m.get('style') == 'ice']).buffer(0.5)
     o = wild['olsnow']; n0 = (len(o['drifts']), len(o['ice']))
     o['drifts'] = [d for d in o['drifts'] if not cl_all.contains(Point(d[:2]))]; o['ice'] = [q for q in o['ice'] if not cl_all.intersects(Polygon(q))]
     clr['texture under them dropped (drifts, ice)'] = (n0[0] - len(o['drifts']), n0[1] - len(o['ice']))

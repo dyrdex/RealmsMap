@@ -2,6 +2,7 @@
 
 ## Version 2.4 (in progress)
 
+- Your request (Oct 22): the A Tunnel in the Snow / A Cold Lair clearing is a maze now: an icy maze blob (the same style as Over the Cliff Maze and the Maze of Ice) filling exactly the clearing's outline (32 square rooms), no label. The clearing is gone; the Tundra Fields clearing stays.
 - Your request (Oct 22): Over the Cliff Maze is extended westward (2.6 rooms further, 207 square rooms), with a smooth west edge, so its two entry points no longer bulge out. 14428 and 683 sit 1.4 rooms inside the edge and their paths at least 0.87 inside. The label stays at the centre.
 - Your request (Oct 22): the underground-river style tunnel is undone. The Cramped Tunnel is now just a thin dashed line (0.07 wide, a little darker than the snow tracks).
 - Your request (Oct 22): the Cramped Tunnel is drawn the way the Southern Mountains' underground river tunnel is, and the earlier attempts are gone. A dark band shows as if seen into the ground, with dashed icy walls along both sides and a soft grey floor down its middle, and the thin path runs along the floor. There are 3 dark arched mouths where it opens onto ordinary trails. It's one connected tunnel of 9 trail lines.

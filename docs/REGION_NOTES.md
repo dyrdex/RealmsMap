@@ -134,7 +134,8 @@ The other builders run inside `src/legacy`.
   (`wild.olgorge`, template OLGORGE) (owner, Oct 22). Also (owner, Oct 22): Death's Spire (shading); NO relief on the west/south land (Gods, hills, the
   Mountain, the Den: removed, owner); Bed of the Runoff (`olrunoff`); the south shore
   (SBOX: sea, `olsouth` beach + floes, its icebergs in `olharbor.bergs`). Shacks (owner, Oct 22): `wild.olshacks` [cx, cy, w, h] (template OLSHACK), over The Desolate Outpost's main section and
-  The Hunter's Outpost 14419. Water path 22530-22531 (`seawaysfaint`). Clearings (owner, Oct 22): ONLY the Tundra Fields (13492's clump) and A Tunnel in the Snow / A Cold Lair (13322's clump); `wild.clearings`.
+  The Hunter's Outpost 14419. Water path 22530-22531 (`seawaysfaint`). Clearings (owner, Oct 22): ONLY the Tundra Fields (13492's clump); A Tunnel in the Snow / A Cold Lair (13322's clump) is an icy maze
+  blob of the same outline, no label.
   Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
   Cramped Tunnel rooms (+ those leading only to them): `oltunnels`, drawn as JUST a thin dashed line (owner, Oct 22, after rejecting
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
