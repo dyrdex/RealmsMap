@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## Version 2.6 (in progress)
+
+- Your request (Oct 22): the Azure Sea rooms along Otherland's east coast are added to the Otherland layout editor for you to place: 186 rooms (58 named or unnamed, 128 spacers), from the Iceberg (6179, 6167) south to Adrift off the Coast 15250, then 15255 and 15606 (Blood Sea), the last room before the Grey Beach in the Northern Plains (that exit is left off). They have teal outlines, a "Select the Azure Sea rooms" button and their own section (17). Their exits to Otherland and to 6180/6166 show (268 exits, 26 to rooms already in the editor; 6 go to The Iceberg 15154, which you hid). They start in the sea east of the coast (none on land, no two closer than 0.8, the nearest room they don't join 1.58 away), x 30 to 82, y 168 to 268. Your saved layout is untouched. Nothing is drawn on the map until you place them and save.
+
 ## Version 2.5 · Otherland's Wilds · October 22, 2026
 
 - Your request (Oct 22): Otherland has plants now, all dusted with snow and looking cold: 195 snow-laden pines (in small groves), 175 bare leafless trees with snow along their branches, 386 bushes with snow caps and bare twigs, and 466 bits of ground cover (sedge poking through the snow, low creeping heath). Where they grow follows the land: the tundra is mostly ground cover and low bushes, the hills have scattered pines, bare trees and bushes, the mountains a few stunted pines, near the shore only bushes and ground cover. None on the trails, rooms, mazes, clearings, shacks, the gorge, the beach or the drifts, or under a place name.

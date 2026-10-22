@@ -118,6 +118,7 @@ The other builders run inside `src/legacy`.
 - **Otherland** (owner, Oct 21): joins the map ONLY at 22534 -> 13379, 22535 -> 13380, 18071 -> 22511 and 18066 -> 22512; all its other exits out are left off for now.
   The owner's map flattens it: an up/down exit to the same room as a flat exit is ignored (the flat one is drawn).
   Frost Mansion 22248-22250 (Asgard Nexus) is in the Otherland editor (grp 'an', owner Oct 21), joined at 22247 and 21819.
+  Azure Sea east coast (owner, Oct 22; grp 'az', `tools/otherland_editor/add_azure_east.py`): 186 rooms from 6179/6167 to 15250 + 15255, 15606 (Blood Sea; its exits to the Grey Beach left off), in the editor only; drawn after the owner places them.
   Unlocked there (grp 'un', owner Oct 21): 18052-18075, 6174, 18047, 13379, 13380, 6166, 6180, 6650, 15410-15418; a save may move these map rooms.
   Drawn Oct 21 as a BASIC render (`changes/001_otherland.py`): plain trails, plain snow (`geo.snow`, template --snow, also a `geo.land` piece);
   the owner will customise later (water rooms, sub-areas, graphics): don't add any unasked.

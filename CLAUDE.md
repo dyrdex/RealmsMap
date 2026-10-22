@@ -26,7 +26,7 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
 - All 15 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get `<key>/current`.
   Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
-- Nothing in progress.
+- In progress (2.6): 186 Azure Sea east-coast rooms added to the Otherland editor (Oct 22), waiting for the owner to place them and save.
 
 ## Snapshots
 - Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.5, the next is 2.6
