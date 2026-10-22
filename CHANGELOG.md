@@ -2,6 +2,7 @@
 
 ## In progress (Version 2.5)
 
+- Your request (Oct 23): the dashed Heart path starts at The Sudden Stop (15703) now: one continuous thin dashed line, 25.1 rooms long, 13 rooms.
 - Your request (Oct 23): the whole Heart path is dashed now, including the stretch through the 3 Lost in the Darkness rooms (13378 to 15707): one continuous thin dashed line, 23.4 rooms long, 12 rooms.
 - Your request (Oct 23): the path through the Heart of Morte's Peak is a thin dashed line now, like the Cramped Tunnel: the 7 stretches between its 8 Heart rooms and The Concealed Horror (2 lines, 13.6 rooms long). The paths out to Scratching the Surface, Lost in the Darkness and The Sudden Stop stay ordinary trails.
 - Your request (Oct 23): the top-down drawing of Morte's Peak is removed again (too like the shading); the snow there is plain.
