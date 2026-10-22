@@ -125,6 +125,11 @@ The other builders run inside `src/legacy`.
   exactly at the coast. Not drawn: 5987-22496 (owner), 15606 -> Grey Beach.
   Every `seafill` and `water` ring is trimmed to the final land (each ring on its own, evenodd-safe): no blue strips or shore strokes under land
   (owner, Oct 22: hairlines along old coasts). Check: visible sea fill inside land.buffer(-0.08) must be 0.
+  East routes redrawn (owner, Oct 22; `changes/005_east_routes.py`, from the exits): coastal path cut at 6187 / 15171, via The Iceberg 15154 (its links are
+  sea-land exits); EVERY sea-land exit = `seawaysfaint` over the water, and a run of sea rooms from the path to a room going ashore; The Iceberg 15154
+  is not land for this (only its path links + climb primary); outer routes = `olharborways` style (harbour, not `seawaves`).
+  North sea edge (owner, Oct 22; `changes/006`): the Northern Plains' water strip's straight cuts (x 83.1, y 153.6) are under seafill, notch filled (BOX).
+  Harbour routes: width .06, opacity .26 (owner: a touch more visible).
   East cliff (owner, Oct 22; `CLIMBS` in 001_azure_east): ONE continuous cliff face along the coast's edge from the northernmost climb landing
   to the southernmost (`wild.olcliff`, template OLCLIFF, OLLEDGE style); climbs from a land room (22524, 15741) go up where that room's exit from
   the sea comes ashore (owner: no cliffs inland); every exit coming ashore across the face gets steps on the face only (as smrclimb). No coastal ice/bergs there for now (owner). The save's az rooms are those not in `legacy/ol_editor_edges.json`.
@@ -162,5 +167,13 @@ The other builders run inside `src/legacy`.
   Gorge (owner, Oct 22): never touches the A Tunnel in the Snow maze (wall cut back, `v2.5/004`); its floor carries rocks/gravel/cracks (`olgorge.rocks/gravel/cracks`, `v2.5/005`), clear of its trail.
   East coast (owner, Oct 22; `v2.5/007`): bay east of Morte's Peak filled (closed r 5 in BAY), sea EBOX SEA_W 6 (seafill + seashore); its ice `v2.5/008` (v2.5/006).
   Trail crossings without a room (owner, Oct 22; `v2.5/009`): electrical-style jumpers (half-circle hop, up-left; tunnel or shorter line hops); NO gaps or marks.
+  Mountains (owner, Oct 22): drawn from straight above as the owner's examples (several peaks per massif): stepped terraces, inked edges, hachured cliff
+  faces deepest lower right, flat ledges, faceted summit caps (`wild.olmassif`, template OLMASSIF; Morte's Peak `changes/002_morte_massif.py`: base = circle
+  (65.88, 193.37) r 10.78, summit The Fury of Morte's Peak). NEVER height shading/blurred relief. Lines EXTREMELY subtle (owner, Oct 22: trails must read clearly over them). Base outline not drawn, ledges unfilled = the snow itself (owner, Oct 22: blend in). Plants/drifts kept round it; cleared only on the terraces (level 1 + its face).
+  Each peak's top two tiers a little lighter (`crown`, owner Oct 22; a shared tier split by nearest peak). Zenith of the Gods (`changes/003_gods_massif.py`, 002's `build()`): base
+  = `wild.olmtnbase[1]` from `changes/001` (holds the Maze of Ice + Frost Mansion, off the sea; not drawn), summit The Zenith of the Gods 15663 (0.77 from
+  the coast-side base edge: terraces stack into one sheer face there, `sheer`); the Maze of Ice is drawn over the east peak.
+  Even cover (owner, Oct 22; `changes/004_even_cover.py`): plants/drifts everywhere on the snow, no bare patches (gap fill: plant if none within 1.6,
+  drift if none within 3.3). Re-run its check after land changes: open snow >1.5 from a plant was 2.6%.
   Plants (owner, Oct 22; `v2.5/010`, `wild.olflora` [x,y,scale,kind p/b/s/g,variant], template OLFLORA sprites op*/ob*/os*/og*): density by the nearest room name's land kind (DENS).
   Shore ice (owner, Oct 22): floes + small bergs along the WHOLE sea coast at the south shore's density (`v2.5/006`, appended to `olsouth.floes` / `olharbor.bergs`).

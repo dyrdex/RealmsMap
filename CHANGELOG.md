@@ -1,5 +1,29 @@
 # Realm Map changelog
 
+## Version 2.7 · Otherland's Peaks · October 22, 2026
+
+- Your requests (Oct 22), more on the water routes and the north sea:
+  - The Iceberg 15154: only its link from 6187, its link on to 15171 and its climb up to Out in the Cold 15738 are the primary water route. Its other 4 links (to 6188, 15157, 15158, 15181) are now the faint east-coast (harbour) style.
+  - A run of sea rooms from the coastal path to a room that goes ashore is now the primary route all the way (4 runs). That includes the southernmost one, 5999 through 15747 and up to 5972, which had been half faint and half primary.
+  - North of 6173, the Northern Plains' sea had stopped in a straight cut at x 83.1 (a shore line running 20 rooms straight down through the sea), with bare background beside it. A second straight cut ran along y 153.6. The sea now fills that notch out to one smooth edge (135 square rooms of sea added, none on land), and the shore lines lying out at sea are covered (47 rooms of them; what's left is the sea's real outer edge).
+- Your requests (Oct 22), the water routes round Otherland:
+  - The Harbor of Icebergs' routes are a touch more visible (a little wider and stronger, still faint).
+  - The coastal path (the darker blue route) now leaves 6187 south-east to The Iceberg 15154 and goes on south from it to 15171. Before, it ran east from 6187 to 15149, out round 15152 and back to 15171. That old stretch (5 rooms) is still drawn, now as an outer route. The path has 43 rooms (was 48).
+  - Every exit between the Azure Sea and the land is now the primary water route over the water: all 24 lines that reach the coast. Some, mostly in the south, had been in the faint wavy style.
+  - The outer routes east of Otherland, not along the shore, are now in the Harbor of Icebergs' style instead of the faint wavy one: 81 routes, 569 rooms long. No wavy routes are left round the east.
+- Your request (Oct 22): each mountain peak's top two tiers are a little lighter than the snow, so the peaks stand out a little. The top tier is a bit lighter than the one below it. Morte's Peak: 15.0 square rooms on the top tiers and 49.1 on the tiers below them. Zenith of the Gods: 18.0 and 46.5 (16.6 of it under the Maze of Ice). Where peaks share a tier, each lights only its own side of it. Everything below stays the plain snow.
+- Your request (Oct 22): the Zenith of the Gods is a mountain now, in the same style as Morte's Peak: faint stepped terraces with hatched cliff faces and faceted summit caps (17 creases). It has no base outline, and its ledges are the snow itself. It stands on the base you set (430 square rooms) and has four peaks:
+  - The Zenith of the Gods, the summit, at the top step (6). It stands 0.77 rooms from the base's coast-side edge, so its terraces stack into one sheer face along the coast there, with The Western Face on step 3.
+  - A north peak (step 3), with the Zenith of the Gods Pass climbing to it (steps 0 to 2).
+  - An east peak under the Maze of Ice and Frost Mansion. The maze is drawn over its upper terraces.
+  - A low plateau above Just Below the Plateau (step 2).
+  The Gullet of the Gods runs down the valley between them (steps 0 and 1). The terraces are bare (41 plants, 18 drifts, 4 icy patches); the ground round them is evenly covered like the rest of Otherland.
+- Your request (Oct 22): Otherland's plants and snow drifts are spread evenly everywhere now, with no bare patches. 397 plants were added where the snow had none nearby (91 pines, 21 bare trees, 114 bushes, 161 bits of ground cover, each kind as the land there), and 49 drifts. East of Morte's Peak, towards the coast, there were 6 plants and now there are 57. Between the Fissure's two descents there were none and now there are 54. Open snow more than 1.5 rooms from a plant fell from 25% to 2.6%, and the largest bare patch left is 2 square rooms. As before, none are on the trails, rooms, mazes, gorge, Fissure, cliffs, beach or the mountain's terraces.
+- Your request (Oct 22): Morte's Peak is drawn as a mountain seen from straight above, like your examples, with several peaks in one massif. Terraces step up 1.25 rooms at a time to three peaks: The Fury of Morte's Peak (the summit, 7 steps), an east peak over Entombed within Morte's Peak and a south peak over the Heart (5 steps each). They join on the lower terraces; Nestled Between the Peaks and A Snow Clogged Pass sit in the saddles, step 4 of 7. Each step has a short hatched cliff face below it, deepest on the lower-right side. Each summit has a faceted cap (13 creases). There's no height shading.
+  - Your request: every line on it is extremely subtle (thin, pale grey, faint hatching), so the paths on top stand out.
+  - Your request: it blends into the snow. The base circle has no outline, and the ledges aren't filled, so they are the snow itself.
+  - Your request: the ground round it keeps its usual plants, drifts and ice (13 plants on the 83.7 square rooms of open ground between the base and the first terrace step, 0.155 per square room, the same as on the land outside it, 0.158). Only the terraces are bare (32 plants, 19 drifts).
+
 ## Version 2.6 · The Azure Coast · October 22, 2026
 
 - Your save (Oct 22): Otherland is redrawn from it: the 164 rooms you moved (most of Morte's Peak, the Forsaken Trail and the east side, up to 22 rooms east) and the rooms you hid or showed (6093 hidden; The Iceberg 15154 and Base of the Cliff 15741 shown). Everything drawn on Otherland so far (trails, snow, gorge, mazes, plants, shore ice, jumpers) follows them.
