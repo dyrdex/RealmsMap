@@ -3,6 +3,10 @@
 ## Version 2.4 (in progress)
 
 - Your requests (Oct 22), Otherland:
+  - Morte's Peak: the peaks, the rocky ground and the dashed passages are all removed; its trails are drawn like all the others again. Instead the snow itself shows the mountain from above. A soft height field rises to the Heart of Morte's Peak, lit from the north-west: slopes facing the light are a little lighter, the others a little darker, in 6 gentle blurred levels (421 square rooms). It fades out at the mountain's foot. No objects are drawn.
+  - The Harbor of Icebergs has 26 icebergs, in and round the harbour, from tiny floes (0.03 square rooms) to big bergs (1.8). Most are small and a few are large.
+  - Tirebaen's Gorge and the Fissure are wider (1.5 rooms each side of the trails, was 0.95; the long Fissure connectors 1.1). The floor is 0.45 in from the rims, so the trails have room on both sides before the walls (440 square rooms in all).
+- Your requests (Oct 22), Otherland:
   - Morte's Peak is a mountain now: rocky, snow-dusted ground round its 46 rooms (306 square rooms) with 46 snow-capped peaks. The peaks are grey-blue rock with snow caps, a lit side and a shaded side, larger towards the Heart of Morte's Peak, where one big summit rises. The trails stay on top. The trails between its inside rooms (the Heart, Entombed, the Cavern of Ice, Icy Burrow, The Cave, the Concealed Horror, Lost in the Darkness) are faint dashed passages.
   - Tirebaen's Gorge and the Fissure are a ravine: a shadowed floor along their 39 trail stretches, with hachured walls and snowy rims (260 square rooms). The long connector trails of the Fissure get a narrower cut.
   - 24 snow drifts and 1 icy patch under these two are dropped.

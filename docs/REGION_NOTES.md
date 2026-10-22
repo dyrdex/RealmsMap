@@ -129,7 +129,8 @@ The other builders run inside `src/legacy`.
   `oltracks` warped by one smooth field (TRACK_A .16, TRACK_L 7): a gentle long wave. 6180-15128 (Azure) as `seawaysfaint` (owner, Oct 22).
   Harbor of Icebergs (owner, Oct 22): open sea (WBOX), `wild.olharbor` {ice, cracks, bergs, dock} (template OLHARBOR, OLDOCK); dock =
   13100-13101-13102-13105. Harbour routes: `wild.olharborways` (thin, nearly transparent, slightly wavy). The bay between 13150 and
-  the harbour's NE shore is land (FILL1). The sea grows SEA_W off the land inside the boxes, never cut by a box line. Morte's Peak (`wild.olpeaks`, template OLPEAKS; inside-room trails `oltunnels`, dashed) and Tirebaen's Gorge + the Fissure
+  the harbour's NE shore is land (FILL1). The sea grows SEA_W off the land inside the boxes, never cut by a box line. Morte's Peak = ONLY shading of the snow from above (`wild.olhill`, template OLHILL, blurred; owner, Oct 22: no peak sprites,
+  no dashed passages) and Tirebaen's Gorge + the Fissure
   (`wild.olgorge`, template OLGORGE) (owner, Oct 22). Other terrain features (Gods' heights, hills, tunnels, south shore) only when asked. Shacks (owner, Oct 22): `wild.olshacks` [cx, cy, w, h] (template OLSHACK), over The Desolate Outpost's main section and
   The Hunter's Outpost 14419. Water path 22530-22531 (`seawaysfaint`). Clearings (owner, Oct 22): ONLY the Tundra Fields (13492's clump) and A Tunnel in the Snow / A Cold Lair (13322's clump); `wild.clearings`.
   Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.

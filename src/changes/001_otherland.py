@@ -47,7 +47,7 @@ WATER_LINKS = [(22530, 22531)]                      # owner (Oct 22): a water pa
 DOCK = [13100, 13101, 13102, 13105]                # owner (Oct 22): a wooden dock, snow covered and frozen, from Before the Dock out through the
 DOCK_W = 0.55                                       #  3 Harbor of Icebergs rooms (they count as water); its width
 HARBOR = box(-25.5, 217.5, -12.2, 234.8)            # the harbour: ice along its shores, icebergs in its open water
-ICE_SHORE, N_BERGS = 1.3, 8                         # shore ice reaches this far out (clear of the routes and rooms); icebergs
+ICE_SHORE, N_BERGS = 1.3, 26                        # shore ice reaches this far out (clear of the routes and rooms); icebergs
 HWAVE_A, HWAVE_L = 0.05, 1.6                        # the harbour's water routes (owner, Oct 22): extremely thin, nearly transparent, slightly wavy
 MP_NAMES = {'Nestled Between the Peaks', 'Upon the Roof', 'Platforms of Sacrifice', 'An Icy Pass', 'A Snow Clogged Pass', "Dead Man's Pass", 'The Drop-Off',
             'The Sudden Stop', 'Entombed in Ice', 'A Cavern of Ice', 'An Icy Burrow', 'The Cave', 'Home of the Jarl', 'A Crisp Path', 'Scratching the Surface',
@@ -55,7 +55,7 @@ MP_NAMES = {'Nestled Between the Peaks', 'Upon the Roof', 'Platforms of Sacrific
 MP_INSIDE = {"Deep within the Heart of Morte's Peak", "Within the Heart of Morte's Peak", "Entombed within Morte's Peak", 'Entombed in Ice', 'A Cavern of Ice',
              'An Icy Burrow', 'The Cave', "The Concealed Horror of Morte's Peak", 'Lost in the Darkness'}   # inside the mountain: their trails dashed passages
 GORGE_NAMES = {"The Floor of Tirebaen's Gorge", 'The Fissure', 'Deep within the Shadows of the Fissure', 'Within the Fissure'}   # owner (Oct 22): the ravine
-MP_R, GORGE_R = 2.3, 0.95                            # the mountain this far round its rooms; the gorge this wide each side of its trails
+MP_R, GORGE_R = 2.3, 1.5                             # the mountain this far round its rooms; the gorge this wide each side of its trails
 NW_X = 50.0                                         # water routes wholly west of this: drawn as the Sea of Sorrows' routes (`seawaysfaint`)
 LAND_R, LTRAIL_R, CLOSE_N = 1.3, 0.9, 3.0           # the mainland's north edge: this far round its rooms and trails, gaps narrower than 6 closed
 WET_R, WTRAIL_R = 1.2, 0.8                          # sea at least this far round the water rooms and their routes
@@ -337,14 +337,14 @@ def apply(town, wild, pos):
         runs = [[pts[0], False]]; cur = [pts[0]]                       # split where the trail goes inside the mountain (owner, Oct 22: dashed passages)
         segs = []
         for a, b in zip(pts, pts[1:]):
-            inside = at(a, insp) and at(b, insp)
+            inside = False                              # (owner, Oct 22: no dashed passages, the mountain's trails as all others)
             if at(a, gzp) and at(b, gzp): gsegs.append((a, b))
             if segs and segs[-1][0] == inside: segs[-1][1].append(b)
             else: segs.append([inside, [a, b]])
         for inside, sp in segs:
             o = wline(sp)
             if len(o) > 1: (tun if inside else wav).append(o); npts += len(o)
-    wild['oltracks'] = wav; wild['oltunnels'] = tun
+    wild['oltracks'] = wav
     # ---- clearings (owner, Oct 22): the two clumps of rooms side by side, packed snow (template CLEAR) ----
     ex = {(a, b) for a, b, k in E['edges'] if k != 'ud'}; ex |= {(b, a) for a, b in ex}
     solo = [v for v in OL if not R[v]['void']]
@@ -397,18 +397,18 @@ def apply(town, wild, pos):
             for k in range(1, 4): pts.append((pts[0][0] + L * k / 3 * math.cos(a0) + hr.uniform(-.08, .08), pts[0][1] + L * k / 3 * math.sin(a0) + hr.uniform(-.08, .08)))
             cl = LineString(pts).intersection(g.buffer(-0.08))
             cracks += [[[round(x, 3), round(y, 3)] for x, y in s.coords] for s in getattr(cl, 'geoms', [cl]) if s.geom_type == 'LineString' and s.length > 0.15]
-    open_w = hsea.difference(unary_union(ice_s).buffer(0.2) if ice_s else Point(0, 0)).difference(keepoff.buffer(0.2)).buffer(-0.5)
-    bergs = []; x0, y0, x1, y1 = HARBOR.bounds
-    for _ in range(4000):
+    open_w = sea.intersection(HARBOR.buffer(3.0)).difference(unary_union(ice_s).buffer(0.25) if ice_s else Point(0, 0)).difference(near_r.buffer(0.15)).buffer(-0.2)
+    bergs = []; x0, y0, x1, y1 = HARBOR.buffer(3.0).bounds              # (owner, Oct 22: more icebergs round the harbour, little ones and big ones)
+    for _ in range(20000):
         if len(bergs) >= N_BERGS: break
-        x, y = hr.uniform(x0, x1), hr.uniform(y0, y1); s = hr.uniform(0.42, 0.75)
-        if not open_w.buffer(-s * 0.6).contains(Point(x, y)) or any(math.dist((x, y), b[:2]) < 1.5 + s for b in bergs): continue
+        x, y = hr.uniform(x0, x1), hr.uniform(y0, y1); s = round(0.14 + 1.55 * hr.random() ** 2.6, 3)
+        if not open_w.buffer(-s * 0.8).contains(Point(x, y)) or any(math.dist((x, y), b[:2]) < 0.35 + 1.15 * (s + b[4]) for b in bergs): continue
         n = hr.randint(6, 8); poly = []
         for i in range(n):
             a = 2 * math.pi * i / n + hr.uniform(-.25, .25); r = s * hr.uniform(0.7, 1.1)
             poly.append([round(x + r * math.cos(a), 3), round(y + 0.75 * r * math.sin(a), 3)])
         top = [[round(x - .07 * s + (q[0] - x) * .68, 3), round(y - .12 * s + (q[1] - y) * .62, 3)] for q in poly]
-        bergs.append([x, y, poly, top])
+        bergs.append([x, y, poly, top, s])
     pp = list(dline.coords); posts = []
     for (ax, ay), (bx, by) in zip(pp, pp[1:]):
         L = math.dist((ax, ay), (bx, by)); n = max(1, int(L / 0.8)); nx, ny = -(by - ay) / L, (bx - ax) / L
@@ -424,32 +424,41 @@ def apply(town, wild, pos):
               'shore ice (pieces, area), cracks': (len(ice_s), round(sum(g.area for g in ice_s), 1), len(cracks)), 'icebergs': len(bergs),
               'dock (length, of it on land, posts)': (round(dline.length, 2), landdock, len(posts)),
               'harbour open to the sea (the bay joins the coast sea)': hsea.intersects(sea.difference(HARBOR).buffer(0.01))}
-    # ---- Morte's Peak (owner, Oct 22): snow-capped peaks round its rooms, the tallest at its heart; drawn under the trails (template OLPEAKS) ----
-    pr = random.Random(5990)
+    # ---- Morte's Peak (owner, Oct 22): no objects; the snow itself shaded as seen from above: a soft height field rising to its heart, lit from the
+    #      north-west, slopes facing the light a little lighter, the others a little darker, fading out at its foot (template OLHILL, blurred) ----
+    import numpy as np
     land_now = unary_union(snowp).buffer(-0.4)
-    M = unary_union([Point(P[v]).buffer(MP_R) for v in MPR]).buffer(1.5).buffer(-1.5).intersection(land_now)
     hx = sum(P[v][0] for v in INS if 'Heart' in nm(v)) / max(1, sum(1 for v in INS if 'Heart' in nm(v)))
     hy = sum(P[v][1] for v in INS if 'Heart' in nm(v)) / max(1, sum(1 for v in INS if 'Heart' in nm(v)))
-    Rmax = max(math.dist((hx, hy), P[v]) for v in MPR) + MP_R
-    tl = unary_union([LineString(l) for l in wild['oltracks'] + wild['oltunnels'] if len(l) > 1])
-    peaks = []; x0, y0, x1, y1 = M.bounds; yy = y0
-    while yy < y1 + 1:
-        xx = x0 + (0.55 if int((yy - y0) / 1.0) % 2 else 0)
-        while xx < x1 + 1:
-            x, y = xx + pr.uniform(-.3, .3), yy + pr.uniform(-.25, .25)
-            k = max(0.0, 1 - math.dist((x, y), (hx, hy)) / Rmax); s = round(0.95 + 1.7 * k ** 1.2 + pr.uniform(-.1, .15), 2)
-            if M.buffer(-0.3 * s).contains(Point(x, y)) and tl.distance(Point(x, y)) > 0.2 + 0.1 * s and math.dist((x, y), (hx, hy + 0.8)) > 2.6 and \
-                    not any(math.dist((x, y), q[:2]) < 0.48 * (s + q[2]) for q in peaks):
-                peaks.append([round(x, 3), round(y, 3), s, pr.random() < .5])
-            xx += 1.9
-        yy += 1.6
-    peaks.append([round(hx, 3), round(hy + 0.8, 3), 3.6, False])          # the summit, over its heart (its passages drawn over it)
-    peaks.sort(key=lambda q: q[1])
-    wild['olpeaks'] = {'ground': [rd(g) for g in getattr(M, 'geoms', [M]) if g.area > 1], 'peaks': peaks}
+    M = unary_union([Point(P[v]).buffer(MP_R + 1.5) for v in MPR]).buffer(1.5).buffer(-1.5).intersection(land_now)
+    RES = 0.25; bx0, by0, bx1, by1 = M.bounds
+    gx = np.arange(bx0, bx1 + RES, RES); gy = np.arange(by0, by1 + RES, RES); X, Y = np.meshgrid(gx, gy)
+    Hh = 1.0 * np.exp(-((X - hx) ** 2 + (Y - hy) ** 2) / 5.5 ** 2)
+    for v in MPR: Hh += 0.22 * np.exp(-((X - P[v][0]) ** 2 + (Y - P[v][1]) ** 2) / 2.4 ** 2)
+    ph = random.Random(5990); f1, f2, f3, f4 = (ph.uniform(0, 6.3) for _ in range(4))
+    Hh += 0.05 * np.sin(X * 1.3 + f1) * np.sin(Y * 1.1 + f2) + 0.035 * np.sin((X + Y) * 2.1 + f3) + 0.03 * np.sin((X - Y) * 1.7 + f4)
+    dy_, dx_ = np.gradient(Hh, RES); Z = 9.0
+    nx_, ny_, nz_ = -dx_ * Z, -dy_ * Z, np.ones_like(Hh); nn = np.sqrt(nx_ ** 2 + ny_ ** 2 + nz_ ** 2)
+    lx, ly, lz = -0.62, -0.62, 0.48; ln = math.sqrt(lx * lx + ly * ly + lz * lz)
+    shade = (nx_ * lx + ny_ * ly + nz_ * lz) / nn / ln - lz / ln          # 0 on the flat
+    env = np.clip((Hh - 0.08) / 0.35, 0, 1)                              # nothing at its foot
+    V = shade * env
+    BINS = [(-9, -0.42, '#2B3439', .30), (-0.42, -0.24, '#2B3439', .20), (-0.24, -0.1, '#2B3439', .11),
+            (0.1, 0.24, '#E2E8EA', .09), (0.24, 0.42, '#E2E8EA', .15), (0.42, 9, '#E2E8EA', .21)]
+    levels = []; clipM = M
+    for lo, hi, col, op in BINS:
+        m = (V > lo) & (V <= hi)
+        cells = [box(gx[j] - RES / 2, gy[i] - RES / 2, gx[j] + RES / 2, gy[i] + RES / 2) for i, j in zip(*np.nonzero(m))]
+        if not cells: continue
+        g = unary_union(cells).buffer(0.08).buffer(-0.08).intersection(clipM)
+        gs = [h for h in getattr(g, 'geoms', [g]) if h.area > 0.1]
+        if gs: levels.append({'fill': col, 'op': op, 'rings': rings(gs)})
+    wild['olhill'] = {'levels': levels}
     # ---- Tirebaen's Gorge and the Fissure (owner, Oct 22): a shadowed floor along its trails, snowy cliff rims with hachures (template OLGORGE) ----
-    gl = unary_union([LineString(wline([a, b])).buffer(GORGE_R if math.dist(a, b) <= 3.5 else GORGE_R * 0.62) for a, b in gsegs])   # (long connectors: a narrower cut)
+    gl = unary_union([LineString(wline([a, b])).buffer(GORGE_R if math.dist(a, b) <= 3.5 else GORGE_R * 0.75) for a, b in gsegs])   # (long connectors: a narrower cut;
+                                                                                                                                   #  owner, Oct 22: wide, room either side of its trails)
     band = gl.buffer(0.3).buffer(-0.3).intersection(land_now)
-    floor = band.buffer(-0.38)
+    floor = band.buffer(-0.45)
     hach = []
     for g in getattr(band, 'geoms', [band]):
         for ring in [g.exterior] + list(g.interiors):
@@ -457,14 +466,14 @@ def apply(town, wild, pos):
             for i in range(n):
                 q = ring.interpolate(i * 0.2); f = floor.boundary.interpolate(floor.boundary.project(q)) if not floor.is_empty else q
                 d = math.dist((q.x, q.y), (f.x, f.y))
-                if 0.15 < d < 0.7:
+                if 0.15 < d < 0.8:
                     k = (0.55 + 0.35 * (i % 2)) * d
                     hach.append([[round(q.x, 3), round(q.y, 3)], [round(q.x + (f.x - q.x) / d * k, 3), round(q.y + (f.y - q.y) / d * k, 3)]])
     wild['olgorge'] = {'band': rings([g for g in getattr(band, 'geoms', [band]) if g.area > 0.3]),
                        'floor': rings([g for g in getattr(floor, 'geoms', [floor]) if g.area > 0.1]), 'hach': hach}
-    cover = unary_union([M, band.buffer(0.2)]); o = wild['olsnow']; n0 = (len(o['drifts']), len(o['ice']))
+    cover = band.buffer(0.2); o = wild['olsnow']; n0 = (len(o['drifts']), len(o['ice']))
     o['drifts'] = [d for d in o['drifts'] if not cover.contains(Point(d[:2]))]; o['ice'] = [q for q in o['ice'] if not cover.intersects(Polygon(q))]
-    feats = {"Morte's Peak (rooms, inside, ground area, peaks)": (len(MPR), len(INS), round(M.area, 1), len(peaks)), 'passages inside it (lines)': len(tun),
+    feats = {"Morte's Peak (rooms, shaded area, shade levels)": (len(MPR), round(M.area, 1), len(levels)), 'icebergs (sizes min/max)': (len(bergs), min(b[4] for b in bergs), max(b[4] for b in bergs)),
              'gorge (rooms, trail stretches, area, hachures)': (len(GZ), len(gsegs), round(band.area, 1), len(hach)),
              'texture under them dropped (drifts, ice)': (n0[0] - len(o['drifts']), n0[1] - len(o['ice']))}
     isles = len(wild.get('snowisles') or []); wild['snowisles'] = []
