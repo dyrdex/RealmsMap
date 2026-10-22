@@ -378,7 +378,7 @@ def apply(town, wild, pos):
         g = g.buffer(0.25).buffer(-0.25).intersection(onsnow)
         gs = [Polygon(h.exterior) for h in getattr(g, 'geoms', [g]) if h.area > 0.2]
         if seed == 13322:                               # owner (Oct 22): A Tunnel in the Snow is a maze: an icy maze blob filling exactly that clearing's outline
-            for h in gs: wild['fwmazes'] = list(wild['fwmazes']) + [{'name': '', 'nolabel': True, 'style': 'ice', 'poly': rd(h), 'cx': round(h.centroid.x, 2), 'cy': round(h.centroid.y, 2)}]
+            for h in gs: wild['fwmazes'] = list(wild['fwmazes']) + [{'name': '', 'nolabel': True, 'style': 'ice', 'top': True, 'poly': rd(h), 'cx': round(h.centroid.x, 2), 'cy': round(h.centroid.y, 2)}]
         else: wild['clearings'] = list(wild.get('clearings') or []) + [{'polys': [rd(h) for h in gs], 'fill': CLEAR_FILL, 'edge': CLEAR_EDGE}]
         clr[name] = (len(c), round(sum(h.area for h in gs), 1), len(gs), sorted(v for v in c if not onsnow.contains(Point(P[v]))))
     cl_all = unary_union([Polygon(h) for c in wild['clearings'][-1:] for h in c['polys']] + [Polygon(m['poly']) for m in wild['fwmazes'] if m.get('style') == 'ice']).buffer(0.5)
