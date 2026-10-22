@@ -162,5 +162,9 @@ The other builders run inside `src/legacy`.
   Gorge (owner, Oct 22): never touches the A Tunnel in the Snow maze (wall cut back, `v2.5/004`); its floor carries rocks/gravel/cracks (`olgorge.rocks/gravel/cracks`, `v2.5/005`), clear of its trail.
   East coast (owner, Oct 22; `v2.5/007`): bay east of Morte's Peak filled (closed r 5 in BAY), sea EBOX SEA_W 6 (seafill + seashore); its ice `v2.5/008` (v2.5/006).
   Trail crossings without a room (owner, Oct 22; `v2.5/009`): electrical-style jumpers (half-circle hop, up-left; tunnel or shorter line hops); NO gaps or marks.
+  Mountains (owner, Oct 22): drawn from straight above as the owner's examples (several peaks per massif): stepped terraces, inked edges, hachured cliff
+  faces deepest lower right, flat ledges, faceted summit caps (`wild.olmassif`, template OLMASSIF; Morte's Peak `changes/002_morte_massif.py`: base = circle
+  (65.88, 193.37) r 10.78, summit The Fury of Morte's Peak). NEVER height shading/blurred relief. Zenith of the Gods next: base = the relaxed preview
+  outline in `changes/001` (holds the Maze of Ice + Frost Mansion, off the sea), summit The Zenith of the Gods 15663.
   Plants (owner, Oct 22; `v2.5/010`, `wild.olflora` [x,y,scale,kind p/b/s/g,variant], template OLFLORA sprites op*/ob*/os*/og*): density by the nearest room name's land kind (DENS).
   Shore ice (owner, Oct 22): floes + small bergs along the WHOLE sea coast at the south shore's density (`v2.5/006`, appended to `olsouth.floes` / `olharbor.bergs`).
