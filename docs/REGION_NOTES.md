@@ -123,4 +123,5 @@ The other builders run inside `src/legacy`.
   the owner will customise later (water rooms, sub-areas, graphics): don't add any unasked.
   Not drawn (owner, Oct 21): up/down AND one-way exits (both dashed in the editor). Snow texture: `wild.olsnow` (template OLSNOW).
   North coast (owner, Oct 22; `001` NBOX): water rooms = sea (incl. the 3 'The Sea of Sorrows' rooms in the Tundra Fields); 'Over the Cliff'
-  (683, 14428) is a maze for later, water for now; the Iceberg 22531-22535 is a little island, a sliver of sea between it and 22530 (mainland). Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
+  (683, 14428) is a maze for later, water for now; The Iceberg (owner, Oct 22) = 6166, 13379, 22534, 22532, 22531, 22533, 22535, 13380, 6180:
+  a little WHITE island (`geo.iceisle`), sea between it and the mainland, which hugs its rooms tightly near it. NW water routes = `seawaysfaint`. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.

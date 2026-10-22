@@ -179,6 +179,7 @@ WILD+=`<path d="${blobs(GEO.fwwood)}" fill="var(--w-wood)" fill-rule="evenodd" o
 WILD+=`<path d="${blobs(GEO.shallows||[])}" fill="var(--w-water)" fill-rule="evenodd" opacity=".4"/>`;
 WILD+=`<path d="${blobs(GEO.mipool||[])}" fill="#1F302B" fill-rule="evenodd" stroke="#4A6A62" stroke-width=".05" opacity=".95"/>`;   /* the Mire: stagnant pools (owner, Oct 18) */
 WILD+=`<path d="${blobs(GEO.snow||[])}" fill="var(--snow)" fill-rule="evenodd" opacity=".95"/>`;   /* Otherland: soft white snow ground (owner, Oct 21); its texture: OLSNOW */
+WILD+=`<path d="${blobs(GEO.iceisle||[])}" fill="#EEF3F5" fill-rule="evenodd"/>`;   /* Otherland: The Iceberg, a little white island (owner, Oct 22) */
 WILD+=`<path d="${blobs(GEO.sand)}" fill="var(--sand)" fill-rule="evenodd" opacity=".9"/><path d="${blobs(GEO.blight)}" fill="var(--blight)" fill-rule="evenodd" opacity=".75"/>`;
 {const D=WD.ddsand;if(D){const P=a=>'M'+a.map(q=>q.join(' ')).join('L');   /* DDSAND: the Desert of Despair's own terrain (owner, Oct 20): texture, ripples, dunes, dry lake beds, rocks, scrub, a few cacti */
   WILD+=`<defs><pattern id="ddgrain" patternUnits="userSpaceOnUse" width="2.3" height="1.9"><g fill="#7A6A4A"><circle cx=".3" cy=".4" r=".035"/><circle cx="1.4" cy=".2" r=".03"/><circle cx="2.0" cy="1.1" r=".04"/><circle cx=".9" cy="1.5" r=".03"/><circle cx="1.6" cy="1.7" r=".025"/><circle cx=".2" cy="1.2" r=".028"/></g><g fill="#2E281C"><circle cx="1.1" cy=".8" r=".03"/><circle cx="1.9" cy=".5" r=".025"/><circle cx=".6" cy="1.0" r=".025"/></g></pattern>`+
