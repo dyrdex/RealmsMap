@@ -3,6 +3,10 @@
 ## Version 2.4 (in progress)
 
 - Your requests (Oct 22), Otherland:
+  - The Iceberg's ground now matches the mainland: the same snow colour, grain and wind wisps.
+  - The water route from 6180 north to 15128 (through 15418-15410 and 6650, 11 stretches) is drawn like the Sea of Sorrows routes: same colour and transparency, straight. The Azure Sea's route carries on wavy past 15128 as before.
+  - Otherland's trails have a gentle, very long wave. It's one smooth bend across the whole area, about 7 rooms from crest to crest and at most 0.16 rooms to the side, so the trails still meet where they share a room. All 215 stay on the snow and clear of the drifts and icy patches.
+- Your requests (Oct 22), Otherland:
   - The ground west and south of 13287 is land now; its little sea inlets are gone (4.4 square rooms of snow added), with an uneven east shore. The 3 snow drifts that had been dropped there are back.
   - The pocket south-west of 13267 is filled, and the hairline gaps between the snow and the new sea are closed.
   - The snow is toned well down, from near-white #D2D8DB to a muted winter grey-blue #8C969B. Its grain, wisps, drifts and icy patches are toned down with it. The Iceberg stays the lightest land (#B7C1C6).

@@ -125,5 +125,6 @@ The other builders run inside `src/legacy`.
   North coast (owner, Oct 22; `001` NBOX): water rooms = sea (incl. the 3 'The Sea of Sorrows' rooms in the Tundra Fields); 'Over the Cliff'
   (683, 14428) is a maze for later, water for now; The Iceberg (owner, Oct 22) = 6166, 13379, 22534, 22532, 22531, 22533, 22535, 13380, 6180:
   a little WHITE island (`geo.iceisle`), sea between it and the mainland, which hugs its rooms tightly near it. NW water routes = `seawaysfaint`.
-  Otherland's trails are `wild.oltracks` (template OLTRACK: snow tracks; owner, Oct 22), not fwtracks. Snow #8C969B (owner: not bright).
+  Otherland's trails are `wild.oltracks` (template OLTRACK: snow tracks; owner, Oct 22), not fwtracks. Snow #8C969B (owner: not bright). The Iceberg in the same snow (owner, Oct 22; `geo.iceisle` empty).
+  `oltracks` warped by one smooth field (TRACK_A .16, TRACK_L 7): a gentle long wave. 6180-15128 (Azure) as `seawaysfaint` (owner, Oct 22).
   Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.

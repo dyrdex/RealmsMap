@@ -32,6 +32,8 @@ ICEBERG = [22531, 22532, 22533, 22534, 22535, 6166, 13379, 13380, 6180]   # owne
 ZONE_R, TIGHT_R, TIGHT_TR = 5.0, 0.75, 0.55          # near the iceberg the mainland hugs its rooms (this far) and trails (this far)
 FILL1 = unary_union([box(68.5, 174.6, 70.5, 183.0), box(65.5, 176.0, 70.5, 183.0),
                      Polygon([(70.5, 174.6), (72.3, 174.6), (72.75, 176.4), (72.35, 178.2), (72.9, 180.0), (72.5, 181.7), (72.8, 183.0), (70.5, 183.0)])])   # (an uneven east shore)   # owner (Oct 22): land west and south of 13287, its sea inlets gone
+FAINT_CHAIN = [6180, 15418, 15417, 15416, 15415, 15414, 15413, 15412, 15411, 15410, 6650, 15128]   # owner (Oct 22): drawn as the Sea of Sorrows' routes
+TRACK_A, TRACK_L = 0.16, 7.0                        # Otherland's trails: a gentle long wave (owner, Oct 22): a smooth warp this strong, this long
 NW_X = 50.0                                         # water routes wholly west of this: drawn as the Sea of Sorrows' routes (`seawaysfaint`)
 LAND_R, LTRAIL_R, CLOSE_N = 1.3, 0.9, 3.0           # the mainland's north edge: this far round its rooms and trails, gaps narrower than 6 closed
 WET_R, WTRAIL_R = 1.2, 0.8                          # sea at least this far round the water rooms and their routes
@@ -95,8 +97,10 @@ def apply(town, wild, pos):
             if m: q[0], q[1] = P[m[0]][0], P[m[0]][1]; nf += 1
     rp = {}
     for p in list(pos.values()) + list(wild['track'].values()): rp[(round(p[0], 2), round(p[1], 2))] = tuple(p[:2])
-    nw = 0; icesegs = []; extra = []
+    nw = 0; icesegs = []; extra = []; faintsegs = []
     isice = lambda q: any(math.dist(q[:2], P[v]) < 0.003 for v in ICEBERG)
+    FP = [tuple(P[v]) if v in P else tuple(pos[str(v)][:2]) for v in FAINT_CHAIN]
+    isfaint = lambda q: any(math.dist(q[:2], f) < 0.003 for f in FP)
     for j, l in enumerate(wild['seawaves']):
         if not any(near(q) for q in l): continue
         vs = [q for q in l if (round(q[0], 2), round(q[1], 2)) in rp and math.dist(q, rp[(round(q[0], 2), round(q[1], 2))]) < 0.003]
@@ -107,10 +111,14 @@ def apply(town, wild, pos):
             if isice(a) and isice(b):
                 if math.dist(a, b) > 1e-6: icesegs.append([list(a), list(b)])
                 runs.append([b])
+            elif isfaint(a) and isfaint(b):
+                if math.dist(a, b) > 1e-6: faintsegs.append([list(a), list(b)])
+                runs.append([b])
             else: runs[-1].append(b)
         runs = [r for r in runs if len(r) > 1]
         wild['seawaves'][j] = _wave(runs[0]) if runs else []; extra += [_wave(r) for r in runs[1:]]; nw += 1
     wild['seawaves'] = [l for l in wild['seawaves'] if l] + extra
+    wild['seawaysfaint'] = list(wild['seawaysfaint']) + faintsegs
     wild['oltracks'] = list(wild.get('oltracks') or []) + icesegs     # Otherland's own trails (owner, Oct 22: tracks in the snow; template OLTRACK)
     for v in moved:
         if str(v) in pos: pos[str(v)] = [P[v][0], P[v][1]]
@@ -240,8 +248,8 @@ def apply(town, wild, pos):
     newp = snowp + ice_p
     rings = lambda gs: [r for g in gs for r in [rd(g)] + [[[round(x, 3), round(y, 3)] for x, y in list(h.coords)[:-1]] for h in g.simplify(0.03).interiors]]   # (holes: rings of their own, the paths are evenodd)
     geo['land'] = list(geo['land'][:-len(pieces)]) + rings(newp)
-    geo['snow'] = rings(snowp)
-    geo['iceisle'] = rings(ice_p)                       # (template: white)
+    geo['snow'] = rings(snowp + ice_p)                  # (the iceberg in the mainland's snow: owner, Oct 22)
+    geo['iceisle'] = []
     allsnow2 = unary_union(newp)
     # the sea drawn: seafill (over the old sea's edge where they meet, hiding its shore line there), its own shore lines
     fill = sea.difference(W)
@@ -267,11 +275,25 @@ def apply(town, wild, pos):
              'iceberg (pieces, area, its rooms to its shore, sea to the mainland)': (len(ice_p), round(sum(g.area for g in ice_p), 2), icepos, gap),
              'snow (pieces, area; slivers dropped, bits with no room made sea, pockets filled)': ([round(g.area, 1) for g in snowp], round(unary_union(snowp).area, 1), dropped, stray, pock),
              'texture kept (drifts, ice)': ((len(wild['olsnow']['drifts']), nd), (len(wild['olsnow']['ice']), ni)),
-             'trail length over the sea': trail_sea, 'NW water routes as the Sea of Sorrows routes (of)': (len(nwr), len(wroutes)),
+             'trail length over the sea': trail_sea, 'Azure stretches 6180-15128 as Sea of Sorrows routes': len(faintsegs), 'NW water routes as the Sea of Sorrows routes (of)': (len(nwr), len(wroutes)),
              'iceberg trails from the old sea lines': len(icesegs),
              'mainland near the iceberg (rooms, nearest land room to the iceberg)': (sum(1 for v in landr if ZONE.contains(Point(P[v]))),
                  round(min(Point(P[v]).distance(unary_union(ice_p)) for v in landr), 2) if ice_p else None)}
     # ---- Winterlight Island's drawing, for now ----
+    # ---- Otherland's trails: a gentle long wave, one smooth warp for all, so they still meet at the rooms they share ----
+    ph = random.Random(13287); a1, a2, a3, a4 = (ph.uniform(0, 2 * math.pi) for _ in range(4))
+    def warp(x, y):
+        return (x + TRACK_A * (0.7 * math.sin(2 * math.pi * y / TRACK_L + a1) + 0.3 * math.sin(2 * math.pi * (x + y) / (TRACK_L * 1.6) + a3)),
+                y + TRACK_A * (0.7 * math.sin(2 * math.pi * x / TRACK_L + a2) + 0.3 * math.sin(2 * math.pi * (x - y) / (TRACK_L * 1.6) + a4)))
+    npts = 0; wav = []
+    for l in wild['oltracks']:
+        pts = [l[0]] + [q for a, q in zip(l, l[1:]) if math.dist(a, q) > 1e-6]
+        out = []
+        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+            n = max(2, int(math.dist((ax, ay), (bx, by)) / 0.2))
+            out += [[round(c, 3) for c in warp(ax + (bx - ax) * i / n, ay + (by - ay) * i / n)] for i in range(0 if not out else 1, n + 1)]
+        if len(out) > 1: wav.append(out); npts += len(out)
+    wild['oltracks'] = wav
     isles = len(wild.get('snowisles') or []); wild['snowisles'] = []
     # ---- checks ----
     offsnow = sorted(v for v in OL if not allsnow.buffer(0.01).contains(Point(P[v])))
