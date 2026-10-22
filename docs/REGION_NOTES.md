@@ -86,7 +86,7 @@ The other builders run inside `src/legacy`.
   straight room to room (every point doubled), in `seawaysfaint` (template SEAFAINT, opacity .4: open-sea routes are faint, owner Oct 20); bay water
   extended inside a box; bounds y1 161.
   One-way exits (owner, Oct 20): wavy currents with an arrowhead 0.4 short of the room (`seacurrents`, template SEACUR). Winterlight Island
-  (`changes/002`, `snowisles`, template SNOWISLE): an irregular teardrop, a rounded end at 9842 (not a point), widening SW,
+  (`changes/002`, `snowisles`, template SNOWISLE; re-fitted Oct 22 as a rounded blob, see Otherland): an irregular teardrop, a rounded end at 9842 (not a point), widening SW,
   outline rounded (no spits), its SE coast an even, nearly straight run NE-SW (owner: natural,
   not an oval, not following the paths), the biggest that fits 0.9 clear of them; old-map style (muted, ink lines, no glossy art); no label.
 - **Desert of Despair** (editor Oct 20, `tools/desert_of_despair_editor/`): builder reads `base/map.json`'s room_pos directly (not the legacy saves):
@@ -152,7 +152,7 @@ The other builders run inside `src/legacy`.
   (SBOX: sea, `olsouth` beach + floes, its icebergs in `olharbor.bergs`). Shacks (owner, Oct 22): `wild.olshacks` [cx, cy, w, h] (template OLSHACK), over The Desolate Outpost's main section and
   The Hunter's Outpost 14419. Water path 22530-22531 (`seawaysfaint`). Clearings (owner, Oct 22): ONLY the Tundra Fields (13492's clump); A Tunnel in the Snow / A Cold Lair (13322's clump) is an icy maze
   blob of the same outline, no label.
-  Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
+  Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Winterlight Island re-fitted (owner, Oct 22, `changes/001_winterlight_island.py`): a smooth irregular blob (oval + low harmonics, rounded end at 9842), the biggest 0.9 clear of the paths; fit kept in `FIT` (`REFIT=1` re-searches, ~30 s).
   Cramped Tunnel rooms (+ those leading only to them): `oltunnels`, drawn as JUST a thin dashed line (owner, Oct 22, after rejecting
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
   Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; west edge one smooth concave curve, no juts; owner Oct 22), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
