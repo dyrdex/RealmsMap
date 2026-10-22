@@ -2,6 +2,7 @@
 
 ## In progress (Version 2.7)
 
+- Your request (Oct 22): Otherland's plants and snow drifts are spread evenly everywhere now, with no bare patches. 397 plants were added where the snow had none nearby (91 pines, 21 bare trees, 114 bushes, 161 bits of ground cover, each kind as the land there), and 49 drifts. East of Morte's Peak, towards the coast, there were 6 plants and now there are 57. Between the Fissure's two descents there were none and now there are 54. Open snow more than 1.5 rooms from a plant fell from 25% to 2.6%, and the largest bare patch left is 2 square rooms. As before, none are on the trails, rooms, mazes, gorge, Fissure, cliffs, beach or the mountain's terraces.
 - Your request (Oct 22): Morte's Peak is drawn as a mountain seen from straight above, like your examples, with several peaks in one massif. Terraces step up 1.25 rooms at a time to three peaks: The Fury of Morte's Peak (the summit, 7 steps), an east peak over Entombed within Morte's Peak and a south peak over the Heart (5 steps each). They join on the lower terraces; Nestled Between the Peaks and A Snow Clogged Pass sit in the saddles, step 4 of 7. Each step has a short hatched cliff face below it, deepest on the lower-right side. Each summit has a faceted cap (13 creases). There's no height shading.
   - Your request: every line on it is extremely subtle (thin, pale grey, faint hatching), so the paths on top stand out.
   - Your request: it blends into the snow. The base circle has no outline, and the ledges aren't filled, so they are the snow itself.
