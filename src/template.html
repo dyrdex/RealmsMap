@@ -352,14 +352,14 @@ const HOUSES=L=>(L||[]).map(h=>{const w=h.w,H=h.h,x0=-w/2,y1=H/2,yt=-H/2,D='#1d1
 const TOWNGROUND=P=>{const d=(P||[]).map(p=>'M'+p.map(q=>q.join(' ')).join('L')+'Z').join('');return d?`<path d="${d}" fill="#7B6A4F" fill-rule="evenodd" opacity=".5" stroke="#7B6A4F" stroke-width=".5" stroke-opacity=".35" stroke-linejoin="round"/>`:''};   /* Camden's ground: a dusty, slightly lighter patch, soft wavy edges, no border (owner, Oct 17) */
 let FWPATHS=TOWNGROUND(WD.wltown)+RICE(WD.rice)+PATCH(WD.smrpatch,'var(--dirt)','var(--dirt-edge)',.88)+WPATCH(WD.miwater)+GPATCH(WD.migreen)+PATCH(WD.wlash,'#5E5C54','#24231F',.9)+PATCH(WD.wlsalt,'var(--salt)','#3E3C35',1)+(WD.wlgrain||[]).map(r=>`<circle cx="${r[0]}" cy="${r[1]}" r="${r[2]}" fill="${r[3]?'var(--salt2)':'#5F5C52'}" opacity=".6"/>`).join('')+FAINT(WD.smrfaint)+CLIMB(WD.smrclimb)+TOWN(WD.smrtowns)+CANYON(WD.smrcanyon)+HOUSES(WD.smrhouses);for(const p of (WD.fwtracks||[])){const rd=p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L');
   FWPATHS+=DIRT(rd,.3);}
-for(const M of (WD.olmassif||[])){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z';   /* OLMASSIF: a mountain from straight above (owner, Oct 22: Morte's Peak, as the owner's examples): stepped terraces, an inked edge on each, a hachured cliff face below it (deepest lower right), flat pale ledges, a faceted cap on each summit; no height shading */
+for(const M of (WD.olmassif||[])){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z';   /* OLMASSIF: a mountain from straight above (owner, Oct 22: Morte's Peak, as the owner's examples): stepped terraces, an inked edge on each, a hachured cliff face below it (deepest lower right), flat pale ledges, a faceted cap on each summit; no height shading; all lines extremely subtle so the trails on top read clearly (owner, Oct 22) */
   for(const L of M.levels)
-    WILD+=`<path d="${L.face.map(P).join('')}" fill="#5D686F" fill-rule="evenodd" opacity=".95"/>`+
-      `<path d="${L.hach.map(h=>'M'+h[0].join(' ')+'L'+h[1].join(' ')).join('')}" stroke="#3C454B" stroke-width=".03" stroke-linecap="round" opacity=".85"/>`+
-      `<path d="${L.ledge.map(P).join('')}" fill="#8E989D" fill-rule="evenodd" stroke="#2E363B" stroke-width=".045" stroke-linejoin="round"/>`+
-      `<path d="${L.rim.map(r=>`M${r[0]} ${r[1]}L${r[2]} ${r[3]}`).join('')}" stroke="#B8C2C7" stroke-width=".05" stroke-linecap="round" opacity=".7" transform="translate(.05 .06)"/>`;
+    WILD+=`<path d="${L.face.map(P).join('')}" fill="#7D888E" fill-rule="evenodd" opacity=".55"/>`+
+      `<path d="${L.hach.map(h=>'M'+h[0].join(' ')+'L'+h[1].join(' ')).join('')}" stroke="#6E797F" stroke-width=".02" stroke-linecap="round" opacity=".35"/>`+
+      `<path d="${L.ledge.map(P).join('')}" fill="#8E989D" fill-rule="evenodd" stroke="#6F7A80" stroke-width=".025" stroke-opacity=".5" stroke-linejoin="round"/>`+
+      `<path d="${L.rim.map(r=>`M${r[0]} ${r[1]}L${r[2]} ${r[3]}`).join('')}" stroke="#A9B3B8" stroke-width=".035" stroke-linecap="round" opacity=".35" transform="translate(.05 .06)"/>`;
   for(const C of M.caps)
-    WILD+=`<path d="${C.shade.map(P).join('')}" fill="#6C777E" opacity=".45"/><path d="${C.creases.map(c=>'M'+c[0].join(' ')+'L'+c[1].join(' ')).join('')}" stroke="#3A4348" stroke-width=".035" stroke-linecap="round"/>`;
+    WILD+=`<path d="${C.shade.map(P).join('')}" fill="#7D888E" opacity=".25"/><path d="${C.creases.map(c=>'M'+c[0].join(' ')+'L'+c[1].join(' ')).join('')}" stroke="#6F7A80" stroke-width=".02" stroke-linecap="round" opacity=".45"/>`;
 }
 {const T=(WD.oltracks||[]).map(p=>p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L')).join('');   /* OLTRACK: Otherland's trails (owner, Oct 22): packed snow, a little darker than the snow, two faint ruts */
   const U=(WD.oltunnels||[]).map(p=>'M'+p.map(q=>q.join(' ')).join('L')).join('');   /* OLTUNNEL: the Cramped Tunnel (owner, Oct 22): seen into the snow: a dark hollow under a snow crust, the thin path inside */
