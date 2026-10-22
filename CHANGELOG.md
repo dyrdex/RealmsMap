@@ -2,6 +2,12 @@
 
 ## Version 2.4 (in progress)
 
+- Your requests (Oct 22), Otherland:
+  - The elevation shading on the west and south land is gone: the Gods' plateau, the Den, the foothills, the Hills of Maedar and of Desolation, and the Mountain over the tunnels. The sea coasts (with the south shore's beach and floating ice), Morte's Peak, Death's Spire and the Bed of the Runoff stay.
+  - The Cramped Tunnel: the 15 "A Dark, Cramped Tunnel..." rooms, and 2 rooms that lead only to them, are a tunnel seen into the snow (9 lines). Each is a dark hollow under a soft snow crust, about 0.7 rooms wide, with the thin path visible inside it.
+  - Over the Cliff Maze: an icy maze blob (145 square rooms) along the coast from 14428 down to 683, both inside it, labelled "Over / the Cliff / Maze" on three lines. It also covers Pass Through the Foothills (14477, 14478) and The Icy Cliffs (15162), whose trails still show over it.
+  - The Maze of Ice: an icy maze blob (27 square rooms) over its 8 hidden rooms, labelled "The Maze of Ice". It's extended north round Frost Mansion (22248-22250), which is drawn entirely inside it: a very ancient stone hall with two crenellated towers and a steep central gable, worn and cracked stonework, a dark arched door, frost creeping up the walls, snow on every ledge, icicles, and snow banked at its foot (2.7 x 2.6 rooms). The Spectacle of Ice (21819) is at the blob's edge; its trail shows over it.
+  - The Ledge of Life (6102, 6101, 6096): a cliff falls away south of the path, a dark rock face up to 1.1 rooms deep with hachures and a snowy lip. The path is marked as dangerous with a red-brown warning dash along it and a crumbling edge on its south side. No rooms are under the cliff.
 - Your request (Oct 22, "do them all"), more Otherland terrain, all shaped in the snow (no objects) except the shore:
   - The heights of the Gods (21 rooms): a flat-topped plateau, shaded like Morte's Peak. Its edges are steep, steepest on the west (the Icy Cliffs, the Western Face), with the Gully (the Gullet of the Gods, Mouth of / Deep Within the Gully) cut down it.
   - The hills: low, soft, rounded rises between the trails. The Hills of Desolation have 25 (29 rooms), the Hills of Maedar 18, plus one long low crest along Maedar Ridge (18 rooms), and the foothills 8 (5 rooms). Much gentler than the mountain.

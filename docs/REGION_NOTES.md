@@ -131,8 +131,10 @@ The other builders run inside `src/legacy`.
   13100-13101-13102-13105. Harbour routes: `wild.olharborways` (thin, nearly transparent, slightly wavy). The bay between 13150 and
   the harbour's NE shore is land (FILL1). The sea grows SEA_W off the land inside the boxes, never cut by a box line. Morte's Peak = ONLY shading of the snow from above (`wild.olhill`, template OLHILL, blurred; owner, Oct 22: no peak sprites,
   no dashed passages); heights from the trail climb (ridges along its trails, the Heart the top) and Tirebaen's Gorge + the Fissure
-  (`wild.olgorge`, template OLGORGE) (owner, Oct 22). Also shaded in the snow (owner, Oct 22): the Gods' plateau + Gully, the hills
-  (Desolation, Maedar + Ridge, foothills), the Mountain over the tunnels, Death's Spire, the Den; Bed of the Runoff (`olrunoff`); the south shore
+  (`wild.olgorge`, template OLGORGE) (owner, Oct 22). Also (owner, Oct 22): Death's Spire (shading); NO relief on the west/south land (Gods, hills, the
+  Mountain, the Den: removed, owner); Bed of the Runoff (`olrunoff`); the south shore
   (SBOX: sea, `olsouth` beach + floes, its icebergs in `olharbor.bergs`). Shacks (owner, Oct 22): `wild.olshacks` [cx, cy, w, h] (template OLSHACK), over The Desolate Outpost's main section and
   The Hunter's Outpost 14419. Water path 22530-22531 (`seawaysfaint`). Clearings (owner, Oct 22): ONLY the Tundra Fields (13492's clump) and A Tunnel in the Snow / A Cold Lair (13322's clump); `wild.clearings`.
   Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
+  Cramped Tunnel rooms (+ those leading only to them): `oltunnels` (template OLTUNNEL). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
+  Over the Cliff Maze (14428-683, along the coast), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
