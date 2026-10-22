@@ -3,6 +3,9 @@
 ## Version 2.4 (in progress)
 
 - Your requests (Oct 22), Otherland:
+  - Morte's Peak's shading now follows its trails. Each of its 48 rooms (spacer rooms included) is as high as the climb to it along the trails from where they enter the mountain (up to 45 rooms of trail), and the Heart is the top. Every trail stretch raises a sharp ridge between its rooms' heights, over a broad base. With steep sides, stronger light and shadow (8 levels, up to 31% light and 42% shadow) and a crisper blur, it reads as a very tall mountain from above. Still no objects.
+  - Tirebaen's Gorge and the Fissure are twice as wide: 3 rooms each side of the trails (the long Fissure connectors 2.2), with the floor 0.8 in from the rims (791 square rooms). It now also takes in 5 neighbouring named rooms (one each of The Harrowing Track, The Faint Trail, A Tunnel of Ice, Wandering the Forsaken Trail and Embracing the Fear of Morte's Peak) and 38 spacer rooms. The Tunnel in the Snow clearing stays drawn over it. 31 more snow drifts under it are dropped.
+- Your requests (Oct 22), Otherland:
   - Morte's Peak: the peaks, the rocky ground and the dashed passages are all removed; its trails are drawn like all the others again. Instead the snow itself shows the mountain from above. A soft height field rises to the Heart of Morte's Peak, lit from the north-west: slopes facing the light are a little lighter, the others a little darker, in 6 gentle blurred levels (421 square rooms). It fades out at the mountain's foot. No objects are drawn.
   - The Harbor of Icebergs has 26 icebergs, in and round the harbour, from tiny floes (0.03 square rooms) to big bergs (1.8). Most are small and a few are large.
   - Tirebaen's Gorge and the Fissure are wider (1.5 rooms each side of the trails, was 0.95; the long Fissure connectors 1.1). The floor is 0.45 in from the rims, so the trails have room on both sides before the walls (440 square rooms in all).

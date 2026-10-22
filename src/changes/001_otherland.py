@@ -55,7 +55,7 @@ MP_NAMES = {'Nestled Between the Peaks', 'Upon the Roof', 'Platforms of Sacrific
 MP_INSIDE = {"Deep within the Heart of Morte's Peak", "Within the Heart of Morte's Peak", "Entombed within Morte's Peak", 'Entombed in Ice', 'A Cavern of Ice',
              'An Icy Burrow', 'The Cave', "The Concealed Horror of Morte's Peak", 'Lost in the Darkness'}   # inside the mountain: their trails dashed passages
 GORGE_NAMES = {"The Floor of Tirebaen's Gorge", 'The Fissure', 'Deep within the Shadows of the Fissure', 'Within the Fissure'}   # owner (Oct 22): the ravine
-MP_R, GORGE_R = 2.3, 1.5                             # the mountain this far round its rooms; the gorge this wide each side of its trails
+MP_R, GORGE_R = 2.3, 3.0                             # the mountain this far round its rooms; the gorge this wide each side of its trails
 NW_X = 50.0                                         # water routes wholly west of this: drawn as the Sea of Sorrows' routes (`seawaysfaint`)
 LAND_R, LTRAIL_R, CLOSE_N = 1.3, 0.9, 3.0           # the mainland's north edge: this far round its rooms and trails, gaps narrower than 6 closed
 WET_R, WTRAIL_R = 1.2, 0.8                          # sea at least this far round the water rooms and their routes
@@ -433,18 +433,42 @@ def apply(town, wild, pos):
     M = unary_union([Point(P[v]).buffer(MP_R + 1.5) for v in MPR]).buffer(1.5).buffer(-1.5).intersection(land_now)
     RES = 0.25; bx0, by0, bx1, by1 = M.bounds
     gx = np.arange(bx0, bx1 + RES, RES); gy = np.arange(by0, by1 + RES, RES); X, Y = np.meshgrid(gx, gy)
-    Hh = 1.0 * np.exp(-((X - hx) ** 2 + (Y - hy) ** 2) / 5.5 ** 2)
-    for v in MPR: Hh += 0.22 * np.exp(-((X - P[v][0]) ** 2 + (Y - P[v][1]) ** 2) / 2.4 ** 2)
+    # height from the trails (owner, Oct 22): each room as high as the climb to it along the trails from where they enter the mountain, the heart the
+    # top; every trail stretch a sharp ridge between its rooms' heights; a broad base under it all; steep sides, so it reads as a very tall mountain
+    MS = set(MPR) | {v for v in G if R[v]['void'] and ends(v, -1) and ends(v, -1) <= set(MPR)}
+    import heapq
+    dep = {}; hq = [(0.0, v) for v in MS if any(u not in MS for u in G[v])]
+    for d0, v in hq: dep[v] = 0.0
+    heapq.heapify(hq)
+    while hq:
+        d0, v = heapq.heappop(hq)
+        if d0 > dep.get(v, 9e9): continue
+        for u in G[v]:
+            if u in MS and d0 + math.dist(P[v], P[u]) < dep.get(u, 9e9): dep[u] = d0 + math.dist(P[v], P[u]); heapq.heappush(hq, (dep[u], u))
+    dmax = max(dep.values()) if dep else 1.0
+    hv = {v: (dep.get(v, 0.0) / dmax) ** 0.8 for v in MS}
+    for v in MS:
+        if v in INS and 'Heart' in nm(v): hv[v] = max(hv[v], 0.9)
+    Hh = 0.55 * np.exp(-((X - hx) ** 2 + (Y - hy) ** 2) / 6.5 ** 2)
+    samp = []
+    for a in MS:
+        for b in G[a]:
+            if b in MS and a < b:
+                L = math.dist(P[a], P[b]); n = max(1, int(L / 0.4))
+                samp += [(P[a][0] + (P[b][0] - P[a][0]) * i / n, P[a][1] + (P[b][1] - P[a][1]) * i / n, hv[a] + (hv[b] - hv[a]) * i / n) for i in range(n + 1)]
+    for sx, sy, sh in samp:
+        Hh = np.maximum(Hh, (0.25 + 0.95 * sh) * np.exp(-np.hypot(X - sx, Y - sy) / 1.9))
     ph = random.Random(5990); f1, f2, f3, f4 = (ph.uniform(0, 6.3) for _ in range(4))
-    Hh += 0.05 * np.sin(X * 1.3 + f1) * np.sin(Y * 1.1 + f2) + 0.035 * np.sin((X + Y) * 2.1 + f3) + 0.03 * np.sin((X - Y) * 1.7 + f4)
-    dy_, dx_ = np.gradient(Hh, RES); Z = 9.0
+    Hh += 0.03 * np.sin(X * 1.9 + f1) * np.sin(Y * 1.6 + f2) + 0.02 * np.sin((X + Y) * 2.7 + f3) + 0.02 * np.sin((X - Y) * 2.3 + f4)
+    dy_, dx_ = np.gradient(Hh, RES); Z = 16.0
     nx_, ny_, nz_ = -dx_ * Z, -dy_ * Z, np.ones_like(Hh); nn = np.sqrt(nx_ ** 2 + ny_ ** 2 + nz_ ** 2)
     lx, ly, lz = -0.62, -0.62, 0.48; ln = math.sqrt(lx * lx + ly * ly + lz * lz)
     shade = (nx_ * lx + ny_ * ly + nz_ * lz) / nn / ln - lz / ln          # 0 on the flat
-    env = np.clip((Hh - 0.08) / 0.35, 0, 1)                              # nothing at its foot
+    env = np.clip((Hh - 0.06) / 0.2, 0, 1)                               # nothing at its foot
     V = shade * env
-    BINS = [(-9, -0.42, '#2B3439', .30), (-0.42, -0.24, '#2B3439', .20), (-0.24, -0.1, '#2B3439', .11),
-            (0.1, 0.24, '#E2E8EA', .09), (0.24, 0.42, '#E2E8EA', .15), (0.42, 9, '#E2E8EA', .21)]
+    BINS = [(-9, -0.6, '#252D32', .42), (-0.6, -0.42, '#252D32', .32), (-0.42, -0.26, '#252D32', .22), (-0.26, -0.12, '#252D32', .12),
+            (0.12, 0.26, '#E6ECEE', .10), (0.26, 0.42, '#E6ECEE', .17), (0.42, 0.6, '#E6ECEE', .24), (0.6, 9, '#E6ECEE', .31)]
+    hstat = {'heights (rooms, climb to the top)': (len(hv), round(dmax, 1)), 'shade spread (min, max)': (round(float(V.min()), 2), round(float(V.max()), 2))}
     levels = []; clipM = M
     for lo, hi, col, op in BINS:
         m = (V > lo) & (V <= hi)
@@ -455,10 +479,10 @@ def apply(town, wild, pos):
         if gs: levels.append({'fill': col, 'op': op, 'rings': rings(gs)})
     wild['olhill'] = {'levels': levels}
     # ---- Tirebaen's Gorge and the Fissure (owner, Oct 22): a shadowed floor along its trails, snowy cliff rims with hachures (template OLGORGE) ----
-    gl = unary_union([LineString(wline([a, b])).buffer(GORGE_R if math.dist(a, b) <= 3.5 else GORGE_R * 0.75) for a, b in gsegs])   # (long connectors: a narrower cut;
+    gl = unary_union([LineString(wline([a, b])).buffer(GORGE_R if math.dist(a, b) <= 3.5 else GORGE_R * 0.73) for a, b in gsegs])   # (long connectors: a narrower cut;
                                                                                                                                    #  owner, Oct 22: wide, room either side of its trails)
     band = gl.buffer(0.3).buffer(-0.3).intersection(land_now)
-    floor = band.buffer(-0.45)
+    floor = band.buffer(-0.8)
     hach = []
     for g in getattr(band, 'geoms', [band]):
         for ring in [g.exterior] + list(g.interiors):
@@ -466,14 +490,15 @@ def apply(town, wild, pos):
             for i in range(n):
                 q = ring.interpolate(i * 0.2); f = floor.boundary.interpolate(floor.boundary.project(q)) if not floor.is_empty else q
                 d = math.dist((q.x, q.y), (f.x, f.y))
-                if 0.15 < d < 0.8:
+                if 0.15 < d < 1.3:
                     k = (0.55 + 0.35 * (i % 2)) * d
                     hach.append([[round(q.x, 3), round(q.y, 3)], [round(q.x + (f.x - q.x) / d * k, 3), round(q.y + (f.y - q.y) / d * k, 3)]])
     wild['olgorge'] = {'band': rings([g for g in getattr(band, 'geoms', [band]) if g.area > 0.3]),
                        'floor': rings([g for g in getattr(floor, 'geoms', [floor]) if g.area > 0.1]), 'hach': hach}
     cover = band.buffer(0.2); o = wild['olsnow']; n0 = (len(o['drifts']), len(o['ice']))
     o['drifts'] = [d for d in o['drifts'] if not cover.contains(Point(d[:2]))]; o['ice'] = [q for q in o['ice'] if not cover.intersects(Polygon(q))]
-    feats = {"Morte's Peak (rooms, shaded area, shade levels)": (len(MPR), round(M.area, 1), len(levels)), 'icebergs (sizes min/max)': (len(bergs), min(b[4] for b in bergs), max(b[4] for b in bergs)),
+    feats = {"Morte's Peak (rooms, shaded area, shade levels)": (len(MPR), round(M.area, 1), len(levels)), 'Morte heights': hstat,
+             'gorge: other rooms inside it': sum(1 for v in OL if v not in GZ and band.contains(Point(P[v]))), 'icebergs (sizes min/max)': (len(bergs), min(b[4] for b in bergs), max(b[4] for b in bergs)),
              'gorge (rooms, trail stretches, area, hachures)': (len(GZ), len(gsegs), round(band.area, 1), len(hach)),
              'texture under them dropped (drifts, ice)': (n0[0] - len(o['drifts']), n0[1] - len(o['ice']))}
     isles = len(wild.get('snowisles') or []); wild['snowisles'] = []
