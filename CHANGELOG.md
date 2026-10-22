@@ -2,6 +2,7 @@
 
 ## In progress (Version 2.5)
 
+- Your request (Oct 23): Morte's Peak's height shading is removed (all 7 shade levels, 413 pieces); the snow there is plain again. Death's Spire's shading, Tirebaen's Gorge and the Fissure stay.
 - Your request (Oct 22): Over the Cliff Maze lies only in the sea now. Its east edge follows the coastline exactly (no land under it, so the trail along the east side shows in full) and its west edge is one smooth curve, 6.7 to 8.5 rooms out, that takes in 14428, 683 and both of their entry paths with no juts (167 square rooms, was 207). The label sits at its centre.
 
 ## Version 2.4 · Otherland · October 22, 2026
