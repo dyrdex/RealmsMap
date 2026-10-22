@@ -2,6 +2,9 @@
 
 ## In progress (Version 2.5)
 
+- Your request (Oct 23): Tirebaen's Gorge no longer touches the A Tunnel in the Snow maze: the gorge's east wall is pulled back there, leaving a gap of 0.35 rooms (they overlapped by 0.82 square rooms). The maze is unchanged; its rooms and the gorge's trail don't move.
+- Your request (Oct 23): the gorge floor is rocky now: 585 snow-dusted rocks and boulders (gathered at the foot of the walls, a few big ones), 1663 bits of scree and gravel and 84 cracks, all kept clear of the trail on it (rocks at least 0.33 rooms from its centre line).
+- Your request (Oct 23): the south shore's floating ice and little icebergs now run along Otherland's whole sea coast (and round The Iceberg), as dense as off the south shore: 423 more floes and 35 more icebergs, within 3.5 rooms of the coast, none on land and none touching a room, sea route, maze or the ice already there.
 - Your request (Oct 23): the dashed Heart path starts at The Sudden Stop (15703) now: one continuous thin dashed line, 25.1 rooms long, 13 rooms.
 - Your request (Oct 23): the whole Heart path is dashed now, including the stretch through the 3 Lost in the Darkness rooms (13378 to 15707): one continuous thin dashed line, 23.4 rooms long, 12 rooms.
 - Your request (Oct 23): the path through the Heart of Morte's Peak is a thin dashed line now, like the Cramped Tunnel: the 7 stretches between its 8 Heart rooms and The Concealed Horror (2 lines, 13.6 rooms long). The paths out to Scratching the Surface, Lost in the Darkness and The Sudden Stop stay ordinary trails.

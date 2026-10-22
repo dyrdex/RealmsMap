@@ -433,6 +433,12 @@ FWPATHS+=(WD.olharborways||[]).length?`<path d="${WD.olharborways.map(p=>'M'+p.m
   WILD+=`<path d="${G.band.map(P).join('')}" fill-rule="evenodd" fill="#6B767C" stroke="#B3BCC1" stroke-width=".07" stroke-linejoin="round"/>`;
   WILD+=`<path d="${G.hach.map(h=>'M'+h[0].join(' ')+'L'+h[1].join(' ')).join('')}" stroke="#414B51" stroke-width=".04" stroke-linecap="round" opacity=".75"/>`;
   WILD+=`<path d="${G.floor.map(P).join('')}" fill-rule="evenodd" fill="#4F5A60" stroke="#434D53" stroke-width=".04" stroke-linejoin="round" opacity=".95"/>`;
+  if(G.rocks){   /* the gorge floor's debris (owner, Oct 23): cracks, gravel and scree, snow-dusted boulders lit from the north-west */
+    WILD+=`<path d="${(G.cracks||[]).map(c=>'M'+c.map(q=>q.join(' ')).join('L')).join('')}" fill="none" stroke="#353F44" stroke-width=".035" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>`;
+    WILD+=(G.gravel||[]).map(g=>`<circle cx="${g[0]}" cy="${g[1]}" r="${g[2]}" fill="${g[3]?'#7D878D':'#3A4449'}" opacity=".75"/>`).join('');
+    for(const r of G.rocks){const n=r.length,cx=r.reduce((a,q)=>a+q[0],0)/n,cy=r.reduce((a,q)=>a+q[1],0)/n,sh=r.map(q=>[cx+(q[0]-cx)*.55+.03,cy+(q[1]-cy)*.55+.04]),top=r.map(q=>[cx+(q[0]-cx)*.5-.03,cy+(q[1]-cy)*.45-.04]);
+      WILD+=`<path d="${P(r.map(q=>[q[0]+.035,q[1]+.05]))}" fill="#000" opacity=".3"/><path d="${P(r)}" fill="#6A747A" stroke="#2C3439" stroke-width=".025" stroke-linejoin="round"/><path d="${P(sh)}" fill="#3F494E" opacity=".55"/><path d="${P(top)}" fill="#B4BDC1" opacity=".8"/>`;}
+  }
 }}
 {const S=WD.olsouth;if(S){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z';   /* OLSOUTH: the south shore (owner, Oct 22): a frozen beach, pack ice offshore (its icebergs are in OLHARBOR's) */
   WILD+=`<path d="${S.beach.map(P).join('')}" fill="#A1ABB0" fill-rule="evenodd" opacity=".75"/>`;
