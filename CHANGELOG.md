@@ -2,6 +2,7 @@
 
 ## Version 2.4 (in progress)
 
+- Your request (Oct 22): two clearings in Otherland, in the style of the older areas' clearings (packed snow a little lighter than the snow, a soft darker edge, over the trails inside). The Tundra Fields: 30 rooms, 48.9 square rooms, kept off the sea, so the 2 Sea of Sorrows rooms stay in their inlets. A Tunnel in the Snow / A Cold Lair: 29 rooms, 32.1 square rooms. 2 snow drifts under them dropped. No other clearings.
 - Your requests (Oct 22), Otherland:
   - The Iceberg's ground now matches the mainland: the same snow colour, grain and wind wisps.
   - The water route from 6180 north to 15128 (through 15418-15410 and 6650, 11 stretches) is drawn like the Sea of Sorrows routes: same colour and transparency, straight. The Azure Sea's route carries on wavy past 15128 as before.

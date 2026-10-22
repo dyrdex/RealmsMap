@@ -127,4 +127,5 @@ The other builders run inside `src/legacy`.
   a little WHITE island (`geo.iceisle`), sea between it and the mainland, which hugs its rooms tightly near it. NW water routes = `seawaysfaint`.
   Otherland's trails are `wild.oltracks` (template OLTRACK: snow tracks; owner, Oct 22), not fwtracks. Snow #8C969B (owner: not bright). The Iceberg in the same snow (owner, Oct 22; `geo.iceisle` empty).
   `oltracks` warped by one smooth field (TRACK_A .16, TRACK_L 7): a gentle long wave. 6180-15128 (Azure) as `seawaysfaint` (owner, Oct 22).
+  Clearings (owner, Oct 22): ONLY the Tundra Fields (13492's clump) and A Tunnel in the Snow / A Cold Lair (13322's clump); `wild.clearings`.
   Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.

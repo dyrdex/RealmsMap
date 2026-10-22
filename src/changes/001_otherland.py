@@ -34,6 +34,9 @@ FILL1 = unary_union([box(68.5, 174.6, 70.5, 183.0), box(65.5, 176.0, 70.5, 183.0
                      Polygon([(70.5, 174.6), (72.3, 174.6), (72.75, 176.4), (72.35, 178.2), (72.9, 180.0), (72.5, 181.7), (72.8, 183.0), (70.5, 183.0)])])   # (an uneven east shore)   # owner (Oct 22): land west and south of 13287, its sea inlets gone
 FAINT_CHAIN = [6180, 15418, 15417, 15416, 15415, 15414, 15413, 15412, 15411, 15410, 6650, 15128]   # owner (Oct 22): drawn as the Sea of Sorrows' routes
 TRACK_A, TRACK_L = 0.16, 7.0                        # Otherland's trails: a gentle long wave (owner, Oct 22): a smooth warp this strong, this long
+CLEAR_SEEDS = {13492: 'The Tundra Fields', 13322: 'A Tunnel in the Snow / A Cold Lair'}   # owner (Oct 22): these two clumps only
+CLEAR_D, CLEAR_R, CLEAR_TR = 1.5, 0.62, 0.45        # a clump: rooms this close joined by an exit; its clearing this far round its rooms and exits
+CLEAR_FILL, CLEAR_EDGE = '#97A1A6', '#6B767C'       # packed snow, a little lighter than the snow
 NW_X = 50.0                                         # water routes wholly west of this: drawn as the Sea of Sorrows' routes (`seawaysfaint`)
 LAND_R, LTRAIL_R, CLOSE_N = 1.3, 0.9, 3.0           # the mainland's north edge: this far round its rooms and trails, gaps narrower than 6 closed
 WET_R, WTRAIL_R = 1.2, 0.8                          # sea at least this far round the water rooms and their routes
@@ -294,6 +297,27 @@ def apply(town, wild, pos):
             out += [[round(c, 3) for c in warp(ax + (bx - ax) * i / n, ay + (by - ay) * i / n)] for i in range(0 if not out else 1, n + 1)]
         if len(out) > 1: wav.append(out); npts += len(out)
     wild['oltracks'] = wav
+    # ---- clearings (owner, Oct 22): the two clumps of rooms side by side, packed snow (template CLEAR) ----
+    ex = {(a, b) for a, b, k in E['edges'] if k != 'ud'}; ex |= {(b, a) for a, b in ex}
+    solo = [v for v in OL if not R[v]['void']]
+    nb = defaultdict(set)
+    for i, a in enumerate(solo):
+        for b in solo[i + 1:]:
+            if (a, b) in ex and math.dist(P[a], P[b]) <= CLEAR_D: nb[a].add(b); nb[b].add(a)
+    onsnow = unary_union(snowp).buffer(-0.15); clr = {}
+    for seed, name in CLEAR_SEEDS.items():
+        c, st = {seed}, [seed]
+        while st:
+            for u in nb[st.pop()] - c: c.add(u); st.append(u)
+        g = unary_union([Point(P[v]).buffer(CLEAR_R) for v in c] + [LineString([P[a], P[b]]).buffer(CLEAR_TR) for a in c for b in nb[a] if a < b])
+        g = g.buffer(0.25).buffer(-0.25).intersection(onsnow)
+        gs = [Polygon(h.exterior) for h in getattr(g, 'geoms', [g]) if h.area > 0.2]
+        wild['clearings'] = list(wild.get('clearings') or []) + [{'polys': [rd(h) for h in gs], 'fill': CLEAR_FILL, 'edge': CLEAR_EDGE}]
+        clr[name] = (len(c), round(sum(h.area for h in gs), 1), len(gs), sorted(v for v in c if not onsnow.contains(Point(P[v]))))
+    cl_all = unary_union([Polygon(h) for c in wild['clearings'][-len(CLEAR_SEEDS):] for h in c['polys']]).buffer(0.5)
+    o = wild['olsnow']; n0 = (len(o['drifts']), len(o['ice']))
+    o['drifts'] = [d for d in o['drifts'] if not cl_all.contains(Point(d[:2]))]; o['ice'] = [q for q in o['ice'] if not cl_all.intersects(Polygon(q))]
+    clr['texture under them dropped (drifts, ice)'] = (n0[0] - len(o['drifts']), n0[1] - len(o['ice']))
     isles = len(wild.get('snowisles') or []); wild['snowisles'] = []
     # ---- checks ----
     offsnow = sorted(v for v in OL if not allsnow.buffer(0.01).contains(Point(P[v])))
@@ -304,4 +328,4 @@ def apply(town, wild, pos):
             'sea lines moved with their rooms (faint points, wave lines)': (nf, nw),
             'snow (pieces, area; holes filled)': (len(pieces), round(allsnow.area, 1), holes),
             'rooms not on the snow (in the sea; elsewhere)': (inwater, [v for v in offsnow if v not in inwater]),
-            'north coast': north, 'Winterlight Island drawings removed': isles, 'bounds': wild['bounds']}
+            'north coast': north, 'clearings (rooms, area, pieces, rooms not on the snow)': clr, 'Winterlight Island drawings removed': isles, 'bounds': wild['bounds']}
