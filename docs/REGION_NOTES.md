@@ -164,7 +164,8 @@ The other builders run inside `src/legacy`.
   Trail crossings without a room (owner, Oct 22; `v2.5/009`): electrical-style jumpers (half-circle hop, up-left; tunnel or shorter line hops); NO gaps or marks.
   Mountains (owner, Oct 22): drawn from straight above as the owner's examples (several peaks per massif): stepped terraces, inked edges, hachured cliff
   faces deepest lower right, flat ledges, faceted summit caps (`wild.olmassif`, template OLMASSIF; Morte's Peak `changes/002_morte_massif.py`: base = circle
-  (65.88, 193.37) r 10.78, summit The Fury of Morte's Peak). NEVER height shading/blurred relief. Lines EXTREMELY subtle (owner, Oct 22: trails must read clearly over them). Base outline not drawn, ledges unfilled = the snow itself (owner, Oct 22: blend in). Plants/drifts kept round it; cleared only on the terraces (level 1 + its face). Zenith of the Gods (`changes/003_gods_massif.py`, 002's `build()`): base
+  (65.88, 193.37) r 10.78, summit The Fury of Morte's Peak). NEVER height shading/blurred relief. Lines EXTREMELY subtle (owner, Oct 22: trails must read clearly over them). Base outline not drawn, ledges unfilled = the snow itself (owner, Oct 22: blend in). Plants/drifts kept round it; cleared only on the terraces (level 1 + its face).
+  Each peak's top two tiers a little lighter (`crown`, owner Oct 22; a shared tier split by nearest peak). Zenith of the Gods (`changes/003_gods_massif.py`, 002's `build()`): base
   = `wild.olmtnbase[1]` from `changes/001` (holds the Maze of Ice + Frost Mansion, off the sea; not drawn), summit The Zenith of the Gods 15663 (0.77 from
   the coast-side base edge: terraces stack into one sheer face there, `sheer`); the Maze of Ice is drawn over the east peak.
   Even cover (owner, Oct 22; `changes/004_even_cover.py`): plants/drifts everywhere on the snow, no bare patches (gap fill: plant if none within 1.6,

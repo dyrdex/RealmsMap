@@ -106,7 +106,20 @@ def build(wild, pos, base, PEAKS, jseed, names, title, sheer=None):
                 w = Polygon([(cx, cy)] + [(cx + 30 * math.cos(t), cy + 30 * math.sin(t)) for t in (t0, (t0 + tm) / 2, tm, (tm + t1) / 2, t1)]).intersection(top)
                 facets += [r_ for r_ in rings(w)]
         caps.append({'creases': creases, 'shade': facets})
-    wild['olmassif'] = wild.get('olmassif', []) + [{'levels': out, 'caps': caps}]
+    # the top two tiers of each peak a little lighter (owner, Oct 22: the peaks stand out a little); a tier shared by several peaks is split
+    # between them (nearest peak), so a peak lights only its own top
+    from shapely.ops import voronoi_diagram
+    from shapely.geometry import MultiPoint
+    cells = voronoi_diagram(MultiPoint([c for c, _, _, _ in PEAKS]), envelope=base.envelope.buffer(5)) if len(PEAKS) > 1 else None
+    crown = [Polygon(), Polygon()]                 # [the tier below the top, the top tier]
+    for (cx, cy), h, arms, turn in PEAKS:
+        c = Point(cx, cy); t = max(k for k, R in enumerate(levels) if R.buffer(1e-6).contains(c))
+        own = [g for g in cells.geoms if g.contains(c)][0] if cells else base
+        for j, k in enumerate((t - 1, t)):
+            if k < 1: continue                     # never the base
+            piece = [g for g in (levels[k].geoms if hasattr(levels[k], 'geoms') else [levels[k]]) if g.buffer(1e-6).contains(c)][0]
+            crown[j] = crown[j].union(piece.intersection(own))
+    wild['olmassif'] = wild.get('olmassif', []) + [{'levels': out, 'caps': caps, 'crown': [rings(crown[0].difference(crown[1])), rings(crown[1])]}]
 
     # the terraces are bare: no plants, drifts or icy patches on them
     # (owner, Oct 22: the ground round it keeps its plants, drifts and ice, as the snow round it: only the terraces are cleared)
@@ -120,6 +133,7 @@ def build(wild, pos, base, PEAKS, jseed, names, title, sheer=None):
     named = {n: [lev(pos[v][:2]) for v in pos if int(v) in rooms and rooms[int(v)]['name'] == n and rooms[int(v)]['area'] == 'Otherland']
              for n in names}
     return {title + ' massif (terraces per peak, levels, hachures, cap creases)': ([h for _, h, _, _ in PEAKS], len(levels), nh, sum(len(c['creases']) for c in caps)),
+            'lighter top tiers (area below the top, top)': (round(crown[0].difference(crown[1]).area, 1), round(crown[1].area, 1)),
             'level of rooms (0 = base)': named,
             'removed on the terraces (plants, drifts, icy patches)': (nf - len(wild['olflora']), nd - len(S['drifts']), ni - len(S['ice']))}
 
