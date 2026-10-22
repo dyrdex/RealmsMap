@@ -136,7 +136,7 @@ The other builders run inside `src/legacy`.
   (SBOX: sea, `olsouth` beach + floes, its icebergs in `olharbor.bergs`). Shacks (owner, Oct 22): `wild.olshacks` [cx, cy, w, h] (template OLSHACK), over The Desolate Outpost's main section and
   The Hunter's Outpost 14419. Water path 22530-22531 (`seawaysfaint`). Clearings (owner, Oct 22): ONLY the Tundra Fields (13492's clump) and A Tunnel in the Snow / A Cold Lair (13322's clump); `wild.clearings`.
   Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
-  Cramped Tunnel rooms (+ those leading only to them): `oltunnels` + `oltunnelgeo` (template OLTUNNEL), drawn like the SMR underground
-  river (`smrunder`: dark blurred band, dashed walls, floor, mouths). Owner, Oct 22: tunnels ALWAYS in that style; never again glimpses/strips. Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
+  Cramped Tunnel rooms (+ those leading only to them): `oltunnels`, drawn as JUST a thin dashed line (owner, Oct 22, after rejecting
+  glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
   Over the Cliff Maze (14428-683, along the coast), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
   South of 6143 (FILL_S; 6147, 6148 as land): regular land, no beach, no inlet (owner, Oct 22).

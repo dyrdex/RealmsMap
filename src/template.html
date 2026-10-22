@@ -344,13 +344,7 @@ let FWPATHS=TOWNGROUND(WD.wltown)+RICE(WD.rice)+PATCH(WD.smrpatch,'var(--dirt)',
   FWPATHS+=DIRT(rd,.3);}
 {const T=(WD.oltracks||[]).map(p=>p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L')).join('');   /* OLTRACK: Otherland's trails (owner, Oct 22): packed snow, a little darker than the snow, two faint ruts */
   const U=(WD.oltunnels||[]).map(p=>'M'+p.map(q=>q.join(' ')).join('L')).join('');   /* OLTUNNEL: the Cramped Tunnel (owner, Oct 22): seen into the snow: a dark hollow under a snow crust, the thin path inside */
-  {const G=WD.oltunnelgeo;if(G&&U){const P=a=>a.map(r=>'M'+r.map(q=>q.join(' ')).join('L')+'Z').join(''),L=a=>a.map(r=>'M'+r.map(q=>q.join(' ')).join('L')).join('');   /* OLTUNNEL: the Cramped Tunnel, as the Southern Mountains' underground river (smrunder): a dark band seen into the ground, dashed icy walls, a soft floor, the thin path inside, arched mouths */
-    FWPATHS+=`<defs><filter id="olugB" filterUnits="userSpaceOnUse" x="-200" y="-300" width="500" height="700"><feGaussianBlur stdDeviation=".16"/></filter></defs>`;
-    FWPATHS+=`<path d="${P(G.band)}" fill="#05080c" fill-rule="evenodd" opacity=".38" filter="url(#olugB)"/>`;
-    FWPATHS+=`<path d="${L(G.walls)}" stroke="#9fb8c8" stroke-width=".05" stroke-dasharray=".16 .12" fill="none" opacity=".5"/>`;
-    FWPATHS+=`<path d="${P(G.floor)}" fill="#6F7B82" fill-rule="evenodd" opacity=".5" filter="url(#olugB)"/><path d="${P(G.floor)}" fill="#A9B6BD" fill-rule="evenodd" opacity=".12"/>`;
-    FWPATHS+=`<path d="${U}" fill="none" stroke="#A9B3B8" stroke-width=".05" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>`;
-    FWPATHS+=G.mouths.map(([x,y,a])=>`<g transform="translate(${x},${y}) rotate(${a})"><path d="M-.12 -.5 Q.42 -.5 .42 0 Q.42 .5 -.12 .5 Z" fill="#0a0d10" opacity=".72"/><path d="M-.12 -.5 Q.42 -.5 .42 0 Q.42 .5 -.12 .5" stroke="#9fb8c8" stroke-width=".08" fill="none" opacity=".85"/></g>`).join('');}}
+  if(U)FWPATHS+=`<path d="${U}" fill="none" stroke="#6F7A81" stroke-width=".07" stroke-dasharray=".22 .16" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>`;   /* the Cramped Tunnel (owner, Oct 22): just a thin dashed line */
   if(T)FWPATHS+=`<g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="${T}" stroke="#78838A" stroke-width=".36" opacity=".85"/><path d="${T}" stroke="#6F7A81" stroke-width=".2" opacity=".55"/><path d="${T}" stroke="#808B91" stroke-width=".06" opacity=".7"/></g>`;}
 FWPATHS+=CLEAR(WD.clearings);
 FWPATHS+=(WD.mdfaint||[]).map(p=>`<path d="${curve(p)}" fill="none" stroke="var(--dirt-hi)" stroke-width=".07" stroke-dasharray=".2 .16" stroke-linecap="round" opacity=".42"/>`).join('');   /* Miden'nir's forest rooms: a faint wavy dashed trail marking (owner, Oct 15) */
