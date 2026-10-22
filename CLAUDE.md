@@ -59,7 +59,8 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 ## Working rules (save credits)
 - Read this file; open other docs only for the part needed. Don't search old chats.
 - Batch the owner's requests into one build; verify with numbers; at most one screenshot per set of changes.
-- Never send images or files into the chat (Oct 18): screenshots are for checking only.
+- Never send images or files into the chat (Oct 18; repeated Oct 22): opening an image with Read shows it in the chat too, so verify with
+  numbers and avoid screenshots; take one only when numbers can't settle it.
 - Ask before work outside the agreed plan.
 - After each batch: one line per change in CHANGELOG (owner-facing), a short rule in REGION_NOTES if it should hold later,
   update "State" above.
