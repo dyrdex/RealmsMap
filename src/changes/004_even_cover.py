@@ -28,7 +28,8 @@ def apply(town, wild, pos):
     L = lambda k: [LineString(l) for l in wild.get(k, []) if len(l) > 1]
     o = wild['olsnow']; G = wild['olgorge']
     block = [g.buffer(0.42) for g in L('oltracks')] + [g.buffer(0.25) for g in L('oltunnels')]
-    block += [Point(q[:2]).buffer(0.45) for q in pos.values() if main.buffer(1).contains(Point(q[:2]))]
+    near_main = prep(main.buffer(1))                                                     # (built once: per room it cost ~80 s)
+    block += [Point(q[:2]).buffer(0.45) for q in pos.values() if near_main.contains(Point(q[:2]))]
     block += [Polygon(m['poly']).buffer(0.3) for m in wild['fwmazes'] if Polygon(m['poly']).intersects(main)]
     block += [Point(m['cx'], m['cy']).buffer(1.4) for m in wild['fwmazes'] if m.get('name')]
     block += [Polygon(h).buffer(0.2) for c in wild.get('clearings', []) for h in c['polys'] if Polygon(h).intersects(main)]
