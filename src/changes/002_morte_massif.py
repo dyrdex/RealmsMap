@@ -28,6 +28,13 @@ def apply(town, wild, pos):
                      y + (y - BASE_C[1]) / BASE_R * 0.22 * math.sin(3 * math.atan2(y - BASE_C[1], x - BASE_C[0]) + ph[0]) * math.sin(7 * math.atan2(y - BASE_C[1], x - BASE_C[0]) + ph[1]))
                     for x, y in base.exterior.coords])
 
+    names = ("The Fury of Morte's Peak", 'Nestled Between the Peaks', 'An Icy Pass', 'A Snow Clogged Pass', "Dead Man's Pass", "Entombed within Morte's Peak", "Within the Heart of Morte's Peak", 'Upon the Roof')
+    return build(wild, pos, base, PEAKS, 100, names, "Morte's Peak")
+
+
+def build(wild, pos, base, PEAKS, jseed, names, title, sheer=None):
+    """a massif on base (Polygon) with PEAKS [(centre, height in steps, arms, arm turn)]; jseed seeds its jagged edges; names: rooms to report;
+    sheer: where the terraces may all reach the base's edge (one sheer face, no ledges: a summit at the coast)"""
     def jag(poly, seed):
         r = random.Random(seed); out = []
         for g in (poly.geoms if isinstance(poly, MultiPolygon) else [poly]):
@@ -54,7 +61,7 @@ def apply(town, wild, pos):
     levels = [base]
     for k in range(1, 8):
         R = unary_union([cone(k, p) for p in PEAKS]).buffer(0.55).buffer(-0.55)
-        R = jag(R, 100 + k).intersection(levels[-1].buffer(-MIN_LEDGE)).buffer(0)
+        R = jag(R, jseed + k).intersection(levels[-1].buffer(-MIN_LEDGE) if sheer is None else levels[-1].buffer(-MIN_LEDGE).union(levels[-1].intersection(sheer))).buffer(0)
         R = unary_union([g for g in (R.geoms if hasattr(R, 'geoms') else [R]) if g.geom_type == 'Polygon' and g.area > 0.25])
         if R.is_empty: break
         levels.append(R)
@@ -107,14 +114,12 @@ def apply(town, wild, pos):
     nf = len(wild['olflora']); wild['olflora'] = [t for t in wild['olflora'] if not bare.contains(Point(t[0], t[1]))]
     S = wild['olsnow']; nd = len(S['drifts']); S['drifts'] = [d for d in S['drifts'] if not bare.buffer(0.1).contains(Point(d[0], d[1]))]
     ni = len(S['ice']); S['ice'] = [p for p in S['ice'] if not bare.intersects(Polygon(p))]
-    # the preview outline of Morte's Peak goes (the Gods' stays until drawn)
-    wild['olmtnpreview'] = [r for r in wild.get('olmtnpreview', []) if Polygon(r).centroid.x < 40]
 
     rooms, _ = maplib.world()
     lev = lambda p: max([k for k, R in enumerate(levels) if R.buffer(1e-6).contains(Point(p))], default=-1)
     named = {n: [lev(pos[v][:2]) for v in pos if int(v) in rooms and rooms[int(v)]['name'] == n and rooms[int(v)]['area'] == 'Otherland']
-             for n in ("The Fury of Morte's Peak", 'Nestled Between the Peaks', 'An Icy Pass', 'A Snow Clogged Pass', "Dead Man's Pass", "Entombed within Morte's Peak", "Within the Heart of Morte's Peak", 'Upon the Roof')}
-    return {"Morte's Peak massif (terraces per peak, levels, hachures, cap creases)": ([h for _, h, _, _ in PEAKS], len(levels), nh, sum(len(c['creases']) for c in caps)),
+             for n in names}
+    return {title + ' massif (terraces per peak, levels, hachures, cap creases)': ([h for _, h, _, _ in PEAKS], len(levels), nh, sum(len(c['creases']) for c in caps)),
             'level of rooms (0 = base)': named,
             'removed on the terraces (plants, drifts, icy patches)': (nf - len(wild['olflora']), nd - len(S['drifts']), ni - len(S['ice']))}
 

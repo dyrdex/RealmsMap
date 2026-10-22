@@ -26,7 +26,7 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   After a legacy redraw or a new Otherland save: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
 - All 15 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get `<key>/current`.
   Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`; Azure Sea rooms via `tools/otherland_editor/add_azure_east.py`.
-- In progress (2.7): Otherland mountains. Morte's Peak drawn (`changes/002`); plants/drifts evened out (`003`); Zenith of the Gods next (its base still a dashed preview in `changes/001`).
+- In progress (2.7): Otherland mountains drawn: bases `changes/001`, Morte's Peak `002` (shared `build()`), Zenith of the Gods `003`; plants/drifts evened out `004`.
 
 ## Snapshots
 - Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.6, the next is 2.7

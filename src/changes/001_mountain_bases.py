@@ -1,5 +1,5 @@
-# TEMPORARY review (owner, Oct 22): where the bases of Otherland's two mountains would go, as dashed outlines (wild.olmtnpreview: rings).
-# Shapes may be abstract, just encircling the mountain (owner). Remove once the owner settles them.
+# The bases of Otherland's two mountains (owner, Oct 22: set; abstract shapes encircling each mountain): wild.olmtnbase = [Morte's Peak, Zenith of the Gods]
+# rings, not drawn (002/003 build the mountains on them; Morte's Peak uses the same circle, BASE_C/BASE_R in 002).
 import itertools, math, random
 import maplib
 from shapely.geometry import Point, Polygon, MultiPoint, box
@@ -47,9 +47,9 @@ def apply(town, wild, pos):
                     for x, y in gods.segmentize(0.3).exterior.coords]).buffer(0).buffer(0.6).buffer(-0.6)
     gods = gods.intersection(land.buffer(-COAST_M)).buffer(-SMOOTH).buffer(SMOOTH)
     if gods.geom_type != 'Polygon': gods = max(gods.geoms, key=lambda g: g.area)
-    wild['olmtnpreview'] = [[[round(x, 3), round(y, 3)] for x, y in g.exterior.coords] for g in (morte, gods)]
+    wild['olmtnbase'] = [[[round(x, 3), round(y, 3)] for x, y in g.exterior.coords] for g in (morte, gods)]
     inside = lambda g: sorted({nm(v) or '(spacer)' for v in ol if g.contains(Point(pos[str(v)][:2]))})
-    return {"Morte's Peak preview (centre, radius, area, rooms inside)": ((round(cx, 1), round(cy, 1)), round((r + 1.5) * MP_SCALE, 1), round(morte.area), len([v for v in ol if morte.contains(Point(pos[str(v)][:2]))])),
-            'Zenith of the Gods preview (x, y range, area, off land, rooms inside)': (tuple(round(q, 1) for q in gods.bounds), round(gods.area), round(gods.difference(land).area, 2),
+    return {"Morte's Peak base (centre, radius, area, rooms inside)": ((round(cx, 1), round(cy, 1)), round((r + 1.5) * MP_SCALE, 1), round(morte.area), len([v for v in ol if morte.contains(Point(pos[str(v)][:2]))])),
+            'Zenith of the Gods base (x, y range, area, off land, rooms inside)': (tuple(round(q, 1) for q in gods.bounds), round(gods.area), round(gods.difference(land).area, 2),
                                                                                    len([v for v in ol if gods.contains(Point(pos[str(v)][:2]))])),
             'Gods names inside': inside(gods), 'Morte names inside': inside(morte)}
