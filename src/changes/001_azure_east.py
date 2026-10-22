@@ -37,9 +37,9 @@ ICE_CLEAR = 0.6                                                               # 
 WAVE_AMP, WAVE_LEN = 0.12, 2.5                                                # as applied/v2.4/001's seawaves
 CLIMBS = {(6173, 13276), (6186, 15657), (22524, 15659), (15154, 15738), (15171, 13351), (15175, 13341), (15187, 13336), (15195, 15739),
           (15741, 13327), (13143, 13198), (13144, 13291)}                     # owner (Oct 22): these go "up the cliff" (low room, high room)
-CLIFF_W, CLIFF_L, CLIFF_JOIN, FLAT_GAP = 0.55, 1.6, 6.0, 0.8                   # the cliff face: width; along the coast each side of a climb; joined when
-                                                                              #  closer than this; kept this far from a flat landing
-SCARP_L, STEP_D, STEP_W = 2.4, 0.14, 0.17                                    # a climb on land: its scarp's length; steps: apart, half width
+CLIFF_W, CLIFF_L = 0.55, 0.8                                                  # the cliff face: width; past the end climbs along the coast (13289's flat
+                                                                              #  landing, 1.4 past 6173's, stays off it)
+STEP_D, STEP_W = 0.14, 0.17                                                   # steps: apart, half width
 TRACK_A, TRACK_L = 0.16, 7.0                                                  # applied/v2.4/001's trail warp (its rooms are on the warped spots)
 
 
@@ -240,89 +240,65 @@ def apply(town, wild, pos):
             else: waves.append(_wave([list(a_), list(b_)]))
         return out
     endp = lambda v: warp(*at(v)) if v in landr else at(v)
-    climb_land = {}                                                                             # (low, high) -> the trail pieces of the climb
+    landing = {}                                                                                # (sea room, land room) -> its trail pieces on land
     for a, b in edges:                                                                          # sea room - land room
         if (a in seaside) == (b in seaside): continue
         s, l = (a, b) if a in seaside else (b, a)
         parts = split(at(s), endp(l), 'faint' if s in onsp else 'waves'); nsplit += 1
         if not parts: ncross.append((s, l))
-        if (s, l) in CLIMBS: climb_land[(s, l)] = [tr for _, tr in parts]
-    for lo, hi in sorted(CLIMBS):                                                               # the climbs between two Otherland rooms (owner, Oct 22)
-        if (lo, hi) in climb_land: continue
+        landing[(s, l)] = [tr for _, tr in parts]
+    for lo, hi in sorted(CLIMBS):                                                               # the climbs from a room not out at sea (owner, Oct 22)
         drawn = any(min(math.dist(l[0], endp(lo)), math.dist(l[-1], endp(lo))) < 0.05 and min(math.dist(l[0], endp(hi)), math.dist(l[-1], endp(hi))) < 0.05
                     for l in wild['oltracks'] if len(l) > 1)
-        if drawn:                                                                               # (already a trail: 22524 - 15659)
-            n = max(2, int(math.dist(at(lo), at(hi)) / 0.2))
-            climb_land[(lo, hi)] = [[rp(warp(at(lo)[0] + (at(hi)[0] - at(lo)[0]) * i / n, at(lo)[1] + (at(hi)[1] - at(lo)[1]) * i / n)) for i in range(n + 1)]]
-        else: climb_land[(lo, hi)] = [tr for _, tr in split(endp(lo), endp(hi), 'waves')]; nsplit += 1
+        if (lo, hi) in landing or drawn: continue                                               # (22524 - 15659: already a trail)
+        landing[(lo, hi)] = [tr for _, tr in split(endp(lo), endp(hi), 'waves')]; nsplit += 1   # (15154 up to 15738; 15741 up to 13327, on land)
 
-    # ---- 4b. the cliffs the climbs go up (owner, Oct 22): the coast drawn as a cliff face there, steps across the climbing trails ----
+    # ---- 4b. the cliff (owner, Oct 22): one cliff face along the east coast's edge, from the northernmost climb's landing to the southernmost;
+    #      the climbs that start on land (22524, 15741) go up where their room's exit from the sea comes ashore (owner: 'pretend that's where
+    #      things go up'); every exit that comes ashore across the face gets steps on it, on the face only ----
     mainl = max(_polys(newl), key=lambda g: g.area); ring = LineString(mainl.exterior.coords); RL = ring.length
-    def crossing(lo, hi):                                                                      # where the climb comes onto the mainland
+    def crossing(lo, hi):                                                                      # where an exit comes onto the mainland
         line = LineString([endp(lo), endp(hi)]); hit = line.intersection(ring)
         q = [g for g in getattr(hit, 'geoms', [hit]) if g.geom_type == 'Point']
         return max(q, key=lambda g: line.project(g)) if q else None
-    cx = {k: crossing(*k) for k in CLIMBS}
-    coastal_c = {k: c for k, c in cx.items() if c is not None}
-    flats = []
-    for a, b in edges:                                                                          # exits that come ashore on the flat: no cliff there
-        if (a in seaside) != (b in seaside) and (min(a, b), max(a, b)) not in {(min(*k), max(*k)) for k in CLIMBS}:
-            s, l = (a, b) if a in seaside else (b, a); c = crossing(s, l)
-            if c is not None: flats.append(ring.project(c))
-    iv = sorted([ring.project(c) - CLIFF_L, ring.project(c) + CLIFF_L] for c in coastal_c.values())
-    merged = []
-    for a_, b_ in iv:
-        if merged and a_ - merged[-1][1] < CLIFF_JOIN: merged[-1][1] = max(merged[-1][1], b_)
-        else: merged.append([a_, b_])
-    stretches = []
-    for a_, b_ in merged:                                                                       # cut round the flat landings
-        cur = [a_, b_]
-        for f_ in sorted(flats):
-            if cur[0] < f_ < cur[1]:
-                if f_ - FLAT_GAP - cur[0] > 0.3: stretches.append([cur[0], f_ - FLAT_GAP])
-                cur = [f_ + FLAT_GAP, cur[1]]
-        if cur[1] - cur[0] > 0.3: stretches.append(cur)
+    seaup = {s: l for s, l in landing}                                                          # (each land room's way up from the sea)
+    anchors = {}
+    for lo, hi in CLIMBS:
+        c = crossing(lo, hi)
+        if c is None:                                                                           # (a climb on land: where its room's exit from the sea comes ashore)
+            k = next(((s, l) for s, l in landing if l == lo and s in seaside), None); c = crossing(*k) if k else None
+        if c is not None: anchors[(lo, hi)] = ring.project(c)
+    sv_ = sorted(anchors.values()); gaps = [(sv_[(i + 1) % len(sv_)] - sv_[i]) % RL for i in range(len(sv_))]
+    i0 = max(range(len(sv_)), key=lambda i: gaps[i])                                            # the arc that holds them all: round from after the widest gap
+    a_, b_ = sv_[(i0 + 1) % len(sv_)] - CLIFF_L, sv_[(i0 + 1) % len(sv_)] - CLIFF_L + (RL - gaps[i0]) + 2 * CLIFF_L
     from shapely.ops import substring
-    cr = random.Random(26002); face, hach, rim = [], [], []
-    def inward(p, tx, ty):
-        nx_, ny_ = -ty, tx
-        return (nx_, ny_) if mainl.contains(Point(p[0] + nx_ * 0.2, p[1] + ny_ * 0.2)) else (-nx_, -ny_)
-    for a_, b_ in stretches:
-        sub = substring(ring, max(0, a_), min(RL, b_))
-        band = sub.buffer(CLIFF_W, cap_style='flat').intersection(mainl)
-        face += [q for q in _polys(band) if q.area > 0.01]
-        n = max(2, int(sub.length / 0.16)); rl = []
-        for i in range(n + 1):
-            d = sub.length * i / n; p = sub.interpolate(d).coords[0]; p2 = sub.interpolate(min(sub.length, d + 0.05)).coords[0]; p1 = sub.interpolate(max(0, d - 0.05)).coords[0]
-            L_ = math.dist(p1, p2) or 1; nx_, ny_ = inward(p, (p2[0] - p1[0]) / L_, (p2[1] - p1[1]) / L_)
-            rl.append(rp((p[0] + nx_ * CLIFF_W, p[1] + ny_ * CLIFF_W)))
-            if 0 < i < n: k = cr.uniform(0.55, 0.95); hach.append([rp((p[0] + nx_ * CLIFF_W * 0.95, p[1] + ny_ * CLIFF_W * 0.95)), rp((p[0] + nx_ * CLIFF_W * (0.95 - k), p[1] + ny_ * CLIFF_W * (0.95 - k)))])
-        rim.append(rl)
-    for k in sorted(CLIMBS):                                                                    # the climbs on land: a short scarp across the trail
-        if k in coastal_c: continue
-        lo, hi = k; pa, pb = endp(lo), endp(hi); m = ((pa[0] + pb[0]) / 2, (pa[1] + pb[1]) / 2)
-        L_ = math.dist(pa, pb); tx, ty = (pb[0] - pa[0]) / L_, (pb[1] - pa[1]) / L_; nx_, ny_ = -ty, tx
-        top = [(m[0] + nx_ * SCARP_L / 2 * j / 6 + tx * CLIFF_W / 2, m[1] + ny_ * SCARP_L / 2 * j / 6 + ty * CLIFF_W / 2) for j in range(-6, 7)]
-        foot = [(x - tx * CLIFF_W, y - ty * CLIFF_W) for x, y in top]
-        face.append(Polygon(top + foot[::-1]).intersection(mainl)); rim.append([rp(q) for q in top])
-        for x, y in top[1:-1]:
-            for j in range(3):
-                oo = (j - 1) * SCARP_L / 36; kk = cr.uniform(0.55, 0.95)
-                hach.append([rp((x + nx_ * oo, y + ny_ * oo)), rp((x + nx_ * oo - tx * CLIFF_W * kk, y + ny_ * oo - ty * CLIFF_W * kk))])
-    faceu = unary_union(face)
-    steps = []
-    for k, trs in climb_land.items():
+    def arc(a_, b_):
+        a_ %= RL; b2 = a_ + (b_ - a_ if b_ > a_ else b_ - a_ + RL)
+        return substring(ring, a_, b2) if b2 <= RL else LineString(list(substring(ring, a_, RL).coords) + list(substring(ring, 0, b2 - RL).coords)[1:])
+    sub = arc(a_, b_)
+    cr = random.Random(26002); hach, rl = [], []
+    band = sub.buffer(CLIFF_W, cap_style='flat').intersection(mainl)
+    n = max(2, int(sub.length / 0.16))
+    for i in range(n + 1):
+        d = sub.length * i / n; p = sub.interpolate(d).coords[0]; p2 = sub.interpolate(min(sub.length, d + 0.05)).coords[0]; p1 = sub.interpolate(max(0, d - 0.05)).coords[0]
+        L_ = math.dist(p1, p2) or 1; tx, ty = (p2[0] - p1[0]) / L_, (p2[1] - p1[1]) / L_
+        nx_, ny_ = (-ty, tx) if mainl.contains(Point(p[0] - ty * 0.2, p[1] + tx * 0.2)) else (ty, -tx)
+        rl.append(rp((p[0] + nx_ * CLIFF_W, p[1] + ny_ * CLIFF_W)))
+        if 0 < i < n: k = cr.uniform(0.55, 0.95); hach.append([rp((p[0] + nx_ * CLIFF_W * 0.95, p[1] + ny_ * CLIFF_W * 0.95)), rp((p[0] + nx_ * CLIFF_W * (0.95 - k), p[1] + ny_ * CLIFF_W * (0.95 - k)))])
+    rim = [rl]; faceu = unary_union([q for q in _polys(band) if q.area > 0.01])
+    steps = []; upk = set()
+    for k, trs in landing.items():
         for tr in trs:
             if len(tr) < 2: continue
             g = LineString(tr).intersection(faceu.buffer(0.05))
             for seg in [q for q in getattr(g, 'geoms', [g]) if q.geom_type == 'LineString' and q.length > 0.05]:
-                n = max(2, int(seg.length / STEP_D))
+                upk.add(k); n = max(2, int(seg.length / STEP_D))
                 for i in range(1, n):
                     d = seg.length * i / n; p = seg.interpolate(d).coords[0]; p2 = seg.interpolate(min(seg.length, d + 0.03)).coords[0]; p1 = seg.interpolate(max(0, d - 0.03)).coords[0]
                     L_ = math.dist(p1, p2) or 1; nx_, ny_ = -(p2[1] - p1[1]) / L_, (p2[0] - p1[0]) / L_
                     steps.append([rp((p[0] - nx_ * STEP_W, p[1] - ny_ * STEP_W)), rp((p[0] + nx_ * STEP_W, p[1] + ny_ * STEP_W))])
     wild['olcliff'] = {'face': [rd(q) for q in _polys(faceu)], 'hach': hach, 'rim': rim, 'steps': steps}
-    nostep = sorted(k for k, trs in climb_land.items() if not any(LineString(tr).intersects(faceu) for tr in trs if len(tr) > 1))
+    nostep = sorted(k for k in CLIMBS if k not in anchors)
     wild['seawaysfaint'] = list(wild['seawaysfaint']) + faint
     wild['seawaves'] = list(wild['seawaves']) + waves
     wild['oltracks'] = list(wild['oltracks']) + trails
@@ -342,8 +318,8 @@ def apply(town, wild, pos):
             (len(AZ), len(edges), nud, (len(spine), len(faint), nlen(faint)), (len(waves), nlen(waves)), (nsplit, nlen(trails), ncross), over),
             'coast (land cut, added; notches closed (pieces, area); rooms the move left off the land; pieces dropped; land rooms off the land, sea rooms on it)':
             (round(gone.area, 1), round(added.area, 1), (len(notches), round(sum(g.area for g in notches), 1)), offl, len(dropped), lost, wetin),
-            'cliffs (stretches, length; scarps on land; faces area; hachures; steps; climbs without steps)':
-            (len(stretches), round(sum(b_ - a_ for a_, b_ in stretches), 1), sum(1 for k in CLIMBS if k not in coastal_c), round(faceu.area, 2), len(hach), len(steps), nostep),
+            'cliff (length, from-to y; face area; hachures; exits going up it (with steps): count, steps; climbs without a landing)':
+            (round(sub.length, 1), (round(sub.coords[0][1], 1), round(sub.coords[-1][1], 1)), round(faceu.area, 2), len(hach), (len(upk), sorted(upk)), len(steps), nostep),
             'iceberg 15154 (area, gap to the mainland)': (round(berg.area, 2), round(berg.distance(newl), 2)),
             'snow (drifts dropped, added; ice patches, plants dropped)': (nd0 - len(o['drifts']) + len(dr), len(dr), ni0 - len(o['ice']), nf0 - len(wild['olflora'])),
             'sea (fills added: pieces, area; old fills cut; shore lines before -> after; ice dropped floes, bergs; bounds)':

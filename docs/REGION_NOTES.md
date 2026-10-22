@@ -125,8 +125,9 @@ The other builders run inside `src/legacy`.
   exactly at the coast. Not drawn: 5987-22496 (owner), 15606 -> Grey Beach.
   Every `seafill` and `water` ring is trimmed to the final land (each ring on its own, evenodd-safe): no blue strips or shore strokes under land
   (owner, Oct 22: hairlines along old coasts). Check: visible sea fill inside land.buffer(-0.08) must be 0.
-  Climbs up the east cliff (owner, Oct 22; `CLIMBS` in 001_azure_east): the coast at their landings = cliff face (`wild.olcliff`, template OLCLIFF,
-  OLLEDGE style; not at flat landings); climbs on land get a short scarp; steps across every climbing trail on the face (as smrclimb). No coastal ice/bergs there for now (owner). The save's az rooms are those not in `legacy/ol_editor_edges.json`.
+  East cliff (owner, Oct 22; `CLIMBS` in 001_azure_east): ONE continuous cliff face along the coast's edge from the northernmost climb landing
+  to the southernmost (`wild.olcliff`, template OLCLIFF, OLLEDGE style); climbs from a land room (22524, 15741) go up where that room's exit from
+  the sea comes ashore (owner: no cliffs inland); every exit coming ashore across the face gets steps on the face only (as smrclimb). No coastal ice/bergs there for now (owner). The save's az rooms are those not in `legacy/ol_editor_edges.json`.
   A new Otherland save: replace `legacy/ol_layout_final.json`, then `legacy/rebase.py` on a legacy dump (the v2.4/v2.5 files redraw from it).
   Unlocked there (grp 'un', owner Oct 21): 18052-18075, 6174, 18047, 13379, 13380, 6166, 6180, 6650, 15410-15418; a save may move these map rooms.
   Drawn Oct 21 as a BASIC render (`changes/001_otherland.py`): plain trails, plain snow (`geo.snow`, template --snow, also a `geo.land` piece);
