@@ -142,4 +142,5 @@ The other builders run inside `src/legacy`.
   Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; west edge one smooth concave curve, no juts; owner Oct 22), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
   South of 6143 (FILL_S; 6147, 6148 as land): regular land, no beach, no inlet (owner, Oct 22).
   Gorge (owner, Oct 23): never touches the A Tunnel in the Snow maze (wall cut back, `changes/004`); its floor carries rocks/gravel/cracks (`olgorge.rocks/gravel/cracks`, `005`), clear of its trail.
+  East coast (owner, Oct 23; `007`): bay east of Morte's Peak filled (closed r 5 in BAY), sea EBOX SEA_W 6 (seafill + seashore); its ice `008` (006's placement).
   Shore ice (owner, Oct 23): floes + small bergs along the WHOLE sea coast at the south shore's density (`006`, appended to `olsouth.floes` / `olharbor.bergs`).

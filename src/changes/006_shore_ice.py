@@ -12,8 +12,12 @@ SBOX = box(-12, 228, 56, 264)
 
 
 def apply(town, wild, pos):
+    return place(wild, pos, 23231)
+
+
+def place(wild, pos, seed, only=None):          # only: limit the new ice to this area (008, the east coast)
     rooms, _ = world()
-    rr = random.Random(23231)
+    rr = random.Random(seed)
     G = wild['geo']
     snow = unary_union([Polygon(p).buffer(0) for p in G['snow'] if len(p) > 2])
     sea = unary_union([Polygon(p).buffer(0) for k in ('seafill', 'water') for p in G[k] if len(p) > 2]).difference(snow)
@@ -28,6 +32,7 @@ def apply(town, wild, pos):
     dens = n_south / szone.area
     old = unary_union(floes0 + bergs0 + [Polygon(p).buffer(0) for p in wild['olharbor']['ice']])
     zone = zone.difference(szone.buffer(0.5)).difference(old.buffer(0.4))
+    if only is not None: zone = zone.intersection(only)
     lines = [l for k in ('seaways', 'seawaysfaint', 'seawaves', 'olharborways', 'seadash') for l in wild.get(k, []) if len(l) > 1]
     lines += [c['pts'] for c in wild.get('seacurrents', []) if len(c.get('pts', [])) > 1]
     zb = zone.buffer(1.0)

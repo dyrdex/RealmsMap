@@ -2,6 +2,8 @@
 
 ## In progress (Version 2.5)
 
+- Your request (Oct 23): the bay on the east coast (east of Morte's Peak) is filled in with snow, with the two small dents beside it (70 square rooms, no rooms in it, 4 snow drifts as on the snow round it); the coast there is smooth now (it wanders only 2 rooms over 18).
+- Your request (Oct 23): the east coast has its sea now, like the other coasts: 6 rooms out from the land, joined to the north and south seas (360 square rooms; no stretch of the coast left without sea), and the same floating ice and little icebergs (89 floes, 7 icebergs) clear of the land, rooms and routes.
 - Your request (Oct 23): Tirebaen's Gorge no longer touches the A Tunnel in the Snow maze: the gorge's east wall is pulled back there, leaving a gap of 0.35 rooms (they overlapped by 0.82 square rooms). The maze is unchanged; its rooms and the gorge's trail don't move.
 - Your request (Oct 23): the gorge floor is rocky now: 585 snow-dusted rocks and boulders (gathered at the foot of the walls, a few big ones), 1663 bits of scree and gravel and 84 cracks, all kept clear of the trail on it (rocks at least 0.33 rooms from its centre line).
 - Your request (Oct 23): the south shore's floating ice and little icebergs now run along Otherland's whole sea coast (and round The Iceberg), as dense as off the south shore: 423 more floes and 35 more icebergs, within 3.5 rooms of the coast, none on land and none touching a room, sea route, maze or the ice already there.
