@@ -1,6 +1,6 @@
 # TEMPORARY review (owner, Oct 22): where the bases of Otherland's two mountains would go, as dashed outlines (wild.olmtnpreview: rings).
 # Shapes may be abstract, just encircling the mountain (owner). Remove once the owner settles them.
-import itertools, math
+import itertools, math, random
 import maplib
 from shapely.geometry import Point, Polygon, MultiPoint, box
 from shapely.ops import unary_union
@@ -9,7 +9,9 @@ MP_NAMES = {'Nestled Between the Peaks', 'Upon the Roof', 'Platforms of Sacrific
             'The Sudden Stop', 'Entombed in Ice', 'A Cavern of Ice', 'An Icy Burrow', 'The Cave', 'Home of the Jarl', 'A Crisp Path', 'Scratching the Surface',
             'Lost in the Darkness', 'The Last of the Foothills'}       # as applied/v2.4/001_otherland (Morte's Peak, east of x 50)
 MP_SCALE = 2 / 3                                                        # owner (Oct 22): centred right, a third smaller
-GODS_M, COAST_M, SMOOTH = 1.5, 0.5, 0.4                                 # Gods: this far round its rooms + the Maze of Ice + Frost Mansion; this far in from the sea
+GODS_M, COAST_M, SMOOTH = 1.5, 0.5, 0.4
+GODS_N, GODS_E, GODS_S, GODS_W = 3.5, 4.0, 1.0, 1.0           # owner (Oct 22): relaxed a good bit north and east, slightly south (y grows south)
+WOB_A, WOB_K, ROUND = 0.7, 3, 2.0                                       # a loose abstract outline: gentle wobble (amplitude, waves round), rounded                                 # Gods: this far round its rooms + the Maze of Ice + Frost Mansion; this far in from the sea
 
 
 def mec(pts):
@@ -36,7 +38,13 @@ def apply(town, wild, pos):
     maze = Polygon([m for m in wild['fwmazes'] if m.get('name') == 'The Maze of Ice'][0]['poly'])
     mx, my, mw, mh = wild['olmansion'][:4] if isinstance(wild['olmansion'][0], (int, float)) else wild['olmansion'][0][:4]
     pts = [tuple(pos[str(v)][:2]) for v in GODS] + list(maze.exterior.coords) + list(box(mx - mw / 2, my - mh / 2, mx + mw / 2, my + mh / 2).exterior.coords)
-    gods = MultiPoint(pts).convex_hull.buffer(GODS_M, 32)
+    hull = MultiPoint(pts).convex_hull
+    K = [(-GODS_W, 0), (0, -GODS_N), (GODS_E * .8, -GODS_N * .8), (GODS_E, 0), (GODS_E * .6, GODS_S), (0, GODS_S)]   # spread: hull (+) K
+    gods = MultiPoint([(x + a, y + b) for x, y in hull.exterior.coords for a, b in K]).convex_hull.buffer(GODS_M + ROUND, 32).buffer(-ROUND, 32)
+    rnd = random.Random(2207); ph = [rnd.uniform(0, 2 * math.pi) for _ in range(2)]; c = gods.centroid
+    wob = lambda x, y: (lambda t: WOB_A * (math.sin(WOB_K * t + ph[0]) * .6 + math.sin((WOB_K + 2) * t + ph[1]) * .4))(math.atan2(y - c.y, x - c.x))
+    gods = Polygon([(x + (x - c.x) / math.hypot(x - c.x, y - c.y) * wob(x, y), y + (y - c.y) / math.hypot(x - c.x, y - c.y) * wob(x, y))
+                    for x, y in gods.segmentize(0.3).exterior.coords]).buffer(0).buffer(0.6).buffer(-0.6)
     gods = gods.intersection(land.buffer(-COAST_M)).buffer(-SMOOTH).buffer(SMOOTH)
     if gods.geom_type != 'Polygon': gods = max(gods.geoms, key=lambda g: g.area)
     wild['olmtnpreview'] = [[[round(x, 3), round(y, 3)] for x, y in g.exterior.coords] for g in (morte, gods)]
