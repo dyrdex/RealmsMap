@@ -30,6 +30,8 @@ WET = {'Swimming', 'Underwater', 'Water', 'Seafloor'}
 CLIFF = 'Over the Cliff'
 ICEBERG = [22531, 22532, 22533, 22534, 22535, 6166, 13379, 13380, 6180]   # owner (Oct 22): The Iceberg, its own little white island; 22530 on the mainland
 ZONE_R, TIGHT_R, TIGHT_TR = 5.0, 0.75, 0.55          # near the iceberg the mainland hugs its rooms (this far) and trails (this far)
+FILL1 = unary_union([box(68.5, 174.6, 70.5, 183.0), box(65.5, 176.0, 70.5, 183.0),
+                     Polygon([(70.5, 174.6), (72.3, 174.6), (72.75, 176.4), (72.35, 178.2), (72.9, 180.0), (72.5, 181.7), (72.8, 183.0), (70.5, 183.0)])])   # (an uneven east shore)   # owner (Oct 22): land west and south of 13287, its sea inlets gone
 NW_X = 50.0                                         # water routes wholly west of this: drawn as the Sea of Sorrows' routes (`seawaysfaint`)
 LAND_R, LTRAIL_R, CLOSE_N = 1.3, 0.9, 3.0           # the mainland's north edge: this far round its rooms and trails, gaps narrower than 6 closed
 WET_R, WTRAIL_R = 1.2, 0.8                          # sea at least this far round the water rooms and their routes
@@ -109,7 +111,7 @@ def apply(town, wild, pos):
         runs = [r for r in runs if len(r) > 1]
         wild['seawaves'][j] = _wave(runs[0]) if runs else []; extra += [_wave(r) for r in runs[1:]]; nw += 1
     wild['seawaves'] = [l for l in wild['seawaves'] if l] + extra
-    wild['fwtracks'] = list(wild['fwtracks']) + icesegs
+    wild['oltracks'] = list(wild.get('oltracks') or []) + icesegs     # Otherland's own trails (owner, Oct 22: tracks in the snow; template OLTRACK)
     for v in moved:
         if str(v) in pos: pos[str(v)] = [P[v][0], P[v][1]]
         else: wild['track']['cx%d' % v] = [P[v][0], P[v][1]]
@@ -152,7 +154,7 @@ def apply(town, wild, pos):
         for b in G[a]:
             (GW if wetedge(a, b) else GL)[a].add(b)
     ltrails = _chains(GL, P); wroutes = _chains(GW, P)
-    wild['fwtracks'] = list(wild['fwtracks']) + ltrails
+    wild['oltracks'] = list(wild['oltracks']) + ltrails
     nwr = [l for l in wroutes if all(q[0] < NW_X for q in l)]
     wild['seawaysfaint'] = list(wild['seawaysfaint']) + nwr
     wild['seawaves'] = list(wild['seawaves']) + [_wave(l) for l in wroutes if not all(q[0] < NW_X for q in l)]
@@ -217,13 +219,16 @@ def apply(town, wild, pos):
     closed = unary_union([core.buffer(CLOSE_N).buffer(-CLOSE_N).difference(ZONE), tight])
     mainland = unary_union([closed.difference(wetreach), protect.difference(iceberg.buffer(0.01))]).difference(iceberg.buffer(SLIVER).difference(protect))
     mainland = mainland.intersection(allsnow.buffer(0.01))   # (where the old snow kept off the old sea, sea now: no gap)
+    fill1 = FILL1.difference(W.buffer(0.3)).difference(iceberg.buffer(SLIVER))
+    fill1 = unary_union([fill1, mainland.intersection(FILL1.buffer(1.0))]).buffer(0.3).buffer(-0.3).intersection(FILL1.buffer(0.5)).difference(W.buffer(0.3)).difference(iceberg.buffer(SLIVER))
+    mainland = unary_union([mainland, fill1])
     solid = unary_union([land_all, mainland, iceberg])
     reach = unary_union([allsnow.buffer(SEA_W), W.buffer(SEA_W), wetreach]).intersection(NBOX)
     region = unary_union([reach, wetreach]).buffer(SEA_CLOSE).buffer(-SEA_CLOSE).intersection(NBOX)
-    sea = region.difference(solid.buffer(0.02))
+    sea = region.difference(solid)                      # (exactly up to the land: no hairline gaps)
     sea = unary_union([g for g in getattr(sea, 'geoms', [sea]) if g.distance(W) < 0.05 or g.distance(wetreach) < 0.05 and g.area > 1.0])
     # the snow: the old snow minus the new sea (the mainland's north edge), plus the iceberg
-    newsnow = unary_union([allsnow.difference(ZONE), allsnow.intersection(tight)]).difference(sea).difference(iceberg.buffer(SLIVER).difference(protect))
+    newsnow = unary_union([allsnow.difference(ZONE), allsnow.intersection(tight), fill1]).difference(sea).difference(iceberg.buffer(SLIVER).difference(protect))
     snowp = [g for g in getattr(newsnow, 'geoms', [newsnow]) if g.area > 0.5 and any(g.contains(Point(P[v])) for v in OL)]
     stray = round(sum(g.area for g in getattr(newsnow, 'geoms', [newsnow]) if g.area > 0.5) - sum(g.area for g in snowp), 2)
     pock = round(sum(Polygon(h).area for g in snowp for h in g.interiors if not Polygon(h).intersects(sea)), 2)
@@ -240,7 +245,7 @@ def apply(town, wild, pos):
     allsnow2 = unary_union(newp)
     # the sea drawn: seafill (over the old sea's edge where they meet, hiding its shore line there), its own shore lines
     fill = sea.difference(W)
-    fill = unary_union([fill, W.intersection(fill.buffer(0.3))]).difference(SF).difference(land_all.buffer(0.05)).difference(allsnow2.buffer(0.02))
+    fill = unary_union([fill, W.intersection(fill.buffer(0.3))]).difference(SF).difference(land_all.buffer(0.05)).difference(allsnow2.buffer(-0.03))   # (just over the snow's edge: no gap)
     fills = [g for g in getattr(fill, 'geoms', [fill]) if g.area > 0.05]
     geo['seafill'] = list(geo.get('seafill') or []) + rings(fills)
     total = unary_union([W, SF] + fills)
