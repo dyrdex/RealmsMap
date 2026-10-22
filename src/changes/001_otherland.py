@@ -37,6 +37,9 @@ TRACK_A, TRACK_L = 0.16, 7.0                        # Otherland's trails: a gent
 CLEAR_SEEDS = {13492: 'The Tundra Fields', 13322: 'A Tunnel in the Snow / A Cold Lair'}   # owner (Oct 22): these two clumps only
 CLEAR_D, CLEAR_R, CLEAR_TR = 1.5, 0.62, 0.45        # a clump: rooms this close joined by an exit; its clearing this far round its rooms and exits
 CLEAR_FILL, CLEAR_EDGE = '#97A1A6', '#6B767C'       # packed snow, a little lighter than the snow
+SHACKS = {'The Desolate Outpost': ([13087, 13089, 13090, 13091, 13092, 13093], 0.5, 0.55),    # owner (Oct 22): a log shack over its main section (rooms;
+           "The Hunter's Outpost": ([14419], 0.55, 0.6)}                                       #  margin round them across, down), its back door trail west/south clear
+WATER_LINKS = [(22530, 22531)]                      # owner (Oct 22): a water path (as the Sea of Sorrows routes), though one-way in TinTin
 NW_X = 50.0                                         # water routes wholly west of this: drawn as the Sea of Sorrows' routes (`seawaysfaint`)
 LAND_R, LTRAIL_R, CLOSE_N = 1.3, 0.9, 3.0           # the mainland's north edge: this far round its rooms and trails, gaps narrower than 6 closed
 WET_R, WTRAIL_R = 1.2, 0.8                          # sea at least this far round the water rooms and their routes
@@ -318,6 +321,18 @@ def apply(town, wild, pos):
     o = wild['olsnow']; n0 = (len(o['drifts']), len(o['ice']))
     o['drifts'] = [d for d in o['drifts'] if not cl_all.contains(Point(d[:2]))]; o['ice'] = [q for q in o['ice'] if not cl_all.intersects(Polygon(q))]
     clr['texture under them dropped (drifts, ice)'] = (n0[0] - len(o['drifts']), n0[1] - len(o['ice']))
+    # ---- water paths and shacks (owner, Oct 22) ----
+    wild['seawaysfaint'] = list(wild['seawaysfaint']) + [[list(P[a]), list(P[b])] for a, b in WATER_LINKS]
+    shk = {}; tl = [LineString(l) for l in wild['oltracks']]
+    for name, (vs, mx, my) in SHACKS.items():
+        xs = [P[v][0] for v in vs]; ys = [P[v][1] for v in vs]
+        x0, x1, y0, y1 = min(xs) - mx, max(xs) + mx, min(ys) - my - 0.35, max(ys) + my     # (the roof rises a little above the top rooms)
+        wild['olshacks'] = list(wild.get('olshacks') or []) + [[round((x0 + x1) / 2, 3), round((y0 + y1) / 2, 3), round(x1 - x0, 3), round(y1 - y0, 3)]]
+        r = box(x0, y0, x1, y1); inside = set(vs)
+        outside = [l for l in tl if not any(math.dist(l.coords[0], P[v]) < 0.25 or math.dist(l.coords[-1], P[v]) < 0.25 for v in inside)]
+        shk[name] = {'box': [round(c, 2) for c in (x0, y0, x1, y1)], 'nearest trail not its own': round(min(r.distance(l) for l in outside), 2),
+                     'drifts/ice under it': sum(1 for d in wild['olsnow']['drifts'] if r.buffer(0.4).contains(Point(d[:2]))) + sum(1 for q in wild['olsnow']['ice'] if r.buffer(0.4).intersects(Polygon(q)))}
+        o = wild['olsnow']; o['drifts'] = [d for d in o['drifts'] if not r.buffer(0.4).contains(Point(d[:2]))]; o['ice'] = [q for q in o['ice'] if not r.buffer(0.4).intersects(Polygon(q))]
     isles = len(wild.get('snowisles') or []); wild['snowisles'] = []
     # ---- checks ----
     offsnow = sorted(v for v in OL if not allsnow.buffer(0.01).contains(Point(P[v])))
@@ -328,4 +343,4 @@ def apply(town, wild, pos):
             'sea lines moved with their rooms (faint points, wave lines)': (nf, nw),
             'snow (pieces, area; holes filled)': (len(pieces), round(allsnow.area, 1), holes),
             'rooms not on the snow (in the sea; elsewhere)': (inwater, [v for v in offsnow if v not in inwater]),
-            'north coast': north, 'clearings (rooms, area, pieces, rooms not on the snow)': clr, 'Winterlight Island drawings removed': isles, 'bounds': wild['bounds']}
+            'north coast': north, 'shacks': shk, 'clearings (rooms, area, pieces, rooms not on the snow)': clr, 'Winterlight Island drawings removed': isles, 'bounds': wild['bounds']}

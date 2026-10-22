@@ -418,6 +418,17 @@ FWPATHS+=(WD.seadash||[]).map(p=>`<path d="M${p.map(q=>q.join(' ')).join('L')}" 
 {const SC=WD.seacurrents||[];if(SC.length){const d=SC.map(c=>'M'+c.pts.map(q=>q.join(' ')).join('L')).join(''),h=SC.map(c=>'M'+c.head.map(q=>q.join(' ')).join('L')+'Z').join('');   /* SEACUR: one-way sea currents, wavy, an arrowhead short of the room they lead to (owner, Oct 20) */
   FWPATHS+=`<g opacity=".5" stroke-linecap="round" stroke-linejoin="round"><path d="${d}" fill="none" stroke="var(--seaway-edge)" stroke-width=".3" opacity=".55"/><path d="${d}" fill="none" stroke="var(--seaway)" stroke-width=".17"/><path d="${h}" fill="var(--seaway)" stroke="var(--seaway-edge)" stroke-width=".05"/></g>`;}}
 WILD+=FWPATHS;
+for(const [x,y,w,h] of (WD.olshacks||[]))   /* OLSHACK: Otherland's shacks (owner, Oct 22): a log shack cladded against the winter, snow on the roof, icicles, frost, drifts round its base; drawn in a 2 x 2 box scaled to w x h */
+  WILD+=`<g transform="translate(${x},${y}) scale(${w/2},${h/2})" stroke-linejoin="round"><ellipse cx=".06" cy=".98" rx="1.0" ry=".12" fill="#000" opacity=".25"/>`+
+    `<rect x="-.82" y="-.12" width="1.64" height=".98" fill="#5A4431" stroke="#2C2118" stroke-width=".05"/>`+
+    `<path d="M-.82 .1 H.82 M-.82 .32 H.82 M-.82 .54 H.82 M-.82 .76 H.82" stroke="#3B2D20" stroke-width=".035"/>`+
+    `<path d="M-.82 .86 V.45 Q-.66 .55 -.5 .72 Q-.62 .82 -.82 .86Z M.82 .86 V.5 Q.66 .62 .52 .76 Q.66 .84 .82 .86Z" fill="#8A969C" opacity=".55"/>`+
+    `<rect x="-.16" y=".38" width=".32" height=".48" fill="#231A12" stroke="#2C2118" stroke-width=".04"/><rect x=".38" y=".2" width=".24" height=".2" fill="#3A4A52" stroke="#2C2118" stroke-width=".04"/><path d="M.4 .24 L.5 .32 M.5 .22 L.58 .3" stroke="#AEBBC2" stroke-width=".025" opacity=".8"/>`+
+    `<rect x=".38" y="-.86" width=".2" height=".42" fill="#4A4642" stroke="#2C2118" stroke-width=".04"/><path d="M.34 -.86 Q.48 -.96 .62 -.86 Z" fill="#B9C2C7"/>`+
+    `<path d="M-1.0 -.06 L0 -.98 L1.0 -.06Z" fill="#4A3A2B" stroke="#2C2118" stroke-width=".05"/>`+
+    `<path d="M-.94 -.1 L0 -.96 L.94 -.1 Q.8 -.02 .66 -.12 Q.5 -.03 .34 -.12 Q.18 -.02 0 -.13 Q-.18 -.03 -.36 -.12 Q-.52 -.02 -.68 -.12 Q-.82 -.03 -.94 -.1Z" fill="#B9C2C7" stroke="#8E9AA1" stroke-width=".03"/>`+
+    `<path d="M-.86 -.07 l.04 .16 l.04 -.15 M-.6 -.08 l.03 .22 l.04 -.21 M-.34 -.08 l.035 .13 l.035 -.12 M-.06 -.09 l.03 .2 l.04 -.19 M.22 -.08 l.035 .15 l.035 -.14 M.48 -.08 l.03 .21 l.04 -.2 M.74 -.07 l.035 .14 l.035 -.13" fill="#C8D3D9" stroke="#9FB0B9" stroke-width=".015"/>`+
+    `<path d="M-1.02 .9 Q-.9 .74 -.62 .8 Q-.4 .7 -.2 .86 L.2 .86 Q.44 .72 .66 .8 Q.9 .74 1.02 .9 Q0 1.0 -1.02 .9Z" fill="#A9B3B8" stroke="#7E8A91" stroke-width=".03"/></g>`;
 /* the Darkhaven River's tunnel: an underground river, drawn as if seen through the ground (owner, Oct 14) */
 WILD+=(()=>{const P=a=>a.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' ')+' Z',L=a=>a.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' ');let g='';
  for(const U of (WD.smrunder||[])){const f=U.features;

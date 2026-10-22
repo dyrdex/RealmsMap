@@ -2,6 +2,10 @@
 
 ## Version 2.4 (in progress)
 
+- Your requests (Oct 22), Otherland:
+  - 22530 and 22531 are joined by a water path, drawn like the Sea of Sorrows routes, across the channel to the Iceberg. It was left off because the exit is one-way in your map.
+  - A log shack over The Desolate Outpost's main section (13087, 13089-13093; 2.0 x 3.45 rooms). It's cladded against the winter: a snow-laden roof with icicles, frosted log walls, a door and a frosted window, a chimney, and snow drifted round its base. The back-door trail west through the Athas Hunter Stronghold and on south stays visible, 0.45-0.5 rooms clear of it. 1 snow drift under it dropped.
+  - The same shack, smaller (1.1 x 1.55 rooms), over The Hunter's Outpost at 14419, beside Supplication and The Tanner's Lodge.
 - Your request (Oct 22): two clearings in Otherland, in the style of the older areas' clearings (packed snow a little lighter than the snow, a soft darker edge, over the trails inside). The Tundra Fields: 30 rooms, 48.9 square rooms, kept off the sea, so the 2 Sea of Sorrows rooms stay in their inlets. A Tunnel in the Snow / A Cold Lair: 29 rooms, 32.1 square rooms. 2 snow drifts under them dropped. No other clearings.
 - Your requests (Oct 22), Otherland:
   - The Iceberg's ground now matches the mainland: the same snow colour, grain and wind wisps.
