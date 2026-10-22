@@ -26,7 +26,7 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
 - All 15 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get `<key>/current`.
   Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
-- In progress (2.6): base rebased on the owner's Otherland save of Oct 22 18:45Z (west/south 3 east: applied v2.4/001 `WS`); `changes/001_azure_east.py` draws the
+- In progress (2.6): base rebased on the owner's Otherland save of Oct 22 19:13Z (west/south 3 east: applied v2.4/001 `WS`); `changes/001_azure_east.py` draws the
   Azure Sea east coast (coast, sea, routes, cliff + climbs); `002_fissure.py`: the Fissure as clefts down to the gorge floor. Waiting for review.
 
 ## Snapshots
