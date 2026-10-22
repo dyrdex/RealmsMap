@@ -2,6 +2,7 @@
 
 ## Version 2.4 (in progress)
 
+- Your request (Oct 22): the Cramped Tunnel is redrawn as a passage buried under the snow, not a bold line. Its faint walls, a dark hollow and the thin pale path inside run along it, but snow covers most of it. Only short glimpses into the tunnel show, about every 1.5 rooms (roughly a third of its length).
 - Your requests (Oct 22), Otherland:
   - The Cramped Tunnel shows now. Its 9 tunnel lines had been worked out but left out of the map data, so nothing was drawn.
   - The Ledge of Life's cliff is lighter and blends into the snow: a soft grey-blue face (#6E797F, was near-black #3F494F) with lighter hachures. Its danger dash is a muted dusty red (#7E5A55, 70%, a little thinner), not a bold one.

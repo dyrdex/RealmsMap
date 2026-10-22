@@ -344,7 +344,12 @@ let FWPATHS=TOWNGROUND(WD.wltown)+RICE(WD.rice)+PATCH(WD.smrpatch,'var(--dirt)',
   FWPATHS+=DIRT(rd,.3);}
 {const T=(WD.oltracks||[]).map(p=>p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L')).join('');   /* OLTRACK: Otherland's trails (owner, Oct 22): packed snow, a little darker than the snow, two faint ruts */
   const U=(WD.oltunnels||[]).map(p=>'M'+p.map(q=>q.join(' ')).join('L')).join('');   /* OLTUNNEL: the Cramped Tunnel (owner, Oct 22): seen into the snow: a dark hollow under a snow crust, the thin path inside */
-  if(U)FWPATHS+=`<g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="${U}" stroke="#AEB8BD" stroke-width=".95" opacity=".55" filter="url(#olblur2)"/><path d="${U}" stroke="#3A444A" stroke-width=".72" opacity=".72" filter="url(#olblur2)"/><path d="${U}" stroke="#4C575D" stroke-width=".5" opacity=".6"/><path d="${U}" stroke="#A3ADB2" stroke-width=".07" opacity=".85"/></g>`;
+  if(U)FWPATHS+=`<g fill="none" stroke-linejoin="round">`+   /* a buried passage: faint walls, a dark hollow and the thin path inside, mostly covered by snow with short glimpses into it */
+    `<path d="${U}" stroke="#6A757B" stroke-width=".52" stroke-linecap="round" opacity=".45"/>`+
+    `<path d="${U}" stroke="#5B666C" stroke-width=".4" stroke-linecap="round" opacity=".8"/>`+
+    `<path d="${U}" stroke="#A3ADB2" stroke-width=".045" stroke-linecap="round" opacity=".85"/>`+
+    `<path d="${U}" stroke="#8C969B" stroke-width=".62" stroke-dasharray=".95 .55" stroke-linecap="round" opacity=".93"/>`+
+    `<path d="${U}" stroke="#97A1A6" stroke-width=".3" stroke-dasharray=".95 .55" stroke-linecap="round" opacity=".5"/></g>`;
   if(T)FWPATHS+=`<g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="${T}" stroke="#78838A" stroke-width=".36" opacity=".85"/><path d="${T}" stroke="#6F7A81" stroke-width=".2" opacity=".55"/><path d="${T}" stroke="#808B91" stroke-width=".06" opacity=".7"/></g>`;}
 FWPATHS+=CLEAR(WD.clearings);
 FWPATHS+=(WD.mdfaint||[]).map(p=>`<path d="${curve(p)}" fill="none" stroke="var(--dirt-hi)" stroke-width=".07" stroke-dasharray=".2 .16" stroke-linecap="round" opacity=".42"/>`).join('');   /* Miden'nir's forest rooms: a faint wavy dashed trail marking (owner, Oct 15) */
