@@ -2,7 +2,8 @@
 
 ## In progress (Version 2.5)
 
-- Your request (Oct 23): Morte's Peak is drawn as a mountain seen from above, set into the snow over all 47 rooms that mention it (285 square rooms): flat-toned ridge faces lit from the west-north-west (4 tones, no blur), pale inked crests (11) and old-map hachure rows on the shaded faces (547 strokes). Twin summits either side of Nestled Between the Peaks (Upon the Roof on the western one); An Icy Pass, A Snow Clogged Pass and Dead Man's Pass are notches in its ridges; The Drop-Off and The Sudden Stop are a steep west scarp; Cradled in the Shadow is a hollow on the shaded east flank; the Heart rooms lie under its south-west spur. It fades in at its foot: the foothill and approach rooms (6) sit where it begins. Trails unchanged on top; 7 snow drifts under it dropped.
+- Your request (Oct 23): the path through the Heart of Morte's Peak is a thin dashed line now, like the Cramped Tunnel: the 7 stretches between its 8 Heart rooms and The Concealed Horror (2 lines, 13.6 rooms long). The paths out to Scratching the Surface, Lost in the Darkness and The Sudden Stop stay ordinary trails.
+- Your request (Oct 23): the top-down drawing of Morte's Peak is removed again (too like the shading); the snow there is plain.
 - Your request (Oct 23): Morte's Peak's height shading is removed (all 7 shade levels, 413 pieces); the snow there is plain again. Death's Spire's shading, Tirebaen's Gorge and the Fissure stay.
 - Your request (Oct 22): Over the Cliff Maze lies only in the sea now. Its east edge follows the coastline exactly (no land under it, so the trail along the east side shows in full) and its west edge is one smooth curve, 6.7 to 8.5 rooms out, that takes in 14428, 683 and both of their entry paths with no juts (167 square rooms, was 207). The label sits at its centre.
 
