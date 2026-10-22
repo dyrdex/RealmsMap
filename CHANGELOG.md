@@ -2,6 +2,7 @@
 
 ## Version 2.4 (in progress)
 
+- Your request (Oct 22): the Cramped Tunnel is drawn the way the Southern Mountains' underground river tunnel is, and the earlier attempts are gone. A dark band shows as if seen into the ground, with dashed icy walls along both sides and a soft grey floor down its middle, and the thin path runs along the floor. There are 3 dark arched mouths where it opens onto ordinary trails. It's one connected tunnel of 9 trail lines.
 - Your request (Oct 22): the Cramped Tunnel no longer reads as a white trail. Where it's covered, the snow over it is the ground's own colour, with just two very faint wall lines. About every 1.5 rooms there's an opening down into it: a dark hollow with a lighter snowy lip, and the thin path visible inside.
 - Your request (Oct 22): south of 6143 is all regular land again. The south-shore inlet there is filled with snow down past 13195. Its two water rooms (Nearing the Shore 6147, the Heart Stopping Cold of the BloodSea 6148) are drawn as land, so the path from 6143 down through 6146 to the Frozen Beach-Head (6149) is a plain snow trail, and the frozen beach there is gone. All five rooms are on the snow, 1.6 to 3.1 rooms from the coast.
 - Your request (Oct 22): the Cramped Tunnel is redrawn as a passage buried under the snow, not a bold line. Its faint walls, a dark hollow and the thin pale path inside run along it, but snow covers most of it. Only short glimpses into the tunnel show, about every 1.5 rooms (roughly a third of its length).

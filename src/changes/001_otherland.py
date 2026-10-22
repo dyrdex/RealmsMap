@@ -362,6 +362,20 @@ def apply(town, wild, pos):
             o = wline(sp)
             if len(o) > 1: (tun if inside else wav).append(o); npts += len(o)
     wild['oltracks'] = wav; wild['oltunnels'] = tun
+    # the Cramped Tunnel drawn as the Southern Mountains' underground river tunnel is (owner, Oct 22): a dark band seen into the ground, dashed
+    # walls along it, a soft floor, the thin path inside, an arched mouth where it opens onto a trail (template OLTUNNEL)
+    if tun:
+        tb = unary_union([LineString(l).buffer(0.45) for l in tun]).buffer(0.1).buffer(-0.1); tf = unary_union([LineString(l).buffer(0.24) for l in tun])
+        walls = [list(map(list, r.coords)) for g in getattr(tb, 'geoms', [tb]) for r in [g.exterior] + list(g.interiors)]
+        ends_ = [l[0] for l in wav] + [l[-1] for l in wav]
+        mouths = []
+        for l in tun:
+            for q, nb_ in ((l[0], l[min(4, len(l) - 1)]), (l[-1], l[max(-5, -len(l))])):
+                if any(math.dist(q, e) < 0.05 for e in ends_) and not any(math.dist(q, m[:2]) < 0.3 for m in mouths):
+                    mouths.append([round(q[0], 3), round(q[1], 3), round(math.degrees(math.atan2(q[1] - nb_[1], q[0] - nb_[0])), 1)])
+        rnd = lambda pts: [[round(x, 3), round(y, 3)] for x, y in pts]
+        wild['oltunnelgeo'] = {'band': rings([g for g in getattr(tb, 'geoms', [tb])]), 'floor': rings([g for g in getattr(tf, 'geoms', [tf])]),
+                               'walls': [rnd(w_) for w_ in walls], 'mouths': mouths}
     # ---- clearings (owner, Oct 22): the two clumps of rooms side by side, packed snow (template CLEAR) ----
     ex = {(a, b) for a, b, k in E['edges'] if k != 'ud'}; ex |= {(b, a) for a, b in ex}
     solo = [v for v in OL if not R[v]['void']]
