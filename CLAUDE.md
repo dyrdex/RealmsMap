@@ -18,21 +18,19 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 - `docs/REGION_NOTES.md`: data layout of the base, editor links, standing owner rules per region (read the part you need).
   `docs/archive/`: full history (grep it, don't read it whole). `CHANGELOG.md`: owner-facing history (append to the top section).
 
-## State (Oct 21, 2026)
-- Last version 2.3 (Oct 21, "The Azure Sea"; tag `v2.3` to be added by the owner on GitHub). Base = a legacy redraw + `applied/v22/`,
-  `v23/`, `v24/`, `v2.2/`, `v2.3/` (2.3: the Desert of Despair save of Oct 21: 38 Azure Sea coast rooms + 78 spacers, grp 'az'; desert trails, very faint
-  wavy water routes `seawaves`, sea carried south down the east coast, sand under off-land coastline rooms; bounds x1 113, y1 186).
+## State (Oct 22, 2026)
+- Last version 2.4 (Oct 22, "Otherland"; tag `v2.4` to be added by the owner on GitHub). Base = a legacy redraw + `applied/v22/`, `v23/`, `v24/`,
+  `v2.2/`, `v2.3/`, `v2.4/` (2.4: Otherland from the owner's save, `legacy/ol_layout_final.json`: snow island, snow-track trails, north/west/south coast
+  sea, the Iceberg isle, the Harbor of Icebergs (dock, ice, bergs), Morte's Peak shading, the gorge, mazes, shacks, Frost Mansion; Winterlight
+  Island's drawing removed until re-fitted; bounds y1 259). Details and standing rules: REGION_NOTES (Otherland).
   After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
-- All 15 layout editors live in the owner's current organization (links in REGION_NOTES; Wastelands editor v3 since Oct 20). Read saves with
-  ArtifactData get `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
-- In progress (2.4): `changes/001_otherland.py`, a basic render of the owner's Otherland save (plain trails + snow); Winterlight Island's drawing
-  removed until re-fitted. Done on request (Oct 22): no one-way/up-down exits, snow texture + snow-track trails, north + west coast sea, iceberg isle,
-  2 clearings, 2 shacks, the Harbor of Icebergs (ice, bergs, dock), terrain shaded in the snow (Morte's Peak, Gods, hills, the Mountain),
-  the gorge, the south shore.
+- All 15 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get `<key>/current`.
+  Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
+- Nothing in progress.
 
 ## Snapshots
-- Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.3, the next is 2.4
-  (footer `Version 2.4 · <title> · <date>`, tag `v2.4`, folder `applied/v2.4/`; add the folder to `legacy/rebase.py`).
+- Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.4, the next is 2.5
+  (footer `Version 2.5 · <title> · <date>`, tag `v2.5`, folder `applied/v2.5/`; add the folder to `legacy/rebase.py`).
 - New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/v2.N/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress
   section, rebuild twice (realm_map.html must match), commit.
 - Merge into `main` ONLY when the owner says to save a new version (Oct 16). Day to day: push to the session branch only. Then

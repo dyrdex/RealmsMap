@@ -18,7 +18,7 @@ from collections import defaultdict
 from shapely.geometry import Polygon, LineString, Point, box
 from shapely.ops import unary_union
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 SNOW_R = 1.6                                        # snow reaches this far round each room and trail
 CLOSE = 3.0                                         # gaps narrower than 6 rooms between pieces filled
 WAVE_AMP, WAVE_LEN = 0.12, 2.5                       # as applied/v2.3/001

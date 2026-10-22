@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## Version 2.4 (in progress)
+## Version 2.4 · Otherland · October 22, 2026
 
 - Your request (Oct 22): the A Tunnel in the Snow maze is drawn over the paths now, so its trails are hidden under it, like the map's dark mazes.
 - Your request (Oct 22): the A Tunnel in the Snow / A Cold Lair clearing is a maze now: an icy maze blob (the same style as Over the Cliff Maze and the Maze of Ice) filling exactly the clearing's outline (32 square rooms), no label. The clearing is gone; the Tundra Fields clearing stays.
