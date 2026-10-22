@@ -2,6 +2,7 @@
 
 ## In progress (Version 2.5)
 
+- Your request (Oct 23): where two Otherland trails cross with no room there (7 places), one now jumps the other like a wire jumper in an electrical diagram: a small half-circle hop over the straight one, no gaps or marks. The dashed tunnel hops where one is involved (1), otherwise the shorter trail (6); all hops bulge up-left, 0.9 rooms across (1.2 at the one slanted crossing, so its feet stay clear of the other trail). Each hop touches only the trail it jumps; the nearest room is 0.61 rooms away.
 - Your request (Oct 23): the bay on the east coast (east of Morte's Peak) is filled in with snow, with the two small dents beside it (70 square rooms, no rooms in it, 4 snow drifts as on the snow round it); the coast there is smooth now (it wanders only 2 rooms over 18).
 - Your request (Oct 23): the east coast has its sea now, like the other coasts: 6 rooms out from the land, joined to the north and south seas (360 square rooms; no stretch of the coast left without sea), and the same floating ice and little icebergs (89 floes, 7 icebergs) clear of the land, rooms and routes.
 - Your request (Oct 23): Tirebaen's Gorge no longer touches the A Tunnel in the Snow maze: the gorge's east wall is pulled back there, leaving a gap of 0.35 rooms (they overlapped by 0.82 square rooms). The maze is unchanged; its rooms and the gorge's trail don't move.
