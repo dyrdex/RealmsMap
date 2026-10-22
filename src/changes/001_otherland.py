@@ -582,7 +582,12 @@ def apply(town, wild, pos):
     arc = substring(ring_, d1, d2)
     if arc.length > ring_.length / 2: arc = unary_union([substring(ring_, d2, ring_.length), substring(ring_, 0, d1)])
     ctr = [l for l in wild['seawaysfaint'] + wild['oltracks'] if len(l) > 1 and any(math.dist(q, P[v]) < 0.05 for v in CLIFF_MAZE for q in (l[0], l[-1]))]
-    blob = unary_union([arc.buffer(2.4)] + [Point(P[v]).buffer(1.4) for v in CLIFF_MAZE] + [LineString(l).buffer(0.9) for l in ctr]).buffer(0.8).buffer(-0.8)   # (owner, Oct 22: its paths inside)
+    blob0 = unary_union([arc.buffer(2.4)] + [Point(P[v]).buffer(1.4) for v in CLIFF_MAZE] + [LineString(l).buffer(0.9) for l in ctr])   # (owner, Oct 22: its paths inside)
+    from shapely.affinity import translate as _tr
+    stick = max(0.0, -(blob0.bounds[0] - arc.buffer(2.4).bounds[0]))                                  # how far its entry paths stick out west
+    kx = max(stick + 0.8, 1.5)                                                                           # (owner, Oct 22: extended westward, no bulges)
+    blob = unary_union([blob0, _tr(arc, -kx, 0).buffer(2.4), unary_union([arc, _tr(arc, -kx, 0)]).convex_hull.intersection(arc.buffer(2.4 + kx))]).buffer(2.0).buffer(-2.0)
+    bulge = round(blob.difference(blob.buffer(-1.2).buffer(1.2)).area, 2)
     lab = blob.centroid if blob.buffer(-1.2).contains(blob.centroid) else polylabel(blob, 0.05)                                             # (owner, Oct 22: the label at its centre)
     mzs = [{'name': 'Over the Cliff Maze', 'lines': ['Over', 'the Cliff', 'Maze'], 'style': 'ice', 'poly': rd(blob), 'cx': round(lab.x, 2), 'cy': round(lab.y, 2), 'fs': 0.55}]
     mx_ = sum(P[v][0] for v in MANSION) / 3; my_ = sum(P[v][1] for v in MANSION) / 3 - 0.3
@@ -594,7 +599,7 @@ def apply(town, wild, pos):
     wild['fwmazes'] = list(wild['fwmazes']) + mzs
     wild['olmansion'] = [round(mx_, 3), round(my_, 3), MANSION_W, MANSION_H]
     shown_in = lambda g: sorted(v for v in OL if g.contains(Point(P[v])) and not R[v]['void'])
-    mazes = {'Over the Cliff Maze (area, its rooms in it, other rooms in it, its paths fully inside, label at centroid)': (round(blob.area, 1), [v for v in CLIFF_MAZE if blob.contains(Point(P[v]))], [v for v in shown_in(blob) if v not in CLIFF_MAZE], f'{sum(1 for l in ctr if blob.contains(LineString(l)))}/{len(ctr)}', lab.equals(blob.centroid)),
+    mazes = {'Over the Cliff Maze (westward, area, its rooms in it, other rooms in it, its paths fully inside, label at centroid; bulges left)': ((round(stick, 2), round(kx, 2), bulge), round(blob.area, 1), [v for v in CLIFF_MAZE if blob.contains(Point(P[v]))], [v for v in shown_in(blob) if v not in CLIFF_MAZE], f'{sum(1 for l in ctr if blob.contains(LineString(l)))}/{len(ctr)}', lab.equals(blob.centroid)),
              'Maze of Ice (area, hidden rooms in it, the mansion inside it, other shown rooms in it)': (round(blob2.area, 1), sum(1 for v in MZ if blob2.contains(Point(P[v]))), blob2.buffer(-0.05).contains(mbox), [v for v in shown_in(blob2) if v not in MANSION]),
              'Cramped Tunnel (rooms, tunnel lines)': (len(TN), len(tun))}
     # ---- The Ledge of Life (owner, Oct 22): a cliff face falling away south of its path, the path marked as dangerous ----
