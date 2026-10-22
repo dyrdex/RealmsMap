@@ -2,7 +2,9 @@
 # drew them (its lines removed exactly, matched to 0.005), then:
 #  - the coastal path (`seawaysfaint`) leaves 6187 south-east to The Iceberg 15154 and goes on south from it to 15171 (was 6187 east to 15149, round
 #    15152 and back to 15171): spine cut at 6187 / 15171, the iceberg's links (15161-15154, 15172-15171) are sea-land exits;
-#  - every exit between land and sea is the primary water route (`seawaysfaint`) over the water (was the faint wavy style from rooms off the path);
+#  - every exit between land and sea is the primary water route (`seawaysfaint`) over the water (was the faint wavy style from rooms off the path),
+#    and so is a run of sea rooms from the path to a room going ashore (owner, Oct 22: 5999-15748-15747 was half and half); The Iceberg 15154
+#    is not land for this: its links other than the path and its climb up to 15738 are outer routes;
 #  - the other (outer) routes: the Harbor of Icebergs' display (`olharborways`, its slight wave HWAVE_A/HWAVE_L), not `seawaves`.
 import json, math, os, random, sys, heapq, importlib.util
 from collections import defaultdict
@@ -14,6 +16,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 spec = importlib.util.spec_from_file_location('az26', os.path.join(HERE, 'applied', 'v2.6', '001_azure_east.py')); AZM = importlib.util.module_from_spec(spec); spec.loader.exec_module(AZM)
 CUT = (6187, 15171)                                 # owner (Oct 22): the coastal path leaves the old one here and rejoins it here, by The Iceberg 15154
 HWAVE_A, HWAVE_L = 0.05, 1.6                        # applied/v2.4/001's harbour routes
+ICE_ROOMS = {15154, 15172}                          # The Iceberg 15154 (+ 15172 on it): only its path links and its climb are primary (owner, Oct 22)
 
 
 def setup(wild, pos):
@@ -94,7 +97,14 @@ def build(C, spine, wave=None, land_style=None):
         chains.append(line)
     rp = lambda q: [round(q[0], 3), round(q[1], 3)]
     faint = [[rp(at(a)), rp(at(b))] for p in parts for a, b in zip(p, p[1:])]
-    waves = [wave([list(at(v)) for v in ch]) for ch in chains if LineString([at(v) for v in ch]).length > 1e-6]
+    spos = {at(v) for v in onsp}
+    ice_ = lambda l: l in ICE_ROOMS
+    _, exits_ = maplib.world()
+    ashore = {v for v in seaside for e in exits_.get(v, []) if e['to'] in C['landr'] and not ice_(e['to'])}    # (any exit up onto land, e.g. 15747 up to 5972)
+    conn = lambda ch: land_style == 'faint' and ((ch[0] in onsp and ch[-1] in ashore) or (ch[-1] in onsp and ch[0] in ashore))   # (path -> a room going ashore)
+    faint += [[rp(at(a)), rp(at(b))] for ch in chains if conn(ch) for a, b in zip(ch, ch[1:]) if at(a) != at(b)]
+    nconn = sum(1 for ch in chains if conn(ch))
+    waves = [wave([list(at(v)) for v in ch]) for ch in chains if not conn(ch) and LineString([at(v) for v in ch]).length > 1e-6]
     trails = []; lg = C['land'].buffer(0)
     def split(p0, p1, style):
         line = LineString([p0, p1]); hit = line.intersection(lg.boundary)
@@ -110,13 +120,15 @@ def build(C, spine, wave=None, land_style=None):
     for a, b in edges:
         if (a in seaside) == (b in seaside): continue
         s, l = (a, b) if a in seaside else (b, a)
-        split(at(s), endp(l), 'faint' if (s in onsp or land_style == 'faint') else 'waves'); landing.add((s, l))
+        if land_style == 'faint': st = 'waves' if ice_(l) and at(s) not in spos else 'faint'      # (the iceberg's other links: outer routes)
+        else: st = 'faint' if s in onsp else 'waves'
+        split(at(s), endp(l), st); landing.add((s, l))
     for lo, hi in sorted(AZM.CLIMBS):
         drawn = any(min(math.dist(l[0], endp(lo)), math.dist(l[-1], endp(lo))) < 0.05 and min(math.dist(l[0], endp(hi)), math.dist(l[-1], endp(hi))) < 0.05
                     for l in C['oltracks0'] if len(l) > 1)
         if (lo, hi) in landing or drawn: continue
         split(endp(lo), endp(hi), 'faint' if land_style == 'faint' else 'waves')
-    return faint, waves, trails
+    return faint, waves, trails, nconn
 
 
 def _take(lst, gone, tol=0.005):
@@ -136,13 +148,13 @@ def _take(lst, gone, tol=0.005):
 def apply(town, wild, pos):
     C = setup(wild, pos); C['oltracks0'] = wild['oltracks']
     sp = old_spine(C)
-    f0, w0, _ = build(C, sp)
+    f0, w0, _, _ = build(C, sp)
     mf, mw = _take(wild['seawaysfaint'], f0), _take(wild['seawaves'], w0)
     assert mf == 0 and mw == 0, (mf, mw)
     i, j = sp.index(CUT[0]), sp.index(CUT[1])
     parts = [sp[:i + 1], sp[j:]]
-    f1, w1, _ = build(C, parts, wave=lambda l: AZM._wave(l, HWAVE_A, HWAVE_L), land_style='faint')
+    f1, w1, _, nconn = build(C, parts, wave=lambda l: AZM._wave(l, HWAVE_A, HWAVE_L), land_style='faint')
     wild['seawaysfaint'] += f1; wild['olharborways'] = list(wild['olharborways']) + w1
     L = lambda ls: round(sum(LineString(l).length for l in ls if len(l) > 1), 1)
     return {'east coast routes redrawn (old primary, old wavy -> primary, harbour style; lengths)': ((len(f0), L(f0)), (len(w0), L(w0)), (len(f1), L(f1)), (len(w1), L(w1))),
-            'coastal path rooms (was, now)': (len(sp), len(parts[0]) + len(parts[1])), 'left the path': sp[i + 1:j]}
+            'coastal path rooms (was, now)': (len(sp), len(parts[0]) + len(parts[1])), 'left the path': sp[i + 1:j], 'connectors from the path to a room going ashore (primary)': nconn}

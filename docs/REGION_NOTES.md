@@ -126,7 +126,9 @@ The other builders run inside `src/legacy`.
   Every `seafill` and `water` ring is trimmed to the final land (each ring on its own, evenodd-safe): no blue strips or shore strokes under land
   (owner, Oct 22: hairlines along old coasts). Check: visible sea fill inside land.buffer(-0.08) must be 0.
   East routes redrawn (owner, Oct 22; `changes/005_east_routes.py`, from the exits): coastal path cut at 6187 / 15171, via The Iceberg 15154 (its links are
-  sea-land exits); EVERY sea-land exit = `seawaysfaint` over the water; outer routes = `olharborways` style (harbour, not `seawaves`).
+  sea-land exits); EVERY sea-land exit = `seawaysfaint` over the water, and a run of sea rooms from the path to a room going ashore; The Iceberg 15154
+  is not land for this (only its path links + climb primary); outer routes = `olharborways` style (harbour, not `seawaves`).
+  North sea edge (owner, Oct 22; `changes/006`): the Northern Plains' water strip's straight cuts (x 83.1, y 153.6) are under seafill, notch filled (BOX).
   Harbour routes: width .06, opacity .26 (owner: a touch more visible).
   East cliff (owner, Oct 22; `CLIMBS` in 001_azure_east): ONE continuous cliff face along the coast's edge from the northernmost climb landing
   to the southernmost (`wild.olcliff`, template OLCLIFF, OLLEDGE style); climbs from a land room (22524, 15741) go up where that room's exit from

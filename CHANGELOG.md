@@ -2,6 +2,10 @@
 
 ## In progress (Version 2.7)
 
+- Your requests (Oct 22), more on the water routes and the north sea:
+  - The Iceberg 15154: only its link from 6187, its link on to 15171 and its climb up to Out in the Cold 15738 are the primary water route. Its other 4 links (to 6188, 15157, 15158, 15181) are now the faint east-coast (harbour) style.
+  - A run of sea rooms from the coastal path to a room that goes ashore is now the primary route all the way (4 runs). That includes the southernmost one, 5999 through 15747 and up to 5972, which had been half faint and half primary.
+  - North of 6173, the Northern Plains' sea had stopped in a straight cut at x 83.1 (a shore line running 20 rooms straight down through the sea), with bare background beside it. A second straight cut ran along y 153.6. The sea now fills that notch out to one smooth edge (135 square rooms of sea added, none on land), and the shore lines lying out at sea are covered (47 rooms of them; what's left is the sea's real outer edge).
 - Your requests (Oct 22), the water routes round Otherland:
   - The Harbor of Icebergs' routes are a touch more visible (a little wider and stronger, still faint).
   - The coastal path (the darker blue route) now leaves 6187 south-east to The Iceberg 15154 and goes on south from it to 15171. Before, it ran east from 6187 to 15149, out round 15152 and back to 15171. That old stretch (5 rooms) is still drawn, now as an outer route. The path has 43 rooms (was 48).
