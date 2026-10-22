@@ -448,6 +448,11 @@ WILD+=`<defs><filter id="olblur2" x="-10%" y="-10%" width="120%" height="120%"><
 {const H=WD.olhill;if(H){   /* OLHILL: Morte's Peak (owner, Oct 22): the snow shaded as seen from above, lit from the north-west; blurred so it rises gently */
   WILD+=`<defs><filter id="olblur" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation=".3"/></filter></defs><g filter="url(#olblur)">`+H.levels.map(L=>`<path d="${L.rings.map(a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z').join('')}" fill="${L.fill}" fill-rule="evenodd" opacity="${L.op}"/>`).join('')+`</g>`;
 }}
+{const M=WD.olpeak;if(M){   /* OLPEAK: Morte's Peak seen from above (owner, Oct 23): flat-toned ridge faces, pale inked crests, fall-line hachures, under the trails */
+  WILD+=M.layers.map(L=>`<path d="${L.rings.map(a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z').join('')}" fill="${L.fill}" fill-rule="evenodd" opacity="${L.op}"/>`).join('');
+  WILD+=`<g fill="none" stroke="#3F484D" stroke-width=".045" stroke-linecap="round">`+M.hach.map(h=>`<path d="M${h[0].join(' ')}L${h[1].join(' ')}" opacity="${h[2]}"/>`).join('')+`</g>`;
+  WILD+=`<g fill="none" stroke="#D3DADD" stroke-linecap="round" stroke-linejoin="round">`+M.crests.map(c=>c.slice(1).map((q,i)=>`<path d="M${c[i][0]} ${c[i][1]}L${q[0]} ${q[1]}" stroke-width="${(.035+.04*q[2]).toFixed(3)}" opacity="${(.35+.45*q[2]).toFixed(2)}"/>`).join('')).join('')+`</g>`;
+}}
 WILD+=FWPATHS;
 {const D=WD.olharbor&&WD.olharbor.dock;if(D){const d='M'+D.pts.map(q=>q.join(' ')).join('L'),w=D.w;   /* OLDOCK: the Harbor of Icebergs' dock (owner, Oct 22): wooden, snow covered and frozen */
   WILD+=`<g fill="none" stroke-linejoin="round" stroke-linecap="butt"><path d="${d}" stroke="#9FB3BE" stroke-width="${w+.16}" opacity=".35"/><path d="${d}" transform="translate(.05,.07)" stroke="#000" stroke-width="${w}" opacity=".25"/>`+
