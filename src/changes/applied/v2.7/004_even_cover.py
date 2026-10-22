@@ -8,7 +8,7 @@ from shapely.prepared import prep
 from scipy.spatial import cKDTree
 from maplib import world
 
-_spec = importlib.util.spec_from_file_location('ol_flora', os.path.join(os.path.dirname(__file__), 'applied', 'v2.5', '010_flora.py'))
+_spec = importlib.util.spec_from_file_location('ol_flora', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'v2.5', '010_flora.py'))
 FL = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(FL)
 PLANT_GAP, DRIFT_GAP, TRY = 1.6, 3.3, 0.35          # rooms; candidate spots on a jittered grid this fine
 

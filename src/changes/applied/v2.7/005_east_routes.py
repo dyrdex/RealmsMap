@@ -13,7 +13,7 @@ from shapely.ops import unary_union
 import maplib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-spec = importlib.util.spec_from_file_location('az26', os.path.join(HERE, 'applied', 'v2.6', '001_azure_east.py')); AZM = importlib.util.module_from_spec(spec); spec.loader.exec_module(AZM)
+spec = importlib.util.spec_from_file_location('az26', os.path.join(HERE, '..', 'v2.6', '001_azure_east.py')); AZM = importlib.util.module_from_spec(spec); spec.loader.exec_module(AZM)
 CUT = (6187, 15171)                                 # owner (Oct 22): the coastal path leaves the old one here and rejoins it here, by The Iceberg 15154
 HWAVE_A, HWAVE_L = 0.05, 1.6                        # applied/v2.4/001's harbour routes
 ICE_ROOMS = {15154, 15172}                          # The Iceberg 15154 (+ 15172 on it): only its path links and its climb are primary (owner, Oct 22)

@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress (Version 2.7)
+## Version 2.7 · Otherland's Peaks · October 22, 2026
 
 - Your requests (Oct 22), more on the water routes and the north sea:
   - The Iceberg 15154: only its link from 6187, its link on to 15171 and its climb up to Out in the Cold 15738 are the primary water route. Its other 4 links (to 6188, 15157, 15158, 15181) are now the faint east-coast (harbour) style.
