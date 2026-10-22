@@ -119,9 +119,10 @@ The other builders run inside `src/legacy`.
   The owner's map flattens it: an up/down exit to the same room as a flat exit is ignored (the flat one is drawn).
   Frost Mansion 22248-22250 (Asgard Nexus) is in the Otherland editor (grp 'an', owner Oct 21), joined at 22247 and 21819.
   Azure Sea east coast (owner, Oct 22; grp 'az', `tools/otherland_editor/add_azure_east.py`; drawn by `changes/001_azure_east.py`): water rooms at sea, the
-  Otherland east-coast rooms on land, the coast between them (Voronoi line between sea rooms/routes and land rooms/trails). Coastal path (6179 .. 15250,
-  15255, 15606) = `seawaysfaint` (Sea of Sorrows style); routes east off it = `seawaves` (DD east coast style). Not drawn: 5987-22496 (owner), up/down
-  except 15250-15255, 15606 -> Grey Beach. No coastal ice/bergs there for now (owner). The save's az rooms are those not in `legacy/ol_editor_edges.json`.
+  Otherland east-coast rooms on land, the coast between them, worked out ONCE (owner: no fill-then-cut; Voronoi line between sea rooms/routes and
+  land rooms/trails). 15154 = a one-room iceberg, sea to its west. Coastal path (6179 .. 15250, 15255, 15606) = `seawaysfaint`, straight room to room
+  (strictly on the layout, owner); routes east off it = `seawaves` (DD east coast style). Sea-land exits (up/down shown, owner) switch to `oltracks`
+  exactly at the coast. Not drawn: 5987-22496 (owner), 15606 -> Grey Beach. No coastal ice/bergs there for now (owner). The save's az rooms are those not in `legacy/ol_editor_edges.json`.
   A new Otherland save: replace `legacy/ol_layout_final.json`, then `legacy/rebase.py` on a legacy dump (the v2.4/v2.5 files redraw from it).
   Unlocked there (grp 'un', owner Oct 21): 18052-18075, 6174, 18047, 13379, 13380, 6166, 6180, 6650, 15410-15418; a save may move these map rooms.
   Drawn Oct 21 as a BASIC render (`changes/001_otherland.py`): plain trails, plain snow (`geo.snow`, template --snow, also a `geo.land` piece);
