@@ -101,10 +101,12 @@ def apply(town, wild, pos):
         caps.append({'creases': creases, 'shade': facets})
     wild['olmassif'] = wild.get('olmassif', []) + [{'levels': out, 'caps': caps}]
 
-    # the mountain is bare: no plants, drifts or icy patches on it
-    nf = len(wild['olflora']); wild['olflora'] = [t for t in wild['olflora'] if not base.buffer(0.2).contains(Point(t[0], t[1]))]
-    S = wild['olsnow']; nd = len(S['drifts']); S['drifts'] = [d for d in S['drifts'] if not base.buffer(0.3).contains(Point(d[0], d[1]))]
-    ni = len(S['ice']); S['ice'] = [p for p in S['ice'] if not base.buffer(0.2).intersects(Polygon(p))]
+    # the terraces are bare: no plants, drifts or icy patches on them
+    # (owner, Oct 22: the ground round it keeps its plants, drifts and ice, as the snow round it: only the terraces are cleared)
+    bare = levels[1].buffer(SIDE + math.hypot(*LIGHT) + 0.15) if len(levels) > 1 else Polygon()   # level 1 with its cliff face and a margin
+    nf = len(wild['olflora']); wild['olflora'] = [t for t in wild['olflora'] if not bare.contains(Point(t[0], t[1]))]
+    S = wild['olsnow']; nd = len(S['drifts']); S['drifts'] = [d for d in S['drifts'] if not bare.buffer(0.1).contains(Point(d[0], d[1]))]
+    ni = len(S['ice']); S['ice'] = [p for p in S['ice'] if not bare.intersects(Polygon(p))]
     # the preview outline of Morte's Peak goes (the Gods' stays until drawn)
     wild['olmtnpreview'] = [r for r in wild.get('olmtnpreview', []) if Polygon(r).centroid.x < 40]
 
@@ -114,8 +116,10 @@ def apply(town, wild, pos):
              for n in ("The Fury of Morte's Peak", 'Nestled Between the Peaks', 'An Icy Pass', 'A Snow Clogged Pass', "Dead Man's Pass", "Entombed within Morte's Peak", "Within the Heart of Morte's Peak", 'Upon the Roof')}
     return {"Morte's Peak massif (terraces per peak, levels, hachures, cap creases)": ([h for _, h, _, _ in PEAKS], len(levels), nh, sum(len(c['creases']) for c in caps)),
             'level of rooms (0 = base)': named,
-            'removed on the mountain (plants, drifts, icy patches)': (nf - len(wild['olflora']), nd - len(S['drifts']), ni - len(S['ice']))}
+            'removed on the terraces (plants, drifts, icy patches)': (nf - len(wild['olflora']), nd - len(S['drifts']), ni - len(S['ice']))}
 
 
 def LinearRingIsCCW(ring):
     return sum((b[0] - a[0]) * (b[1] + a[1]) for a, b in zip(ring, ring[1:])) < 0
+
+
