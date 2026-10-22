@@ -32,10 +32,11 @@ WET = {'Swimming', 'Underwater', 'Water', 'Seafloor'}
 CLIFF = 'Over the Cliff'
 ICEBERG = [22531, 22532, 22533, 22534, 22535, 6166, 13379, 13380, 6180]   # owner (Oct 22): The Iceberg, its own little white island; 22530 on the mainland
 ZONE_R, TIGHT_R, TIGHT_TR = 5.0, 0.75, 0.55          # near the iceberg the mainland hugs its rooms (this far) and trails (this far)
+FILL_S = Polygon([(3.4, 243.2), (10.8, 243.2), (10.9, 246.5), (9.6, 249.6), (7.6, 251.6), (3.4, 251.6)])   # owner (Oct 22): south of 6143, land
 FILL1 = unary_union([box(68.5, 174.6, 70.5, 183.0), box(65.5, 176.0, 70.5, 183.0),
                      Polygon([(70.5, 174.6), (72.3, 174.6), (72.75, 176.4), (72.35, 178.2), (72.9, 180.0), (72.5, 181.7), (72.8, 183.0), (70.5, 183.0)]),   # (an uneven east shore)
                      Polygon([(-20.7, 207.6), (-20.6, 208.8), (-19.4, 210.8), (-17.3, 213.3), (-15.0, 215.4), (-12.6, 216.9), (-10.0, 217.9),   # owner (Oct 22): the bay
-                              (-6.0, 218.8), (-3.0, 219.3), (2.0, 219.3), (2.0, 207.6)]),                                                       # north of the harbour, from 13150 to its north-east shore: land
+                              (-6.0, 218.8), (-3.0, 219.3), (2.0, 219.3), (2.0, 207.6)]), FILL_S,                                                       # north of the harbour, from 13150 to its north-east shore: land
                      Polygon([(-11.8, 217.2), (-10.6, 217.65), (-9.8, 218.5), (-9.4, 219.6), (-9.8, 221.6), (-10.8, 223.2), (-11.25, 223.85), (-11.35, 224.35), (-11.0, 224.95), (-9.0, 226.4), (-3.0, 226.4), (-3.0, 217.2)])])   # (owner, Oct 22: a smooth coast down to just north of the dock)   # owner (Oct 22): land west and south of 13287, its sea inlets gone
 FAINT_CHAIN = [6180, 15418, 15417, 15416, 15415, 15414, 15413, 15412, 15411, 15410, 6650, 15128]   # owner (Oct 22): drawn as the Sea of Sorrows' routes
 TRACK_A, TRACK_L = 0.16, 7.0                        # Otherland's trails: a gentle long wave (owner, Oct 22): a smooth warp this strong, this long
@@ -63,6 +64,7 @@ CLIFF_MAZE = (14428, 683)                           # owner (Oct 22): one long m
 MANSION = [22248, 22249, 22250]                     # owner (Oct 22): Frost Mansion, very ancient, stone, frosty (template OLMANSION), inside the Maze of Ice
 MANSION_W, MANSION_H = 2.7, 2.6
 LEDGE = [6102, 6101, 6096]                          # owner (Oct 22): The Ledge of Life, a south-facing cliff path (template OLLEDGE)
+AS_LAND = {6147, 6148}                              # owner (Oct 22): south of 6143 all regular land again (these two water rooms drawn as land)
 NW_X = 50.0                                         # water routes wholly west of this: drawn as the Sea of Sorrows' routes (`seawaysfaint`)
 LAND_R, LTRAIL_R, CLOSE_N = 1.3, 0.9, 3.0           # the mainland's north edge: this far round its rooms and trails, gaps narrower than 6 closed
 WET_R, WTRAIL_R = 1.2, 0.8                          # sea at least this far round the water rooms and their routes
@@ -171,7 +173,7 @@ def apply(town, wild, pos):
     G = defaultdict(set, {v: n for v, n in G.items() if n})
     trails = _chains(G, P)                              # (all of them shape the snow, so its texture stays put)
     inb = lambda v: NBOX.contains(Point(P[v]))
-    wet = lambda v: inb(v) and v not in ICEBERG and ((v in OL and not R[v]['void'] and (R[v]['terrain'] in WET or rooms_name(v) == CLIFF or v in DOCK[1:])) or v in UN)   # (the unlocked rooms: sea, but the iceberg's)
+    wet = lambda v: inb(v) and v not in ICEBERG and v not in AS_LAND and ((v in OL and not R[v]['void'] and (R[v]['terrain'] in WET or rooms_name(v) == CLIFF or v in DOCK[1:])) or v in UN)   # (the unlocked rooms: sea, but the iceberg's)
     def ends(v, came):                                  # the real rooms a spacer leads to, through other spacers
         out, seen, st = set(), {came, v}, [v]
         while st:
@@ -551,7 +553,7 @@ def apply(town, wild, pos):
     # the south shore: a frozen beach along its coast, pack ice and icebergs offshore round An Ocean of Floating Ice and Among the Icebergs
     s_sea = sea.intersection(SBOX); s_land = unary_union(snowp).intersection(SBOX.buffer(1))
     beach = s_land.intersection(s_sea.buffer(0.9)).difference(near_r if False else Point(0, 0)).buffer(0.1).buffer(-0.2).buffer(0.1)
-    beach = [g for g in getattr(beach, 'geoms', [beach]) if g.area > 0.3]
+    beach = [h for g in getattr(beach, 'geoms', [beach]) for h in getattr(g.difference(FILL_S.buffer(1.5)), 'geoms', [g.difference(FILL_S.buffer(1.5))]) if h.area > 0.3]   # (no beach south of 6143)
     ir = [P[v] for v in OL if nm(v) in SOUTH_ICE]
     zone = unary_union([Point(q).buffer(5.0) for q in ir]).intersection(s_sea).buffer(-0.3)
     floes = []; sb = []
