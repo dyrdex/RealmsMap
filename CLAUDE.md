@@ -19,18 +19,18 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   `docs/archive/`: full history (grep it, don't read it whole). `CHANGELOG.md`: owner-facing history (append to the top section).
 
 ## State (Oct 22, 2026)
-- Last version 2.4 (Oct 22, "Otherland"; tag `v2.4` to be added by the owner on GitHub). Base = a legacy redraw + `applied/v22/`, `v23/`, `v24/`,
-  `v2.2/`, `v2.3/`, `v2.4/` (2.4: Otherland from the owner's save, `legacy/ol_layout_final.json`: snow island, snow-track trails, north/west/south coast
-  sea, the Iceberg isle, the Harbor of Icebergs (dock, ice, bergs), Morte's Peak shading, the gorge, mazes, shacks, Frost Mansion; Winterlight
-  Island's drawing removed until re-fitted; bounds y1 259). Details and standing rules: REGION_NOTES (Otherland).
+- Last version 2.5 (Oct 22, "Otherland's Wilds"; tag `v2.5` to be added by the owner on GitHub). Base = a legacy redraw + `applied/v22/`, `v23/`, `v24/`,
+  `v2.2/` ... `v2.5/` (2.4: Otherland from the owner's save, `legacy/ol_layout_final.json`; 2.5: Over the Cliff Maze offshore, Morte's Peak plain
+  (shading and relief both rejected), dashed Heart path, gorge rocks + gap to the maze, shore ice all round, east coast sea + bay filled, trail
+  jumpers, snowy plants; Winterlight Island's drawing still removed until re-fitted). Details and standing rules: REGION_NOTES (Otherland).
   After a legacy redraw: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
 - All 15 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get `<key>/current`.
   Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
 - Nothing in progress.
 
 ## Snapshots
-- Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.4, the next is 2.5
-  (footer `Version 2.5 · <title> · <date>`, tag `v2.5`, folder `applied/v2.5/`; add the folder to `legacy/rebase.py`).
+- Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.5, the next is 2.6
+  (footer `Version 2.6 · <title> · <date>`, tag `v2.6`, folder `applied/v2.6/`; add the folder to `legacy/rebase.py`).
 - New version: `python3 build.py --freeze`, move the change files to `src/changes/applied/v2.N/`, edit `src/VERSION`, retitle the CHANGELOG's in-progress
   section, rebuild twice (realm_map.html must match), commit.
 - Merge into `main` ONLY when the owner says to save a new version (Oct 16). Day to day: push to the session branch only. Then
