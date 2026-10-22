@@ -152,6 +152,10 @@ The other builders run inside `src/legacy`.
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
   Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; west edge one smooth concave curve, no juts; owner Oct 22), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
   South of 6143 (FILL_S; 6147, 6148 as land): regular land, no beach, no inlet (owner, Oct 22).
+  Saves from Oct 22 18:39Z on keep the west/south 3 east: applied/v2.4/001's hand-set west shapes (WBOX, HARBOR, SBOX west edge, FILL_S, FILL1's
+  harbour pieces, NBOX's west box) are translated by `WS = 3.0` (and 006's SBOX). A new save that moves them again: move these with it.
+  Otherland's sea (001_azure_east step 2) is rebuilt as ONE evenodd-visible shape minus the land (+ background specks at the coast filled); land
+  closed by 0.06 (no hairline cracks); no lagoons without a sea room. Checks after any coast change: sea under land 0, background at coast 0.
   Fissure vs gorge (owner, Oct 22; `changes/002_fissure.py`): 'The Fissure' rooms are DOWN paths to the gorge floor: the descents 13180->13179,
   13222->13221 = narrow clefts widening downwards (`wild.olfissure`, template OLFISSURE) with steps + down chevrons; `olgorge` only round the
   Floor of Tirebaen's Gorge rooms (flat ground at the bottom).

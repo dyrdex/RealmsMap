@@ -30,7 +30,8 @@ ICE1, ICE1_R = 15154, 0.55                                                     #
 NOT_DRAWN = {(5987, 22496)}                                                   # owner (Oct 22)
 COAST_END = [6179, 15606]
 ZONE_R, SAMPLE = 6.0, 0.2                                                     # the coast is worked out this near the sea rooms; feature sampling
-CAP, CLOSE_R, SMOOTH = 1.6, 3.5, 0.6
+CAP, CLOSE_R, SMOOTH = 1.6, 5.0, 0.6
+OLBOX = box(-40, 140, 120, 280)                                               # Otherland's sea
 EAST = box(60, 175, 110, 232)                                                 # notches closed only on the east coast (not the south shore's inlets)
 SEA_W, SEA_CLOSE, AZ_R = 6.0, 6.0, 3.0
 ICE_CLEAR = 0.6                                                               # shore ice this far from rooms and routes
@@ -116,15 +117,17 @@ def apply(town, wild, pos):
     base = unary_union([old] + [Point(warp(*at(v))).buffer(CAP) for v in offl])
     closed = base.buffer(CLOSE_R).buffer(-CLOSE_R).difference(base)
     isle = unary_union([g for g in snowp if g.contains(Point(at(22531)))])
-    notches = [g for g in _polys(closed) if g.area > 0.05 and g.intersects(Z) and Z.buffer(ZONE_R).contains(g) and EAST.contains(g) and g.distance(isle) > 1.0]
+    notches = [g for g in _polys(closed) if g.area > 0.05 and g.intersects(Z.buffer(ZONE_R)) and EAST.contains(g) and g.distance(isle) > 1.0]
     Z = unary_union([Z] + [g.buffer(0.5) for g in notches])
     cand = unary_union([base] + [g.buffer(0.02) for g in notches]).difference(seav.intersection(Z))
     sm = cand.buffer(SMOOTH).buffer(-2 * SMOOTH).buffer(SMOOTH)
     newl = unary_union([cand.difference(Z), sm.intersection(Z)]).buffer(0)
     keep = [g for g in _polys(newl) if g.area > 0.01 and any(g.buffer(0.05).contains(Point(at(v))) for v in landr)]
+    keep = [Polygon(g.exterior, [h for h in g.interiors if any(Polygon(h).contains(Point(at(v))) for v in seaR)]) for g in keep]   # (no lagoons without a sea room)
     dropped = [g for g in _polys(newl) if g.area > 0.01 and g not in keep]
     berg = Point(at(ICE1)).buffer(ICE1_R, 6).simplify(0.02)                                     # the one-room iceberg
-    newl = unary_union(keep); land_new = unary_union([newl, berg])
+    newl = unary_union(keep).buffer(0.06).buffer(-0.06)                                        # (no hairline cracks of sea into the land)
+    newl = unary_union([g for g in _polys(newl) if g.area > 0.01]); land_new = unary_union([newl, berg])
     lost = [v for v in landr if Z.contains(Point(at(v))) and not newl.contains(Point(warp(*at(v))))]
     wetin = [v for v in seaR - {ICE1} if newl.contains(Point(at(v)))]
     other_land = [Polygon(p).buffer(0) for p in geo['land'] if len(p) > 2 and key(p) not in oldkeys]
@@ -160,7 +163,9 @@ def apply(town, wild, pos):
         geo[k] = out
     land = unary_union(other_land + [land_new])
     W = unary_union([Polygon(p).buffer(0) for p in geo['water'] if len(p) > 2])
-    SF = unary_union([Polygon(p).buffer(0) for p in geo['seafill'] if len(p) > 2])
+    SF = Polygon()                                                                              # the sea fill that shows (evenodd: overlapping rings cancel)
+    for p in geo['seafill']:
+        if len(p) > 2: SF = SF.symmetric_difference(Polygon(p).buffer(0))
     oldsea = unary_union([W, SF])
     rn = lambda x, y: 0.9 * math.sin(x / 3.1 + 1.3) * math.cos(y / 2.7 - 0.4) + 0.5 * math.sin((x + y) / 4.3)     # (a smooth wobble: no straight edges along straight routes)
     blobs = [Point(q).buffer(AZ_R + 0.8 + 0.8 * rn(*q), 24) for g in [Point(at(v)) for v in AZ] + [LineString([at(a), at(b)]) for a, b in edges if a in AZ and b in AZ] for q in _sample(g, 0.4)]
@@ -169,6 +174,19 @@ def apply(town, wild, pos):
     fill = region.difference(land.buffer(-0.03)).difference(oldsea)
     fills = [g for g in _polys(fill) if g.area > 0.05]
     geo['seafill'] = list(geo['seafill']) + rings(unary_union(fills))
+    rs = [Polygon(p).buffer(0) if len(p) > 2 else None for p in geo['seafill']]                 # Otherland's sea, rebuilt as the one shape that shows
+    grp = {i for i, g in enumerate(rs) if g is not None and g.intersects(OLBOX)}               #  (evenodd: overlapping rings cancel), less the land:
+    while True:                                                                                 #  no slivers or holes left under the land
+        more = {j for j, g in enumerate(rs) if g is not None and j not in grp and any(g.intersects(rs[i]) for i in grp)}
+        if not more: break
+        grp |= more
+    vis = Polygon()
+    for i in sorted(grp): vis = vis.symmetric_difference(rs[i])
+    vis = vis.difference(inl)
+    Wp = unary_union([Polygon(p).buffer(0) for p in geo['water'] if len(p) > 2])
+    gaps = OLBOX.intersection(land.buffer(1.0)).difference(land).difference(vis).difference(Wp)   # (no specks of bare background at the coast)
+    vis = unary_union([vis] + [g.buffer(0.01) for g in _polys(gaps) if g.area < 0.5]).difference(inl)
+    geo['seafill'] = [p for i, p in enumerate(geo['seafill']) if i not in grp] + rings(unary_union([g for g in _polys(vis) if g.area > 0.005]))
     sea_all = unary_union([oldsea] + fills)
     chg = unary_union([Z, added.buffer(0.5), gone.buffer(0.5)])                                 # shore lines: dropped off the changed coast, the new ones added
     ns0 = len(wild['seashore']); keepsh = []
