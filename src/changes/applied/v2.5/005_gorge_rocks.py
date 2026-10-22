@@ -1,4 +1,4 @@
-# Tirebaen's Gorge and the Fissure (owner, Oct 23): rocks, debris and texture on the gorge floor, so it reads as the bottom of a rocky gorge:
+# Tirebaen's Gorge and the Fissure (owner, Oct 22): rocks, debris and texture on the gorge floor, so it reads as the bottom of a rocky gorge:
 # snow-dusted boulders (more of them at the foot of the walls), loose scree and gravel, a few cracks; all kept clear of the trail on it
 # (template OLGORGE, under the trails).
 import math, random

@@ -1,4 +1,4 @@
-# Morte's Peak (owner, Oct 23): its height shading (the first 7 levels of wild.olhill) is removed; Death's Spire's levels stay.
+# Morte's Peak (owner, Oct 22): its height shading (the first 7 levels of wild.olhill) is removed; Death's Spire's levels stay.
 from shapely.geometry import Polygon
 
 

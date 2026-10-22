@@ -1,4 +1,4 @@
-# Morte's Peak (owner, Oct 23): the path through the Heart of the mountain is a thin dashed line (moved from oltracks to oltunnels, the
+# Morte's Peak (owner, Oct 22): the path through the Heart of the mountain is a thin dashed line (moved from oltracks to oltunnels, the
 # Cramped Tunnel's style): the whole path between the "...Heart of Morte's Peak" rooms, through The Concealed Horror and Lost in the Darkness.
 import math, random
 from maplib import world
@@ -13,7 +13,7 @@ def apply(town, wild, pos):
                          y + TRACK_A * (0.7 * math.sin(2 * math.pi * x / TRACK_L + a2) + 0.3 * math.sin(2 * math.pi * (x - y) / (TRACK_L * 1.6) + a4)))
     named = {v: warp(*pos[str(v)]) for v, r in rooms.items() if str(v) in pos and r['area'] == 'Otherland' and r['name']}   # (spacer rooms have no name)
     HEART = {v for v in named if 'Heart of Morte' in rooms[v]['name']}
-    TUN = HEART | {v for v in named if rooms[v]['name'] in ("The Concealed Horror of Morte's Peak", 'Lost in the Darkness')} | {15703}   # (owner, Oct 23: from The Sudden Stop)
+    TUN = HEART | {v for v in named if rooms[v]['name'] in ("The Concealed Horror of Morte's Peak", 'Lost in the Darkness')} | {15703}   # (owner, Oct 22: from The Sudden Stop)
     grid = {}
     for v, q in named.items(): grid.setdefault((round(q[0]), round(q[1])), []).append((v, q))
     def hit(p):

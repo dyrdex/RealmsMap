@@ -1,4 +1,4 @@
-# Otherland's plants (owner, Oct 23): snow-laden pines, bare leafless trees, bushes and ground cover, all dusted with snow and looking cold
+# Otherland's plants (owner, Oct 22): snow-laden pines, bare leafless trees, bushes and ground cover, all dusted with snow and looking cold
 # (template OLFLORA). Where they grow follows the nearest room's name: tundra and steppe mostly ground cover and low bushes; hills scattered
 # pines, bare trees and bushes; the mountains a few stunted pines; near the shore bushes; elsewhere small pine groves among bare trees and
 # bushes. Kept clear of the trails, rooms, mazes, clearings, shacks, the gorge, the coast, the drifts and everything else drawn on the snow.

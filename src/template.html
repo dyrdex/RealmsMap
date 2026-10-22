@@ -443,7 +443,7 @@ FWPATHS+=(WD.olharborways||[]).length?`<path d="${WD.olharborways.map(p=>'M'+p.m
   WILD+=`<path d="${G.band.map(P).join('')}" fill-rule="evenodd" fill="#6B767C" stroke="#B3BCC1" stroke-width=".07" stroke-linejoin="round"/>`;
   WILD+=`<path d="${G.hach.map(h=>'M'+h[0].join(' ')+'L'+h[1].join(' ')).join('')}" stroke="#414B51" stroke-width=".04" stroke-linecap="round" opacity=".75"/>`;
   WILD+=`<path d="${G.floor.map(P).join('')}" fill-rule="evenodd" fill="#4F5A60" stroke="#434D53" stroke-width=".04" stroke-linejoin="round" opacity=".95"/>`;
-  if(G.rocks){   /* the gorge floor's debris (owner, Oct 23): cracks, gravel and scree, snow-dusted boulders lit from the north-west */
+  if(G.rocks){   /* the gorge floor's debris (owner, Oct 22): cracks, gravel and scree, snow-dusted boulders lit from the north-west */
     WILD+=`<path d="${(G.cracks||[]).map(c=>'M'+c.map(q=>q.join(' ')).join('L')).join('')}" fill="none" stroke="#353F44" stroke-width=".035" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>`;
     WILD+=(G.gravel||[]).map(g=>`<circle cx="${g[0]}" cy="${g[1]}" r="${g[2]}" fill="${g[3]?'#7D878D':'#3A4449'}" opacity=".75"/>`).join('');
     for(const r of G.rocks){const n=r.length,cx=r.reduce((a,q)=>a+q[0],0)/n,cy=r.reduce((a,q)=>a+q[1],0)/n,sh=r.map(q=>[cx+(q[0]-cx)*.55+.03,cy+(q[1]-cy)*.55+.04]),top=r.map(q=>[cx+(q[0]-cx)*.5-.03,cy+(q[1]-cy)*.45-.04]);
@@ -464,7 +464,7 @@ WILD+=`<defs><filter id="olblur2" x="-10%" y="-10%" width="120%" height="120%"><
 {const H=WD.olhill;if(H){   /* OLHILL: Morte's Peak (owner, Oct 22): the snow shaded as seen from above, lit from the north-west; blurred so it rises gently */
   WILD+=`<defs><filter id="olblur" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation=".3"/></filter></defs><g filter="url(#olblur)">`+H.levels.map(L=>`<path d="${L.rings.map(a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z').join('')}" fill="${L.fill}" fill-rule="evenodd" opacity="${L.op}"/>`).join('')+`</g>`;
 }}
-{const F=WD.olflora;if(F)WILD+=F.slice().sort((a,b)=>a[1]-b[1]).map(t=>`<use href="#o${t[3]}${t[4]}" transform="translate(${t[0]},${t[1]}) scale(${t[2]})"/>`).join('');}   /* OLFLORA: Otherland's plants (owner, Oct 23): snowy pines, bare trees, bushes, ground cover */
+{const F=WD.olflora;if(F)WILD+=F.slice().sort((a,b)=>a[1]-b[1]).map(t=>`<use href="#o${t[3]}${t[4]}" transform="translate(${t[0]},${t[1]}) scale(${t[2]})"/>`).join('');}   /* OLFLORA: Otherland's plants (owner, Oct 22): snowy pines, bare trees, bushes, ground cover */
 WILD+=FWPATHS;
 {const D=WD.olharbor&&WD.olharbor.dock;if(D){const d='M'+D.pts.map(q=>q.join(' ')).join('L'),w=D.w;   /* OLDOCK: the Harbor of Icebergs' dock (owner, Oct 22): wooden, snow covered and frozen */
   WILD+=`<g fill="none" stroke-linejoin="round" stroke-linecap="butt"><path d="${d}" stroke="#9FB3BE" stroke-width="${w+.16}" opacity=".35"/><path d="${d}" transform="translate(.05,.07)" stroke="#000" stroke-width="${w}" opacity=".25"/>`+

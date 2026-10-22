@@ -1,4 +1,4 @@
-# Tirebaen's Gorge (owner, Oct 23): its east wall pulled back where it met the A Tunnel in the Snow maze, so the two never touch (a gap of GAP);
+# Tirebaen's Gorge (owner, Oct 22): its east wall pulled back where it met the A Tunnel in the Snow maze, so the two never touch (a gap of GAP);
 # the floor keeps at least WALL of wall inside that, the hachures crossing the cut are clipped. The maze itself is unchanged.
 from shapely.geometry import Polygon, LineString
 from shapely.ops import unary_union

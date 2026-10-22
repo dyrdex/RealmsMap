@@ -129,7 +129,7 @@ The other builders run inside `src/legacy`.
   `oltracks` warped by one smooth field (TRACK_A .16, TRACK_L 7): a gentle long wave. 6180-15128 (Azure) as `seawaysfaint` (owner, Oct 22).
   Harbor of Icebergs (owner, Oct 22): open sea (WBOX), `wild.olharbor` {ice, cracks, bergs, dock} (template OLHARBOR, OLDOCK); dock =
   13100-13101-13102-13105. Harbour routes: `wild.olharborways` (thin, nearly transparent, slightly wavy). The bay between 13150 and
-  the harbour's NE shore is land (FILL1). The sea grows SEA_W off the land inside the boxes, never cut by a box line. Morte's Peak: its height shading REMOVED (owner, Oct 23: too unlike the rest of the map; `olhill` keeps only Death's Spire). A computed top-down relief (faces/crests/hachures) was ALSO rejected (Oct 23: 'basically the same'): don't retry height-field renders. Heart path (8 Heart rooms + The Concealed Horror + Lost in the Darkness, from The Sudden Stop 15703: one line): thin dashed `oltunnels` (`changes/003`). Was: shading of the snow from above (`wild.olhill`, template OLHILL, blurred; owner, Oct 22: no peak sprites,
+  the harbour's NE shore is land (FILL1). The sea grows SEA_W off the land inside the boxes, never cut by a box line. Morte's Peak: its height shading REMOVED (owner, Oct 22: too unlike the rest of the map; `olhill` keeps only Death's Spire). A computed top-down relief (faces/crests/hachures) was ALSO rejected (Oct 22: 'basically the same'): don't retry height-field renders. Heart path (8 Heart rooms + The Concealed Horror + Lost in the Darkness, from The Sudden Stop 15703: one line): thin dashed `oltunnels` (`v2.5/003`). Was: shading of the snow from above (`wild.olhill`, template OLHILL, blurred; owner, Oct 22: no peak sprites,
   no dashed passages); heights from the trail climb (ridges along its trails, the Heart the top) and Tirebaen's Gorge + the Fissure
   (`wild.olgorge`, template OLGORGE) (owner, Oct 22). Also (owner, Oct 22): Death's Spire (shading); NO relief on the west/south land (Gods, hills, the
   Mountain, the Den: removed, owner); Bed of the Runoff (`olrunoff`); the south shore
@@ -141,8 +141,8 @@ The other builders run inside `src/legacy`.
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
   Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; west edge one smooth concave curve, no juts; owner Oct 22), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
   South of 6143 (FILL_S; 6147, 6148 as land): regular land, no beach, no inlet (owner, Oct 22).
-  Gorge (owner, Oct 23): never touches the A Tunnel in the Snow maze (wall cut back, `changes/004`); its floor carries rocks/gravel/cracks (`olgorge.rocks/gravel/cracks`, `005`), clear of its trail.
-  East coast (owner, Oct 23; `007`): bay east of Morte's Peak filled (closed r 5 in BAY), sea EBOX SEA_W 6 (seafill + seashore); its ice `008` (006's placement).
-  Trail crossings without a room (owner, Oct 23; `009`): electrical-style jumpers (half-circle hop, up-left; tunnel or shorter line hops); NO gaps or marks.
-  Plants (owner, Oct 23; `010`, `wild.olflora` [x,y,scale,kind p/b/s/g,variant], template OLFLORA sprites op*/ob*/os*/og*): density by the nearest room name's land kind (DENS).
-  Shore ice (owner, Oct 23): floes + small bergs along the WHOLE sea coast at the south shore's density (`006`, appended to `olsouth.floes` / `olharbor.bergs`).
+  Gorge (owner, Oct 22): never touches the A Tunnel in the Snow maze (wall cut back, `v2.5/004`); its floor carries rocks/gravel/cracks (`olgorge.rocks/gravel/cracks`, `v2.5/005`), clear of its trail.
+  East coast (owner, Oct 22; `v2.5/007`): bay east of Morte's Peak filled (closed r 5 in BAY), sea EBOX SEA_W 6 (seafill + seashore); its ice `v2.5/008` (v2.5/006).
+  Trail crossings without a room (owner, Oct 22; `v2.5/009`): electrical-style jumpers (half-circle hop, up-left; tunnel or shorter line hops); NO gaps or marks.
+  Plants (owner, Oct 22; `v2.5/010`, `wild.olflora` [x,y,scale,kind p/b/s/g,variant], template OLFLORA sprites op*/ob*/os*/og*): density by the nearest room name's land kind (DENS).
+  Shore ice (owner, Oct 22): floes + small bergs along the WHOLE sea coast at the south shore's density (`v2.5/006`, appended to `olsouth.floes` / `olharbor.bergs`).

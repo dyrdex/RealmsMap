@@ -1,4 +1,4 @@
-# Otherland's east coast (owner, Oct 23): its floating ice and little icebergs, the same as along the rest of the shore (006's placement,
+# Otherland's east coast (owner, Oct 22): its floating ice and little icebergs, the same as along the rest of the shore (006's placement,
 # limited to the east coast's new sea, so the ice already placed stays where it is).
 import importlib.util, os
 from shapely.geometry import box

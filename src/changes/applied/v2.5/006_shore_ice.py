@@ -1,4 +1,4 @@
-# Otherland's whole shore (owner, Oct 23): the south shore's floating ice and little icebergs (olsouth floes, olharbor bergs) all along the
+# Otherland's whole shore (owner, Oct 22): the south shore's floating ice and little icebergs (olsouth floes, olharbor bergs) all along the
 # island's sea coast, The Iceberg's included, as dense as off the south shore, the same shapes and sizes; clear of every room, sea route,
 # maze and the ice already there.
 import math, random

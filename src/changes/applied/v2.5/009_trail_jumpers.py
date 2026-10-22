@@ -1,4 +1,4 @@
-# Otherland's trails (owner, Oct 23): where two trails cross with no room there, one "jumps" the other like a wire jumper in an electrical
+# Otherland's trails (owner, Oct 22): where two trails cross with no room there, one "jumps" the other like a wire jumper in an electrical
 # diagram: a small half-circle hop over the straight one; no gaps, no marks. The tunnel (dashed) one hops if one is involved, else the shorter
 # line; every hop bulges to the same side (up-left on the map).
 import math

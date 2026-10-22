@@ -1,4 +1,4 @@
-# Otherland's east coast (owner, Oct 23): the bay east of Morte's Peak filled in, the coast smooth there (snow, as the land round it); and the
+# Otherland's east coast (owner, Oct 22): the bay east of Morte's Peak filled in, the coast smooth there (snow, as the land round it); and the
 # sea along the east coast, like the other coasts': up to SEA_W off the land inside EBOX, round-ended, joined to the sea already there,
 # drawn as `seafill` + `seashore`. (Its ice: 008.)
 import math, random
