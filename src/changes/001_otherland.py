@@ -7,10 +7,15 @@ customised later):
   - snow ground (`geo.snow`, template --snow) on a new land piece round the rooms and trails, kept off the existing land and sea; on it (owner, Oct 21:
     a soft white snow texture with little drifts and icy spots; `wild.olsnow`, template OLSNOW): sparkle grain and faint wind wisps, snow drifts,
     icy patches, all clear of the trails and rooms (their own random.Random);
+  - the north coast (owner, Oct 22), inside NBOX only: the water rooms there (swimming, underwater, water; 'Over the Cliff', a maze for later, as
+    water) and their exits are sea: the sea carried from the Sea of Sorrows and the Azure Sea strip south to the island's north coast (the land
+    rooms' edge, inlets to the 3 'The Sea of Sorrows' rooms in the Tundra Fields), at most SEA_W off the land, drawn as `seafill` + `seashore`;
+    their exits faint wavy water routes (`seawaves`) instead of trails. The iceberg 22531-22535 its own little snow island, a sliver of sea
+    (SLIVER) between it and 22530 on the mainland; the snow texture outside the new land dropped (none moved);
   - Winterlight Island's drawing (`snowisles`) removed for now (owner: to be re-fitted later); its marker stays."""
 import json, math, os, random
 from collections import defaultdict
-from shapely.geometry import Polygon, LineString, Point
+from shapely.geometry import Polygon, LineString, Point, box
 from shapely.ops import unary_union
 
 HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
@@ -19,6 +24,14 @@ CLOSE = 3.0                                         # gaps narrower than 6 rooms
 WAVE_AMP, WAVE_LEN = 0.12, 2.5                       # as applied/v2.3/001
 DRIFT_AREA, DRIFT_GAP, DRIFT_CLEAR = 14.0, 1.6, 0.7  # one drift per this many square rooms; apart; from trails and rooms
 ICE_N, ICE_GAP, ICE_CLEAR = 30, 4.0, 1.0            # icy patches: how many; apart; from trails and rooms
+NBOX = unary_union([box(-22, 144, 82, 177), box(-22, 177, -6, 189)])     # the north coast (with 'Over the Cliff' 683 on the west coast)
+WET = {'Swimming', 'Underwater', 'Water', 'Seafloor'}
+CLIFF = 'Over the Cliff'
+ICEBERG = [22531, 22532, 22533, 22534, 22535]       # owner: an iceberg, a little island; 22530 is on the mainland
+LAND_R, LTRAIL_R, CLOSE_N = 1.3, 0.9, 3.0           # the mainland's north edge: this far round its rooms and trails, gaps narrower than 6 closed
+WET_R, WTRAIL_R = 1.2, 0.8                          # sea at least this far round the water rooms and their routes
+ICE_R, SLIVER = 0.9, 0.45                           # the iceberg: this far round its rooms; the sea between it and the mainland
+SEA_W, SEA_CLOSE = 6.0, 6.0                         # the sea reaches this far off the land and the old sea; gaps narrower than 12 filled
 
 
 def _wave(line):
@@ -57,6 +70,9 @@ def _chains(G, P):
 
 
 def apply(town, wild, pos):
+    from maplib import world
+    _rooms = world()[0]
+    rooms_name = lambda v: _rooms[v]['name']
     S = json.load(open(os.path.join(LEG, 'ol_layout_final.json'))); E = json.load(open(os.path.join(LEG, 'ol_editor_edges.json')))
     R = {r['id']: r for r in E['rooms']}
     P = {v: (x, y) for v, x, y in zip(S['ids'], S['xs'], S['ys'])}; H = set(S['hidden'])
@@ -100,8 +116,31 @@ def apply(town, wild, pos):
             for u in G.pop(v): G[u].discard(v)
             stub += 1
     G = defaultdict(set, {v: n for v, n in G.items() if n})
-    trails = _chains(G, P)
-    wild['fwtracks'] = list(wild['fwtracks']) + trails
+    trails = _chains(G, P)                              # (all of them shape the snow, so its texture stays put)
+    inb = lambda v: NBOX.contains(Point(P[v]))
+    wet = lambda v: inb(v) and ((v in OL and not R[v]['void'] and (R[v]['terrain'] in WET or rooms_name(v) == CLIFF)) or v in UN)   # (the unlocked rooms: all sea)
+    def ends(v, came):                                  # the real rooms a spacer leads to, through other spacers
+        out, seen, st = set(), {came, v}, [v]
+        while st:
+            u = st.pop()
+            for x in G[u]:
+                if x in seen: continue
+                seen.add(x)
+                if R[x]['void']: st.append(x)
+                else: out.add(x)
+        return out
+    def wetedge(a, b):
+        for v, o in ((a, b), (b, a)):
+            if wet(v): return True
+            if R[v]['void'] and inb(v) and any(wet(x) for x in ends(v, o)): return True
+        return False
+    GL, GW = defaultdict(set), defaultdict(set)
+    for a in G:
+        for b in G[a]:
+            (GW if wetedge(a, b) else GL)[a].add(b)
+    ltrails = _chains(GL, P); wroutes = _chains(GW, P)
+    wild['fwtracks'] = list(wild['fwtracks']) + ltrails
+    wild['seawaves'] = list(wild['seawaves']) + [_wave(l) for l in wroutes]
     # ---- snow ground ----
     geo = wild['geo']
     land0 = unary_union([Polygon(p).buffer(0) for p in geo['land'] if len(p) > 2])
@@ -144,6 +183,63 @@ def apply(town, wild, pos):
     drifts = [[round(x, 3), round(y, 3), round(rng.uniform(0.7, 1.25), 2), round(rng.uniform(-0.35, 0.35), 3)]
               for x, y in spots(int(allsnow.area / DRIFT_AREA), DRIFT_GAP, DRIFT_CLEAR, 60000) if not icy.contains(Point(x, y))]
     wild['olsnow'] = {'poly': [list(map(list, p)) for p in geo['snow']], 'drifts': drifts, 'ice': ice}
+    # ---- the north coast ----
+    WR = {v for v in OL if wet(v)}
+    ice_r = [v for v in ICEBERG if v in OL]
+    landr = [v for v in OL if inb(v) and not R[v]['void'] and v not in WR and v not in ice_r]
+    core = unary_union([Point(P[v]).buffer(LAND_R) for v in landr] + [LineString(l).buffer(LTRAIL_R) for l in ltrails if len(l) > 1 and NBOX.intersects(LineString(l))])
+    wetreach = unary_union([Point(P[v]).buffer(WET_R) for v in WR] + [LineString(l).buffer(WTRAIL_R) for l in wroutes if len(l) > 1]
+                           + [Point(P[v]).buffer(WET_R) for v in moved])
+    icetr = [l for l in ltrails if len(l) > 1 and all(any(math.dist(q, P[v]) < 0.01 for v in ice_r) for q in (l[0], l[-1]))]
+    iceberg = unary_union([Point(P[v]).buffer(ICE_R) for v in ice_r] + [LineString(l).buffer(ICE_R * 0.8) for l in icetr]).buffer(0.4).buffer(-0.4)
+    land_all = unary_union([Polygon(p).buffer(0) for p in geo['land'][:-len(pieces)] if len(p) > 2])
+    W = unary_union([Polygon(p).buffer(0) for p in geo['water'] if len(p) > 2])
+    SF = unary_union([Polygon(p).buffer(0) for p in geo.get('seafill') or [] if len(p) > 2])
+    protect = unary_union([Point(P[v]).buffer(0.55) for v in landr] + [LineString(l).buffer(0.3) for l in ltrails if len(l) > 1 and NBOX.intersects(LineString(l))
+                                                                           and not any(math.dist(q, P[v]) < 0.01 for v in ice_r for q in (l[0], l[-1]))])
+    mainland = unary_union([core.buffer(CLOSE_N).buffer(-CLOSE_N).difference(wetreach), protect.difference(iceberg.buffer(0.01))]).difference(iceberg.buffer(SLIVER).difference(protect))
+    solid = unary_union([land_all, mainland, iceberg])
+    reach = unary_union([allsnow.buffer(SEA_W), W.buffer(SEA_W), wetreach]).intersection(NBOX)
+    region = unary_union([reach, wetreach]).buffer(SEA_CLOSE).buffer(-SEA_CLOSE).intersection(NBOX)
+    sea = region.difference(solid.buffer(0.02))
+    sea = unary_union([g for g in getattr(sea, 'geoms', [sea]) if g.distance(W) < 0.05 or g.distance(wetreach) < 0.05 and g.area > 1.0])
+    # the snow: the old snow minus the new sea (the mainland's north edge), plus the iceberg
+    newsnow = allsnow.difference(sea).difference(iceberg.buffer(SLIVER).difference(protect))
+    snowp = [g for g in getattr(newsnow, 'geoms', [newsnow]) if g.area > 0.5 and any(g.contains(Point(P[v])) for v in OL)]   # (bits of the old snow with no room: sea now)
+    stray = round(sum(g.area for g in getattr(newsnow, 'geoms', [newsnow]) if g.area > 0.5) - sum(g.area for g in snowp), 2)
+    sea = unary_union([sea] + [g for g in getattr(newsnow, 'geoms', [newsnow]) if g.area > 0.5 and g not in snowp and NBOX.contains(g)])
+    dropped = round(sum(g.area for g in getattr(newsnow, 'geoms', [newsnow]) if g.area <= 0.5), 2)
+    ice_p = iceberg.difference(land_all.buffer(0.3)).difference(W.buffer(0.05))
+    ice_p = [g for g in getattr(ice_p, 'geoms', [ice_p]) if g.area > 0.3]
+    newp = snowp + ice_p
+    geo['land'] = list(geo['land'][:-len(pieces)]) + [rd(g) for g in newp]
+    geo['snow'] = [rd(g) for g in newp]
+    allsnow2 = unary_union(newp)
+    # the sea drawn: seafill (over the old sea's edge where they meet, hiding its shore line there), its own shore lines
+    fill = sea.difference(W)
+    fill = unary_union([fill, W.intersection(fill.buffer(0.3))]).difference(SF).difference(land_all.buffer(0.05)).difference(allsnow2.buffer(0.02))
+    fills = [g for g in getattr(fill, 'geoms', [fill]) if g.area > 0.05]
+    geo['seafill'] = list(geo.get('seafill') or []) + [rd(g) for g in fills]
+    total = unary_union([W, SF] + fills)
+    shore = total.boundary.difference(W.boundary.buffer(0.03)).difference(SF.boundary.buffer(0.03)).intersection(sea.buffer(0.1))
+    shore = [l for l in getattr(shore, 'geoms', [shore]) if l.geom_type == 'LineString' and l.length > 0.2]
+    wild['seashore'] = list(wild.get('seashore') or []) + [[[round(x, 3), round(y, 3)] for x, y in l.simplify(0.02).coords] for l in shore]
+    keep = allsnow2.buffer(-0.3)
+    nd, ni = len(drifts), len(ice)
+    wild['olsnow'] = {'poly': [list(map(list, p)) for p in geo['snow']], 'drifts': [d for d in drifts if keep.contains(Point(d[:2]))],
+                      'ice': [p for p in ice if keep.contains(Polygon(p))]}
+    seawet = [v for v in WR if not total.buffer(0.01).contains(Point(P[v]))]
+    landwet = [v for v in landr if total.buffer(-0.01).contains(Point(P[v]))]
+    icepos = {v: round(Point(P[v]).distance(unary_union(ice_p).exterior if ice_p else Point(0, 0)), 2) for v in ice_r}
+    gap = round(unary_union(ice_p).distance(unary_union(snowp)), 2) if ice_p else None
+    trail_sea = [(round(LineString(l).intersection(sea.buffer(-0.05)).length, 2), l[0], l[-1]) for l in ltrails if len(l) > 1 and LineString(l).intersection(sea.buffer(-0.05)).length > 0.01]
+    north = {'water rooms in the box (sea; not in it)': (len(WR), seawet), 'land rooms in the sea': landwet,
+             'water routes (lines, exits); land trails (lines)': (len(wroutes), sum(len(GW[v]) for v in GW) // 2, len(ltrails)),
+             'sea added (area, pieces, shore lines)': (round(sea.difference(W).area, 1), len(fills), len(shore)),
+             'iceberg (pieces, area, its rooms to its shore, sea to the mainland)': (len(ice_p), round(sum(g.area for g in ice_p), 2), icepos, gap),
+             'snow (pieces, area; slivers dropped, bits with no room made sea)': ([round(g.area, 1) for g in snowp], round(unary_union(snowp).area, 1), dropped, stray),
+             'texture kept (drifts, ice)': ((len(wild['olsnow']['drifts']), nd), (len(wild['olsnow']['ice']), ni)),
+             'trail length over the sea': trail_sea}
     # ---- Winterlight Island's drawing, for now ----
     isles = len(wild.get('snowisles') or []); wild['snowisles'] = []
     # ---- checks ----
@@ -155,4 +251,4 @@ def apply(town, wild, pos):
             'sea lines moved with their rooms (faint points, wave lines)': (nf, nw),
             'snow (pieces, area; holes filled)': (len(pieces), round(allsnow.area, 1), holes),
             'rooms not on the snow (in the sea; elsewhere)': (inwater, [v for v in offsnow if v not in inwater]),
-            'Winterlight Island drawings removed': isles, 'bounds': wild['bounds']}
+            'north coast': north, 'Winterlight Island drawings removed': isles, 'bounds': wild['bounds']}

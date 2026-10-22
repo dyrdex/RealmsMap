@@ -26,7 +26,7 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 - All 15 layout editors live in the owner's current organization (links in REGION_NOTES; Wastelands editor v3 since Oct 20). Read saves with
   ArtifactData get `<key>/current`. Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`.
 - In progress (2.4): `changes/001_otherland.py`, a basic render of the owner's Otherland save (plain trails + snow); Winterlight Island's drawing
-  removed until re-fitted. Customising comes later, on request.
+  removed until re-fitted. Done on request: no one-way/up-down exits, snow texture, north coast sea + iceberg isle (Oct 22).
 
 ## Snapshots
 - Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.3, the next is 2.4

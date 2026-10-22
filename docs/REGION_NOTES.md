@@ -121,4 +121,6 @@ The other builders run inside `src/legacy`.
   Unlocked there (grp 'un', owner Oct 21): 18052-18075, 6174, 18047, 13379, 13380, 6166, 6180, 6650, 15410-15418; a save may move these map rooms.
   Drawn Oct 21 as a BASIC render (`changes/001_otherland.py`): plain trails, plain snow (`geo.snow`, template --snow, also a `geo.land` piece);
   the owner will customise later (water rooms, sub-areas, graphics): don't add any unasked.
-  Not drawn (owner, Oct 21): up/down AND one-way exits (both dashed in the editor). Snow texture: `wild.olsnow` (template OLSNOW). Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
+  Not drawn (owner, Oct 21): up/down AND one-way exits (both dashed in the editor). Snow texture: `wild.olsnow` (template OLSNOW).
+  North coast (owner, Oct 22; `001` NBOX): water rooms = sea (incl. the 3 'The Sea of Sorrows' rooms in the Tundra Fields); 'Over the Cliff'
+  (683, 14428) is a maze for later, water for now; the Iceberg 22531-22535 is a little island, a sliver of sea between it and 22530 (mainland). Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
