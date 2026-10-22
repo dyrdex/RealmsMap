@@ -2,6 +2,10 @@
 
 ## Version 2.4 (in progress)
 
+- Your requests (Oct 22), Otherland:
+  - The Harbor of Icebergs' 55 water routes are extremely thin (0.05 wide) and nearly transparent (16%), with a slight wave (0.05 to the side, about 1.6 rooms per wave). The rest of the map's water routes are unchanged.
+  - The bay north of the harbour is land now: snow from 13150 down to the harbour's north-east shore (164 square rooms). The new coast runs diagonally between them, and the harbour water rooms stay in the sea, 2.75 to 4 rooms from it. The snow drifts that had been dropped there are back.
+  - The Hunter's Outpost shack is about twice as big (2.1 x 2.55 rooms, was 1.1 x 1.55) and covers 14419, Supplication and The Tanner's Lodge and the trails between them.
 - Your request (Oct 22), the Harbor of Icebergs:
   - The harbour is open sea, joined to the new sea along Otherland's west coast, from the Over the Cliff room 683 down past the Desolate Outpost. That's 2,707 square rooms of new sea in all (north coast included), and it ends in rounded edges, never a straight box line.
   - Its 19 water rooms are in the sea, and no land room is. Their exits are faint straight water routes, like the Sea of Sorrows routes.

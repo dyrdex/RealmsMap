@@ -32,19 +32,22 @@ CLIFF = 'Over the Cliff'
 ICEBERG = [22531, 22532, 22533, 22534, 22535, 6166, 13379, 13380, 6180]   # owner (Oct 22): The Iceberg, its own little white island; 22530 on the mainland
 ZONE_R, TIGHT_R, TIGHT_TR = 5.0, 0.75, 0.55          # near the iceberg the mainland hugs its rooms (this far) and trails (this far)
 FILL1 = unary_union([box(68.5, 174.6, 70.5, 183.0), box(65.5, 176.0, 70.5, 183.0),
-                     Polygon([(70.5, 174.6), (72.3, 174.6), (72.75, 176.4), (72.35, 178.2), (72.9, 180.0), (72.5, 181.7), (72.8, 183.0), (70.5, 183.0)])])   # (an uneven east shore)   # owner (Oct 22): land west and south of 13287, its sea inlets gone
+                     Polygon([(70.5, 174.6), (72.3, 174.6), (72.75, 176.4), (72.35, 178.2), (72.9, 180.0), (72.5, 181.7), (72.8, 183.0), (70.5, 183.0)]),   # (an uneven east shore)
+                     Polygon([(-20.7, 207.6), (-20.6, 208.8), (-19.4, 210.8), (-17.3, 213.3), (-15.0, 215.4), (-12.6, 216.9), (-10.0, 217.9),   # owner (Oct 22): the bay
+                              (-6.0, 218.8), (-3.0, 219.3), (2.0, 219.3), (2.0, 207.6)])])                                                      # north of the harbour, from 13150 to its north-east shore: land   # owner (Oct 22): land west and south of 13287, its sea inlets gone
 FAINT_CHAIN = [6180, 15418, 15417, 15416, 15415, 15414, 15413, 15412, 15411, 15410, 6650, 15128]   # owner (Oct 22): drawn as the Sea of Sorrows' routes
 TRACK_A, TRACK_L = 0.16, 7.0                        # Otherland's trails: a gentle long wave (owner, Oct 22): a smooth warp this strong, this long
 CLEAR_SEEDS = {13492: 'The Tundra Fields', 13322: 'A Tunnel in the Snow / A Cold Lair'}   # owner (Oct 22): these two clumps only
 CLEAR_D, CLEAR_R, CLEAR_TR = 1.5, 0.62, 0.45        # a clump: rooms this close joined by an exit; its clearing this far round its rooms and exits
 CLEAR_FILL, CLEAR_EDGE = '#97A1A6', '#6B767C'       # packed snow, a little lighter than the snow
 SHACKS = {'The Desolate Outpost': ([13087, 13089, 13090, 13091, 13092, 13093], 0.5, 0.55),    # owner (Oct 22): a log shack over its main section (rooms;
-           "The Hunter's Outpost": ([14419], 0.55, 0.6)}                                       #  margin round them across, down), its back door trail west/south clear
+           "The Hunter's Outpost": ([14419, 14420, 14421], 0.55, 0.6)}   # (owner, Oct 22: twice as big, over the trails of 14419, Supplication 14420, the Tanner's Lodge 14421)                                       #  margin round them across, down), its back door trail west/south clear
 WATER_LINKS = [(22530, 22531)]                      # owner (Oct 22): a water path (as the Sea of Sorrows routes), though one-way in TinTin
 DOCK = [13100, 13101, 13102, 13105]                # owner (Oct 22): a wooden dock, snow covered and frozen, from Before the Dock out through the
 DOCK_W = 0.55                                       #  3 Harbor of Icebergs rooms (they count as water); its width
 HARBOR = box(-25.5, 217.5, -12.2, 234.8)            # the harbour: ice along its shores, icebergs in its open water
 ICE_SHORE, N_BERGS = 1.3, 8                         # shore ice reaches this far out (clear of the routes and rooms); icebergs
+HWAVE_A, HWAVE_L = 0.05, 1.6                        # the harbour's water routes (owner, Oct 22): extremely thin, nearly transparent, slightly wavy
 NW_X = 50.0                                         # water routes wholly west of this: drawn as the Sea of Sorrows' routes (`seawaysfaint`)
 LAND_R, LTRAIL_R, CLOSE_N = 1.3, 0.9, 3.0           # the mainland's north edge: this far round its rooms and trails, gaps narrower than 6 closed
 WET_R, WTRAIL_R = 1.2, 0.8                          # sea at least this far round the water rooms and their routes
@@ -52,14 +55,15 @@ ICE_R, SLIVER = 0.9, 0.45                           # the iceberg: this far roun
 SEA_W, SEA_CLOSE = 6.0, 6.0                         # the sea reaches this far off the land and the old sea; gaps narrower than 12 filled
 
 
-def _wave(line):
+def _wave(line, amp=None, wl=None):
+    amp = WAVE_AMP if amp is None else amp; wl = WAVE_LEN if wl is None else wl
     pts = [line[0]] + [q for a, q in zip(line, line[1:]) if math.dist(a, q) > 1e-6]
     out = [[round(pts[0][0], 3), round(pts[0][1], 3)]]
     for (ax, ay), (bx, by) in zip(pts, pts[1:]):
-        L = math.hypot(bx - ax, by - ay); n = max(1, round(L / WAVE_LEN)); m = max(4, int(L / 0.06))
+        L = math.hypot(bx - ax, by - ay); n = max(1, round(L / wl)); m = max(4, int(L / 0.06))
         nx, ny = -(by - ay) / L, (bx - ax) / L
         for i in range(1, m + 1):
-            t = i / m; o = WAVE_AMP * math.sin(2 * math.pi * n * t) * min(1, L / 0.8)
+            t = i / m; o = amp * math.sin(2 * math.pi * n * t) * min(1, L / 0.8)
             out.append([round(ax + (bx - ax) * t + nx * o, 3), round(ay + (by - ay) * t + ny * o, 3)])
     return out
 
@@ -177,7 +181,10 @@ def apply(town, wild, pos):
     ltrails = _chains(GL, P); wroutes = _chains(GW, P)
     wild['oltracks'] = list(wild['oltracks']) + ltrails
     nwr = [l for l in wroutes if all(q[0] < NW_X for q in l)]
-    wild['seawaysfaint'] = list(wild['seawaysfaint']) + nwr
+    inharb = lambda l: all(HARBOR.buffer(0.6).contains(Point(q)) for q in l)
+    hways = [l for l in nwr if inharb(l)]
+    wild['olharborways'] = [_wave(l, HWAVE_A, HWAVE_L) for l in hways]
+    wild['seawaysfaint'] = list(wild['seawaysfaint']) + [l for l in nwr if not inharb(l)]
     wild['seawaves'] = list(wild['seawaves']) + [_wave(l) for l in wroutes if not all(q[0] < NW_X for q in l)]
     # ---- snow ground ----
     geo = wild['geo']
@@ -293,7 +300,7 @@ def apply(town, wild, pos):
              'iceberg (pieces, area, its rooms to its shore, sea to the mainland)': (len(ice_p), round(sum(g.area for g in ice_p), 2), icepos, gap),
              'snow (pieces, area; slivers dropped, bits with no room made sea, pockets filled)': ([round(g.area, 1) for g in snowp], round(unary_union(snowp).area, 1), dropped, stray, pock),
              'texture kept (drifts, ice)': ((len(wild['olsnow']['drifts']), nd), (len(wild['olsnow']['ice']), ni)),
-             'trail length over the sea': trail_sea, 'Azure stretches 6180-15128 as Sea of Sorrows routes': len(faintsegs), 'NW water routes as the Sea of Sorrows routes (of)': (len(nwr), len(wroutes)),
+             'trail length over the sea': trail_sea, 'Azure stretches 6180-15128 as Sea of Sorrows routes': len(faintsegs), 'NW water routes as the Sea of Sorrows routes (of; in the harbour, thin and wavy)': (len(nwr), len(wroutes), len(hways)),
              'iceberg trails from the old sea lines': len(icesegs),
              'mainland near the iceberg (rooms, nearest land room to the iceberg)': (sum(1 for v in landr if ZONE.contains(Point(P[v]))),
                  round(min(Point(P[v]).distance(unary_union(ice_p)) for v in landr), 2) if ice_p else None)}
@@ -348,12 +355,12 @@ def apply(town, wild, pos):
     # ---- the Harbor of Icebergs (owner, Oct 22): shore ice with cracks, icebergs, the dock ----
     hr = random.Random(13105)
     hsea = sea.intersection(HARBOR)
-    routes = unary_union([LineString(l) for l in wild['seawaysfaint'] + wild['seawaves'] if len(l) > 1 and HARBOR.intersects(LineString(l))])
+    routes = unary_union([LineString(l) for l in wild['seawaysfaint'] + wild['seawaves'] + hways if len(l) > 1 and HARBOR.intersects(LineString(l))])
     dline = LineString([P[v] for v in DOCK])
     hrooms = [v for v in OL if HARBOR.contains(Point(P[v]))]
     keepoff = unary_union([routes.buffer(0.32), dline.buffer(DOCK_W / 2 + 0.3)] + [Point(P[v]).buffer(0.45) for v in hrooms])
     ice_s = hsea.intersection(solid.buffer(ICE_SHORE)).difference(keepoff).buffer(0.15).buffer(-0.25).buffer(0.1)
-    ice_s = [g for g in getattr(ice_s, 'geoms', [ice_s]) if g.area > 0.12]
+    ice_s = [g for g in getattr(ice_s, 'geoms', [ice_s]) if g.area > 1.0]        # (no small slivers)
     cracks = []
     for g in ice_s:
         for _ in range(max(1, int(g.area / 1.2))):

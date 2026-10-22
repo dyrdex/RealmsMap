@@ -128,6 +128,7 @@ The other builders run inside `src/legacy`.
   Otherland's trails are `wild.oltracks` (template OLTRACK: snow tracks; owner, Oct 22), not fwtracks. Snow #8C969B (owner: not bright). The Iceberg in the same snow (owner, Oct 22; `geo.iceisle` empty).
   `oltracks` warped by one smooth field (TRACK_A .16, TRACK_L 7): a gentle long wave. 6180-15128 (Azure) as `seawaysfaint` (owner, Oct 22).
   Harbor of Icebergs (owner, Oct 22): open sea (WBOX), `wild.olharbor` {ice, cracks, bergs, dock} (template OLHARBOR, OLDOCK); dock =
-  13100-13101-13102-13105. The sea grows SEA_W off the land inside the boxes, never cut by a box line. Shacks (owner, Oct 22): `wild.olshacks` [cx, cy, w, h] (template OLSHACK), over The Desolate Outpost's main section and
+  13100-13101-13102-13105. Harbour routes: `wild.olharborways` (thin, nearly transparent, slightly wavy). The bay between 13150 and
+  the harbour's NE shore is land (FILL1). The sea grows SEA_W off the land inside the boxes, never cut by a box line. Shacks (owner, Oct 22): `wild.olshacks` [cx, cy, w, h] (template OLSHACK), over The Desolate Outpost's main section and
   The Hunter's Outpost 14419. Water path 22530-22531 (`seawaysfaint`). Clearings (owner, Oct 22): ONLY the Tundra Fields (13492's clump) and A Tunnel in the Snow / A Cold Lair (13322's clump); `wild.clearings`.
   Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
