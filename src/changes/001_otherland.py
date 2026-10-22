@@ -34,7 +34,8 @@ ZONE_R, TIGHT_R, TIGHT_TR = 5.0, 0.75, 0.55          # near the iceberg the main
 FILL1 = unary_union([box(68.5, 174.6, 70.5, 183.0), box(65.5, 176.0, 70.5, 183.0),
                      Polygon([(70.5, 174.6), (72.3, 174.6), (72.75, 176.4), (72.35, 178.2), (72.9, 180.0), (72.5, 181.7), (72.8, 183.0), (70.5, 183.0)]),   # (an uneven east shore)
                      Polygon([(-20.7, 207.6), (-20.6, 208.8), (-19.4, 210.8), (-17.3, 213.3), (-15.0, 215.4), (-12.6, 216.9), (-10.0, 217.9),   # owner (Oct 22): the bay
-                              (-6.0, 218.8), (-3.0, 219.3), (2.0, 219.3), (2.0, 207.6)])])                                                      # north of the harbour, from 13150 to its north-east shore: land   # owner (Oct 22): land west and south of 13287, its sea inlets gone
+                              (-6.0, 218.8), (-3.0, 219.3), (2.0, 219.3), (2.0, 207.6)]),                                                       # north of the harbour, from 13150 to its north-east shore: land
+                     Polygon([(-11.8, 217.2), (-10.6, 217.65), (-9.8, 218.5), (-9.4, 219.6), (-9.8, 221.6), (-10.8, 223.2), (-11.25, 223.85), (-11.35, 224.35), (-11.0, 224.95), (-9.0, 226.4), (-3.0, 226.4), (-3.0, 217.2)])])   # (owner, Oct 22: a smooth coast down to just north of the dock)   # owner (Oct 22): land west and south of 13287, its sea inlets gone
 FAINT_CHAIN = [6180, 15418, 15417, 15416, 15415, 15414, 15413, 15412, 15411, 15410, 6650, 15128]   # owner (Oct 22): drawn as the Sea of Sorrows' routes
 TRACK_A, TRACK_L = 0.16, 7.0                        # Otherland's trails: a gentle long wave (owner, Oct 22): a smooth warp this strong, this long
 CLEAR_SEEDS = {13492: 'The Tundra Fields', 13322: 'A Tunnel in the Snow / A Cold Lair'}   # owner (Oct 22): these two clumps only

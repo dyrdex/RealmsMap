@@ -2,6 +2,7 @@
 
 ## Version 2.4 (in progress)
 
+- Your request (Oct 22): the inlet north of the Harbor of Icebergs' dock is gone. The coast now curves smoothly down from the bay to just north of where the dock leaves the shore (32.7 square rooms of snow added; its sharpest bend is 41 degrees, was 90). The harbour's water rooms stay in the sea, 2.2 to 2.9 rooms from the coast.
 - Your requests (Oct 22), Otherland:
   - The Harbor of Icebergs' 55 water routes are extremely thin (0.05 wide) and nearly transparent (16%), with a slight wave (0.05 to the side, about 1.6 rooms per wave). The rest of the map's water routes are unchanged.
   - The bay north of the harbour is land now: snow from 13150 down to the harbour's north-east shore (164 square rooms). The new coast runs diagonally between them, and the harbour water rooms stay in the sea, 2.75 to 4 rooms from it. The snow drifts that had been dropped there are back.
