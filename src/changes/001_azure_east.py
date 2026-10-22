@@ -143,13 +143,16 @@ def apply(town, wild, pos):
     nf0 = len(wild.get('olflora', [])); wild['olflora'] = [f for f in wild.get('olflora', []) if not gone.contains(Point(f[0], f[1]))]
 
     # ---- 2. the sea ----
-    nsf, cutsf = [], 0                                                                          # sea fills now under land give way to it (each ring
-    for p in geo['seafill']:                                                                    #  on its own, so the evenodd holes stay right)
-        g = Polygon(p).buffer(0) if len(p) > 2 else None
-        if g is not None and g.intersects(added) and g.intersection(added).area > 0.005:
-            cutsf += 1; nsf += rings(g.difference(added))
-        else: nsf.append(p)
-    geo['seafill'] = nsf
+    inl = land_new.buffer(-0.03)                                                                # every sea fill and water ring trimmed to the final coast
+    cutsf = 0                                                                                   #  (each ring on its own, so the evenodd holes stay right):
+    for k in ('seafill', 'water'):                                                              #  nothing blue left under the land (owner, Oct 22)
+        out = []
+        for p in geo[k]:
+            g = Polygon(p).buffer(0) if len(p) > 2 else None
+            if g is not None and g.intersects(inl) and g.intersection(inl).area > 1e-4:
+                cutsf += 1; out += rings(g.difference(inl))
+            else: out.append(p)
+        geo[k] = out
     land = unary_union(other_land + [land_new])
     W = unary_union([Polygon(p).buffer(0) for p in geo['water'] if len(p) > 2])
     SF = unary_union([Polygon(p).buffer(0) for p in geo['seafill'] if len(p) > 2])
