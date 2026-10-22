@@ -118,6 +118,17 @@ The other builders run inside `src/legacy`.
 - **Otherland** (owner, Oct 21): joins the map ONLY at 22534 -> 13379, 22535 -> 13380, 18071 -> 22511 and 18066 -> 22512; all its other exits out are left off for now.
   The owner's map flattens it: an up/down exit to the same room as a flat exit is ignored (the flat one is drawn).
   Frost Mansion 22248-22250 (Asgard Nexus) is in the Otherland editor (grp 'an', owner Oct 21), joined at 22247 and 21819.
+  Azure Sea east coast (owner, Oct 22; grp 'az', `tools/otherland_editor/add_azure_east.py`; drawn by `changes/001_azure_east.py`): water rooms at sea, the
+  Otherland east-coast rooms on land, the coast between them, worked out ONCE (owner: no fill-then-cut; Voronoi line between sea rooms/routes and
+  land rooms/trails). 15154 = a one-room iceberg, sea to its west. Coastal path (6179 .. 15250, 15255, 15606) = `seawaysfaint`, straight room to room
+  (strictly on the layout, owner); routes east off it = `seawaves` (DD east coast style). Sea-land exits (up/down shown, owner) switch to `oltracks`
+  exactly at the coast. Not drawn: 5987-22496 (owner), 15606 -> Grey Beach.
+  Every `seafill` and `water` ring is trimmed to the final land (each ring on its own, evenodd-safe): no blue strips or shore strokes under land
+  (owner, Oct 22: hairlines along old coasts). Check: visible sea fill inside land.buffer(-0.08) must be 0.
+  East cliff (owner, Oct 22; `CLIMBS` in 001_azure_east): ONE continuous cliff face along the coast's edge from the northernmost climb landing
+  to the southernmost (`wild.olcliff`, template OLCLIFF, OLLEDGE style); climbs from a land room (22524, 15741) go up where that room's exit from
+  the sea comes ashore (owner: no cliffs inland); every exit coming ashore across the face gets steps on the face only (as smrclimb). No coastal ice/bergs there for now (owner). The save's az rooms are those not in `legacy/ol_editor_edges.json`.
+  A new Otherland save: replace `legacy/ol_layout_final.json`, then `legacy/rebase.py` on a legacy dump (the v2.4/v2.5 files redraw from it).
   Unlocked there (grp 'un', owner Oct 21): 18052-18075, 6174, 18047, 13379, 13380, 6166, 6180, 6650, 15410-15418; a save may move these map rooms.
   Drawn Oct 21 as a BASIC render (`changes/001_otherland.py`): plain trails, plain snow (`geo.snow`, template --snow, also a `geo.land` piece);
   the owner will customise later (water rooms, sub-areas, graphics): don't add any unasked.
@@ -141,6 +152,13 @@ The other builders run inside `src/legacy`.
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
   Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; west edge one smooth concave curve, no juts; owner Oct 22), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
   South of 6143 (FILL_S; 6147, 6148 as land): regular land, no beach, no inlet (owner, Oct 22).
+  Saves from Oct 22 18:39Z on keep the west/south 3 east: applied/v2.4/001's hand-set west shapes (WBOX, HARBOR, SBOX west edge, FILL_S, FILL1's
+  harbour pieces, NBOX's west box) are translated by `WS = 3.0` (and 006's SBOX). A new save that moves them again: move these with it.
+  Otherland's sea (001_azure_east step 2) is rebuilt as ONE evenodd-visible shape minus the land (+ background specks at the coast filled); land
+  closed by 0.06 (no hairline cracks); no lagoons without a sea room. Checks after any coast change: sea under land 0, background at coast 0.
+  Fissure vs gorge (owner, Oct 22; `changes/002_fissure.py`): 'The Fissure' rooms are DOWN paths to the gorge floor: the descents 13180->13179,
+  13222->13221 = narrow clefts widening downwards (`wild.olfissure`, template OLFISSURE) with steps + down chevrons; `olgorge` only round the
+  Floor of Tirebaen's Gorge rooms (flat ground at the bottom).
   Gorge (owner, Oct 22): never touches the A Tunnel in the Snow maze (wall cut back, `v2.5/004`); its floor carries rocks/gravel/cracks (`olgorge.rocks/gravel/cracks`, `v2.5/005`), clear of its trail.
   East coast (owner, Oct 22; `v2.5/007`): bay east of Morte's Peak filled (closed r 5 in BAY), sea EBOX SEA_W 6 (seafill + seashore); its ice `v2.5/008` (v2.5/006).
   Trail crossings without a room (owner, Oct 22; `v2.5/009`): electrical-style jumpers (half-circle hop, up-left; tunnel or shorter line hops); NO gaps or marks.

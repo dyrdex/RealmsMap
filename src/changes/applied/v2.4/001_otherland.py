@@ -63,6 +63,11 @@ CRAMPED = 'A Dark, Cramped Tunnel'                  # owner (Oct 22): these room
 CLIFF_MAZE = (14428, 683)                           # owner (Oct 22): one long maze along the coast, "Over the Cliff Maze"
 MANSION = [22248, 22249, 22250]                     # owner (Oct 22): Frost Mansion, very ancient, stone, frosty (template OLMANSION), inside the Maze of Ice
 MANSION_W, MANSION_H = 2.7, 2.6
+from shapely.affinity import translate as _tr      # owner's save of Oct 22 18:39Z moved the west and south of Otherland 3 rooms east: its hand-set
+WS = 3.0                                            #  shapes there follow (west sea box, harbour, the bays filled north of it and south of 6143)
+WBOX = _tr(WBOX, WS); HARBOR = _tr(HARBOR, WS); SBOX = box(-12 + WS, 228, 56, 264); FILL_S = _tr(FILL_S, WS)
+FILL1 = unary_union([g if g.bounds[0] > 30 else _tr(g, WS) for g in FILL1.geoms])
+NBOX = unary_union([box(-22, 144, 82, 177), box(-22 + WS, 177, -6 + WS, 189), box(60, 177, 82, 187), WBOX, SBOX])
 LEDGE = [6102, 6101, 6096]                          # owner (Oct 22): The Ledge of Life, a south-facing cliff path (template OLLEDGE)
 AS_LAND = {6147, 6148}                              # owner (Oct 22): south of 6143 all regular land again (these two water rooms drawn as land)
 NW_X = 50.0                                         # water routes wholly west of this: drawn as the Sea of Sorrows' routes (`seawaysfaint`)
