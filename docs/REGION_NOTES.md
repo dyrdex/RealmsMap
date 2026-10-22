@@ -125,6 +125,9 @@ The other builders run inside `src/legacy`.
   exactly at the coast. Not drawn: 5987-22496 (owner), 15606 -> Grey Beach.
   Every `seafill` and `water` ring is trimmed to the final land (each ring on its own, evenodd-safe): no blue strips or shore strokes under land
   (owner, Oct 22: hairlines along old coasts). Check: visible sea fill inside land.buffer(-0.08) must be 0.
+  East routes redrawn (owner, Oct 22; `changes/005_east_routes.py`, from the exits): coastal path cut at 6187 / 15171, via The Iceberg 15154 (its links are
+  sea-land exits); EVERY sea-land exit = `seawaysfaint` over the water; outer routes = `olharborways` style (harbour, not `seawaves`).
+  Harbour routes: width .06, opacity .26 (owner: a touch more visible).
   East cliff (owner, Oct 22; `CLIMBS` in 001_azure_east): ONE continuous cliff face along the coast's edge from the northernmost climb landing
   to the southernmost (`wild.olcliff`, template OLCLIFF, OLLEDGE style); climbs from a land room (22524, 15741) go up where that room's exit from
   the sea comes ashore (owner: no cliffs inland); every exit coming ashore across the face gets steps on the face only (as smrclimb). No coastal ice/bergs there for now (owner). The save's az rooms are those not in `legacy/ol_editor_edges.json`.

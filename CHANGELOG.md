@@ -2,6 +2,11 @@
 
 ## In progress (Version 2.7)
 
+- Your requests (Oct 22), the water routes round Otherland:
+  - The Harbor of Icebergs' routes are a touch more visible (a little wider and stronger, still faint).
+  - The coastal path (the darker blue route) now leaves 6187 south-east to The Iceberg 15154 and goes on south from it to 15171. Before, it ran east from 6187 to 15149, out round 15152 and back to 15171. That old stretch (5 rooms) is still drawn, now as an outer route. The path has 43 rooms (was 48).
+  - Every exit between the Azure Sea and the land is now the primary water route over the water: all 24 lines that reach the coast. Some, mostly in the south, had been in the faint wavy style.
+  - The outer routes east of Otherland, not along the shore, are now in the Harbor of Icebergs' style instead of the faint wavy one: 81 routes, 569 rooms long. No wavy routes are left round the east.
 - Your request (Oct 22): each mountain peak's top two tiers are a little lighter than the snow, so the peaks stand out a little. The top tier is a bit lighter than the one below it. Morte's Peak: 15.0 square rooms on the top tiers and 49.1 on the tiers below them. Zenith of the Gods: 18.0 and 46.5 (16.6 of it under the Maze of Ice). Where peaks share a tier, each lights only its own side of it. Everything below stays the plain snow.
 - Your request (Oct 22): the Zenith of the Gods is a mountain now, in the same style as Morte's Peak: faint stepped terraces with hatched cliff faces and faceted summit caps (17 creases). It has no base outline, and its ledges are the snow itself. It stands on the base you set (430 square rooms) and has four peaks:
   - The Zenith of the Gods, the summit, at the top step (6). It stands 0.77 rooms from the base's coast-side edge, so its terraces stack into one sheer face along the coast there, with The Western Face on step 3.
