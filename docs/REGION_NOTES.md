@@ -47,6 +47,7 @@ The other builders run inside `src/legacy`.
 | Wastelands | https://claude.ai/artifact/XtoCQTMrpPQCLZREeczD7L | `wllayout/current` | `wl_layout_final.json` |
 | The Mire | https://claude.ai/artifact/QAUXkaXfwFS1fgDRiXzHmo | `milayout/current` | `mi_layout_final.json` |
 | Desert of Despair | https://claude.ai/artifact/JKaM8hA8ih8XHfNJQifgqA | `ddlayout/current` | `dd_layout_final.json` |
+| Otherland (Oct 21; `tools/otherland_editor/`) | https://claude.ai/artifact/5B5NWTeurkdsVpDwuPFphX | `ollayout/current` | `ol_layout_final.json` |
 
 ## Standing owner rules, by region
 - **Everywhere**: routes and room counts are the owner's own (`data.py`: `MORE_DIRECTIONS`, `ROUTE_OPTIONS`), never computed;
@@ -114,3 +115,29 @@ The other builders run inside `src/legacy`.
   fwmazes style 'desert' + `nolabel` (template). Owner's marker rules: Barren Wastes ends at 13061; markers on hidden 6561 / 929 (routes over them).
   `dd_merge.EXTRA_CLEAR`: hand-picked clearings (rooms + exits, holes filled), e.g. the ruins round 6464 with its east/west single rooms.
 - **The Mire**: no Mire sea; don't touch the sea unless asked (Oct 18). Unsaved editor rooms are never drawn.
+- **Otherland** (owner, Oct 21): joins the map ONLY at 22534 -> 13379, 22535 -> 13380, 18071 -> 22511 and 18066 -> 22512; all its other exits out are left off for now.
+  The owner's map flattens it: an up/down exit to the same room as a flat exit is ignored (the flat one is drawn).
+  Frost Mansion 22248-22250 (Asgard Nexus) is in the Otherland editor (grp 'an', owner Oct 21), joined at 22247 and 21819.
+  Unlocked there (grp 'un', owner Oct 21): 18052-18075, 6174, 18047, 13379, 13380, 6166, 6180, 6650, 15410-15418; a save may move these map rooms.
+  Drawn Oct 21 as a BASIC render (`changes/001_otherland.py`): plain trails, plain snow (`geo.snow`, template --snow, also a `geo.land` piece);
+  the owner will customise later (water rooms, sub-areas, graphics): don't add any unasked.
+  Not drawn (owner, Oct 21): up/down AND one-way exits (both dashed in the editor). Snow texture: `wild.olsnow` (template OLSNOW).
+  North coast (owner, Oct 22; `001` NBOX): water rooms = sea (incl. the 3 'The Sea of Sorrows' rooms in the Tundra Fields); 'Over the Cliff'
+  (683, 14428) is a maze for later, water for now; The Iceberg (owner, Oct 22) = 6166, 13379, 22534, 22532, 22531, 22533, 22535, 13380, 6180:
+  a little WHITE island (`geo.iceisle`), sea between it and the mainland, which hugs its rooms tightly near it. NW water routes = `seawaysfaint`.
+  Otherland's trails are `wild.oltracks` (template OLTRACK: snow tracks; owner, Oct 22), not fwtracks. Snow #8C969B (owner: not bright). The Iceberg in the same snow (owner, Oct 22; `geo.iceisle` empty).
+  `oltracks` warped by one smooth field (TRACK_A .16, TRACK_L 7): a gentle long wave. 6180-15128 (Azure) as `seawaysfaint` (owner, Oct 22).
+  Harbor of Icebergs (owner, Oct 22): open sea (WBOX), `wild.olharbor` {ice, cracks, bergs, dock} (template OLHARBOR, OLDOCK); dock =
+  13100-13101-13102-13105. Harbour routes: `wild.olharborways` (thin, nearly transparent, slightly wavy). The bay between 13150 and
+  the harbour's NE shore is land (FILL1). The sea grows SEA_W off the land inside the boxes, never cut by a box line. Morte's Peak = ONLY shading of the snow from above (`wild.olhill`, template OLHILL, blurred; owner, Oct 22: no peak sprites,
+  no dashed passages); heights from the trail climb (ridges along its trails, the Heart the top) and Tirebaen's Gorge + the Fissure
+  (`wild.olgorge`, template OLGORGE) (owner, Oct 22). Also (owner, Oct 22): Death's Spire (shading); NO relief on the west/south land (Gods, hills, the
+  Mountain, the Den: removed, owner); Bed of the Runoff (`olrunoff`); the south shore
+  (SBOX: sea, `olsouth` beach + floes, its icebergs in `olharbor.bergs`). Shacks (owner, Oct 22): `wild.olshacks` [cx, cy, w, h] (template OLSHACK), over The Desolate Outpost's main section and
+  The Hunter's Outpost 14419. Water path 22530-22531 (`seawaysfaint`). Clearings (owner, Oct 22): ONLY the Tundra Fields (13492's clump); A Tunnel in the Snow / A Cold Lair (13322's clump) is an icy maze
+  blob of the same outline, no label.
+  Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Winterlight Island's drawing (`snowisles`) is emptied until re-fitted.
+  Cramped Tunnel rooms (+ those leading only to them): `oltunnels`, drawn as JUST a thin dashed line (owner, Oct 22, after rejecting
+  glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
+  Over the Cliff Maze (14428-683, along the coast), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
+  South of 6143 (FILL_S; 6147, 6148 as land): regular land, no beach, no inlet (owner, Oct 22).
