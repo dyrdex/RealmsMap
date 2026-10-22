@@ -343,6 +343,8 @@ const TOWNGROUND=P=>{const d=(P||[]).map(p=>'M'+p.map(q=>q.join(' ')).join('L')+
 let FWPATHS=TOWNGROUND(WD.wltown)+RICE(WD.rice)+PATCH(WD.smrpatch,'var(--dirt)','var(--dirt-edge)',.88)+WPATCH(WD.miwater)+GPATCH(WD.migreen)+PATCH(WD.wlash,'#5E5C54','#24231F',.9)+PATCH(WD.wlsalt,'var(--salt)','#3E3C35',1)+(WD.wlgrain||[]).map(r=>`<circle cx="${r[0]}" cy="${r[1]}" r="${r[2]}" fill="${r[3]?'var(--salt2)':'#5F5C52'}" opacity=".6"/>`).join('')+FAINT(WD.smrfaint)+CLIMB(WD.smrclimb)+TOWN(WD.smrtowns)+CANYON(WD.smrcanyon)+HOUSES(WD.smrhouses);for(const p of (WD.fwtracks||[])){const rd=p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L');
   FWPATHS+=DIRT(rd,.3);}
 {const T=(WD.oltracks||[]).map(p=>p.length>2?curve(p):'M'+p.map(q=>q.join(' ')).join('L')).join('');   /* OLTRACK: Otherland's trails (owner, Oct 22): packed snow, a little darker than the snow, two faint ruts */
+  const U=(WD.oltunnels||[]).map(p=>'M'+p.map(q=>q.join(' ')).join('L')).join('');   /* passages inside Morte's Peak: faint dashed lines (owner, Oct 22) */
+  if(U)FWPATHS+=`<path d="${U}" fill="none" stroke="#2E363B" stroke-width=".22" stroke-dasharray=".28 .2" stroke-linecap="round" opacity=".55"/><path d="${U}" fill="none" stroke="#9AA4A9" stroke-width=".07" stroke-dasharray=".28 .2" stroke-linecap="round" opacity=".55"/>`;
   if(T)FWPATHS+=`<g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="${T}" stroke="#78838A" stroke-width=".36" opacity=".85"/><path d="${T}" stroke="#6F7A81" stroke-width=".2" opacity=".55"/><path d="${T}" stroke="#808B91" stroke-width=".06" opacity=".7"/></g>`;}
 FWPATHS+=CLEAR(WD.clearings);
 FWPATHS+=(WD.mdfaint||[]).map(p=>`<path d="${curve(p)}" fill="none" stroke="var(--dirt-hi)" stroke-width=".07" stroke-dasharray=".2 .16" stroke-linecap="round" opacity=".42"/>`).join('');   /* Miden'nir's forest rooms: a faint wavy dashed trail marking (owner, Oct 15) */
@@ -424,6 +426,20 @@ FWPATHS+=(WD.olharborways||[]).length?`<path d="${WD.olharborways.map(p=>'M'+p.m
   FWPATHS+=`<g opacity=".15">`+L(.5,'var(--seaway-edge)','',.55)+L(.32,'var(--seaway)','',1)+`</g>`;}}
 {const SC=WD.seacurrents||[];if(SC.length){const d=SC.map(c=>'M'+c.pts.map(q=>q.join(' ')).join('L')).join(''),h=SC.map(c=>'M'+c.head.map(q=>q.join(' ')).join('L')+'Z').join('');   /* SEACUR: one-way sea currents, wavy, an arrowhead short of the room they lead to (owner, Oct 20) */
   FWPATHS+=`<g opacity=".5" stroke-linecap="round" stroke-linejoin="round"><path d="${d}" fill="none" stroke="var(--seaway-edge)" stroke-width=".3" opacity=".55"/><path d="${d}" fill="none" stroke="var(--seaway)" stroke-width=".17"/><path d="${h}" fill="var(--seaway)" stroke="var(--seaway-edge)" stroke-width=".05"/></g>`;}}
+{const G=WD.olgorge;if(G){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z';   /* OLGORGE: Tirebaen's Gorge and the Fissure (owner, Oct 22): snowy rims, hachured walls, a shadowed floor */
+  WILD+=`<path d="${G.band.map(P).join('')}" fill-rule="evenodd" fill="#6B767C" stroke="#B3BCC1" stroke-width=".07" stroke-linejoin="round"/>`;
+  WILD+=`<path d="${G.hach.map(h=>'M'+h[0].join(' ')+'L'+h[1].join(' ')).join('')}" stroke="#414B51" stroke-width=".04" stroke-linecap="round" opacity=".75"/>`;
+  WILD+=`<path d="${G.floor.map(P).join('')}" fill-rule="evenodd" fill="#4F5A60" stroke="#434D53" stroke-width=".04" stroke-linejoin="round" opacity=".95"/>`;
+}}
+{const M=WD.olpeaks;if(M){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z';   /* OLPEAKS: Morte's Peak (owner, Oct 22): rocky snow-dusted ground, snow-capped peaks, a lit side and a shaded side */
+  WILD+=`<path d="${M.ground.map(P).join('')}" fill="#78838A" opacity=".5" stroke="none"/>`;
+  for(const [x,y,s,f] of M.peaks)
+    WILD+=`<g transform="translate(${x},${y}) scale(${f?-s:s},${s})" stroke-linejoin="round"><ellipse cx=".1" cy=".02" rx=".85" ry=".12" fill="#000" opacity=".18"/>`+
+      `<path d="M-.82 0 L-.28 -.72 L-.04 -1.15 L.3 -.68 L.84 0Z" fill="#5E686E" stroke="#353D42" stroke-width=".035"/>`+
+      `<path d="M-.04 -1.15 L.3 -.68 L.84 0 L.12 0 L.2 -.45Z" fill="#454E54" opacity=".9"/>`+
+      `<path d="M-.36 -.6 L-.04 -1.15 L.36 -.6 L.24 -.66 L.14 -.55 L.04 -.68 L-.08 -.56 L-.2 -.67Z" fill="#B8C1C5" stroke="#8E999F" stroke-width=".02"/>`+
+      `<path d="M-.04 -1.15 L.36 -.6 L.24 -.66 L.14 -.55 L.06 -.66 Q.05 -.9 -.04 -1.15Z" fill="#8C979D"/></g>`;
+}}
 WILD+=FWPATHS;
 {const D=WD.olharbor&&WD.olharbor.dock;if(D){const d='M'+D.pts.map(q=>q.join(' ')).join('L'),w=D.w;   /* OLDOCK: the Harbor of Icebergs' dock (owner, Oct 22): wooden, snow covered and frozen */
   WILD+=`<g fill="none" stroke-linejoin="round" stroke-linecap="butt"><path d="${d}" stroke="#9FB3BE" stroke-width="${w+.16}" opacity=".35"/><path d="${d}" transform="translate(.05,.07)" stroke="#000" stroke-width="${w}" opacity=".25"/>`+

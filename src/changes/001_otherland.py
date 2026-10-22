@@ -49,6 +49,13 @@ DOCK_W = 0.55                                       #  3 Harbor of Icebergs room
 HARBOR = box(-25.5, 217.5, -12.2, 234.8)            # the harbour: ice along its shores, icebergs in its open water
 ICE_SHORE, N_BERGS = 1.3, 8                         # shore ice reaches this far out (clear of the routes and rooms); icebergs
 HWAVE_A, HWAVE_L = 0.05, 1.6                        # the harbour's water routes (owner, Oct 22): extremely thin, nearly transparent, slightly wavy
+MP_NAMES = {'Nestled Between the Peaks', 'Upon the Roof', 'Platforms of Sacrifice', 'An Icy Pass', 'A Snow Clogged Pass', "Dead Man's Pass", 'The Drop-Off',
+            'The Sudden Stop', 'Entombed in Ice', 'A Cavern of Ice', 'An Icy Burrow', 'The Cave', 'Home of the Jarl', 'A Crisp Path', 'Scratching the Surface',
+            'Lost in the Darkness', 'The Last of the Foothills'}               # owner (Oct 22): Morte's Peak (+ every "...Morte's Peak" room but its View), east of x 50
+MP_INSIDE = {"Deep within the Heart of Morte's Peak", "Within the Heart of Morte's Peak", "Entombed within Morte's Peak", 'Entombed in Ice', 'A Cavern of Ice',
+             'An Icy Burrow', 'The Cave', "The Concealed Horror of Morte's Peak", 'Lost in the Darkness'}   # inside the mountain: their trails dashed passages
+GORGE_NAMES = {"The Floor of Tirebaen's Gorge", 'The Fissure', 'Deep within the Shadows of the Fissure', 'Within the Fissure'}   # owner (Oct 22): the ravine
+MP_R, GORGE_R = 2.3, 0.95                            # the mountain this far round its rooms; the gorge this wide each side of its trails
 NW_X = 50.0                                         # water routes wholly west of this: drawn as the Sea of Sorrows' routes (`seawaysfaint`)
 LAND_R, LTRAIL_R, CLOSE_N = 1.3, 0.9, 3.0           # the mainland's north edge: this far round its rooms and trails, gaps narrower than 6 closed
 WET_R, WTRAIL_R = 1.2, 0.8                          # sea at least this far round the water rooms and their routes
@@ -311,15 +318,33 @@ def apply(town, wild, pos):
     def warp(x, y):
         return (x + TRACK_A * (0.7 * math.sin(2 * math.pi * y / TRACK_L + a1) + 0.3 * math.sin(2 * math.pi * (x + y) / (TRACK_L * 1.6) + a3)),
                 y + TRACK_A * (0.7 * math.sin(2 * math.pi * x / TRACK_L + a2) + 0.3 * math.sin(2 * math.pi * (x - y) / (TRACK_L * 1.6) + a4)))
-    npts = 0; wav = []
-    for l in wild['oltracks']:
-        pts = [l[0]] + [q for a, q in zip(l, l[1:]) if math.dist(a, q) > 1e-6]
+    nm = lambda v: rooms_name(v)
+    MPR = [v for v in OL if P[v][0] > 50 and 180 <= P[v][1] <= 209 and (nm(v) in MP_NAMES or ("Morte's Peak" in nm(v) and 'View' not in nm(v)))]
+    INS = {v for v in MPR if nm(v) in MP_INSIDE}
+    GZ = {v for v in OL if nm(v) in GORGE_NAMES}
+    insp = {tuple(P[v]) for v in INS} | {tuple(P[v]) for v in OL if R[v]['void'] and ends(v, -1) and ends(v, -1) <= INS}
+    gzp = {tuple(P[v]) for v in GZ} | {tuple(P[v]) for v in OL if R[v]['void'] and ends(v, -1) and ends(v, -1) <= GZ}
+    at = lambda q, S: any(math.dist(q, s) < 0.01 for s in S)
+    def wline(pts):
         out = []
         for (ax, ay), (bx, by) in zip(pts, pts[1:]):
             n = max(2, int(math.dist((ax, ay), (bx, by)) / 0.2))
             out += [[round(c, 3) for c in warp(ax + (bx - ax) * i / n, ay + (by - ay) * i / n)] for i in range(0 if not out else 1, n + 1)]
-        if len(out) > 1: wav.append(out); npts += len(out)
-    wild['oltracks'] = wav
+        return out
+    npts = 0; wav = []; tun = []; gsegs = []
+    for l in wild['oltracks']:
+        pts = [l[0]] + [q for a, q in zip(l, l[1:]) if math.dist(a, q) > 1e-6]
+        runs = [[pts[0], False]]; cur = [pts[0]]                       # split where the trail goes inside the mountain (owner, Oct 22: dashed passages)
+        segs = []
+        for a, b in zip(pts, pts[1:]):
+            inside = at(a, insp) and at(b, insp)
+            if at(a, gzp) and at(b, gzp): gsegs.append((a, b))
+            if segs and segs[-1][0] == inside: segs[-1][1].append(b)
+            else: segs.append([inside, [a, b]])
+        for inside, sp in segs:
+            o = wline(sp)
+            if len(o) > 1: (tun if inside else wav).append(o); npts += len(o)
+    wild['oltracks'] = wav; wild['oltunnels'] = tun
     # ---- clearings (owner, Oct 22): the two clumps of rooms side by side, packed snow (template CLEAR) ----
     ex = {(a, b) for a, b, k in E['edges'] if k != 'ud'}; ex |= {(b, a) for a, b in ex}
     solo = [v for v in OL if not R[v]['void']]
@@ -360,7 +385,9 @@ def apply(town, wild, pos):
     dline = LineString([P[v] for v in DOCK])
     hrooms = [v for v in OL if HARBOR.contains(Point(P[v]))]
     keepoff = unary_union([routes.buffer(0.32), dline.buffer(DOCK_W / 2 + 0.3)] + [Point(P[v]).buffer(0.45) for v in hrooms])
-    ice_s = hsea.intersection(solid.buffer(ICE_SHORE)).difference(keepoff).buffer(0.15).buffer(-0.25).buffer(0.1)
+    near_r = unary_union([dline.buffer(DOCK_W / 2 + 0.3)] + [Point(P[v]).buffer(0.5) for v in hrooms])     # (owner, Oct 22: no erratic bits: the ice follows the
+    ice_s = sea.intersection(HARBOR.buffer(2.5)).intersection(solid.buffer(ICE_SHORE)).difference(near_r)   #  real shore, past the harbour's box, with no thin spikes)
+    ice_s = ice_s.buffer(-0.4).buffer(0.4).intersection(sea).difference(near_r)
     ice_s = [g for g in getattr(ice_s, 'geoms', [ice_s]) if g.area > 1.0]        # (no small slivers)
     cracks = []
     for g in ice_s:
@@ -397,6 +424,49 @@ def apply(town, wild, pos):
               'shore ice (pieces, area), cracks': (len(ice_s), round(sum(g.area for g in ice_s), 1), len(cracks)), 'icebergs': len(bergs),
               'dock (length, of it on land, posts)': (round(dline.length, 2), landdock, len(posts)),
               'harbour open to the sea (the bay joins the coast sea)': hsea.intersects(sea.difference(HARBOR).buffer(0.01))}
+    # ---- Morte's Peak (owner, Oct 22): snow-capped peaks round its rooms, the tallest at its heart; drawn under the trails (template OLPEAKS) ----
+    pr = random.Random(5990)
+    land_now = unary_union(snowp).buffer(-0.4)
+    M = unary_union([Point(P[v]).buffer(MP_R) for v in MPR]).buffer(1.5).buffer(-1.5).intersection(land_now)
+    hx = sum(P[v][0] for v in INS if 'Heart' in nm(v)) / max(1, sum(1 for v in INS if 'Heart' in nm(v)))
+    hy = sum(P[v][1] for v in INS if 'Heart' in nm(v)) / max(1, sum(1 for v in INS if 'Heart' in nm(v)))
+    Rmax = max(math.dist((hx, hy), P[v]) for v in MPR) + MP_R
+    tl = unary_union([LineString(l) for l in wild['oltracks'] + wild['oltunnels'] if len(l) > 1])
+    peaks = []; x0, y0, x1, y1 = M.bounds; yy = y0
+    while yy < y1 + 1:
+        xx = x0 + (0.55 if int((yy - y0) / 1.0) % 2 else 0)
+        while xx < x1 + 1:
+            x, y = xx + pr.uniform(-.3, .3), yy + pr.uniform(-.25, .25)
+            k = max(0.0, 1 - math.dist((x, y), (hx, hy)) / Rmax); s = round(0.95 + 1.7 * k ** 1.2 + pr.uniform(-.1, .15), 2)
+            if M.buffer(-0.3 * s).contains(Point(x, y)) and tl.distance(Point(x, y)) > 0.2 + 0.1 * s and math.dist((x, y), (hx, hy + 0.8)) > 2.6 and \
+                    not any(math.dist((x, y), q[:2]) < 0.48 * (s + q[2]) for q in peaks):
+                peaks.append([round(x, 3), round(y, 3), s, pr.random() < .5])
+            xx += 1.9
+        yy += 1.6
+    peaks.append([round(hx, 3), round(hy + 0.8, 3), 3.6, False])          # the summit, over its heart (its passages drawn over it)
+    peaks.sort(key=lambda q: q[1])
+    wild['olpeaks'] = {'ground': [rd(g) for g in getattr(M, 'geoms', [M]) if g.area > 1], 'peaks': peaks}
+    # ---- Tirebaen's Gorge and the Fissure (owner, Oct 22): a shadowed floor along its trails, snowy cliff rims with hachures (template OLGORGE) ----
+    gl = unary_union([LineString(wline([a, b])).buffer(GORGE_R if math.dist(a, b) <= 3.5 else GORGE_R * 0.62) for a, b in gsegs])   # (long connectors: a narrower cut)
+    band = gl.buffer(0.3).buffer(-0.3).intersection(land_now)
+    floor = band.buffer(-0.38)
+    hach = []
+    for g in getattr(band, 'geoms', [band]):
+        for ring in [g.exterior] + list(g.interiors):
+            n = int(ring.length / 0.2)
+            for i in range(n):
+                q = ring.interpolate(i * 0.2); f = floor.boundary.interpolate(floor.boundary.project(q)) if not floor.is_empty else q
+                d = math.dist((q.x, q.y), (f.x, f.y))
+                if 0.15 < d < 0.7:
+                    k = (0.55 + 0.35 * (i % 2)) * d
+                    hach.append([[round(q.x, 3), round(q.y, 3)], [round(q.x + (f.x - q.x) / d * k, 3), round(q.y + (f.y - q.y) / d * k, 3)]])
+    wild['olgorge'] = {'band': rings([g for g in getattr(band, 'geoms', [band]) if g.area > 0.3]),
+                       'floor': rings([g for g in getattr(floor, 'geoms', [floor]) if g.area > 0.1]), 'hach': hach}
+    cover = unary_union([M, band.buffer(0.2)]); o = wild['olsnow']; n0 = (len(o['drifts']), len(o['ice']))
+    o['drifts'] = [d for d in o['drifts'] if not cover.contains(Point(d[:2]))]; o['ice'] = [q for q in o['ice'] if not cover.intersects(Polygon(q))]
+    feats = {"Morte's Peak (rooms, inside, ground area, peaks)": (len(MPR), len(INS), round(M.area, 1), len(peaks)), 'passages inside it (lines)': len(tun),
+             'gorge (rooms, trail stretches, area, hachures)': (len(GZ), len(gsegs), round(band.area, 1), len(hach)),
+             'texture under them dropped (drifts, ice)': (n0[0] - len(o['drifts']), n0[1] - len(o['ice']))}
     isles = len(wild.get('snowisles') or []); wild['snowisles'] = []
     # ---- checks ----
     offsnow = sorted(v for v in OL if not allsnow.buffer(0.01).contains(Point(P[v])))
@@ -407,4 +477,4 @@ def apply(town, wild, pos):
             'sea lines moved with their rooms (faint points, wave lines)': (nf, nw),
             'snow (pieces, area; holes filled)': (len(pieces), round(allsnow.area, 1), holes),
             'rooms not on the snow (in the sea; elsewhere)': (inwater, [v for v in offsnow if v not in inwater]),
-            'north coast': north, 'harbor': harbor, 'shacks': shk, 'clearings (rooms, area, pieces, rooms not on the snow)': clr, 'Winterlight Island drawings removed': isles, 'bounds': wild['bounds']}
+            'north coast': north, 'harbor': harbor, 'features': feats, 'shacks': shk, 'clearings (rooms, area, pieces, rooms not on the snow)': clr, 'Winterlight Island drawings removed': isles, 'bounds': wild['bounds']}

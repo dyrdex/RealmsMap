@@ -2,6 +2,11 @@
 
 ## Version 2.4 (in progress)
 
+- Your requests (Oct 22), Otherland:
+  - Morte's Peak is a mountain now: rocky, snow-dusted ground round its 46 rooms (306 square rooms) with 46 snow-capped peaks. The peaks are grey-blue rock with snow caps, a lit side and a shaded side, larger towards the Heart of Morte's Peak, where one big summit rises. The trails stay on top. The trails between its inside rooms (the Heart, Entombed, the Cavern of Ice, Icy Burrow, The Cave, the Concealed Horror, Lost in the Darkness) are faint dashed passages.
+  - Tirebaen's Gorge and the Fissure are a ravine: a shadowed floor along their 39 trail stretches, with hachured walls and snowy rims (260 square rooms). The long connector trails of the Fissure get a narrower cut.
+  - 24 snow drifts and 1 icy patch under these two are dropped.
+  - The Harbor of Icebergs' shore ice no longer has a thin spike or a straight cut edge. It follows the mainland's real shoreline round the harbour, smooth, in 3 pieces (35.8 square rooms), clear of the dock and the harbour rooms.
 - Your request (Oct 22): the inlet north of the Harbor of Icebergs' dock is gone. The coast now curves smoothly down from the bay to just north of where the dock leaves the shore (32.7 square rooms of snow added; its sharpest bend is 41 degrees, was 90). The harbour's water rooms stay in the sea, 2.2 to 2.9 rooms from the coast.
 - Your requests (Oct 22), Otherland:
   - The Harbor of Icebergs' 55 water routes are extremely thin (0.05 wide) and nearly transparent (16%), with a slight wave (0.05 to the side, about 1.6 rooms per wave). The rest of the map's water routes are unchanged.
