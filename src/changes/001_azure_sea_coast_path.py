@@ -3,8 +3,9 @@ the 26 rooms added that day, `legacy/az_editor_edges_oct23.json`). Owner (Oct 23
 mainland; near Ocean Keep the on-land stream may change.
   - the old path lines go: every type B route (`seawaysfaint`) through a moved or newly shown path room (the long coast line and the Ocean Keep
     stream); the lines through unmoved rooms only (4317 - 14314 - 22557, 4317 to Edo, Edo's own) stay as they are;
-  - every exit between two shown path rooms is drawn again, as a standard water path: straight room to room, in maplib.warpline's bend (joined
-    into lines between junctions, so no seams);
+  - every exit between two shown path rooms is drawn again (owner, Oct 23): the primary water route (PRIMARY, the chain's western-most rooms) as
+    the standard water path, straight room to room in maplib.warpline's bend (joined into lines between junctions, so no seams); every other
+    exit as the secondary water path (type C, `olharborways`, as applied/v2.9/003), ending exactly on the primary line where it meets it;
   - the small dashed links to the mainland (`seadash`) follow their moved path room (the mainland end stays);
   - the name 'Azure Sea Coastal Path' moves beside the new path (LABEL; same size and style);
   - the stream by Ocean Keep: sprites within CLEAR of its new line cleared (as az_merge did; owner allowed changes there);
@@ -18,6 +19,10 @@ LABEL = [42.0, -201.6, 0]                           # [x, y, rotation]: north of
                                                     #   0.7 from the path, 2.3 from any room, 3.9 from land, no other name within 20)
 STREAM_BOX = (53.0, -38.0, 64.0, -27.0)             # the on-land stream by Ocean Keep (14257 .. 14263): nothing grows within CLEAR of it
 CLEAR = 0.35
+PRIMARY = [14257, 14293, 14259, 14295, 14261, 14262, 14263, 14264, 14265, 14266, 14267, 14268, 14269, 14270, 14271, 14272, 14273, 14274,
+           14275, 14276, 14277, 14278, 14279, 14281, 14282, 14283, 14284, 14285, 14286, 14323, 14322, 14321, 14319, 14318, 14313, 14315, 4317]
+                                                    # the primary water route (owner, Oct 23: the chain's western-most rooms, Ocean Keep to 4317)
+HWAVE_A, HWAVE_L = 0.05, 1.6                        # the secondary water path (type C, `olharborways`): applied/v2.9/003's wave
 SPRITES = ('trees', 'tufts', 'hills', 'thorns', 'peaks', 'boulders', 'reeds', 'wheattufts', 'brush', 'crags', 'ripples')
 
 
@@ -34,6 +39,17 @@ def _chains(G, pins=()):
                 seen.add(k); ch.append(nx)
             chains.append(ch)
     return chains
+
+
+def _wave(pts):                                      # applied/v2.9/003's _wave
+    out = [[round(pts[0][0], 3), round(pts[0][1], 3)]]
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        L = math.hypot(bx - ax, by - ay); n = max(1, round(L / HWAVE_L)); m = max(4, int(L / 0.06))
+        nx, ny = -(by - ay) / L, (bx - ax) / L
+        for i in range(1, m + 1):
+            t = i / m; o = HWAVE_A * math.sin(2 * math.pi * n * t) * min(1, L / 0.8)
+            out.append([round(ax + (bx - ax) * t + nx * o, 3), round(ay + (by - ay) * t + ny * o, 3)])
+    return out
 
 
 def apply(town, wild, pos):
@@ -60,6 +76,13 @@ def apply(town, wild, pos):
         if a not in az or b not in az or a in h1 or b in h1 or a == b: continue
         if a in keep and b in keep and onkept(a) and onkept(b): covered.add((a, b)); continue
         G[a].add(b); G[b].add(a); n_ex += 1
+    prim = {(min(a, b), max(a, b)) for a, b in zip(PRIMARY, PRIMARY[1:])}
+    assert all(b in G[a] for a, b in prim), [k for k in prim if k[1] not in G[k[0]]]
+    GC = defaultdict(set)                                                              # every other exit: the secondary water path
+    for a in list(G):
+        for b in list(G[a]):
+            if (min(a, b), max(a, b)) not in prim: GC[a].add(b); G[a].discard(b)
+    G = defaultdict(set, {a: s for a, s in G.items() if s})
     joined = 0
     lines = [warpline([list(P1[v]) for v in ch]) for ch in _chains(G, {v for v in G if v in keep and onkept(v)})]   # (lines end at rooms on a kept line)
     for l in lines:                                                                    # a new line meeting a kept one ends on it (as changes/006, BLEND 0.6)
@@ -73,6 +96,12 @@ def apply(town, wild, pos):
                 f = 1 - run / 0.6; l[i] = [round(l[i][0] + dx * f, 3), round(l[i][1] + dy * f, 3)]; prev = i
             joined += 1
     wild['seawaysfaint'] += lines
+    Bpts = [q[:2] for l in wild['seawaysfaint'] for q in l]                           # (a secondary path meets a primary one exactly on its line)
+    def knot(v):
+        if v in G or v in keep: q = warp(*P1[v]); return min(Bpts, key=lambda k: math.dist(k, q))
+        return P1[v]
+    clines = [_wave([knot(v) for v in ch]) for ch in _chains(GC, set(G) | keep)]
+    wild['olharborways'] = list(wild.get('olharborways') or []) + clines
 
     # ---- nothing grows in the stream (by Ocean Keep only) ----
     x0, y0, x1, y1 = STREAM_BOX
@@ -107,5 +136,5 @@ def apply(town, wild, pos):
 
     return {'old lines removed (lines, points)': (len(gone), gone_pts),
             'path rooms (moved, newly shown, hidden now)': (len(moved), len(changed - moved), len(h1 & az)),
-            'new lines (lines, exits, rooms); exits kept in old lines': (len(lines), n_ex, len(G), len(covered)),
+            'primary lines (lines, exits, rooms); secondary (lines, exits, rooms); exits kept in old lines': ((len(lines), len(prim), len(G)), (len(clines), sum(len(s) for s in GC.values()) // 2, len(GC)), len(covered)),
             'new line ends moved onto kept lines': joined, 'dashed links moved': nd, 'sprites cleared off the stream': cleared, 'label': (was[:2], tag[0][:2], tag[0][4])}

@@ -87,6 +87,8 @@ The other builders run inside `src/legacy`.
   legacy redraw doesn't change; `changes/001_azure_sea_coast_path.py`): only the path's lines (`seawaysfaint`), its `seadash` ends, its seatag and
   the Ocean Keep stream's sprites change (owner, Oct 23: never the mainland; ask first). Lines straight room to room + warpline; unmoved
   lines (4317-14314-22557, 4317-Edo) kept, new lines end on them.
+  Primary water route (owner, Oct 23) = `PRIMARY` in that change (the chain's western-most rooms, 14257 .. 4317), standard water path; every other
+  exit = the **secondary water path** (owner's name, Oct 23, for type C / `olharborways`, the Harbor of Icebergs style), ends on the primary line.
 - **Forest of Tears**: Fog Cliffs mountains reach 2 rooms east of the cliff path (Oct 19, so the Tree of Life is in the forest).
 - **Miden'nir**: the painting (Black Forest, brambles, Mount Doom) stays; the tunnels under Mount Doom are left out; Forest rooms
   are faint wavy dashed trails, 1049-1051/1060 regular paths.
