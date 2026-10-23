@@ -2,6 +2,7 @@
 
 ## In progress (2.9)
 
+- Fixed at your request (Oct 23): the squiggle north of the Northern Plains, by Walking amongst the rushes 4316. The two connecting rooms on its way north-west to Rocky Coastline 4317 (22557, 14314) sat past 4317, so routes overshot and doubled back; they're now evenly spaced on the straight line from 4316 to 4317. The route lines of the 11 locations that pass there (Village of Edo, Otherland (Southern), and the Otherland sub-area and mob cards' North routes) follow. The Northern Plains editor's save has the same spots, so it matches the map.
 - Your request (Oct 23): the "Azure Sea" location (its marker in the far north and its card in the list) is removed.
 - Your request (Oct 23): at the far south of the water path out of Otherland (Off the Northern Coast 15606, its southernmost room), the same watery trail as the one labelled "Otherland" north-west of the Northern Plains, aiming south, labelled "Northern Plains" beside its tip.
 - Your request (Oct 23): the watery hole of 2528 drawn in 5967 and 5970 (Adrift off the Coast, in the far north), each with a small "Otherland" label just east of it. No marker or place name is within 1.5 rooms of the new labels.
