@@ -59,6 +59,7 @@ The other builders run inside `src/legacy`.
   Coral Depths marker (owner, Oct 20; `changes/005`): no land between cliff and sea there.
 - **Desert of Despair terrain** (owner, Oct 20; `changes/007`, `wild.ddsand`, template DDSAND, over geo.sand 16): grain + wind texture,
   ripple fields, dunes, dry lake beds, rocks, scrub, very few cacti; its own look, not the Wastelands' (no grass tufts or crags).
+- **Map frame** (owner, Oct 23; `changes/021`, template FRAME): `bounds` = the sea's frame + 14 rooms each side; `wild.frame.inner` = the sea's edge. Anything new goes inside `frame.inner`.
 - **Sea everywhere** (owner, Oct 23; `changes/009`; frame widened by `008`: +60 W/E, S/E 20 past the farthest room): all open background inside `bounds` is sea, merged into `geo.water` (one shape, rings even-odd). New land drawn later must cut the sea (and redo its rings).
 - **4316 - 4317** (owner, Oct 23; `changes/015`): 22557, 14314 evenly on the line 4316-4317 (4317 isn't in the Northern Plains editor; its save now has these spots, as `legacy/np_layout_final.json`).
 - **Sea names** (owner, Oct 23; `changes/010`, `arealabels`): The Straight of Ahtborne (sea S of the Tower of Despair), Blood Sea (west) and Azure Sea (east; no "The", size 3.6 via `arealabels` fs) at the map's mid-height; Otherland's name N of the Ledge of Life.
@@ -171,7 +172,7 @@ The other builders run inside `src/legacy`.
   Winterlight Island re-fitted (owner, Oct 22, `changes/001_winterlight_island.py`): a smooth irregular blob (oval + low harmonics, rounded end at 9842), the biggest 0.9 clear of the paths; fit kept in `FIT` (`REFIT=1` re-searches, ~30 s).
   Cramped Tunnel rooms (+ those leading only to them): `oltunnels`, drawn as JUST a thin dashed line (owner, Oct 22, after rejecting
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
-  Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; west side an irregular round bulge out to the NW, not flat: owner Oct 23, `changes/007`), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
+  Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; now a ~2-room band along the coast, its two paths cut 1 room past the coast: owner Oct 23, `changes/020`), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
   South of 6143 (FILL_S; 6147, 6148 as land): regular land, no beach, no inlet (owner, Oct 22).
   Saves from Oct 22 18:39Z on keep the west/south 3 east: applied/v2.4/001's hand-set west shapes (WBOX, HARBOR, SBOX west edge, FILL_S, FILL1's
   harbour pieces, NBOX's west box) are translated by `WS = 3.0` (and 006's SBOX). A new save that moves them again: move these with it.
