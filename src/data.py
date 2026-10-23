@@ -8,7 +8,6 @@ Angel's Landing|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#4 e;n;nw;#2 n;sw;e
 Antall, the Lost Harbor|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#2 s;se;#6 e;#3 se;#3 s;sw;#2 s;se
 Ashen Forest|#13 e
 Astral Plane|#8 u;n
-Azure Sea|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e
 Badlands|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#3 s;#3 se;n
 Barren Peaks|nw;#2 w;#4 n;e;look painting;open n;n;#28 w;#3 s
 Barren Wastes|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se;sw;s;#2 sw;s;se;sw;#2 se;sw;#2 se;e;se;s;sw;w;sw;nw;w;#2 nw;w;n;se;scan/move to 'A crumbling dusty stone';dig down;d

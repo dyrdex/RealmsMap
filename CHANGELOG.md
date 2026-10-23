@@ -2,6 +2,7 @@
 
 ## In progress (2.9)
 
+- Your request (Oct 23): the "Azure Sea" location (its marker in the far north and its card in the list) is removed.
 - Your request (Oct 23): at the far south of the water path out of Otherland (Off the Northern Coast 15606, its southernmost room), the same watery trail as the one labelled "Otherland" north-west of the Northern Plains, aiming south, labelled "Northern Plains" beside its tip.
 - Your request (Oct 23): the watery hole of 2528 drawn in 5967 and 5970 (Adrift off the Coast, in the far north), each with a small "Otherland" label just east of it. No marker or place name is within 1.5 rooms of the new labels.
 - Your request (Oct 23): Over the Cliff Maze's name is bigger (size 0.85, was 0.55) and centred on the maze; it sits at least 3.4 rooms inside its edge.
