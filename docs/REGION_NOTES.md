@@ -59,7 +59,13 @@ The other builders run inside `src/legacy`.
   Coral Depths marker (owner, Oct 20; `changes/005`): no land between cliff and sea there.
 - **Desert of Despair terrain** (owner, Oct 20; `changes/007`, `wild.ddsand`, template DDSAND, over geo.sand 16): grain + wind texture,
   ripple fields, dunes, dry lake beds, rocks, scrub, very few cacti; its own look, not the Wastelands' (no grass tufts or crags).
+- **Sea everywhere** (owner, Oct 23; `changes/009`; frame widened by `008`: +60 W/E, S/E 20 past the farthest room): all open background inside `bounds` is sea, merged into `geo.water` (one shape, rings even-odd). New land drawn later must cut the sea (and redo its rings).
+- **4316 - 4317** (owner, Oct 23; `changes/015`): 22557, 14314 evenly on the line 4316-4317 (4317 isn't in the Northern Plains editor; its save now has these spots, as `legacy/np_layout_final.json`).
+- **Sea names** (owner, Oct 23; `changes/010`, `arealabels`): The Straight of Ahtborne (sea S of the Tower of Despair), Blood Sea (west) and Azure Sea (east; no "The", size 3.6 via `arealabels` fs) at the map's mid-height; Otherland's name N of the Ledge of Life.
+- **Standard water path** (owner, Oct 23): every water path but type C has Otherland's trail bend (`maplib.warpline`, one field for the whole map; `changes/006` bends all B routes and the currents; `005` the Ocean Keep stream made B, `streams` now empty; draw new non-C paths with it). Ends of trails/C/dashed links meeting a B route sit on the bent line.
+- **Water route styles** (owner, Oct 23): no solid routes (type A, `seaways`) any more: primary = `seawaysfaint` (B), secondary = `olharborways` (C). `changes/001` moves all `seaways` into `seawaysfaint`; new water routes go straight into B or C. Desert of Despair east coast: primary path 12984-12993, 15098, 15108, 15097, 6300 is B (`changes/002`, bent by 005); its other routes (links to the coastline/land) are C (`changes/003`; `seawaves` now empty map-wide). Coral Depths: primary 669-6286-6287-12597-12598-12956-12982-12983-12984 B, its 5 land links C (`changes/004`); 12598-12599, 669-1494-1495 and 2525-2531 stay B (owner, Oct 23). Sea of Sorrows currents: thinner, opacity .4 (template SEACUR).
 - **Paths meeting a water route** end exactly on its line, never past it (Oct 19).
+- **Route jumps** (owner, Oct 23; `changes/017`, template/site `routeD`): ONLY the jumps the owner names are drawn as a dashed arc on a picked route (painting, Ofcol, Nidaros, Dragon's Pass 8221-8195). Add new ones only when the owner asks.
 - **Shortcuts in routes** (long straight lines): the Ofcol Shortcut (legacy route_fix, OFCOL) and the Nidaros Shortcut
   (936 sw 5511 -> 5507; `changes/007`). A new shortcut: place its rooms in an editor, then join the routes' pieces at it (as 007).
 - **Trade routes** (Eastern, Northern, Western, Southern Mountain): one continuous formal road; off-ramp pads where paths or
@@ -165,7 +171,7 @@ The other builders run inside `src/legacy`.
   Winterlight Island re-fitted (owner, Oct 22, `changes/001_winterlight_island.py`): a smooth irregular blob (oval + low harmonics, rounded end at 9842), the biggest 0.9 clear of the paths; fit kept in `FIT` (`REFIT=1` re-searches, ~30 s).
   Cramped Tunnel rooms (+ those leading only to them): `oltunnels`, drawn as JUST a thin dashed line (owner, Oct 22, after rejecting
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
-  Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; west edge one smooth concave curve, no juts; owner Oct 22), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
+  Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; now a ~2-room band along the coast, its two paths cut 1 room past the coast: owner Oct 23, `changes/020`), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
   South of 6143 (FILL_S; 6147, 6148 as land): regular land, no beach, no inlet (owner, Oct 22).
   Saves from Oct 22 18:39Z on keep the west/south 3 east: applied/v2.4/001's hand-set west shapes (WBOX, HARBOR, SBOX west edge, FILL_S, FILL1's
   harbour pieces, NBOX's west box) are translated by `WS = 3.0` (and 006's SBOX). A new save that moves them again: move these with it.

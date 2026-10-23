@@ -452,7 +452,7 @@ FWPATHS+=(WD.olharborways||[]).length?`<path d="${WD.olharborways.map(p=>'M'+p.m
 {const SV=(WD.seawaves||[]).map(p=>'M'+p.map(q=>q.join(' ')).join('L'));if(SV.length){const L=(sw,col,extra,op)=>`<g opacity="${op}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" ${extra||''}>`+SV.map(d=>`<path d="${d}"/>`).join('')+`</g>`;   /* SEAWAVE: open-ocean routes, wavy and fainter than SEAFAINT (owner, Oct 21) */
   FWPATHS+=`<g opacity=".15">`+L(.5,'var(--seaway-edge)','',.55)+L(.32,'var(--seaway)','',1)+`</g>`;}}
 {const SC=WD.seacurrents||[];if(SC.length){const d=SC.map(c=>'M'+c.pts.map(q=>q.join(' ')).join('L')).join(''),h=SC.map(c=>'M'+c.head.map(q=>q.join(' ')).join('L')+'Z').join('');   /* SEACUR: one-way sea currents, wavy, an arrowhead short of the room they lead to (owner, Oct 20) */
-  FWPATHS+=`<g opacity=".5" stroke-linecap="round" stroke-linejoin="round"><path d="${d}" fill="none" stroke="var(--seaway-edge)" stroke-width=".3" opacity=".55"/><path d="${d}" fill="none" stroke="var(--seaway)" stroke-width=".17"/><path d="${h}" fill="var(--seaway)" stroke="var(--seaway-edge)" stroke-width=".05"/></g>`;}}
+  FWPATHS+=`<g opacity=".4" stroke-linecap="round" stroke-linejoin="round"><path d="${d}" fill="none" stroke="var(--seaway-edge)" stroke-width=".2" opacity=".55"/><path d="${d}" fill="none" stroke="var(--seaway)" stroke-width=".11"/><path d="${h}" fill="var(--seaway)" stroke="var(--seaway-edge)" stroke-width=".04"/></g>`;}}   /* thinner, SEAFAINT's opacity .4 (owner, Oct 23; was .5, .3/.17/.05) */
 {const G=WD.olgorge;if(G){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z';   /* OLGORGE: Tirebaen's Gorge and the Fissure (owner, Oct 22): snowy rims, hachured walls, a shadowed floor */
   WILD+=`<path d="${G.band.map(P).join('')}" fill-rule="evenodd" fill="#6B767C" stroke="#B3BCC1" stroke-width=".07" stroke-linejoin="round"/>`;
   WILD+=`<path d="${G.hach.map(h=>'M'+h[0].join(' ')+'L'+h[1].join(' ')).join('')}" stroke="#414B51" stroke-width=".04" stroke-linecap="round" opacity=".75"/>`;
@@ -553,7 +553,7 @@ for(const g of (WD.tags||[])){WILD+=`<text x="${g[0]}" y="${g[1]+.2}" text-ancho
 WILD+=(WD.darkfog||[]).map(m=>`<ellipse cx="${m[0]}" cy="${m[1]}" rx="${m[2]*1.5}" ry="${m[2]*.55}" fill="url(#darkG)"/>`).join('');
 WILD+=WD.mist.map(m=>`<ellipse cx="${m[0]}" cy="${m[1]}" rx="${m[2]*1.6}" ry="${m[2]*.7}" fill="url(#mistG)"/>`).join('');
 if(WD.ashlabel){const L=WD.ashlabel;WILD+=L.lines.map((s,k)=>{const y=L.y+k*L.lh,dp=L.sag||1.0;return `<path id="ashArc${k}" d="M${L.x-8} ${y+dp} Q ${L.x} ${y-dp} ${L.x+8} ${y+dp}" fill="none"/><text class="arealbl" font-size="2.4" font-style="italic" font-weight="600" letter-spacing=".55" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.5px;stroke-linejoin:round"><textPath href="#ashArc${k}" startOffset="50%" text-anchor="middle">${s}</textPath></text>`}).join('')}   /* "Ashen" over "Forest", each line on a gentle arc like The Forgotten Woods */
-for(const [n,L] of (WD.arealabels||[]).entries()){const hw=L.hw||8;WILD+=L.lines.map((s,k)=>{const y=L.y+k*L.lh,dp=L.sag||1.0;return `<path id="areaArc${n}_${k}" d="M${L.x-hw} ${y+dp} Q ${L.x} ${y-dp} ${L.x+hw} ${y+dp}" fill="none"/><text class="arealbl" font-size="2.4" font-style="italic" font-weight="600" letter-spacing=".55" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.5px;stroke-linejoin:round"><textPath href="#areaArc${n}_${k}" startOffset="50%" text-anchor="middle">${s}</textPath></text>`}).join('')}   /* more area names, drawn like the Ashen Forest's */
+for(const [n,L] of (WD.arealabels||[]).entries()){const hw=L.hw||8;WILD+=L.lines.map((s,k)=>{const y=L.y+k*L.lh,dp=L.sag||1.0;return `<path id="areaArc${n}_${k}" d="M${L.x-hw} ${y+dp} Q ${L.x} ${y-dp} ${L.x+hw} ${y+dp}" fill="none"/><text class="arealbl" font-size="${L.fs||2.4}" font-style="italic" font-weight="600" letter-spacing="${L.fs?(.55*L.fs/2.4).toFixed(2):.55}" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.5px;stroke-linejoin:round"><textPath href="#areaArc${n}_${k}" startOffset="50%" text-anchor="middle">${s}</textPath></text>`}).join('')}   /* more area names, drawn like the Ashen Forest's */
 {const L=WD.label,mx=(L.x0+L.x1)/2;WILD+=`<path id="fotArc" d="M${L.x0} ${L.y+0.8} Q ${mx} ${L.y-1.6} ${L.x1} ${L.y+0.8}" fill="none"/><text font-size="2.4" font-style="italic" font-weight="600" letter-spacing=".55" fill="var(--w-label)" style="paint-order:stroke;stroke:var(--w-labelhalo);stroke-width:.5px;stroke-linejoin:round"><textPath href="#fotArc" startOffset="50%" text-anchor="middle">Forest of Tears</textPath></text>`;}
 /* ---------- town drawing (world units = rooms), hand-drawn style ---------- */
 function RINGDRAW(){
@@ -1226,13 +1226,18 @@ document.getElementById('zfit').onclick=()=>flyTo(fitAll());
 /* ---------- selection ---------- */
 const tip=document.getElementById('tip'),stage=document.getElementById('stage');
 let sel=null;
+/* JUMP: the jumps the owner names (changes/017) drawn as a thin dashed arc; the rest of the route as usual (owner, Oct 23) */
+function routeD(sg,J){let d='',j='';const at=(a,x,y)=>Math.abs(a[0]-x)<.03&&Math.abs(a[1]-y)<.03,hit=(a,b)=>(J||[]).some(x=>(at(a,x[0],x[1])&&at(b,x[2],x[3]))||(at(b,x[0],x[1])&&at(a,x[2],x[3])));
+  for(const s of sg){let pen=false;s.forEach((q,i)=>{if(i&&hit(s[i-1],q)){const a=s[i-1],L=Math.hypot(q[0]-a[0],q[1]-a[1])||1,k=Math.min(.15*L,10)/L;
+    j+=`M${a[0]} ${a[1]}Q${((a[0]+q[0])/2-(q[1]-a[1])*k).toFixed(2)} ${((a[1]+q[1])/2+(q[0]-a[0])*k).toFixed(2)} ${q[0]} ${q[1]}`;pen=false}
+    d+=(pen?'L':'M')+q[0]+' '+q[1];pen=true})}return {d,j}}
 function drawRoute(p){
   const L=document.getElementById('routeLayer');
   if(!p){L.innerHTML='';return}
   if(p.noroute){L.innerHTML='';return}
   const sg=p.segs||[[...p.path,[p.mx,p.my]]];
-  const d=sg.map(s=>s.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' ')).join(' ');
-  L.innerHTML=`<path d="${d}" fill="none" stroke="var(--glow)" stroke-width=".42" stroke-linecap="round" stroke-linejoin="round"/><path id="rl" d="${d}" fill="none" stroke="var(--pick)" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const {d,j}=routeD(sg,DATA.wild.jumps);
+  L.innerHTML=`<path d="${d}" fill="none" stroke="var(--glow)" stroke-width=".42" stroke-linecap="round" stroke-linejoin="round"/><path id="rl" d="${d}" fill="none" stroke="var(--pick)" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round"/>`+(j?`<path d="${j}" fill="none" stroke="var(--pick)" stroke-width=".1" stroke-dasharray=".45 .35" stroke-linecap="round" opacity=".9"/>`:'');
   if(!reduce){const rl=document.getElementById('rl'),len=rl.getTotalLength();rl.style.strokeDasharray=len;rl.style.strokeDashoffset=len;rl.getBoundingClientRect();rl.style.transition='stroke-dashoffset .8s ease';rl.style.strokeDashoffset=0}
 }
 function select(p){

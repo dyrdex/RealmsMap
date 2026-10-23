@@ -35,7 +35,7 @@ EXPORT_JS = '''(names)=>{
   const extras=[...w.querySelectorAll('#pins > :not(.pin):not(text)')].map(e=>e.outerHTML);
   const areas=[...w.querySelectorAll('text')].filter(t=>names.includes(t.textContent)&&!t.closest('#pins'));
   const defs=new Set();areas.forEach(t=>t.querySelectorAll('textPath').forEach(tp=>{const d=document.getElementById((tp.getAttribute('href')||tp.getAttribute('xlink:href')||'').slice(1));if(d)defs.add(d.outerHTML)}));
-  return {bounds:DATA.wild.bounds,places,extras,areas:areas.map(t=>t.outerHTML),defs:[...defs]};
+  return {bounds:DATA.wild.bounds,places,extras,areas:areas.map(t=>t.outerHTML),defs:[...defs],jumps:DATA.wild.jumps||[]};
 }'''
 
 HIDE_JS = '''(names)=>{
@@ -141,7 +141,7 @@ def main():
         places.append(c)
         routes.append({'path': r2(p['path']), **({'segs': r2(p['segs'])} if p.get('segs') else {}), **({'opts': [r2(o['segs']) for o in p['opts']]} if p.get('opts') else {})})
     J = lambda o: json.dumps(o, separators=(',', ':'), ensure_ascii=False)
-    files = {'places.json': J({'bounds': live['bounds'], 'zmin': ZMIN, 'zmax': ZMAX, 'tile': TS, 'places': places, 'extras': live['extras']}),
+    files = {'places.json': J({'bounds': live['bounds'], 'zmin': ZMIN, 'zmax': ZMAX, 'tile': TS, 'places': places, 'extras': live['extras'], 'jumps': live.get('jumps') or []}),
              'areanames.json': J({'areas': live['areas'], 'defs': live['defs']}),
              'routes.json': J(routes)}
     for f, s in files.items():

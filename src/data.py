@@ -8,7 +8,6 @@ Angel's Landing|#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#4 e;n;nw;#2 n;sw;e
 Antall, the Lost Harbor|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#2 s;se;#6 e;#3 se;#3 s;sw;#2 s;se
 Ashen Forest|#13 e
 Astral Plane|#8 u;n
-Azure Sea|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e
 Badlands|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#3 s;#3 se;n
 Barren Peaks|nw;#2 w;#4 n;e;look painting;open n;n;#28 w;#3 s
 Barren Wastes|#8 e;#2 se;s;#4 se;#2 s;sw;w;sw;#2 s;#3 se;sw;s;#2 sw;s;se;sw;#2 se;sw;#2 se;e;se;s;sw;w;sw;nw;w;#2 nw;w;n;se;scan/move to 'A crumbling dusty stone';dig down;d
@@ -93,6 +92,8 @@ Old Pottswort's Fields|#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#4 s;#2 se;#2 ne;n;se
 Old Thalos|#41 w;#7 n;#2 w
 Olympus|#8 u;n;finditem pearl-wand;unlock n;open n;n;track Juna (say will you take me to olympus?)
 Otherland|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;#3 s;sw;w;sw;d;nw;s;#2 e;#2 se;w
+Otherland (Northern)|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#2 e;u;#3 e;#3 s;se;#3 e;s;#2 se;s;sw;#2 s;w;sw;#10 s
+Otherland (Southern)|nw;#2 w;#4 n;e;look painting;n;nw;#2 n;nw;w;#2 nw;#3 w;#2 nw;#2 sw;w;sw;w;nw;#2 n;nw;ne;#3 w;ne;nw;n;nw;w;nw;#4 n;d;nw;se;sw;nw
 Pixie Forest|#8 n;ne;w;n;ne;nw;e;ne;n;e;ne;#2 n;#2 ne;nw;n
 Raven Tor|#6 n;#3 nw;w;n;#4 e;s;w;sw;nw;n;ne;u;#2 ne;u;ne;u;ne;nw;w;u;#2 ne;u;w;u;ne;se;#2 e;#2 se;e;d;ne
 Realm of Worship|#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#4 sw;#4 s;#5 se;#2 s;d;ne;n;ne;#5 n
