@@ -26,6 +26,7 @@ number, don't read it whole.
 Republished Oct 19 in the owner's current claude.ai organization (the old links in `docs/archive/` are in another organization and are not
 used any more); each was loaded with the owner's latest save (its `<key>/current` document), so it opens where the owner left off.
 Barren Peaks editor's background (land, sea, trails) refreshed from the current map Oct 23 (`tools/barren_peaks_editor/refresh_ctx.py`); rerun it after coast changes there.
+Forest of Tears room 1669 is also in the Barren Peaks editor (movable, `add_1669.py`, Oct 23; 1668 as a fixed dot): once the owner saves it there, that spot wins and the Forest of Tears editor's 1669 is updated to match (fwtracks[375] ends at 1669, [384] runs 1669 to 5491).
 New areas: rooms go into a layout editor first; drawn only after the owner places them and saves (owner, Oct 18).
 Starting spots from `src/editor_spread.py` (`spread_clear`), with its numbers reported (owner, Oct 16).
 To make a new editor: copy the newest builder (`tools/mire_editor/build_mi_editor.py`, run from anywhere; it reads the old saves
