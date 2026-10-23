@@ -2,7 +2,7 @@
 
 ## In progress (2.9)
 
-- Your request (Oct 23): the Desert of Despair east coast's primary water path is drawn in the standard water path style (type B): the 10 sea rooms from 12984, where the Coral Depths path arrives, south along the coast to 12993 (9 stretches, 103 rooms long). Its waves are kept but half as high (0.06 instead of 0.12), so they're softer; the wave length is unchanged. The 31 routes from these rooms to the coastline rooms and the land stay as they were.
+- Your request (Oct 23): the Desert of Despair east coast's primary water path is drawn in the standard water path style (type B): the sea rooms from 12984, where the Coral Depths path arrives, south along the coast to 12993, then 15098, 15108, 15097 and 6300 at the south end (13 stretches, 129 rooms long). Its waves are the same height as before (0.12) but twice as long (one wave per about 5 rooms instead of 2.5), so they're gentler. The 27 routes from these rooms to the coastline rooms and the land stay as they were.
 - Your request (Oct 23): every solid dark-blue water route (type A) is now drawn as the softer semi-transparent kind (type B), map-wide: 20 lines, 150 points, same paths. 12 are round Coral Depths and the Azure Sea next to it, 4 on the Wasted Shores of Ahtborne (Wastelands), and 4 in the far north (Azure Sea by the Village of Edo). Nothing else changed.
 
 ## Version 2.8 · Otherland's Haunts · October 23, 2026

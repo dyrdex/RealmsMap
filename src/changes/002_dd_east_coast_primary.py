@@ -1,11 +1,11 @@
-"""The Desert of Despair east coast's primary water path (owner, Oct 23): the sea rooms 12984 - 12985 - 12986 - ... - 12993, running on from the
+"""The Desert of Despair east coast's primary water path (owner, Oct 23): the sea rooms 12984 - 12985 - 12986 - ... - 12993, then 15098 - 15108 - 15097 - 6300 at the south end, running on from the
 Coral Depths path (which ends at 12983 - 12984) south along the coast, drawn in the standard water path style (`seawaysfaint`, type B) instead
-of `seawaves`; its wave kept but softer (amplitude 0.12 -> WAVE_AMP; wavelength as before, a whole number of waves per room-to-room stretch,
+of `seawaves`; its wave kept, gentler (amplitude as before; wavelength 2.5 -> WAVE_LEN, a whole number of waves per room-to-room stretch,
 flat at the rooms). The routes from these rooms to the coastline land rooms (secondary) stay `seawaves`, untouched."""
 import math
 
-CHAIN = [12984, 12985, 12986, 12987, 12988, 12989, 12990, 12991, 12992, 12993]
-WAVE_AMP, WAVE_LEN = 0.06, 2.5                       # applied/v2.3/001: 0.12, 2.5
+CHAIN = [12984, 12985, 12986, 12987, 12988, 12989, 12990, 12991, 12992, 12993, 15098, 15108, 15097, 6300]
+WAVE_AMP, WAVE_LEN = 0.12, 5.0                       # applied/v2.3/001: 0.12, 2.5 (owner: longer waves, gentler)
 
 
 def _knots(line, P):
