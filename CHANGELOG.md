@@ -1,5 +1,11 @@
 # Realm Map changelog
 
+## In progress (2.12)
+
+- Your Barren Peaks / Forgotten Woods save (Oct 23, 18:56): the rooms west of the Woods are drawn where you put them: the 30 you left shown (Knights of the Round, 11743-11745, the Royal Jetty 21075; 65 hidden as you set). Their 29 exits are ordinary Woods dirt trails, straight room to room; 26 trees and 1 grass tuft cleared off them.
+- Your request (Oct 23): the way down from Blood Sea Cottonwoods 5639 to Between a Rock and a Hard Place 11745 is a stairway: the trail with 49 steps across it, closer together and narrower further down, the trail darkening towards 11745.
+- Your request (Oct 23): the layout editor for the Barren Peaks and the Forgotten Woods now holds 11745, 11744, 11743 below 5639, all the Knights of the Round (with the Bridge of Death and 4 unnamed joining rooms) and the Royal Jetty of Camelot 21075.
+
 ## Version 2.11 · The Azure Coast · October 23, 2026
 
 - Your request (Oct 23): the deathtrap Death on the Rocks 14279 is marked with a dark red skull and crossbones instead of the X: a red skull with dark eye sockets, nose and teeth over two crossed bones with knobbed ends, about 1.3 rooms across, at 80% opacity, with a thin dark edge so it reads on the blue sea. The nearest other room is 3.8 rooms away. Nothing else changed.
