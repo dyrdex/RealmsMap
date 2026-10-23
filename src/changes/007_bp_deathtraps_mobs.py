@@ -1,4 +1,4 @@
-"""Barren Peaks, owner's save of Oct 23 21:08Z (legacy/bp_layout_oct23.json): 14 rooms shown, 5 moved (6880 is still hidden: its spot only).
+"""Barren Peaks, owner's saves of Oct 23 21:08Z and 21:17Z (legacy/bp_layout_oct23.json): 14 + 6 rooms shown, 5 moved (6880 is still hidden: its spot only).
   - the shown rooms' exits (to rooms already on the map): Woods dirt trails (fwtracks), straight room to room; a line ends on the old trail
     where that trail passes beside its room rather than through it; up/down exits not drawn (6939 u 6940); trees/tufts cleared within CLEAR;
   - deathtraps (owner, Oct 23): the deathtrap emblem (`deathtraps`, template SKULL) on 13 rooms, size SKULL (smaller than the Azure Coast's
@@ -10,7 +10,8 @@ from shapely.geometry import LineString, Point
 from shapely.ops import unary_union, nearest_points
 
 HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
-SHOWN = [6836, 6940, 6990, 6991, 6992, 6993, 6994, 7008, 7009, 7012, 7016, 7257, 7258, 7259]
+SHOWN = [6836, 6940, 6990, 6991, 6992, 6993, 6994, 7008, 7009, 7012, 7016, 7257, 7258, 7259,
+         6958, 6959, 6960, 6961, 6962, 6963]                 # (save of Oct 23 21:17Z: the way to Dae'Clya)
 MOVED = [6880, 6940, 7008, 7009, 7016]
 DEATHTRAPS = [7029, 7026, 7024, 7023, 7025, 7027, 7028, 7012, 7009, 7008, 6940, 7016, 6836]
 SKULL = 0.34
