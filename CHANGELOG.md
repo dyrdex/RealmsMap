@@ -2,6 +2,7 @@
 
 ## In progress (2.9)
 
+- Your request (Oct 23): the Tower of Enlightenment has your new directions (80 rooms, ending at The Great Door 13645). The line now runs unbroken, crossing Ofcol by the Ofcol Shortcut like the other routes that take it, to Skirting the Coast 5644, where the route goes down into the Blood Sea; the marker is there (1.2 rooms south of where it was). The old "areas that aren't drawn yet" note is gone, since the line no longer breaks.
 - Your request (Oct 23): the two sea names now read "Blood Sea" and "Azure Sea" (no "The") and are half as big again as the other area names (size 3.6 instead of 2.4), still centred where they were.
 - Your request (Oct 23): when you pick a location, the jumps you named are drawn as a thin dashed curve instead of the solid route line: the painting (Alms for the Poor to The Forest's Grasp, on 24 routes), the Ofcol Shortcut (Ofcol's gate to A Sparse Trail, 19), the Nidaros Shortcut (5511 to A Bubbling Creek, 3) and Dragon's Pass to the Mire (The Foot of Dragon's Pass to the Mire, 3). Everything else on every route is drawn as before.
 - Your request (Oct 23): the "Otherland" watery trail and its label north-west of the Northern Plains are removed (the one aiming south at Otherland's far end stays).
