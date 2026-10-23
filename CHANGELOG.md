@@ -2,7 +2,7 @@
 
 ## In progress (2.12)
 
-- Your request (Oct 23): six new locations on the map and in the list, with your directions: Forgotten Woods (The Shadow Grove 1338), Forest of Tears (Along a Wet Trail 820), Ashen Forest (In an Open Clearing 1241), Barren Peaks (A Disturbing Cry 5090), Northern Plains (The Forest's Grasp 4221) and Knights of the Round (Beyond the Cobblestone Path 11743; two routes: Walking, and DAG through the Darkhaven Art Gallery's painting).
+- Your request (Oct 23): six new locations on the map and in the list, with your directions: Forgotten Woods (The Shadow Grove 1338), Forest of Tears (Along a Wet Trail 820), Ashen Forest (In an Open Clearing 1241), Barren Peaks (A Disturbing Cry 5090), Northern Plains (The Forest's Grasp 4221) and Knights of the Round (Beyond the Cobblestone Path 11743; two routes: Walking, and DAG through the Darkhaven Art Gallery's painting). Knights of the Round's name sits east of its marker, clear of Camelot.
 - Your request (Oct 23): the exits of A Shifting Intersection 11741 and Traversing the Cobblestone Path 11742 are thin dashed lines too.
 - Your request (Oct 23): The Wild Woodland maze blob is drawn over the maze rooms' trails.
 - Your save (Oct 23, 19:33): the 18 Knights of the Round rooms you showed (Grasping through Treacherous Darkness, the Worn Village of Eg'Vane, the River Camlarr, A Gateway near the Shore and their spacer rooms) are drawn; their 19 exits are thin dashed lines in the trails' colour. Their two long one-way links (21066 to 14082, 12.5 rooms; 21067 to 11741, 8.7 rooms) are left off, as you asked.
