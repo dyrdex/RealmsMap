@@ -2,6 +2,9 @@
 
 ## In progress
 
+- Your request (Oct 22): sub-area markers for Otherland, from your directions, each route drawn in one piece from Darkhaven Square to where it leaves the drawn rooms. Listed as "off Otherland".
+  - The Ziggurat and Valley of Crucifixion both leave at 13271 Crossroads in the Snow, heading south into rooms you hid, so their markers sit side by side just south of it: The Ziggurat on the west, Valley of Crucifixion on the east, 0.8 apart. The Valley's name sits below The Ziggurat's and just touches a trail (the best spot the label placer found).
+  - Wild Tundra at 13274 Vast Tundra Fields, where its route goes down to 6189 (a down marker).
 - Your request (Oct 22): Winterlight Island is back, re-fitted into the open water between the paths round it, with 9842 as its rounded north-east end. Your Otherland save had moved the route on its west side (6174, 18047, 18052, 18058, 18059) up to 6 rooms east, so the space is now about 57.7 square rooms. The island is a smooth, irregular, rounded shape with no points or spits: 40.7 square rooms (the old one was 40.2), about 7.7 x 8.4 rooms, still 0.9 clear of every path. Winter themed as before: muted snow, faint ripple lines round the shore, 3 small shacks with snowy roofs in the north-east and 44 snowy firs in the south-west. No label; its marker is unchanged. Nothing else moved.
 
 ## Version 2.7 · Otherland's Peaks · October 22, 2026
