@@ -78,6 +78,7 @@ The other builders run inside `src/legacy`.
   Editor republished Oct 19 (v2) with all 592 Forgotten Woods rooms unlocked (green outline; `D.unlocked`, saves now v:3 so older
   saves don't re-lock them). A save that moves or hides FW rooms means redrawing their Woods trails too.
 - **Ashen Forest beach** (owner, Oct 23; `tools/ashen_forest_editor/add_azure_beach.py`): the Azure Sea rooms joined to the beach (25 rooms, 40 spacers) are in the Ashen editor (area 'AZ'), starting spots grown from the shore along e/w exits only (owner: ignore the other exits). Drawn only after the owner's save.
+  Drawn by `changes/001_ashen_east_beach.py` from `legacy/ashen_layout_oct23.json` + `legacy/ashen_editor_edges_oct23.json` (the legacy files stay as they were, so a legacy redraw doesn't re-roll the forest): only moved/new rooms change, unmoved trails kept point for point; Outskirts links dirt trails, links to/among Beach/Dunes/Surf rooms thin land-coloured lines (`ashbeachways`, template ASHBEACH); sea only pushed east (land added, never cut), the added land is sand.
   3245 and 14360 belong to the Coral Depths editor (`fix_cd_rooms.py`): fixed in the Ashen editor (CD) at the Coral Depths save's spots; when drawing an Ashen save, never take a fixed room's spot from it.
 - **Azure Sea Coast**: the owner's name for the 49-room Azure Sea pathway; a blue water route at the foot of the cliff.
 - **Forest of Tears**: Fog Cliffs mountains reach 2 rooms east of the cliff path (Oct 19, so the Tree of Life is in the forest).
