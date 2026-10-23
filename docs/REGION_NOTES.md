@@ -83,7 +83,10 @@ The other builders run inside `src/legacy`.
 - **Azure Sea Coast**: the owner's name for the 49-room Azure Sea pathway; a blue water route at the foot of the cliff.
   Oct 23 (`tools/azure_sea_editor/add_coast_rooms.py`, run once on the built editor): grp 'ad', the 26 unmapped Azure Sea rooms/spacers joined to the
   path (864, 865, 5965, 14288, 14290-14291, 14296-14310, 14316-14317, 14320, 14324-14325), starting spots `editor_spread.spread` from the save.
-  Owner: arrange first, don't draw until asked; then redraw the path. Add them to `legacy/az_editor_edges.json` with the save.
+  Drawn from the save of Oct 23 16:48Z (`legacy/az_layout_oct23.json` + `az_editor_edges_oct23.json`; the legacy final files stay, so a
+  legacy redraw doesn't change; `changes/001_azure_sea_coast_path.py`): only the path's lines (`seawaysfaint`), its `seadash` ends, its seatag and
+  the Ocean Keep stream's sprites change (owner, Oct 23: never the mainland; ask first). Lines straight room to room + warpline; unmoved
+  lines (4317-14314-22557, 4317-Edo) kept, new lines end on them.
 - **Forest of Tears**: Fog Cliffs mountains reach 2 rooms east of the cliff path (Oct 19, so the Tree of Life is in the forest).
 - **Miden'nir**: the painting (Black Forest, brambles, Mount Doom) stays; the tunnels under Mount Doom are left out; Forest rooms
   are faint wavy dashed trails, 1049-1051/1060 regular paths.
