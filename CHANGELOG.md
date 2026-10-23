@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## Version 2.10 (in progress)
+
+- Your request (Oct 23): the Ashen Forest layout editor now holds the 65 Azure Sea rooms joined to the beach (14 The Beach along the Ashen Forest, 6 Miles and Miles of Sand Dunes, 4 Wading into the Surf, 1 unnamed, 40 spacer rooms; 10 dead-end spacer rooms left off), with a sea-green outline and a "Select the Azure Sea beach rooms" button. Each starts one step east (or west) of the room it joins by its east/west exit, at the same height; its other exits are ignored for the starting spot. Nothing on the map changes until you place them and save.
+
 ## Version 2.9 · Open Seas · October 23, 2026
 
 - Your request (Oct 23): Over the Cliff Maze is much smaller. The two water paths that ran far out into it (from 14474 and from The Icy Cliffs 15162) now stop 1 room past the coast (6.6 and 4.6 rooms long before, 1.6 now). The maze is a band along the same 36 rooms of coast, about 2 rooms out to sea (1.6 to 2.3, uneven on the sea side, rounded at both ends): 58 square rooms instead of 273. Its name is smaller (size 0.45) to fit inside.
