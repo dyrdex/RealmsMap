@@ -25,6 +25,7 @@ number, don't read it whole.
 ## Layout editors
 Republished Oct 19 in the owner's current claude.ai organization (the old links in `docs/archive/` are in another organization and are not
 used any more); each was loaded with the owner's latest save (its `<key>/current` document), so it opens where the owner left off.
+Barren Peaks editor's background (land, sea, trails) refreshed from the current map Oct 23 (`tools/barren_peaks_editor/refresh_ctx.py`); rerun it after coast changes there.
 New areas: rooms go into a layout editor first; drawn only after the owner places them and saves (owner, Oct 18).
 Starting spots from `src/editor_spread.py` (`spread_clear`), with its numbers reported (owner, Oct 16).
 To make a new editor: copy the newest builder (`tools/mire_editor/build_mi_editor.py`, run from anywhere; it reads the old saves
