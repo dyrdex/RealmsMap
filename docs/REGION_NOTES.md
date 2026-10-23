@@ -59,7 +59,7 @@ The other builders run inside `src/legacy`.
   Coral Depths marker (owner, Oct 20; `changes/005`): no land between cliff and sea there.
 - **Desert of Despair terrain** (owner, Oct 20; `changes/007`, `wild.ddsand`, template DDSAND, over geo.sand 16): grain + wind texture,
   ripple fields, dunes, dry lake beds, rocks, scrub, very few cacti; its own look, not the Wastelands' (no grass tufts or crags).
-- **Map frame** (owner, Oct 23; `changes/021`, template FRAME): `bounds` = the sea's frame + 14 rooms each side; `wild.frame.inner` = the sea's edge. Anything new goes inside `frame.inner`.
+- **Map frame** (owner, Oct 23; `changes/021`, template FRAME): `bounds` = the sea's frame + 14 rooms each side; `wild.frame.inner` = the old frame, `frame.box` = the sea's outer ring (ring() draws it as an oval through the sides' midpoints; the frame follows that oval). Hand-inked style only (owner: no modern graphics).
 - **Sea everywhere** (owner, Oct 23; `changes/009`; frame widened by `008`: +60 W/E, S/E 20 past the farthest room): all open background inside `bounds` is sea, merged into `geo.water` (one shape, rings even-odd). New land drawn later must cut the sea (and redo its rings).
 - **4316 - 4317** (owner, Oct 23; `changes/015`): 22557, 14314 evenly on the line 4316-4317 (4317 isn't in the Northern Plains editor; its save now has these spots, as `legacy/np_layout_final.json`).
 - **Sea names** (owner, Oct 23; `changes/010`, `arealabels`): The Straight of Ahtborne (sea S of the Tower of Despair), Blood Sea (west) and Azure Sea (east; no "The", size 3.6 via `arealabels` fs) at the map's mid-height; Otherland's name N of the Ledge of Life.

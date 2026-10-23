@@ -685,53 +685,66 @@ h+=`<circle r=".5" fill="none" stroke="var(--street-edge)" stroke-width=".03" st
 h+=`<path d="${Array.from({length:10},(_,i)=>{const a=i*Math.PI/5-Math.PI/2,r=i%2?.15:.38;return (i?'L':'M')+(Math.cos(a)*r).toFixed(3)+' '+(Math.sin(a)*r).toFixed(3)}).join(' ')}Z" fill="var(--ink)"/>`;
 h+=`<text class="lbl" x="-.8" y="-.6" text-anchor="end" font-size=".52" font-weight="700" font-style="italic" style="stroke-width:.13px">Darkhaven Square</text>`;
 
-/* FRAME: the old-map frame round the sea (owner, Oct 23; changes/021): umber band, gold rules, ropes, woven vines with leaves, tendrils and
-   berries, an old chart's bar border on the sea side, compass roses wreathed in leaves in the corners, a fouled anchor mid-side */
-if(WD.frame){const [ix0,iy0,ix1,iy1]=WD.frame.inner,W=WD.frame.w,ox0=ix0-W,oy0=iy0-W,ox1=ix1+W,oy1=iy1+W,F=v=>v.toFixed(2);
-  const GOLD='#9C8656',GOLD2='#C4AE7A',UMB='#221C14',UMB2='#2C251A',INK='#0F0C08',MOSS='#4B5A33',MOSS2='#66783F',STEM='#3E3524',BERRY='#7A3A2C';
-  let f=`<defs><pattern id="frameTex" width="3" height="3" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="${UMB}"/><circle cx=".6" cy=".8" r=".12" fill="#2E271C"/><circle cx="2.1" cy="2.2" r=".09" fill="#1A150F"/><circle cx="2.4" cy=".5" r=".07" fill="#332B1F"/><path d="M0 1.7 Q1.5 1.4 3 1.8" stroke="#272016" stroke-width=".1" fill="none"/></pattern></defs>`;
-  f+=`<path d="M${ox0} ${oy0}H${ox1}V${oy1}H${ox0}Z M${ix0} ${iy0}V${iy1}H${ix1}V${iy0}Z" fill="url(#frameTex)" fill-rule="evenodd"/>`;
-  f+=`<rect x="${ix0-1.2}" y="${iy0-1.2}" width="${ix1-ix0+2.4}" height="${iy1-iy0+2.4}" fill="none" stroke="${INK}" stroke-width="1.2" opacity=".5"/>`;   /* a shadow on the sea side */
-  const R=(i,sw,c,op)=>`<rect x="${ox0+i}" y="${oy0+i}" width="${ox1-ox0-2*i}" height="${oy1-oy0-2*i}" fill="none" stroke="${c}" stroke-width="${sw}"${op?` opacity="${op}"`:''}/>`;
-  f+=R(.3,.6,GOLD)+R(.3,.16,INK,.6)+R(1.0,.14,GOLD2,.8)+R(W-.15,.2,GOLD)+R(W-1.45,.12,GOLD,.8);
-  // one side, in its own frame: x along the side (0..L, between the corner blocks), y inward from the outer edge (0..W)
-  const side=(L,tf)=>{let g='';
-    const rope=y=>{let d='',e='';for(let x=.2;x<L-.2;x+=.5){d+=`M${F(x-.28)} ${F(y+.32)}l.56 -.64`;e+=`M${F(x-.2)} ${F(y+.2)}l.34 -.38`}
-      return `<path d="M0 ${y-.42}H${L}M0 ${y+.42}H${L}" stroke="${INK}" stroke-width=".14"/><path d="${d}" stroke="${INK}" stroke-width=".42" stroke-linecap="round"/><path d="${d}" stroke="${GOLD}" stroke-width=".26" stroke-linecap="round"/><path d="${e}" stroke="${GOLD2}" stroke-width=".07" stroke-linecap="round" opacity=".7"/>`};
-    g+=rope(2.0)+rope(W-2.6);
-    let bars='';for(let x=0,k=0;x<L;x+=3.5,k++)if(k%2)bars+=`M${F(x)} ${W-1.42}h${F(Math.min(3.5,L-x))}v.7h${F(-Math.min(3.5,L-x))}Z`;
-    g+=`<path d="M0 ${W-1.42}H${L}V${W-.72}H0Z" fill="#B9A87C" opacity=".85"/><path d="${bars}" fill="${INK}"/><path d="M0 ${W-1.42}H${L}M0 ${W-.72}H${L}" stroke="${INK}" stroke-width=".08"/>`;
-    // two vines, woven: a sine and its mirror, crossing every half wave
-    const lam=14,A=2.3,cy=W/2-.3,n=Math.round(L/lam)||1,lw=L/n,vy=(x,s)=>cy+s*A*Math.sin(Math.PI*2*x/lw),vd=(s,a,b)=>{let d='';for(let x=a;x<=b+1e-6;x+=.35)d+=(x===a?'M':'L')+F(x)+' '+F(vy(Math.min(x,b),s));return d};
-    const stem=(d,w)=>`<path d="${d}" stroke="${INK}" stroke-width="${w+.22}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="${STEM}" stroke-width="${w}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="#5A4C33" stroke-width="${w*.3}" fill="none" stroke-linecap="round" opacity=".7"/>`;
-    g+=stem(vd(1,0,L),.42)+stem(vd(-1,0,L),.36);
-    for(let k=0;k<=2*n;k+=2){const x=k*lw/2;g+=stem(vd(1,Math.max(0,x-1.1),Math.min(L,x+1.1)),.42)}   /* every other crossing the first vine over */
-    const leaf=(x,y,a,s,c)=>`<g transform="translate(${F(x)} ${F(y)}) rotate(${F(a)}) scale(${s})"><path d="M0 0Q.7 -.62 1.8 0Q.7 .62 0 0Z" fill="${c}" stroke="${INK}" stroke-width=".09"/><path d="M.1 0L1.6 0" stroke="#2E3820" stroke-width=".06"/></g>`;
-    for(let k=0;k<2*n;k++){const x=(k+.5)*lw/2;for(const s of [1,-1]){const y=vy(x,s),up=Math.sign(y-cy)||s;
-      g+=leaf(x,y,up<0?-115:115,1.15,k%2?MOSS:MOSS2)+leaf(x+.25,y,up<0?-35:35,.95,k%2?MOSS2:MOSS);
-      const tx=x+lw/8,ty=vy(tx,s);g+=`<path d="M${F(tx)} ${F(ty)}q.5 ${F(-up*.9)} 1.1 ${F(-up*.6)}q.45 -.05 .35 ${F(up*.4)}" stroke="${STEM}" stroke-width=".12" fill="none"/>`}
-      if(k%2===0){const x2=(k+.5)*lw/2+lw/4.5,y2=vy(x2,1);g+=`<circle cx="${F(x2)}" cy="${F(y2+.55)}" r=".3" fill="${BERRY}" stroke="${INK}" stroke-width=".07"/><circle cx="${F(x2+.42)}" cy="${F(y2+.8)}" r=".26" fill="${BERRY}" stroke="${INK}" stroke-width=".07"/>`}}
-    // the fouled anchor mid-side, on a small cartouche
-    const ax=L/2;g+=`<g transform="translate(${F(ax)} ${F(cy)})"><ellipse rx="3.4" ry="3.0" fill="${UMB2}" stroke="${GOLD}" stroke-width=".22"/><ellipse rx="2.9" ry="2.5" fill="none" stroke="${GOLD2}" stroke-width=".07" opacity=".8"/>`
-      +`<g fill="none" stroke="${GOLD2}" stroke-width=".26" stroke-linecap="round"><path d="M0 -1.9V1.7M-.85 -1.25H.85M-1.4 .75Q-1.2 1.95 0 1.95Q1.2 1.95 1.4 .75"/><circle cy="-2.15" r=".28"/></g>`
-      +`<path d="M-1.65 .9L-1.25 .55L-1.15 1.05ZM1.65 .9L1.25 .55L1.15 1.05Z" fill="${GOLD2}"/><path d="M.1 -2.1Q1.6 -1.3 .2 -.4Q-1.3 .5 .1 1.2" stroke="${GOLD}" stroke-width=".14" fill="none" opacity=".9"/></g>`;
-    return `<g transform="${tf}" fill="none">${g}</g>`};
-  const Lh=ox1-ox0-2*W,Lv=oy1-oy0-2*W;
-  f+=side(Lh,`translate(${ox0+W} ${oy0})`)+side(Lv,`translate(${ox1} ${oy0+W}) rotate(90)`)+side(Lh,`translate(${ox1-W} ${oy1}) rotate(180)`)+side(Lv,`translate(${ox0} ${oy1-W}) rotate(270)`);
-  // the corners: a compass rose in a leafy wreath
-  const rose=(cx,cy)=>{let g=`<rect x="${-W/2+1.3}" y="${-W/2+1.3}" width="${W-2.6}" height="${W-2.6}" fill="${UMB2}" stroke="${GOLD}" stroke-width=".2"/>`;
-    for(let i=0;i<14;i++){const a=i*360/14;g+=`<g transform="rotate(${F(a)}) translate(0 -5.15)">`+`<path d="M0 0Q.55 -.5 1.45 0Q.55 .5 0 0Z" fill="${i%2?MOSS:MOSS2}" stroke="${INK}" stroke-width=".08" transform="rotate(-20)"/></g>`}
-    g+=`<circle r="4.55" fill="${UMB}" stroke="${GOLD}" stroke-width=".22"/><circle r="4.1" fill="none" stroke="${GOLD2}" stroke-width=".06"/>`;
-    let ticks='';for(let i=0;i<32;i++){const a=i*Math.PI/16,r0=i%4?3.75:3.45;ticks+=`M${F(Math.cos(a)*r0)} ${F(Math.sin(a)*r0)}L${F(Math.cos(a)*4.05)} ${F(Math.sin(a)*4.05)}`}
-    g+=`<path d="${ticks}" stroke="${GOLD}" stroke-width=".08"/>`;
-    const pt=(a,r,w,c1,c2)=>{const ca=Math.cos(a),sa=Math.sin(a),cl=Math.cos(a-Math.PI/2),sl=Math.sin(a-Math.PI/2);
-      return `<path d="M0 0L${F(cl*w)} ${F(sl*w)}L${F(ca*r)} ${F(sa*r)}Z" fill="${c1}" stroke="${INK}" stroke-width=".05"/><path d="M0 0L${F(-cl*w)} ${F(-sl*w)}L${F(ca*r)} ${F(sa*r)}Z" fill="${c2}" stroke="${INK}" stroke-width=".05"/>`};
-    for(let i=0;i<8;i++)g+=pt(i*Math.PI/4+Math.PI/8,2.2,.42,'#6E5E3E','#3A3122');
-    for(let i=0;i<4;i++)g+=pt(i*Math.PI/2+Math.PI/4,2.8,.55,'#8C7A52','#4A3F2B');
-    for(let i=0;i<4;i++)g+=pt(i*Math.PI/2-Math.PI/2,3.6,.7,GOLD2,'#5E4F33');
-    g+=`<circle r=".45" fill="${GOLD}" stroke="${INK}" stroke-width=".07"/><path d="M0 -3.6L-.3 -4.2H.3Z" fill="${GOLD2}"/>`;
-    return `<g transform="translate(${cx} ${cy})">${g}</g>`};
-  f+=rose(ox0+W/2,oy0+W/2)+rose(ox1-W/2,oy0+W/2)+rose(ox1-W/2,oy1-W/2)+rose(ox0+W/2,oy1-W/2);
+/* FRAME: the old-map frame round the sea (owner, Oct 23; changes/021), following the sea's oval (the water's outer ring is the frame box,
+   drawn by ring() as four curves through its sides' midpoints) and hand-inked: wobbly pen lines in pale sepia on a dark band, a looped rope,
+   two woven vines with outlined, hatched leaves, curling tendrils and berries, a hatched outer edge; compass roses in the open corners
+   outside the oval, an anchor on a cartouche at the top, bottom and sides. No gradients, no smooth shading. */
+if(WD.frame){const [bx0,by0,bx1,by1]=WD.frame.box,[cx0,cy0,cx1,cy1]=WD.bounds,F=v=>v.toFixed(2);
+  const INK='#D2C39A',DARK='#0D0A06',BAND='#1C1811',FILL='#262016';
+  const C=[[bx0,by1],[bx1,by1],[bx1,by0],[bx0,by0]],mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2],cx=(bx0+bx1)/2,cyy=(by0+by1)/2;
+  const O=[];for(let i=0;i<4;i++){const a=mid(C[(i+3)%4],C[i]),c=C[i],b=mid(C[i],C[(i+1)%4]);for(let k=0;k<400;k++){const t=k/400;O.push([(1-t)*(1-t)*a[0]+2*(1-t)*t*c[0]+t*t*b[0],(1-t)*(1-t)*a[1]+2*(1-t)*t*c[1]+t*t*b[1]])}}
+  const N=O.length,S=[0];for(let i=1;i<=N;i++)S.push(S[i-1]+Math.hypot(O[i%N][0]-O[i-1][0],O[i%N][1]-O[i-1][1]));const PER=S[N];
+  const NRM=O.map((p,i)=>{const a=O[(i+N-1)%N],b=O[(i+1)%N];let nx=b[1]-a[1],ny=-(b[0]-a[0]);const l=Math.hypot(nx,ny)||1;nx/=l;ny/=l;if(nx*(p[0]-cx)+ny*(p[1]-cyy)<0){nx=-nx;ny=-ny}return [nx,ny]});
+  let j=0;const at=s=>{s=((s%PER)+PER)%PER;while(S[j]>s)j=0;while(S[j+1]<s)j++;const t=(s-S[j])/((S[j+1]-S[j])||1),p=O[j],q=O[(j+1)%N],n=NRM[j];return [p[0]+(q[0]-p[0])*t,p[1]+(q[1]-p[1])*t,n[0],n[1]]};
+  const wob=(s,k)=>.07*Math.sin(s/1.9+k*1.7)+.045*Math.sin(s/.67+k*2.9)+.03*Math.sin(s/.29+k);   /* a pen's unsteadiness */
+  const P=(s,d,k)=>{const r=at(s),e=d+(k==null?0:wob(s,k));return [r[0]+r[2]*e,r[1]+r[3]*e]};
+  const line=(d,k,step)=>{let o='';for(let s=0;s<=PER+1e-6;s+=step||.5){const q=P(s,d,k);o+=(o?'L':'M')+F(q[0])+' '+F(q[1])}return o+'Z'};
+  const pen=(d,w,c,op)=>`<path d="${d}" fill="none" stroke="${c||INK}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"${op?` opacity="${op}"`:''}/>`;
+  let f='';
+  // the band: dark, from the sea's edge out past the outer rules
+  f+=`<path d="${line(11.2,null,1)}${line(-.05,null,1)}" fill="${BAND}" fill-rule="evenodd"/>`;
+  f+=pen(line(.3,1),.16)+pen(line(.75,2),.08,INK,.8);
+  // the rope: twists drawn one by one, between two rules
+  f+=pen(line(1.15,3),.09,INK,.85)+pen(line(2.45,4),.09,INK,.85);
+  {let d='';for(let s=0;s<PER;s+=.62){const a=P(s,1.22),c=P(s+.4,1.8),b=P(s+.62,2.38);d+=`M${F(a[0])} ${F(a[1])}Q${F(c[0])} ${F(c[1])} ${F(b[0])} ${F(b[1])}`}f+=pen(d,.11)}
+  // two vines, woven, as pen-drawn tubes (two lines), with outlined leaves
+  const VC=6.1,VA=1.9,n=Math.round(PER/12),lw=PER/n,vd=(s,sg)=>VC+sg*VA*Math.sin(2*Math.PI*s/lw);
+  const vine=(sg,a,b,k)=>{let d1='',d2='';for(let s=a;s<=b+1e-6;s+=.4){const q1=P(s,vd(s,sg)-.17,k),q2=P(s,vd(s,sg)+.17,k+5);d1+=(d1?'L':'M')+F(q1[0])+' '+F(q1[1]);d2+=(d2?'L':'M')+F(q2[0])+' '+F(q2[1])}
+    let fill='';for(let s=a;s<=b+1e-6;s+=.4){const q=P(s,vd(s,sg));fill+=(fill?'L':'M')+F(q[0])+' '+F(q[1])}
+    return pen(fill,.34,BAND)+pen(d1,.08)+pen(d2,.08)};
+  f+=vine(1,0,PER,6)+vine(-1,0,PER,8);
+  for(let k=0;k<2*n;k+=2){const s=k*lw/2;f+=vine(1,s-1.2,s+1.2,6)}                 /* every other crossing the first vine over */
+  const leaf=(s,d,ang,sc)=>{const r=at(s),p=P(s,d),tx=-r[3],ty=r[2],a=Math.atan2(ty,tx)*180/Math.PI+ang;
+    return `<g transform="translate(${F(p[0])} ${F(p[1])}) rotate(${F(a)}) scale(${sc})"><path d="M0 0Q.75 -.7 1.9 .05Q.8 .62 0 0Z" fill="${FILL}" stroke="${INK}" stroke-width=".09" stroke-linejoin="round"/><path d="M.1 0Q.9 -.05 1.7 .04M.55 -.02L.75 -.3M.95 0L1.15 -.27M1.3 .02L1.45 -.2" fill="none" stroke="${INK}" stroke-width=".05" opacity=".85"/></g>`};
+  for(let k=0;k<2*n;k++){const s=(k+.5)*lw/2;for(const sg of [1,-1]){const d=vd(s,sg),out=d>VC?1:-1;
+      f+=leaf(s,d,out>0?110:-110,1.05)+leaf(s+.3,d,out>0?40:-40,.85);
+      const t0=s+lw/7,q=P(t0,vd(t0,sg)),r=at(t0);let cd=`M${F(q[0])} ${F(q[1])}`;for(let u=1;u<=10;u++){const ang=u*.62,rad=.75*(1-u/12);cd+=`L${F(q[0]+r[2]*out*(.2+rad*Math.sin(ang))-r[3]*rad*(1-Math.cos(ang)))} ${F(q[1]+r[3]*out*(.2+rad*Math.sin(ang))+r[2]*rad*(1-Math.cos(ang)))}`}
+      f+=pen(cd,.06)}
+    if(k%2===0){const s2=(k+.5)*lw/2+lw/5;for(const [ds,dd] of [[0,.55],[.4,.8],[-.1,1.0]]){const q=P(s2+ds,vd(s2,1)+dd);f+=`<circle cx="${F(q[0])}" cy="${F(q[1])}" r=".26" fill="${FILL}" stroke="${INK}" stroke-width=".07"/><circle cx="${F(q[0]-.08)}" cy="${F(q[1]-.08)}" r=".05" fill="${INK}"/>`}}}
+  // the outer edge: hatching, then two rules
+  {let d='';for(let s=0;s<PER;s+=.32){const a=P(s,9.35),b=P(s+.12,10.25);d+=`M${F(a[0])} ${F(a[1])}L${F(b[0])} ${F(b[1])}`}f+=pen(d,.06,INK,.6)}
+  f+=pen(line(10.45,9),.2)+pen(line(10.95,10),.09,INK,.8);
+  // anchors on cartouches at the top, bottom and sides (the oval's side midpoints)
+  const anchor=(s)=>{const r=at(s),p=P(s,5.8),a=Math.atan2(-r[3],-r[2])*180/Math.PI-90;
+    return `<g transform="translate(${F(p[0])} ${F(p[1])}) rotate(${F(a)})"><ellipse rx="3.6" ry="3.1" fill="${BAND}" stroke="${INK}" stroke-width=".16"/><ellipse rx="3.15" ry="2.65" fill="none" stroke="${INK}" stroke-width=".06" stroke-dasharray=".25 .18"/>`
+      +`<g fill="none" stroke="${INK}" stroke-linecap="round" stroke-linejoin="round"><path d="M-.12 -1.75L-.1 1.75M.12 -1.75L.1 1.75" stroke-width=".07"/><path d="M-.9 -1.15H.9M-.9 -.95H.9" stroke-width=".06"/><circle cy="-2.05" r=".32" stroke-width=".08"/>`
+      +`<path d="M-1.55 .65Q-1.3 1.95 0 1.98Q1.3 1.95 1.55 .65" stroke-width=".1"/><path d="M-1.85 .95L-1.5 .5L-1.25 1.05ZM1.85 .95L1.5 .5L1.25 1.05Z" stroke-width=".07" fill="${FILL}"/>`
+      +`<path d="M.25 -2.0Q1.7 -1.4 .4 -.5Q-1.1 .35 .15 1.0Q.9 1.35 .3 1.7" stroke-width=".08"/></g></g>`};
+  const q4=PER/4;for(let i=0;i<4;i++)f+=anchor(i*q4);
+  // compass roses in the four open corners outside the oval, pen-drawn, with a ring of leaves
+  const rose=(x,y,R)=>{let g=`<g transform="translate(${F(x)} ${F(y)})">`;
+    for(let i=0;i<16;i++){const a=i*22.5;g+=`<g transform="rotate(${a}) translate(0 ${-R-1.1})"><path d="M0 0Q.65 -.62 1.7 .05Q.7 .55 0 0Z" fill="${FILL}" stroke="${INK}" stroke-width=".08" transform="rotate(-25)"/></g>`}
+    g+=`<circle r="${R}" fill="${BAND}" stroke="${INK}" stroke-width=".16"/><circle r="${R-.45}" fill="none" stroke="${INK}" stroke-width=".06"/>`;
+    let tk='';for(let i=0;i<64;i++){const a=i*Math.PI/32,r0=i%4?R-.85:R-1.25;tk+=`M${F(Math.cos(a)*r0)} ${F(Math.sin(a)*r0)}L${F(Math.cos(a)*(R-.45))} ${F(Math.sin(a)*(R-.45))}`}g+=pen(tk,.05);
+    const pt=(a,r,w)=>{const ca=Math.cos(a),sa=Math.sin(a),cl=Math.cos(a-Math.PI/2),sl=Math.sin(a-Math.PI/2),tip=`${F(ca*r)} ${F(sa*r)}`;
+      let h='';for(let u=1;u<6;u++){const t=u/6;h+=`M${F(-cl*w*(1-t)+ca*r*t)} ${F(-sl*w*(1-t)+sa*r*t)}L${F(ca*r*t*.6)} ${F(sa*r*t*.6)}`}
+      return `<path d="M0 0L${F(cl*w)} ${F(sl*w)}L${tip}L${F(-cl*w)} ${F(-sl*w)}Z" fill="${BAND}" stroke="${INK}" stroke-width=".08" stroke-linejoin="round"/><path d="M0 0L${tip}" stroke="${INK}" stroke-width=".05"/>`+pen(h,.04)};
+    for(let i=0;i<8;i++)g+=pt(i*Math.PI/4+Math.PI/8,R*.5,R*.09);
+    for(let i=0;i<4;i++)g+=pt(i*Math.PI/2+Math.PI/4,R*.66,R*.13);
+    for(let i=0;i<4;i++)g+=pt(i*Math.PI/2-Math.PI/2,R*.86,R*.16);
+    g+=`<circle r="${F(R*.09)}" fill="${BAND}" stroke="${INK}" stroke-width=".08"/><path d="M${F(-R*.07)} ${F(-R*.97)}L0 ${F(-R*1.13)}L${F(R*.07)} ${F(-R*.97)}" fill="none" stroke="${INK}" stroke-width=".1"/></g>`;return g};
+  for(let i=0;i<4;i++){const c=C[i],e=[i===0||i===3?cx0:cx1,i<2?cy1:cy0],k0=i*400+200,q=O[k0],n0=NRM[k0],ox=q[0]+n0[0]*11.2,oy=q[1]+n0[1]*11.2;
+    const R=Math.min(9,Math.hypot(e[0]-ox,e[1]-oy)/2-2.5),x=(ox+e[0])/2,y=(oy+e[1])/2;if(R>3)f+=rose(x,y,R)}
   h+=f;}
 
 // route layer + pins
