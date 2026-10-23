@@ -2,6 +2,8 @@
 
 ## In progress
 
+- Your request (Oct 23): the Wastelands layout editor now holds the 4 rooms the mob South routes jump across: 18041, The Ahtborne Straights 18039, 18042 and 18043, between 17991 and 18040. They start on the line between those two rooms, joined in a chain (17991, 18041, 18039, 18042, 18043, 18040). 18039's other exits lead to rooms not on the map and are left off. Nothing on the map changes until you save.
+- Inishie's and Tirebaen's North routes keep "nw;w;w" at the start: "nw;nw;w" stops at A Forested Path 776 after 2 rooms (it has no second nw exit).
 - Your request (Oct 23): five mobs in Otherland, in the Mobs list, each with a marker on its room and two routes on its card: South (the default) and North (under "Alternate routes"), with your room counts. North breaks at the Blood Sea, as on the sub-area cards.
   - The Kirre at 15673 An Icy Lair; Inishie at 13106 Afloat in the Harbor of Ice; Tirebaen at 22250 The Throne of a God (Frost Mansion, Asgard Nexus); Kujrajgi at 15688 Just Below the Plateau; Jarl at 17132 Home of the Jarl.
   - Inishie's and Tirebaen's North directions as given start with "w;w;w", which stops on Horizon Road after 4 rooms. Every other North route starts "nw;w;w", and with that both reach their mob, so I used "nw".
