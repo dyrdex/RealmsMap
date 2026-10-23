@@ -32,6 +32,7 @@ def apply(town, wild, pos):
         segs = [s for s in segs if s]
         p = dict(name=name, route=route, room=rooms[t[last]]['name'], dir=out, path=segs[0], segs=segs, group='af', where=WHERE, note=None)
         if len(segs) > 1: p['note'] = GAP                        # (as Dobra's card)
+        if len(segs) > 1 and at(t[-1]): p['at'] = R(at(t[-1]))   # (owner, Oct 23: the marker on the final room, not the end of the first piece)
         wild['places'].append(p)
-        rep[name] = dict(rooms=len(t) - 1, ends=(t[-1], rooms[t[-1]]['name']), marker=(t[last], rooms[t[last]]['name'], out), pieces=len(segs))
+        rep[name] = dict(rooms=len(t) - 1, ends=(t[-1], rooms[t[-1]]['name']), marker=(t[last], rooms[t[last]]['name'], out, p.get('at') or segs[0][-1]), pieces=len(segs))
     return rep

@@ -2,8 +2,10 @@
 
 ## In progress (2.9)
 
+- Your request (Oct 23): at the far south of the water path out of Otherland (Off the Northern Coast 15606, its southernmost room), the same watery trail as the one labelled "Otherland" north-west of the Northern Plains, aiming south, labelled "Northern Plains" beside its tip.
+- Your request (Oct 23): the watery hole of 2528 drawn in 5967 and 5970 (Adrift off the Coast, in the far north), each with a small "Otherland" label just east of it. No marker or place name is within 1.5 rooms of the new labels.
 - Your request (Oct 23): Over the Cliff Maze's name is bigger (size 0.85, was 0.55) and centred on the maze; it sits at least 3.4 rooms inside its edge.
-- Your request (Oct 23): Otherland (Southern) has your new directions (61 rooms, ending after "d;nw"); its marker and name are on that last room, Among the Icebergs 5981. The line still breaks where the route dips into the Blood Sea.
+- Your request (Oct 23): Otherland (Southern) has your new directions (61 rooms, ending after "d;nw"); its marker is on that last room, Among the Icebergs 5981, in Otherland (37, 246.5). The line still breaks where the route dips into the Blood Sea.
 - Your request (Oct 23): the Village of Edo has your new directions (68 rooms); its marker and name moved to the final room, Upon the Village Dock 7754 (6.7 rooms north of where it was, on the Azure Sea Coast).
 - Fixed (Oct 23): off Otherland's west coast, the old sea's outer edge still showed as a shore line through the new open sea (194 rooms of line); it's gone. Shore lines now run only along the land.
 - Your request (Oct 23): four new area names, in the same style as the big area names: "The Straight of Ahtborne" (on 2 lines) in the sea south of the Tower of Despair, centred north to south between the coast and Over the Cliff Maze; "Otherland" on the open snow north of the Ledge of Life (13 rooms north of it, at least 6.8 rooms clear of every path); "The Blood Sea" in the western sea and "The Azure Sea" in the eastern sea, both centred north to south on the whole map and in the open sea east to west.
