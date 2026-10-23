@@ -2,6 +2,9 @@
 
 ## In progress (2.12)
 
+- Your request (Oct 23): six new locations on the map and in the list, with your directions: Forgotten Woods (The Shadow Grove 1338), Forest of Tears (Along a Wet Trail 820), Ashen Forest (In an Open Clearing 1241), Barren Peaks (A Disturbing Cry 5090), Northern Plains (The Forest's Grasp 4221) and Knights of the Round (Beyond the Cobblestone Path 11743; two routes: Walking, and DAG through the Darkhaven Art Gallery's painting).
+- Your request (Oct 23): the exits of A Shifting Intersection 11741 and Traversing the Cobblestone Path 11742 are thin dashed lines too.
+- Your request (Oct 23): The Wild Woodland maze blob is drawn over the maze rooms' trails.
 - Your save (Oct 23, 19:33): the 18 Knights of the Round rooms you showed (Grasping through Treacherous Darkness, the Worn Village of Eg'Vane, the River Camlarr, A Gateway near the Shore and their spacer rooms) are drawn; their 19 exits are thin dashed lines in the trails' colour. Their two long one-way links (21066 to 14082, 12.5 rooms; 21067 to 11741, 8.7 rooms) are left off, as you asked.
 - Your request (Oct 23): the path from The Blackened Roadway 11740 south through the Blackened Streets of Cadbury to 14070 is a thin dashed line too (8 exits).
 - Your request (Oct 23): The Wild Woodland (14072-14076) is marked as a maze: a Forgotten Woods maze blob over its rooms, reaching about 1.9 rooms east of them for its small label ('The Wild / Woodland', size .34). Into the Wild Woodland 14071, the way in, stays just outside it.

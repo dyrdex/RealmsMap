@@ -1,5 +1,5 @@
 """The Wild Woodland (Knights of the Round: 14072-14076, a maze; owner, Oct 23): a Forgotten Woods maze blob (`fwmazes`, the Woods' own style,
-under the trails) over its rooms, reaching a little east of them for its small label (two lines, size FS; widths measured in the browser
+drawn over its trails: `top`, owner Oct 23) over its rooms, reaching a little east of them for its small label (two lines, size FS; widths measured in the browser
 with the map's Alegreya 600 italic: 'The Wild' 3.375, 'Woodland' 3.943 per unit size)."""
 import math
 from shapely.geometry import Point, LineString, Polygon, box
@@ -30,7 +30,7 @@ def apply(town, wild, pos):
              round(cy + (y - cy) * (1 + 0.05 * math.sin(3 * math.atan2(y - cy, x - cx) + 2.1)), 3)] for x, y in ring]
     P = Polygon(ring)
     wild['fwmazes'] = list(wild['fwmazes']) + [{'name': 'The Wild Woodland', 'cx': round(cx, 3), 'cy': round(cy, 3), 'poly': ring,
-                                                'lx': LX, 'ly': LY, 'fs': FS, 'lines': ['The Wild', 'Woodland']}]
+                                                'lx': LX, 'ly': LY, 'fs': FS, 'lines': ['The Wild', 'Woodland'], 'top': True}]   # over its paths (owner, Oct 23)
     land = _parity(wild['geo']['land'])
     entry = P.contains(Point(pos['14071'][:2]))
     others = sorted((round(P.exterior.distance(Point(q[:2])), 2), int(v)) for v, q in pos.items()

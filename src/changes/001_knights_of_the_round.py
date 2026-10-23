@@ -22,6 +22,7 @@ CLEAR = 0.3                                     # sprites cleared this close to 
 STEP0, STEP1 = 0.34, 0.2                        # steps apart: at the top, at the bottom
 HALF0, HALF1 = 0.24, 0.13                       # steps' half width: at the top, at the bottom
 DASH_ROOMS = {14053, 14054, 14055, 14056, 14057, 14058, 14059, 14060, 14061, 20146, 21061, 21062, 21063, 21064, 21065, 21066, 21067, 21068}   # unhidden Oct 23 19:33Z
+DASH_ALSO = {11741, 11742}                      # (owner, Oct 23: their exits dashed too)
 DASH_CHAIN = [11740, 11738, 11737, 14062, 14065, 14066, 14068, 14069, 14070]   # (owner, Oct 23: 11740 south to 14070)
 LONG_ONE = 2.0                                  # owner, Oct 23: no long one-way links from the rooms shown that day (not drawn past this length)
 SPRITES = ('trees', 'tufts', 'hills', 'thorns', 'brush', 'boulders', 'crags', 'reeds', 'wheattufts')   # (not peaks: the stairway starts at 5639's own)
@@ -86,7 +87,7 @@ def apply(town, wild, pos):
         if k == 'ud': ud.append((a, b)); continue
         assert a in NEW and b in NEW, (a, b)
         if k == 'one' and (a in DASH_ROOMS or b in DASH_ROOMS) and math.dist(P[a], P[b]) > LONG_ONE: dropped.append((a, b, round(math.dist(P[a], P[b]), 2))); continue
-        H = GD if (a in DASH_ROOMS or b in DASH_ROOMS or (min(a, b), max(a, b)) in chain) else G
+        H = GD if (a in DASH_ROOMS or b in DASH_ROOMS or a in DASH_ALSO or b in DASH_ALSO or (min(a, b), max(a, b)) in chain) else G
         H[a].add(b); H[b].add(a)
     assert ud == [(TOP, BOTTOM)], ud
     assert all(b in GD[a] for a, b in zip(DASH_CHAIN, DASH_CHAIN[1:]))
