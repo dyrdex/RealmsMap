@@ -26,6 +26,8 @@ SHORE_M, EASE = 1.0, 2.0                                    # the coast this far
 NUDGES = {2980: (0, -0.5), 19840: (0, -0.5), 19841: (0, -0.5), 19836: (0, -0.5), 19834: (0, -0.5), 2990: (0, -0.5), 2988: (0, -0.5),
           2987: (0, 0.5), 19838: (0, 0.5), 19833: (0, 0.5), 2986: (0, 0.5), 19839: (0, 0.5), 19835: (0, 0.5), 2985: (0, 0.5)}   # legacy visual_nudges
 HWAVE_A, HWAVE_L = 0.05, 1.6                                # type C's slight wave (applied/v2.4/001)
+OWNER_THIN = [(3201, 3209), (3215, 3216), (3217, 14369), (14369, 14354), (14354, 14338), (3240, 14365), (14365, 14350), (14350, 14334)]   # owner, Oct 23: thin lines too
+THIN_EXTRA = [(2819, 2818)]                                 # owner, Oct 23: 2819 south through its 7 spacer rooms (19858-19854, not placed) to 2818 (Coral Depths, on the map): straight
 SPRITES = ('trees', 'tufts', 'hills', 'thorns', 'brush', 'boulders', 'crags', 'reeds', 'wheattufts', 'peaks')
 
 
@@ -63,7 +65,7 @@ def _line(ch, pos, sigma=0.8, start=None, end=None):
     p = [[pos[v][0], pos[v][1]] for v in ch]
     if start: p[0] = list(start)
     if end: p[-1] = list(end)
-    if len(p) >= 4:
+    if len(p) >= 4 and sigma:
         xs = ndi.gaussian_filter1d(np.array([q[0] for q in p]), sigma, mode='nearest'); ys = ndi.gaussian_filter1d(np.array([q[1] for q in p]), sigma, mode='nearest')
         q = [[float(a), float(b)] for a, b in zip(xs, ys)]; q[0] = p[0]; q[-1] = p[-1]; p = q
     return [[round(a, 2), round(b, 2)] for a, b in p]
@@ -162,7 +164,9 @@ def apply(town, wild, pos):
         while void(cur) and len(G1[cur]) == 2 and k < 50:
             nx = [q for q in G1[cur] if q != prev][0]; prev, cur = cur, nx; k += 1
         return cur
-    thin = {k for k in redo if nameof(end(k[0], k[1])) in BEACH or nameof(end(k[1], k[0])) in BEACH}
+    own = {(min(a, b), max(a, b)) for a, b in OWNER_THIN}
+    assert own <= redo, sorted(own - redo)
+    thin = {k for k in redo if nameof(end(k[0], k[1])) in BEACH or nameof(end(k[1], k[0])) in BEACH} | own
     dirt = redo - thin
     def sub(es):
         G = defaultdict(set)
@@ -172,11 +176,12 @@ def apply(town, wild, pos):
     new_dirt = []
     for ch in _chains(Gd, pin):
         s = kept_pt.get(ch[0]) if ch[0] not in moved else None; e = kept_pt.get(ch[-1]) if ch[-1] not in moved else None
-        new_dirt.append(_line(ch, p1, start=s, end=e))
+        new_dirt.append(_line(ch, p1, sigma=0, start=s, end=e))          # straight room to room (owner, Oct 23: follow the real exits)
     Gt = sub(thin); new_thin = []
     for ch in _chains(Gt, set()):
         pts = [tuple(kept_pt[v]) if (v not in moved and v in kept_pt) else p1[v] for v in ch]
         new_thin.append(_wave(pts))
+    for a, b in THIN_EXTRA: new_thin.append(_wave([p1[a], tuple(pos[str(b)][:2])]))
     # the old trails: untouched ones stay where they are; the cut ones are replaced by their kept runs
     drop = {idx[id(c)] for c in old_ch if id(c) not in untouched}
     wild['fwtracks'] = [l for i, l in enumerate(F) if i not in drop] + [l for l in keep_lines if l] + new_dirt
