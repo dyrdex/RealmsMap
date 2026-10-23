@@ -1,7 +1,7 @@
 """A wide old-map frame round the sea (owner, Oct 23): the map's canvas grows by FW rooms on every side and the template draws the frame there
 (template FRAME). It follows the sea's oval (owner: the sea's outer ring is the box `frame.box`, which ring() draws as four curves through its
-sides' midpoints) and is hand-inked (owner: no modern graphics; cartoon / pen-drawn): a looped rope, woven vines with outlined leaves,
-tendrils and berries, a hatched edge; compass roses in the open corners, anchors on cartouches mid-side. Nothing inside the old frame moves."""
+sides' midpoints) and is drawn in pen and ink as the owner's two examples (Oct 23): two gnarled tree trunks for the sides, branches and vines
+weaving round them and braiding at the top and bottom, twigs with small leaves, roots. Nothing inside the old frame moves."""
 
 FW = 14
 
