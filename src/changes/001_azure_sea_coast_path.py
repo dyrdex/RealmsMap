@@ -8,7 +8,7 @@ mainland; near Ocean Keep the on-land stream may change.
     exit as the secondary water path (type C, `olharborways`, as applied/v2.9/003), ending exactly on the primary line where it meets it;
   - the small dashed links to the mainland (`seadash`) follow their moved path room (the mainland end stays);
   - the name 'Azure Sea Coastal Path' moves beside the new path (LABEL; same size and style);
-  - deathtrap 14279 (DEATHTRAPS): the primary route goes round it, the room gets a dark red X;
+  - deathtrap 14279 (DEATHTRAPS): the primary route goes round it, the room gets a dark red skull and crossbones;
   - the stream by Ocean Keep: sprites within CLEAR of its new line cleared (as az_merge did; owner allowed changes there);
   - land, sea, cliffs and every other mainland drawing untouched."""
 import json, math, os
@@ -24,7 +24,7 @@ PRIMARY = [14257, 14293, 14259, 14295, 14261, 14262, 14263, 14264, 14265, 14266,
            14275, 14276, 14277, 14278, 14280, 14281, 14282, 14283, 14284, 14285, 14286, 14323, 14322, 14321, 14319, 14318, 14313, 14315, 4317]
                                                     # the primary water route (owner, Oct 23: the chain's western-most rooms, Ocean Keep to 4317;
                                                     #   round the deathtrap through 14280, owner Oct 23)
-DEATHTRAPS = [14279]                                # 'Death on the Rocks' (owner, Oct 23: instant death): a dark red X (`deathtraps`, template DEATHX)
+DEATHTRAPS = [14279]                                # 'Death on the Rocks' (owner, Oct 23: instant death): a dark red skull and crossbones (`deathtraps`, template SKULL; was an X)
 STANDARD = [[22557, 14314, 4317], [4317, 5749, 5966, 5967, 5968, 15604, 5969, 5970, 7746]]
                                                     # the standard water paths that were already there (to 4316, to Edo): redrawn when a room on them moves
 HWAVE_A, HWAVE_L = 0.05, 1.6                        # the secondary water path (type C, `olharborways`): applied/v2.9/003's wave
@@ -139,8 +139,8 @@ def apply(town, wild, pos):
     was = list(tag[0])
     if LABEL: tag[0][0], tag[0][1], tag[0][4] = LABEL
 
-    # ---- deathtraps: a dark red X on the room (its links stay secondary paths) ----
-    wild['deathtraps'] = list(wild.get('deathtraps') or []) + [[round(P1[v][0], 3), round(P1[v][1], 3), 0.42] for v in DEATHTRAPS]
+    # ---- deathtraps: a dark red skull and crossbones on the room (its links stay secondary paths) ----
+    wild['deathtraps'] = list(wild.get('deathtraps') or []) + [[round(P1[v][0], 3), round(P1[v][1], 3), 0.6] for v in DEATHTRAPS]
 
     # ---- traced routes (place cards) through a moved room follow it ----
     nr = 0
