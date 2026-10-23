@@ -9,7 +9,7 @@ from collections import defaultdict
 from shapely.geometry import LineString, Point
 from shapely.ops import unary_union, nearest_points
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 SHOWN = [6836, 6940, 6990, 6991, 6992, 6993, 6994, 7008, 7009, 7012, 7016, 7257, 7258, 7259,
          6958, 6959, 6960, 6961, 6962, 6963]                 # (save of Oct 23 21:17Z: the way to Dae'Clya)
 MOVED = [6880, 6940, 7008, 7009, 7016]

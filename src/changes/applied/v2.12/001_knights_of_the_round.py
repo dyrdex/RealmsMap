@@ -14,7 +14,7 @@ from collections import defaultdict
 from shapely.geometry import LineString, Point
 from shapely.ops import unary_union
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 NEW_AREAS = ('BS', 'KR')
 TOP, BOTTOM = 5639, 11745                       # the way down
 ROUND_D = 0.3                                   # the trails' bends rounded over the last 0.3 rooms either side

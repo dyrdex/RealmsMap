@@ -8,7 +8,7 @@ rooms' old spots follow them."""
 import json, math, os, sys
 from collections import defaultdict
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 sys.path.insert(0, LEG)
 from ntr_merge import _chains, _nearest_on, _samples                     # noqa: E402
 from scipy.spatial import cKDTree                                         # noqa: E402

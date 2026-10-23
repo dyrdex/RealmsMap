@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress (2.12)
+## Version 2.12 · The Knights of the Round · October 23, 2026
 
 - Your Barren Peaks save (Oct 23, 21:17): the way to Dae'Clya is drawn: Glowing Walls 6958, Waist-High Sludge 6959, A Small Resting Spot 6960, Crystal Stalagmites 6961, Before a Green Cavern 6962 and The Cavern of Dae'Clya 6963 (6 dirt trails, from the trail at A Darkened Canyon 6957).
 - Your Barren Peaks save (Oct 23, 21:08): the 14 rooms you showed are drawn (The Long Fall, Chaotic Death, the Dragon's Lair and its four rooms, The Lost Mind, The Hand of Death, The End, A Sharp Drop to Your Death, The Scavenger Circles, A Thin Canyon, The Dark Cave), their 13 exits as dirt trails (6939 up to Chaotic Death is an up/down exit: not drawn); 6940, 7008, 7009, 7016 where you moved them.
