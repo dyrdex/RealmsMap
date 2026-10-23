@@ -937,18 +937,18 @@ document.getElementById('lanes').innerHTML=ln;
       <circle cx="1.2" cy="-.84" r=".07" fill="#E6E0D0"/><path d="M1.1 -.71 L1.3 -.75 M1.1 -.75 L1.3 -.71" stroke="#E6E0D0" stroke-width=".025"/>
       <line x1="-.95" y1="-.1" x2="-1.2" y2="-.1" stroke="#3E3022" stroke-width=".04"/><path d="M-1.24 -.1V.12H-1.0V-.1" fill="#7C5E3E" stroke="#14110D" stroke-width=".02"/>
       <ellipse cx="-1.02" cy=".8" rx=".13" ry=".15" fill="#6B5334" ${L}/><ellipse cx=".86" cy=".82" rx=".12" ry=".13" fill="#6B5334" ${L}/>`;   /* The Old Angel Inn: a weathered pirate tavern, Jolly Roger on its pole (Angel's Landing, owner Oct 16) */
-  SPRITE.camelot=()=>{const ST='#9C968A',SD='#77715F',SL='#B4AE9F',D='#14110D',RF='#3F5A7E',RH='#5A7AA0',GO='#C9A640',RE='#A8322B',WN='#E8B04A';   /* CAMELOT (owner, Oct 23): the legendary castle, front view: curtain wall, gatehouse, corner towers, a great keep with the tallest spire, pennants */
+  SPRITE.camelot=()=>{const ST='#6F6B62',SD='#4F4B43',SL='#7A766B',D='#14110D',RF='#434A54',RH='#545B64',GO='#857549',RE='#6A3A33',WN='#7A6440',MS='#4C5A3E';   /* CAMELOT (owner, Oct 23): the legendary castle, front view: curtain wall, gatehouse, corner towers, a great keep with the tallest spire, pennants; old, dull and weathered (owner, Oct 23) */
     let s=`<ellipse cx="0" cy="2.55" rx="2.15" ry=".11" fill="#000" opacity=".28"/>`;
     const cren=(x0,x1,y,n,f=ST)=>{let o='';const cw=(x1-x0)/(2*n-1);for(let i=0;i<n;i++)o+=`<rect x="${(x0+2*i*cw).toFixed(3)}" y="${(y-.13).toFixed(3)}" width="${cw.toFixed(3)}" height=".14" fill="${f}" stroke="${D}" stroke-width=".022"/>`;return o};
     const tower=(cx,w,y0,y1,rh,f=ST,flag=GO)=>{const x0=cx-w/2;let o=`<rect x="${x0.toFixed(3)}" y="${y0}" width="${w}" height="${(y1-y0).toFixed(3)}" fill="${f}" stroke="${D}" stroke-width=".035"/>`
       +`<rect x="${(x0+w*.62).toFixed(3)}" y="${y0}" width="${(w*.38).toFixed(3)}" height="${(y1-y0).toFixed(3)}" fill="${SD}" opacity=".55"/>`
       +`<path d="M${(x0-.06).toFixed(3)} ${y0} L${cx.toFixed(3)} ${(y0-rh).toFixed(3)} L${(x0+w+.06).toFixed(3)} ${y0}Z" fill="${RF}" stroke="${D}" stroke-width=".035" stroke-linejoin="round"/>`
-      +`<path d="M${(x0+.04).toFixed(3)} ${(y0-.02).toFixed(3)} L${cx.toFixed(3)} ${(y0-rh+.06).toFixed(3)}" stroke="${RH}" stroke-width=".05" opacity=".7"/>`
+      +`<path d="M${(x0+.04).toFixed(3)} ${(y0-.02).toFixed(3)} L${cx.toFixed(3)} ${(y0-rh+.06).toFixed(3)}" stroke="${RH}" stroke-width=".05" opacity=".35"/>`
       +`<line x1="${cx.toFixed(3)}" y1="${(y0-rh).toFixed(3)}" x2="${cx.toFixed(3)}" y2="${(y0-rh-.22).toFixed(3)}" stroke="${D}" stroke-width=".025"/>`
       +`<path d="M${cx.toFixed(3)} ${(y0-rh-.22).toFixed(3)} L${(cx+.28).toFixed(3)} ${(y0-rh-.17).toFixed(3)} L${(cx+.2).toFixed(3)} ${(y0-rh-.13).toFixed(3)} L${(cx+.3).toFixed(3)} ${(y0-rh-.08).toFixed(3)} L${cx.toFixed(3)} ${(y0-rh-.1).toFixed(3)}Z" fill="${flag}" stroke="${D}" stroke-width=".015"/>`;
       for(let y=y0+.35;y<y1-.25;y+=.38)o+=`<path d="M${x0.toFixed(3)} ${y.toFixed(3)}H${(x0+w).toFixed(3)}" stroke="${D}" stroke-width=".012" opacity=".35"/>`;
       return o};
-    const win=(x,y,lit)=>`<path d="M${(x-.05).toFixed(3)} ${(y+.14).toFixed(3)} V${y.toFixed(3)} A.05 .05 0 0 1 ${(x+.05).toFixed(3)} ${y.toFixed(3)} V${(y+.14).toFixed(3)}Z" fill="${lit?WN:'#2A241B'}" stroke="${D}" stroke-width=".012"/>`;
+    const win=(x,y,lit)=>`<path d="M${(x-.05).toFixed(3)} ${(y+.14).toFixed(3)} V${y.toFixed(3)} A.05 .05 0 0 1 ${(x+.05).toFixed(3)} ${y.toFixed(3)} V${(y+.14).toFixed(3)}Z" fill="${lit?WN:'#221D16'}" opacity="${lit?.75:1}" stroke="${D}" stroke-width=".012"/>`;
     s+=tower(-.85,.42,-.55,1.2,.75)+tower(.85,.42,-.55,1.2,.75,ST,RE);                                   /* the two back towers */
     s+=`<rect x="-.55" y="-1.15" width="1.1" height="2.4" fill="${ST}" stroke="${D}" stroke-width=".04"/><rect x=".2" y="-1.15" width=".35" height="2.4" fill="${SD}" opacity=".55"/>`+cren(-.55,.55,-1.15,4);   /* the great keep */
     s+=tower(0,.36,-1.52,-1.15,.92,SL,GO).replace(/<rect x="[^"]*" y="-1.52"[^>]*opacity=".55"\/>/,'')+win(-.25,-.8,1)+win(.25,-.8,0)+win(0,-.35,1);   /* its spire: the highest point */
@@ -961,6 +961,11 @@ document.getElementById('lanes').innerHTML=ln;
     for(const x of [-.15,-.05,.05,.15])s+=`<line x1="${x}" y1="${x*x<.01?1.69:1.75}" x2="${x}" y2="2.5" stroke="#5A5040" stroke-width=".022"/>`;   /* the portcullis */
     for(const y of [1.9,2.1,2.3])s+=`<line x1="-.24" y1="${y}" x2=".24" y2="${y}" stroke="#5A5040" stroke-width=".022"/>`;
     s+=`<path d="M-.14 .92 h.28 v.42 h-.28Z" fill="${RE}" stroke="${D}" stroke-width=".015"/><path d="M-.14 1.34 L0 1.46 L.14 1.34" fill="${RE}" stroke="${D}" stroke-width=".015"/><circle cx="0" cy="1.1" r=".06" fill="${GO}"/>`;   /* a banner over the gate */
+    const crack=(x,y,k)=>`<path d="M${x} ${y} l${(.05*k).toFixed(3)} .12 l-.07 .1 l.05 .14 l-.04 .09" fill="none" stroke="${D}" stroke-width=".018" opacity=".6"/>`;   /* age: cracks, grime, moss, a broken merlon */
+    s+=crack(-1.3,1.15,1)+crack(.9,1.5,-1)+crack(-.3,-.6,1)+crack(1.65,.25,-1)+crack(-1.9,1.6,1);
+    s+=`<rect x="-1.75" y="2.2" width="3.5" height=".35" fill="#000" opacity=".18"/><rect x="-.55" y="1.0" width="1.1" height=".25" fill="#000" opacity=".12"/>`;
+    for(const [x,y,r] of [[-1.5,2.45,.22],[-.8,2.5,.16],[.7,2.47,.2],[1.35,2.5,.17],[-2.0,2.42,.14],[1.95,2.4,.15],[-.42,-1.1,.08],[.4,.9,.09]])s+=`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${(r*.45).toFixed(3)}" fill="${MS}" opacity=".45"/>`;
+    s+=`<rect x="1.115" y=".81" width=".13" height=".15" fill="${D}" opacity=".9"/><rect x="-1.38" y=".81" width=".13" height=".15" fill="${D}" opacity=".9"/>`;
     return s};
   SPRITE.gatetower=()=>{const ST='#8D8776',SD='#6F6A5C',D='#14110D',W='#6E5440';let s=`<ellipse cx="0" cy="1.78" rx="1.9" ry=".08" fill="#000" opacity=".25"/>`;
     const cren=(x0,x1,y,n)=>{let o='';const cw=(x1-x0)/(2*n-1);for(let i=0;i<n;i++)o+=`<rect x="${(x0+2*i*cw).toFixed(3)}" y="${(y-.14).toFixed(3)}" width="${cw.toFixed(3)}" height=".15" fill="${ST}" stroke="${D}" stroke-width=".025"/>`;return o};

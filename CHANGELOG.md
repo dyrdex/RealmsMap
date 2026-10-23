@@ -2,6 +2,10 @@
 
 ## In progress (2.12)
 
+- Your save (Oct 23, 19:33): the 18 Knights of the Round rooms you showed (Grasping through Treacherous Darkness, the Worn Village of Eg'Vane, the River Camlarr, A Gateway near the Shore and their spacer rooms) are drawn; their 19 exits are thin dashed lines in the trails' colour. Their two long one-way links (21066 to 14082, 12.5 rooms; 21067 to 11741, 8.7 rooms) are left off, as you asked.
+- Your request (Oct 23): the path from The Blackened Roadway 11740 south through the Blackened Streets of Cadbury to 14070 is a thin dashed line too (8 exits).
+- Your request (Oct 23): The Wild Woodland (14072-14076) is marked as a maze: a Forgotten Woods maze blob over its rooms, reaching about 1.9 rooms east of them for its small label ('The Wild / Woodland', size .34). Into the Wild Woodland 14071, the way in, stays just outside it.
+- Your request (Oct 23): Camelot looks older and duller: darker, greyer stone, faded slate roofs, tarnished pennants, dim windows, cracks, grime and moss along the foot of the walls, two broken merlons.
 - Your request (Oct 23): Camelot, the castle of the Knights of the Round, drawn on Camelot's Grand Entryway 14084 in the map's old front-view style: a curtain wall with its gatehouse (portcullis and a red banner), corner and wall towers, two back towers and a great keep whose spire is the highest point, slate-blue roofs and gold and red pennants. 4.2 rooms wide; the top at y -55, the gate at the room. 18 trees and 1 tuft under it removed.
 - Your request (Oct 23): a wooden dock on the Royal Jetty of Camelot 21075: from the shore through the room and 1 room on to the south-west into the bay (1.54 rooms long; the dock alone, no shack).
 - Your request (Oct 23): the bay's south shore now runs parallel to the long trail from the Forest of Tears, 2.2-2.3 rooms from it, and eases gently back west to the old coast (the bay is now 188 square rooms; 115 trees and 15 tufts in it removed). The thin line where the old coast met the bay is gone: the bay and the sea are one water shape now.
