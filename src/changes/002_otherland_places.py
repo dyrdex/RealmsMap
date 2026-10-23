@@ -1,8 +1,10 @@
 """Owner, Oct 22: sub-area markers for Otherland, each with two routes on its card (owner, Oct 23): South (the default, drawn when picked) and North,
 in the owner's words and room counts. Traced from Darkhaven Square; drawn over the drawn rooms (rooms not on the map skipped), the marker where the
 route leaves the drawn rooms (gotcha 3; both routes leave at the same room). North goes down into the Blood Sea in the far north and comes up off
-Otherland: its line is drawn in two pieces, broken there (as Dobra's). Valley of Crucifixion and The Ziggurat both leave at 13271 heading s (into
-hidden rooms): their markers side by side just south of it."""
+Otherland: its line is drawn in two pieces, broken there (as Dobra's).
+Owner, Oct 23 (save 00:19Z): the hidden Blood Sea rooms 13072 and 15259 get their saved spots for the route tracer only (`track` cx..., never drawn);
+the links down to them from 5967 / 5970 have no path, so the North line breaks just before them."""
+import json, os
 import maplib
 
 R = lambda q: [round(q[0], 3), round(q[1], 3)]
@@ -14,13 +16,18 @@ PLACES = {   # name: [(option, rooms (owner's count), directions)], the default 
     'Valley of Crucifixion': [('South', 58, S0 + 'w;nw;sw;w;s;e'), ('North', 53, N0 + 'd;se;e;nw;nw;u;w;nw;e;s;e')],
     'Cursed Lands': [('South', 71, S0 + 'e;se;se;se;se;sw;sw;sw;sw;sw;sw;w;w;nw;nw;ne;e;nw;n'), ('North', 52, N0 + 'n;n;n;d;nw;nw;ne;e;nw;n')],
 }
-AT = {'The Ziggurat': (66.6, 177.65), 'Valley of Crucifixion': (67.4, 177.65)}   # (0.8 apart, 0.81 from 13271)
+ROUTE_ONLY = [13072, 15259]                                                           # (hidden in the editor; the line breaks before them)
+AT = {}
+LEG = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'legacy')
 WHERE = 'off Otherland'
 GAP = 'This route goes down into the Blood Sea in the far north and comes up among the icebergs off Otherland, so the drawn line breaks there.'
 
 
 def apply(town, wild, pos):
     rooms, exits = maplib.world()
+    S = json.load(open(os.path.join(LEG, 'ol_layout_final.json'))); P = dict(zip(S['ids'], zip(S['xs'], S['ys'])))
+    for v in ROUTE_ONLY:
+        assert v in S['hidden'] and str(v) not in pos; wild['track']['cx%d' % v] = [P[v][0], P[v][1]]
     walk, at = maplib.tracer(pos, wild)
     rep = {}
     for name, routes in PLACES.items():
@@ -30,12 +37,11 @@ def apply(town, wild, pos):
             route = maplib.condense(raw); t = walk(route)
             assert len(t) > 1 and rooms[t[-1]]['area'] not in ('', 'Otherland'), (name, d, t[-1])   # (it reaches the sub-area itself)
             last = max(i for i, v in enumerate(t) if at(v))
-            out = next(e['name'] for e in exits[t[last]] if e['to'] == t[last + 1])
+            out = next(e['name'] for e in exits[t[last]] if e['to'] == t[last + 1]) if last + 1 < len(t) else 'here'
             segs = [[]]
             for v in t[:last + 1]:
-                if not at(v):
-                    if rooms[v]['area'] == 'The Blood Sea': segs.append([])
-                    continue
+                if v in ROUTE_ONLY and segs[-1]: segs.append([])
+                if not at(v): continue
                 q = R(at(v))
                 if not segs[-1] or segs[-1][-1] != q: segs[-1].append(q)
             opts.append(dict(dir=d, rooms=n, note=None, route=route, segs=segs, gap=GAP if len(segs) > 1 else None))

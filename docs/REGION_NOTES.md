@@ -156,6 +156,9 @@ The other builders run inside `src/legacy`.
   Editor rooms added Oct 23 (grp 'sa', `tools/otherland_editor/add_sub_areas.py`): 13285, 13282, 13283, 13284, 15749 shown (to arrange; not drawn until saved);
   13072, 15259 HIDDEN (`hidden0`: kept hidden when a save doesn't list them), route-only: give them map spots for the tracer (not drawn), and NO line
   5967 -> 13072 / 5970 -> 15259 (the North routes' break stays there; owner).
+  Save Oct 23 00:19Z drawn (rebase). The legacy rebuild reshuffles Otherland's plants/drifts/floes everywhere: `changes/003_otherland_keep_sprites.py`
+  restores them from `legacy/ol_keep_oct23.json` outside the save's changed area (do the same after any new Otherland save). New editor rooms must be
+  added to `legacy/ol_editor_edges.json` (else v2.6/001 treats them as Azure Sea rooms). 13072/15259: `track` cx spots (002), never drawn.
   Winterlight Island re-fitted (owner, Oct 22, `changes/001_winterlight_island.py`): a smooth irregular blob (oval + low harmonics, rounded end at 9842), the biggest 0.9 clear of the paths; fit kept in `FIT` (`REFIT=1` re-searches, ~30 s).
   Cramped Tunnel rooms (+ those leading only to them): `oltunnels`, drawn as JUST a thin dashed line (owner, Oct 22, after rejecting
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
