@@ -18,7 +18,7 @@ from scipy import ndimage as ndi
 from shapely.geometry import Polygon, box, Point, LineString
 from shapely.ops import unary_union
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 BEACH = {'The Beach along the Ashen Forest', 'Miles and Miles of Sand Dunes', 'Wading into the Surf'}
 CLEAR_ROOMS = [3201, 3202, 3205, 3206]
 CLEAR_FILL, CLEAR_EDGE = '#484C43', '#2A2D27'              # the Ashen Forest's other clearings

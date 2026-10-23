@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## Version 2.10 (in progress)
+## Version 2.10 · The Ashen Shore · October 23, 2026
 
 - Your request (Oct 23), Ashen Forest far east beach: the shoreline's corners are rounded (smoothed over about 1.2 rooms; no turn sharper than 35 degrees left, there were three, up to 98). At the south end the right-angled corner where the coast stepped back to the cliff is cut off: the shore now curves from the beach (x 67.5 at y 8) back to the old coast at y 13.4, where the sea meets the cliff as before; 4.9 square rooms of land were cut there (no trees, tints or trails on it). Every shown room is still at least 0.8 rooms from the water; the cliff room 2815 is now 0.5 from it.
 - Your request (Oct 23), Ashen Forest far east beach: the shoreline is smooth now, with no small sea inlets between the rooms (12 before, none now). It follows the farthest beach room within 4 rooms north and south, about 1 room past it (x 67.4 to 71.1), and at both ends runs straight from the old coast's nearest point, so no notch is left there either. 270.8 square rooms of beach sand in all (was 228.8); no land was cut; every shown room is at least 0.9 rooms from the water.
