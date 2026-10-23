@@ -81,6 +81,16 @@ The other builders run inside `src/legacy`.
   Drawn by `changes/applied/v2.10/001_ashen_east_beach.py` from `legacy/ashen_layout_oct23.json` + `legacy/ashen_editor_edges_oct23.json` (the legacy files stay as they were, so a legacy redraw doesn't re-roll the forest): only moved/new rooms change, unmoved trails kept point for point; Outskirts links dirt trails, links to/among Beach/Dunes/Surf rooms thin land-coloured lines (`ashbeachways`, template ASHBEACH); sea only pushed east (land added, never cut), the added land is sand; a smooth coast, no inlets between rooms (owner, Oct 23: `SMOOTH_W` 4 rooms, ends eased from the old coast's farthest point; the line smoothed along its length, `ROUND_COAST` 1.2; the south end's right-angled corner cut off, `SOUTH` y 9 to 13.4: the only land cut). Redrawn trails straight room to room (no smoothing: it skewed them off the exits), each inner room flanked by points 0.3 before/after (`_soft`) so the shared template `curve()` only rounds the bends slightly (owner, Oct 23; per line, never change `curve()`: it draws every trail); owner's extra thin links in `OWNER_THIN`, `THIN_EXTRA` (2819-2818).
   3245 and 14360 belong to the Coral Depths editor (`fix_cd_rooms.py`): fixed in the Ashen editor (CD) at the Coral Depths save's spots; when drawing an Ashen save, never take a fixed room's spot from it.
 - **Azure Sea Coast**: the owner's name for the 49-room Azure Sea pathway; a blue water route at the foot of the cliff.
+  Oct 23 (`tools/azure_sea_editor/add_coast_rooms.py`, run once on the built editor): grp 'ad', the 26 unmapped Azure Sea rooms/spacers joined to the
+  path (864, 865, 5965, 14288, 14290-14291, 14296-14310, 14316-14317, 14320, 14324-14325), starting spots `editor_spread.spread` from the save.
+  Drawn from the save of Oct 23 16:48Z (`legacy/az_layout_oct23.json` + `az_editor_edges_oct23.json`; the legacy final files stay, so a
+  legacy redraw doesn't change; `changes/applied/v2.11/001_azure_sea_coast_path.py`): only the path's lines (`seawaysfaint`), its `seadash` ends, its seatag and
+  the Ocean Keep stream's sprites change (owner, Oct 23: never the mainland; ask first). Lines straight room to room + warpline; unmoved
+  lines (4317-14314-22557, 4317-Edo) kept, new lines end on them.
+  Primary water route (owner, Oct 23) = `PRIMARY` in that change (the chain's western-most rooms, 14257 .. 4317), standard water path; every other
+  exit = the **secondary water path** (owner's name, Oct 23, for type C / `olharborways`, the Harbor of Icebergs style), ends on the primary line.
+  Deathtrap 14279 'Death on the Rocks' (owner, Oct 23; the owner said 12479, a World of Quests room): `DEATHTRAPS`, dark red skull and crossbones (`deathtraps`, template SKULL; size g[2] .6 = 1.3 rooms); the primary route goes round it (14278-14280-14281), never through.
+  Save of Oct 23 17:11Z moved 4317/5749/5966: the old standard lines to 4316 and to Edo are redrawn (`STANDARD`), place routes through moved rooms follow.
 - **Forest of Tears**: Fog Cliffs mountains reach 2 rooms east of the cliff path (Oct 19, so the Tree of Life is in the forest).
 - **Miden'nir**: the painting (Black Forest, brambles, Mount Doom) stays; the tunnels under Mount Doom are left out; Forest rooms
   are faint wavy dashed trails, 1049-1051/1060 regular paths.
