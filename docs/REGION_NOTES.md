@@ -59,6 +59,7 @@ The other builders run inside `src/legacy`.
   Coral Depths marker (owner, Oct 20; `changes/005`): no land between cliff and sea there.
 - **Desert of Despair terrain** (owner, Oct 20; `changes/007`, `wild.ddsand`, template DDSAND, over geo.sand 16): grain + wind texture,
   ripple fields, dunes, dry lake beds, rocks, scrub, very few cacti; its own look, not the Wastelands' (no grass tufts or crags).
+- **Sea everywhere** (owner, Oct 23; `changes/008`): all open background inside `bounds` is sea, merged into `geo.water` (one shape, rings even-odd). New land drawn later must cut the sea (and redo its rings).
 - **Standard water path** (owner, Oct 23): every water path but type C has Otherland's trail bend (`maplib.warpline`, one field for the whole map; `changes/006` bends all B routes and the currents; `005` the Ocean Keep stream made B, `streams` now empty; draw new non-C paths with it). Ends of trails/C/dashed links meeting a B route sit on the bent line.
 - **Water route styles** (owner, Oct 23): no solid routes (type A, `seaways`) any more: primary = `seawaysfaint` (B), secondary = `olharborways` (C). `changes/001` moves all `seaways` into `seawaysfaint`; new water routes go straight into B or C. Desert of Despair east coast: primary path 12984-12993, 15098, 15108, 15097, 6300 is B (`changes/002`, bent by 005); its other routes (links to the coastline/land) are C (`changes/003`; `seawaves` now empty map-wide). Coral Depths: primary 669-6286-6287-12597-12598-12956-12982-12983-12984 B, its 5 land links C (`changes/004`); 12598-12599, 669-1494-1495 and 2525-2531 stay B (owner, Oct 23). Sea of Sorrows currents: thinner, opacity .4 (template SEACUR).
 - **Paths meeting a water route** end exactly on its line, never past it (Oct 19).
@@ -167,7 +168,7 @@ The other builders run inside `src/legacy`.
   Winterlight Island re-fitted (owner, Oct 22, `changes/001_winterlight_island.py`): a smooth irregular blob (oval + low harmonics, rounded end at 9842), the biggest 0.9 clear of the paths; fit kept in `FIT` (`REFIT=1` re-searches, ~30 s).
   Cramped Tunnel rooms (+ those leading only to them): `oltunnels`, drawn as JUST a thin dashed line (owner, Oct 22, after rejecting
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
-  Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; west edge one smooth concave curve, no juts; owner Oct 22), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
+  Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; west side an irregular round bulge out to the NW, not flat: owner Oct 23, `changes/007`), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
   South of 6143 (FILL_S; 6147, 6148 as land): regular land, no beach, no inlet (owner, Oct 22).
   Saves from Oct 22 18:39Z on keep the west/south 3 east: applied/v2.4/001's hand-set west shapes (WBOX, HARBOR, SBOX west edge, FILL_S, FILL1's
   harbour pieces, NBOX's west box) are translated by `WS = 3.0` (and 006's SBOX). A new save that moves them again: move these with it.
