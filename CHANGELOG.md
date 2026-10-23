@@ -2,6 +2,7 @@
 
 ## In progress (2.9)
 
+- Your request (Oct 23): all the other water routes on the Desert of Despair east coast, the 27 that link the primary path to the coastline rooms and the land, are drawn as type C, like the Harbor of Icebergs' routes: thin and nearly transparent, with its slight wave (266 rooms of route in all). They start and end at the same rooms as before. The primary path is unchanged. No routes in the old faint wavy style are left anywhere on the map.
 - Your request (Oct 23): the Desert of Despair east coast's primary water path is drawn in the standard water path style (type B): the sea rooms from 12984, where the Coral Depths path arrives, south along the coast to 12993, then 15098, 15108, 15097 and 6300 at the south end (13 stretches, 127 rooms long). It has no regular wave now; it has the same slight, uneven bend as Otherland's trails (it drifts up to 0.16 rooms off the straight line, changing gently over about 7 rooms). The 27 routes from these rooms to the coastline rooms and the land stay as they were; their ends still touch the path.
 - Your request (Oct 23): every solid dark-blue water route (type A) is now drawn as the softer semi-transparent kind (type B), map-wide: 20 lines, 150 points, same paths. 12 are round Coral Depths and the Azure Sea next to it, 4 on the Wasted Shores of Ahtborne (Wastelands), and 4 in the far north (Azure Sea by the Village of Edo). Nothing else changed.
 
