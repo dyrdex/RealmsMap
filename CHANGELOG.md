@@ -3,6 +3,7 @@
 ## Version 2.10 (in progress)
 
 - Your request (Oct 23): the Ashen Forest layout editor now holds the 65 Azure Sea rooms joined to the beach (14 The Beach along the Ashen Forest, 6 Miles and Miles of Sand Dunes, 4 Wading into the Surf, 1 unnamed, 40 spacer rooms; 10 dead-end spacer rooms left off), with a sea-green outline and a "Select the Azure Sea beach rooms" button. Each starts one step east (or west) of the room it joins by its east/west exit, at the same height; its other exits are ignored for the starting spot. Nothing on the map changes until you place them and save.
+- Your request (Oct 23): in the Ashen Forest layout editor, The Outskirts of the Forest 3245 and the spacer room 14360 are fixed rooms now (orange diamond, labelled CD), at exactly their Coral Depths editor spots (60.9, 10.58 and 61.56, 10.57), so saving the Ashen editor can't move them; your earlier Ashen save, which had 14360 at 66.3, 10.58, no longer moves it.
 
 ## Version 2.9 · Open Seas · October 23, 2026
 
