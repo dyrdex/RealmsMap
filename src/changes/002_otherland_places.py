@@ -1,29 +1,50 @@
-"""Owner, Oct 22: sub-area markers for Otherland, with the owner's directions (data.py, condensed), traced from Darkhaven Square; each route drawn
-in one piece over the drawn rooms (rooms not on the map skipped), its marker where the route leaves the drawn rooms (gotcha 3).
-Valley of Crucifixion and The Ziggurat both leave at 13271 heading s (into hidden rooms): their markers side by side just south of it."""
-import maplib, data
+"""Owner, Oct 22: sub-area markers for Otherland, each with two routes on its card (owner, Oct 23): South (the default, drawn when picked) and North,
+in the owner's words and room counts. Traced from Darkhaven Square; drawn over the drawn rooms (rooms not on the map skipped), the marker where the
+route leaves the drawn rooms (gotcha 3; both routes leave at the same room). North goes down into the Blood Sea in the far north and comes up off
+Otherland: its line is drawn in two pieces, broken there (as Dobra's). Valley of Crucifixion and The Ziggurat both leave at 13271 heading s (into
+hidden rooms): their markers side by side just south of it."""
+import maplib
 
 R = lambda q: [round(q[0], 3), round(q[1], 3)]
+S0 = 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;se;se;s;sw;s;s;w;sw;s;s;s;s;s;s;s;s;s;s;e;e;se;se;'
+N0 = 'nw;w;w;n;n;n;n;e;look painting;n;nw;n;n;nw;w;nw;nw;w;w;w;nw;nw;sw;sw;w;sw;w;nw;n;n;nw;ne;w;w;w;ne;nw;n;nw;w;nw;n;'
+PLACES = {   # name: [(option, rooms (owner's count), directions)], the default first
+    'Wild Tundra': [('South', 58, S0 + 'e;u;w;nw;s;d'), ('North', 52, N0 + 'd;se;e;nw;nw;u;w;nw;s;d')],
+    'The Ziggurat': [('South', 58, S0 + 'w;nw;sw;w;s;s'), ('North', 53, N0 + 'd;se;e;nw;nw;u;w;nw;e;s;s')],
+    'Valley of Crucifixion': [('South', 58, S0 + 'w;nw;sw;w;s;e'), ('North', 53, N0 + 'd;se;e;nw;nw;u;w;nw;e;s;e')],
+    'Cursed Lands': [('South', 71, S0 + 'e;se;se;se;se;sw;sw;sw;sw;sw;sw;w;w;nw;nw;ne;e;nw;n'), ('North', 52, N0 + 'n;n;n;d;nw;nw;ne;e;nw;n')],
+}
 AT = {'The Ziggurat': (66.6, 177.65), 'Valley of Crucifixion': (67.4, 177.65)}   # (0.8 apart, 0.81 from 13271)
-PLACES = ['Valley of Crucifixion', 'The Ziggurat', 'Wild Tundra']
 WHERE = 'off Otherland'
+GAP = 'This route goes down into the Blood Sea in the far north and comes up among the icebergs off Otherland, so the drawn line breaks there.'
 
 
 def apply(town, wild, pos):
     rooms, exits = maplib.world()
     walk, at = maplib.tracer(pos, wild)
-    routes = dict(l.split('|', 1) for l in data.AREAS.strip().splitlines() if '|' in l)
     rep = {}
-    for name in PLACES:
+    for name, routes in PLACES.items():
         assert not any(p['name'] == name for p in wild['places']), name
-        route = maplib.condense(routes[name].strip().rstrip(';'))
-        t = walk(route)
-        last = max(i for i, v in enumerate(t) if at(v))                                  # the last drawn room: the route leaves the map there
-        out = next(e['name'] for e in exits[t[last]] if e['to'] == t[last + 1]) if last + 1 < len(t) else 'here'
-        seg = [R(at(v)) for v in t[:last + 1] if at(v)]
-        seg = [q for i, q in enumerate(seg) if not i or q != seg[i - 1]]
-        p = dict(name=name, route=route, room=rooms[t[last]]['name'], dir=out, path=seg, segs=[seg], group='af', where=WHERE, note=None)
+        opts, leave = [], set()
+        for d, n, raw in routes:
+            route = maplib.condense(raw); t = walk(route)
+            assert len(t) > 1 and rooms[t[-1]]['area'] not in ('', 'Otherland'), (name, d, t[-1])   # (it reaches the sub-area itself)
+            last = max(i for i, v in enumerate(t) if at(v))
+            out = next(e['name'] for e in exits[t[last]] if e['to'] == t[last + 1])
+            segs = [[]]
+            for v in t[:last + 1]:
+                if not at(v):
+                    if rooms[v]['area'] == 'The Blood Sea': segs.append([])
+                    continue
+                q = R(at(v))
+                if not segs[-1] or segs[-1][-1] != q: segs[-1].append(q)
+            opts.append(dict(dir=d, rooms=n, note=None, route=route, segs=segs, gap=GAP if len(segs) > 1 else None))
+            leave.add((t[last], out)); end = t[-1]
+        assert len(leave) == 1, (name, leave)                                            # (both leave the map at the same room)
+        (v, out), = leave
+        p = dict(name=name, route=opts[0]['route'], room=rooms[v]['name'], dir=out, path=opts[0]['segs'][0], segs=opts[0]['segs'], group='af',
+                 where=WHERE, note=None, opts=opts)
         if name in AT: p['at'] = list(AT[name])
         wild['places'].append(p)
-        rep[name] = dict(end_room=t[-1], leaves_map_at=(t[last], out), marker=p.get('at') or seg[-1], rooms_not_drawn=[v for v in t[:last] if not at(v)])
+        rep[name] = dict(leaves_map_at=(v, out), marker=p.get('at') or p['path'][-1], options=[(o['dir'], o['rooms'], len(o['segs'])) for o in opts])
     return rep

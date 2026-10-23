@@ -27,7 +27,7 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
   After a legacy redraw or a new Otherland save: `BASE_DUMP=<f> NO_TILES=1 python3 legacy/build_legacy.py`, then `python3 legacy/rebase.py <f> base/map.json`.
 - All 15 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get `<key>/current`.
   Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`; Azure Sea rooms via `tools/otherland_editor/add_azure_east.py`.
-- In progress (2.8): `changes/001_winterlight_island.py` (Winterlight Island re-fitted, Oct 22), `002_otherland_places.py` (3 sub-area markers). (2.7's files: `applied/v2.7/` 001 bases, 002 Morte's Peak + shared `build()`, 003 Gods, 004 even cover, 005 east routes, 006 north sea.)
+- In progress (2.8): `changes/001_winterlight_island.py` (Winterlight Island re-fitted, Oct 22), `002_otherland_places.py` (4 sub-area markers, South/North routes). (2.7's files: `applied/v2.7/` 001 bases, 002 Morte's Peak + shared `build()`, 003 Gods, 004 even cover, 005 east routes, 006 north sea.)
 
 ## Snapshots
 - Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.7, the next is 2.8

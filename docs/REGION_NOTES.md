@@ -152,7 +152,8 @@ The other builders run inside `src/legacy`.
   (SBOX: sea, `olsouth` beach + floes, its icebergs in `olharbor.bergs`). Shacks (owner, Oct 22): `wild.olshacks` [cx, cy, w, h] (template OLSHACK), over The Desolate Outpost's main section and
   The Hunter's Outpost 14419. Water path 22530-22531 (`seawaysfaint`). Clearings (owner, Oct 22): ONLY the Tundra Fields (13492's clump); A Tunnel in the Snow / A Cold Lair (13322's clump) is an icy maze
   blob of the same outline, no label.
-  Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Winterlight Island re-fitted (owner, Oct 22, `changes/001_winterlight_island.py`): a smooth irregular blob (oval + low harmonics, rounded end at 9842), the biggest 0.9 clear of the paths; fit kept in `FIT` (`REFIT=1` re-searches, ~30 s).
+  Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Sub-area markers (owner, Oct 23; `changes/002_otherland_places.py`): Wild Tundra, The Ziggurat, Valley of Crucifixion, Cursed Lands; routes South (default) + North (via the Blood Sea wrap: line in 2 pieces), the owner's room counts; routes kept in the change file, not data.py.
+  Winterlight Island re-fitted (owner, Oct 22, `changes/001_winterlight_island.py`): a smooth irregular blob (oval + low harmonics, rounded end at 9842), the biggest 0.9 clear of the paths; fit kept in `FIT` (`REFIT=1` re-searches, ~30 s).
   Cramped Tunnel rooms (+ those leading only to them): `oltunnels`, drawn as JUST a thin dashed line (owner, Oct 22, after rejecting
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
   Over the Cliff Maze (14428-683: sea only, east edge = the coast, never over land or trails; west edge one smooth concave curve, no juts; owner Oct 22), The Maze of Ice (+ Frost Mansion `olmansion`, inside it). The Ledge of Life: `olledge`.
