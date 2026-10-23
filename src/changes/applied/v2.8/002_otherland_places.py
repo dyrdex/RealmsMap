@@ -18,7 +18,7 @@ PLACES = {   # name: [(option, rooms (owner's count), directions)], the default 
 }
 ROUTE_ONLY = [13072, 15259]                                                           # (hidden in the editor; the line breaks before them)
 AT = {}
-LEG = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'legacy')
+LEG = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'legacy')
 WHERE = 'off Otherland'
 GAP = 'This route goes down into the Blood Sea in the far north and comes up among the icebergs off Otherland, so the drawn line breaks there.'
 

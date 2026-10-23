@@ -6,7 +6,7 @@ import json, os
 from shapely.geometry import Polygon, Point
 from shapely.ops import unary_union
 
-LEG = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'legacy')
+LEG = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'legacy')
 
 
 def apply(town, wild, pos):

@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress
+## Version 2.8 · Otherland's Haunts · October 23, 2026
 
 - Your Wastelands save (Oct 23, 01:00): the 4 rooms you placed (18041, The Ahtborne Straights 18039, 18042, 18043) are drawn with faint water routes between them, so The Kirre's, Inishie's, Tirebaen's and Kujrajgi's South routes now follow drawn rooms from 17991 to 18040. The 19 sea rooms you moved (round 12272, 17991-18050) are at their new spots, their water routes with them (3 more routes in all); the Sea of Sorrows marker moved with 12272. The sea is drawn round its rooms, so its west edge would have pulled back by up to 5 rooms with the rooms you moved east; it's kept where it was (32.7 square rooms at x 15-20, y 132-144). Nothing else changed; Winterlight Island still sits 0.9 clear of every path.
 - Your request (Oct 23): the Wastelands layout editor now holds the 4 rooms the mob South routes jump across: 18041, The Ahtborne Straights 18039, 18042 and 18043, between 17991 and 18040. They start on the line between those two rooms, joined in a chain (17991, 18041, 18039, 18042, 18043, 18040). 18039's other exits lead to rooms not on the map and are left off. Nothing on the map changes until you save.
