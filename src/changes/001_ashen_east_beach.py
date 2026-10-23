@@ -22,6 +22,8 @@ HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..'
 BEACH = {'The Beach along the Ashen Forest', 'Miles and Miles of Sand Dunes', 'Wading into the Surf'}
 CLEAR_ROOMS = [3201, 3202, 3205, 3206]
 CLEAR_FILL, CLEAR_EDGE = '#484C43', '#2A2D27'              # the Ashen Forest's other clearings
+SMOOTH_W = 4.0                                              # the coast follows the farthest room within this many rooms (no inlets)
+EASE_R = 3.5                                                # (the old coast's farthest point is looked for this far out)
 SHORE_M, EASE = 1.0, 2.0                                    # the coast this far east of the rooms; eased back into the old coast over EASE rooms
 NUDGES = {2980: (0, -0.5), 19840: (0, -0.5), 19841: (0, -0.5), 19836: (0, -0.5), 19834: (0, -0.5), 2990: (0, -0.5), 2988: (0, -0.5),
           2987: (0, 0.5), 19838: (0, 0.5), 19833: (0, 0.5), 2986: (0, 0.5), 19839: (0, 0.5), 19835: (0, 0.5), 2985: (0, 0.5)}   # legacy visual_nudges
@@ -208,14 +210,19 @@ def apply(town, wild, pos):
     ys = np.arange(min(q[1] for q in show) - 1.0, max(q[1] for q in show) + 1.0 + 1e-9, 0.05)
     raw = np.array([max([x + SHORE_M for x, y in show if abs(y - yy) <= 1.0] or [np.nan]) for yy in ys])
     ok = ~np.isnan(raw); raw = np.interp(ys, ys[ok], raw[ok])
-    raw = ndi.maximum_filter1d(raw, 21); sx = ndi.gaussian_filter1d(raw, 8, mode='nearest')
-    sx = np.maximum(sx, raw - 0.15) + 0.18 * np.sin(1.9 * ys + 0.6) + 0.1 * np.sin(4.1 * ys + 2.0)
+    # a smooth outer edge, no inlets between rooms (owner, Oct 23): the farthest room within SMOOTH_W rooms, smoothed, never inside a room's margin
+    sx = ndi.maximum_filter1d(raw, int(SMOOTH_W / 0.05) + 1)
+    for _ in range(4): sx = ndi.gaussian_filter1d(np.maximum(sx, raw), 20, mode='nearest')
+    sx = np.maximum(sx, raw - 0.1) + 0.12 * np.sin(0.9 * ys + 0.6)
     def coast(y):                                                        # the old coast's x on this row (east edge of the land, x 55-90)
         L = Lold.intersection(box(55, y - 1e-4, 90, y + 1e-4)); return L.bounds[2] if not L.is_empty else 55.0
     ya, yb = float(ys[0]), float(ys[-1])
-    ey0 = np.arange(ya - EASE, ya, 0.1); ey1 = np.arange(yb + 0.1, yb + EASE + 1e-9, 0.1)
-    pts = [(coast(y) + (sx[0] - coast(y)) * (y - (ya - EASE)) / EASE, y) for y in ey0] + list(zip(sx, ys)) + \
-          [(coast(y) + (sx[-1] - coast(y)) * (1 - (y - yb) / EASE), y) for y in ey1]
+    # eased in a straight line from the old coast's farthest point within EASE_R rooms of each end (so no notch is left beside it)
+    ua = max(np.arange(ya - EASE_R, ya - EASE + 1e-9, 0.05), key=coast); ub = max(np.arange(yb + EASE, yb + EASE_R + 1e-9, 0.05), key=coast)
+    ca, cb = coast(ua), coast(ub)
+    ey0 = np.arange(ua, ya, 0.05); ey1 = np.arange(yb + 0.05, ub + 1e-9, 0.05)
+    pts = [(max(coast(y), ca + (sx[0] - ca) * (y - ua) / (ya - ua)), y) for y in ey0] + list(zip(sx, ys)) + \
+          [(max(coast(y), cb + (sx[-1] - cb) * (ub - y) / (ub - yb)), y) for y in ey1]
     west = Polygon([(54, pts[0][1])] + pts + [(54, pts[-1][1])]).buffer(0)
     band = box(54, pts[0][1], 95, pts[-1][1])
     add = west.difference(Lold)                                         # sea that becomes land (never a cut)
