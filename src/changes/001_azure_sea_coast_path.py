@@ -22,6 +22,8 @@ CLEAR = 0.35
 PRIMARY = [14257, 14293, 14259, 14295, 14261, 14262, 14263, 14264, 14265, 14266, 14267, 14268, 14269, 14270, 14271, 14272, 14273, 14274,
            14275, 14276, 14277, 14278, 14279, 14281, 14282, 14283, 14284, 14285, 14286, 14323, 14322, 14321, 14319, 14318, 14313, 14315, 4317]
                                                     # the primary water route (owner, Oct 23: the chain's western-most rooms, Ocean Keep to 4317)
+STANDARD = [[22557, 14314, 4317], [4317, 5749, 5966, 5967, 5968, 15604, 5969, 5970, 7746]]
+                                                    # the standard water paths that were already there (to 4316, to Edo): redrawn when a room on them moves
 HWAVE_A, HWAVE_L = 0.05, 1.6                        # the secondary water path (type C, `olharborways`): applied/v2.9/003's wave
 SPRITES = ('trees', 'tufts', 'hills', 'thorns', 'peaks', 'boulders', 'reeds', 'wheattufts', 'brush', 'crags', 'ripples')
 
@@ -76,7 +78,7 @@ def apply(town, wild, pos):
         if a not in az or b not in az or a in h1 or b in h1 or a == b: continue
         if a in keep and b in keep and onkept(a) and onkept(b): covered.add((a, b)); continue
         G[a].add(b); G[b].add(a); n_ex += 1
-    prim = {(min(a, b), max(a, b)) for a, b in zip(PRIMARY, PRIMARY[1:])}
+    prim = {(min(a, b), max(a, b)) for c in [PRIMARY] + STANDARD for a, b in zip(c, c[1:]) if a in G and b in G[a]} | {(min(a, b), max(a, b)) for a, b in zip(PRIMARY, PRIMARY[1:])}
     assert all(b in G[a] for a, b in prim), [k for k in prim if k[1] not in G[k[0]]]
     GC = defaultdict(set)                                                              # every other exit: the secondary water path
     for a in list(G):
@@ -134,7 +136,21 @@ def apply(town, wild, pos):
     was = list(tag[0])
     if LABEL: tag[0][0], tag[0][1], tag[0][4] = LABEL
 
-    return {'old lines removed (lines, points)': (len(gone), gone_pts),
+    # ---- traced routes (place cards) through a moved room follow it ----
+    nr = 0
+    def mv(line):
+        nonlocal nr
+        for q in line:
+            for v in moved:
+                if math.dist(q[:2], P0[v]) < 0.02: q[0], q[1] = round(P1[v][0], 3), round(P1[v][1], 3); nr += 1; break
+    for pl in wild.get('places') or []:
+        if pl.get('path'): mv(pl['path'])
+        for sg in pl.get('segs') or []: mv(sg)
+        for op in pl.get('opts') or []:
+            if op.get('path'): mv(op['path'])
+            for sg in op.get('segs') or []: mv(sg)
+
+    return {'route points moved with their room': nr, 'old lines removed (lines, points)': (len(gone), gone_pts),
             'path rooms (moved, newly shown, hidden now)': (len(moved), len(changed - moved), len(h1 & az)),
             'primary lines (lines, exits, rooms); secondary (lines, exits, rooms); exits kept in old lines': ((len(lines), len(prim), len(G)), (len(clines), sum(len(s) for s in GC.values()) // 2, len(GC)), len(covered)),
             'new line ends moved onto kept lines': joined, 'dashed links moved': nd, 'sprites cleared off the stream': cleared, 'label': (was[:2], tag[0][:2], tag[0][4])}
