@@ -2,6 +2,8 @@
 
 ## In progress (2.12)
 
+- Your request (Oct 23): The Wild Woodland's paths are thin dashed lines: the way in (14070 to Into the Wild Woodland 14071 to the maze), all the paths between the maze rooms under the blob, and the way out (14076 to Leaving the Wild Woodlands 14077 to Before the Grounds of Camelot 14078, where it joins the other paths).
+- Your request (Oct 23): Northern Plains and Unholy Grounds (one marker, room 4221) swapped: Northern Plains is now the upper name, Unholy Grounds below it. Knights of the Round's name stays east of its marker.
 - Your request (Oct 23): six new locations on the map and in the list, with your directions: Forgotten Woods (The Shadow Grove 1338), Forest of Tears (Along a Wet Trail 820), Ashen Forest (In an Open Clearing 1241), Barren Peaks (A Disturbing Cry 5090), Northern Plains (The Forest's Grasp 4221) and Knights of the Round (Beyond the Cobblestone Path 11743; two routes: Walking, and DAG through the Darkhaven Art Gallery's painting). Knights of the Round's name sits east of its marker, clear of Camelot.
 - Your request (Oct 23): the exits of A Shifting Intersection 11741 and Traversing the Cobblestone Path 11742 are thin dashed lines too.
 - Your request (Oct 23): The Wild Woodland maze blob is drawn over the maze rooms' trails.
