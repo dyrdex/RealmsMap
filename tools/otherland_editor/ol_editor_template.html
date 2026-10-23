@@ -420,7 +420,7 @@ function loadLayout(o,note){
   const list=[];for(let i=0;i<o.ids.length;i++){const id=o.ids[i];if(pos.has(id)&&!byId.get(id).fixed)list.push([id,[o.xs[i],o.ys[i]]])}
   const ch=list.map(([id,p])=>[id,pos.get(id).slice(),p]);applyPositions(list);
   (o.locked||[]).forEach(id=>{if(pos.has(id))locked.add(id)});refreshLocks();
-  if(o.hidden){hidden.clear();o.hidden.forEach(id=>{if(pos.has(id))hidden.add(id)});refreshHidden()}
+  if(o.hidden){hidden.clear();o.hidden.forEach(id=>{if(pos.has(id))hidden.add(id)});(D.hidden0||[]).forEach(id=>{if(pos.has(id)&&!o.ids.includes(id))hidden.add(id)});refreshHidden()}
   commit(ch);afterChange();
   if(note)toast(note)}
 let asT=null;function scheduleAutosave(){clearTimeout(asT);asT=setTimeout(()=>{try{localStorage.setItem('ollayout:v1',JSON.stringify(layoutObject()));$('localStat').textContent='Autosaved in this browser at '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+'.'}catch(e){}},500)}

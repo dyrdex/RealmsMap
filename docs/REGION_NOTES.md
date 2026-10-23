@@ -153,6 +153,9 @@ The other builders run inside `src/legacy`.
   The Hunter's Outpost 14419. Water path 22530-22531 (`seawaysfaint`). Clearings (owner, Oct 22): ONLY the Tundra Fields (13492's clump); A Tunnel in the Snow / A Cold Lair (13322's clump) is an icy maze
   blob of the same outline, no label.
   Land west/south of 13287 (FILL1, owner Oct 22): no sea inlets there. Sub-area markers (owner, Oct 23; `changes/002_otherland_places.py`): Wild Tundra, The Ziggurat, Valley of Crucifixion, Cursed Lands; routes South (default) + North (via the Blood Sea wrap: line in 2 pieces), the owner's room counts; routes kept in the change file, not data.py.
+  Editor rooms added Oct 23 (grp 'sa', `tools/otherland_editor/add_sub_areas.py`): 13285, 13282, 13283, 13284, 15749 shown (to arrange; not drawn until saved);
+  13072, 15259 HIDDEN (`hidden0`: kept hidden when a save doesn't list them), route-only: give them map spots for the tracer (not drawn), and NO line
+  5967 -> 13072 / 5970 -> 15259 (the North routes' break stays there; owner).
   Winterlight Island re-fitted (owner, Oct 22, `changes/001_winterlight_island.py`): a smooth irregular blob (oval + low harmonics, rounded end at 9842), the biggest 0.9 clear of the paths; fit kept in `FIT` (`REFIT=1` re-searches, ~30 s).
   Cramped Tunnel rooms (+ those leading only to them): `oltunnels`, drawn as JUST a thin dashed line (owner, Oct 22, after rejecting
   glimpse/strip styles and the SMR underground-river style: don't retry those). Icy mazes (`fwmazes` style 'ice', `lines` = label lines):
