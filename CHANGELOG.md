@@ -2,6 +2,7 @@
 
 ## In progress (2.12)
 
+- Your Barren Peaks save (Oct 23, 20:50): the Northern Trade Route where it crosses into the Barren Peaks follows the 4 rooms you moved: the long bridge 4133-4135 and Entering the Barren Peaks 4136 (the road now runs exactly through them; 6 points of the road to the bridge and 4 past it redrawn, the rest unchanged). The off-ramp below 4136 (to A Disturbing Cry 5090) and the one by 4131 (to 5747) moved onto the new road; 13 trees and 1 tuft cleared from its verge; route lines through those rooms follow them.
 - Your request (Oct 23): The Wild Woodland's paths are thin dashed lines: the way in (14070 to Into the Wild Woodland 14071 to the maze), all the paths between the maze rooms under the blob, and the way out (14076 to Leaving the Wild Woodlands 14077 to Before the Grounds of Camelot 14078, where it joins the other paths).
 - Your request (Oct 23): Northern Plains and Unholy Grounds (one marker, room 4221) swapped: Northern Plains is now the upper name, Unholy Grounds below it. Knights of the Round's name stays east of its marker.
 - Your request (Oct 23): six new locations on the map and in the list, with your directions: Forgotten Woods (The Shadow Grove 1338), Forest of Tears (Along a Wet Trail 820), Ashen Forest (In an Open Clearing 1241), Barren Peaks (A Disturbing Cry 5090), Northern Plains (The Forest's Grasp 4221) and Knights of the Round (Beyond the Cobblestone Path 11743; two routes: Walking, and DAG through the Darkhaven Art Gallery's painting). Knights of the Round's name sits east of its marker, clear of Camelot.
