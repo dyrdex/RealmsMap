@@ -1,5 +1,10 @@
 # Realm Map changelog
 
+## In progress (2.13)
+
+- Your request (Oct 23): Before the Swan-ship 16240 added on the very edge of the Northern Plains' coast, 3 rooms west-south-west of Dark Cliffs 4400 (0.34 inside the shore; the terrain is unchanged). 4400 down to 16240 is drawn as a stairway down the cliff (8 steps, narrowing and darkening as it goes down, as the Knights of the Round's 5639 down to 11745).
+- Your request (Oct 23): the Island of Irrybis: a small forested island just west of 16240, off the coast (3.3 by 2.2 rooms, 1.4 rooms of sea between it and the coast, 13 trees). The Island of Irrybis's marker is now on 16240 (the last step of its route, d); its name sits west of the marker, under the island.
+
 ## Version 2.12 · The Knights of the Round · October 23, 2026
 
 - Your Barren Peaks save (Oct 23, 21:17): the way to Dae'Clya is drawn: Glowing Walls 6958, Waist-High Sludge 6959, A Small Resting Spot 6960, Crystal Stalagmites 6961, Before a Green Cavern 6962 and The Cavern of Dae'Clya 6963 (6 dirt trails, from the trail at A Darkened Canyon 6957).
