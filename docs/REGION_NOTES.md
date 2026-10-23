@@ -89,6 +89,7 @@ The other builders run inside `src/legacy`.
   lines (4317-14314-22557, 4317-Edo) kept, new lines end on them.
   Primary water route (owner, Oct 23) = `PRIMARY` in that change (the chain's western-most rooms, 14257 .. 4317), standard water path; every other
   exit = the **secondary water path** (owner's name, Oct 23, for type C / `olharborways`, the Harbor of Icebergs style), ends on the primary line.
+  Deathtrap 14279 'Death on the Rocks' (owner, Oct 23; the owner said 12479, a World of Quests room): `DEATHTRAPS`, dark red X (`deathtraps`, template DEATHX); the primary route goes round it (14278-14280-14281), never through.
   Save of Oct 23 17:11Z moved 4317/5749/5966: the old standard lines to 4316 and to Edo are redrawn (`STANDARD`), place routes through moved rooms follow.
 - **Forest of Tears**: Fog Cliffs mountains reach 2 rooms east of the cliff path (Oct 19, so the Tree of Life is in the forest).
 - **Miden'nir**: the painting (Black Forest, brambles, Mount Doom) stays; the tunnels under Mount Doom are left out; Forest rooms
