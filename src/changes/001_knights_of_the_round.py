@@ -1,4 +1,4 @@
-"""The rooms west of the Forgotten Woods from the owner's Barren Peaks editor save of Oct 23 18:56Z (legacy/bp_layout_oct23.json; the editor's
+"""The rooms west of the Forgotten Woods from the owner's Barren Peaks editor save of Oct 23 19:08Z (18:56Z with 11745 moved 3.5 north) (legacy/bp_layout_oct23.json; the editor's
 rooms and exits then: legacy/bp_editor_edges_oct23.json): 11745, 11744, 11743 below 5639 (area 'BS'), the Knights of the Round (area 'KR')
 and 21075 The Royal Jetty of Camelot. Only the rooms the owner left shown are drawn (30; the other 65 hidden).
   - trails: every flat exit between two shown new rooms is an ordinary Woods dirt trail (fwtracks), straight room to room, the bends only
