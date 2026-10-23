@@ -28,6 +28,7 @@ NUDGES = {2980: (0, -0.5), 19840: (0, -0.5), 19841: (0, -0.5), 19836: (0, -0.5),
 HWAVE_A, HWAVE_L = 0.05, 1.6                                # type C's slight wave (applied/v2.4/001)
 OWNER_THIN = [(3201, 3209), (3215, 3216), (3217, 14369), (14369, 14354), (14354, 14338), (3240, 14365), (14365, 14350), (14350, 14334)]   # owner, Oct 23: thin lines too
 THIN_EXTRA = [(2819, 2818)]                                 # owner, Oct 23: 2819 south through its 7 spacer rooms (19858-19854, not placed) to 2818 (Coral Depths, on the map): straight
+ROUND_D = 0.3                                              # the redrawn trails' bends: rounded over the last 0.3 rooms either side
 SPRITES = ('trees', 'tufts', 'hills', 'thorns', 'brush', 'boulders', 'crags', 'reeds', 'wheattufts', 'peaks')
 
 
@@ -69,6 +70,21 @@ def _line(ch, pos, sigma=0.8, start=None, end=None):
         xs = ndi.gaussian_filter1d(np.array([q[0] for q in p]), sigma, mode='nearest'); ys = ndi.gaussian_filter1d(np.array([q[1] for q in p]), sigma, mode='nearest')
         q = [[float(a), float(b)] for a, b in zip(xs, ys)]; q[0] = p[0]; q[-1] = p[-1]; p = q
     return [[round(a, 2), round(b, 2)] for a, b in p]
+
+
+def _soft(line, d=ROUND_D):
+    """each inner room flanked by a point d before and after it (at most 0.45 of the segment), so the template's curve runs straight from room
+    to room and only rounds the last d/2 into each bend (owner, Oct 23: small rounding, only these trails)"""
+    p = [line[0]] + [q for a, q in zip(line, line[1:]) if math.dist(a, q) > 1e-6]
+    if len(p) < 3: return p
+    out = [p[0]]
+    for i in range(1, len(p) - 1):
+        a, q, b = p[i - 1], p[i], p[i + 1]
+        da = min(d, 0.45 * math.dist(a, q)); db = min(d, 0.45 * math.dist(q, b))
+        pa = [q[0] + (a[0] - q[0]) * da / math.dist(a, q), q[1] + (a[1] - q[1]) * da / math.dist(a, q)]
+        pb = [q[0] + (b[0] - q[0]) * db / math.dist(q, b), q[1] + (b[1] - q[1]) * db / math.dist(q, b)]
+        out += [[round(pa[0], 3), round(pa[1], 3)], q, [round(pb[0], 3), round(pb[1], 3)]]
+    return out + [p[-1]]
 
 
 def _wave(pts):
@@ -176,7 +192,7 @@ def apply(town, wild, pos):
     new_dirt = []
     for ch in _chains(Gd, pin):
         s = kept_pt.get(ch[0]) if ch[0] not in moved else None; e = kept_pt.get(ch[-1]) if ch[-1] not in moved else None
-        new_dirt.append(_line(ch, p1, sigma=0, start=s, end=e))          # straight room to room (owner, Oct 23: follow the real exits)
+        new_dirt.append(_soft(_line(ch, p1, sigma=0, start=s, end=e)))          # straight room to room (owner, Oct 23: follow the real exits)
     Gt = sub(thin); new_thin = []
     for ch in _chains(Gt, set()):
         pts = [tuple(kept_pt[v]) if (v not in moved and v in kept_pt) else p1[v] for v in ch]
