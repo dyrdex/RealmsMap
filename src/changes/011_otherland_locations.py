@@ -6,7 +6,7 @@ import maplib
 R = lambda q: [round(q[0], 3), round(q[1], 3)]
 PLACES = {
     'Otherland (Northern)': 's;s;s;s;s;s;ne;s;s;se;e;e;s;sw;sw;s;e;e;u;e;e;e;s;s;s;se;e;e;e;s;se;se;s;sw;s;s;w;sw;s;s;s;s;s;s;s;s;s;s',
-    'Otherland (Southern)': 'nw;w;w;n;n;n;n;e;look painting;n;nw;n;n;nw;w;nw;nw;w;w;w;nw;nw;sw;sw;w;sw;w;nw;n;n;nw;ne;w;w;w;ne;nw;n;nw;w;nw;n;n;n;n;d;nw;se;sw;nw',
+    'Otherland (Southern)': 'nw;#2 w;#4 n;e;look painting;n;nw;#2 n;nw;w;#2 nw;#3 w;#2 nw;#2 sw;w;sw;w;nw;#2 n;nw;ne;#3 w;ne;nw;n;nw;w;nw;#4 n;d;nw',   # (owner, Oct 23: ends after d;nw)
 }
 ROUTE_ONLY = {13072, 15259}
 WHERE = 'off Otherland'
