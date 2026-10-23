@@ -15,7 +15,7 @@ import json, math, os
 from collections import defaultdict
 import numpy as np
 from scipy import ndimage as ndi
-from shapely.geometry import Polygon, box, Point
+from shapely.geometry import Polygon, box, Point, LineString
 from shapely.ops import unary_union
 
 HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
@@ -23,6 +23,8 @@ BEACH = {'The Beach along the Ashen Forest', 'Miles and Miles of Sand Dunes', 'W
 CLEAR_ROOMS = [3201, 3202, 3205, 3206]
 CLEAR_FILL, CLEAR_EDGE = '#484C43', '#2A2D27'              # the Ashen Forest's other clearings
 SMOOTH_W = 4.0                                              # the coast follows the farthest room within this many rooms (no inlets)
+SOUTH = (9.0, 13.4)                                         # the south end: the beach's coast to y 9, then back to the old coast at y 13.4
+ROUND_COAST, ROOM_CLEAR = 1.2, 0.6                         # the coast smoothed over this many rooms; never nearer a shown room than this
 EASE_R = 3.5                                                # (the old coast's farthest point is looked for this far out)
 SHORE_M, EASE = 1.0, 2.0                                    # the coast this far east of the rooms; eased back into the old coast over EASE rooms
 NUDGES = {2980: (0, -0.5), 19840: (0, -0.5), 19841: (0, -0.5), 19836: (0, -0.5), 19834: (0, -0.5), 2990: (0, -0.5), 2988: (0, -0.5),
@@ -217,21 +219,49 @@ def apply(town, wild, pos):
     def coast(y):                                                        # the old coast's x on this row (east edge of the land, x 55-90)
         L = Lold.intersection(box(55, y - 1e-4, 90, y + 1e-4)); return L.bounds[2] if not L.is_empty else 55.0
     ya, yb = float(ys[0]), float(ys[-1])
-    # eased in a straight line from the old coast's farthest point within EASE_R rooms of each end (so no notch is left beside it)
-    ua = max(np.arange(ya - EASE_R, ya - EASE + 1e-9, 0.05), key=coast); ub = max(np.arange(yb + EASE, yb + EASE_R + 1e-9, 0.05), key=coast)
-    ca, cb = coast(ua), coast(ub)
-    ey0 = np.arange(ua, ya, 0.05); ey1 = np.arange(yb + 0.05, ub + 1e-9, 0.05)
-    pts = [(max(coast(y), ca + (sx[0] - ca) * (y - ua) / (ya - ua)), y) for y in ey0] + list(zip(sx, ys)) + \
-          [(max(coast(y), cb + (sx[-1] - cb) * (ub - y) / (ub - yb)), y) for y in ey1]
+    # north: eased in a straight line from the old coast's farthest point within EASE_R rooms (so no notch is left beside it)
+    ua = max(np.arange(ya - EASE_R, ya - EASE + 1e-9, 0.05), key=coast); ca = coast(ua)
+    prof = [(ca + (sx[0] - ca) * (y - ua) / (ya - ua), y) for y in np.arange(ua, ya, 0.05)] + [(x, y) for x, y in zip(sx, ys) if y <= SOUTH[0]]
+    # south (owner, Oct 23): the old coast's right-angled corner at y 12.9 cut off: an S-curve from the beach back to the old coast at SOUTH[1]
+    (x0, y0), y3 = prof[-1], SOUTH[1]; x3 = coast(y3); d = (y3 - y0) / 2.4
+    for t in np.linspace(0, 1, 61)[1:]:
+        c = [(x0, y0), (x0, y0 + d), (x3, y3 - d), (x3, y3)]
+        prof.append((sum(w_ * q[0] for w_, q in zip([(1 - t) ** 3, 3 * (1 - t) ** 2 * t, 3 * (1 - t) * t * t, t ** 3], c)),
+                     sum(w_ * q[1] for w_, q in zip([(1 - t) ** 3, 3 * (1 - t) ** 2 * t, 3 * (1 - t) * t * t, t ** 3], c))))
+    # the whole line smoothed along its length (rounder corners, owner Oct 23), ends pinned; never nearer a shown room than ROOM_CLEAR
+    X = np.array(prof); n = len(X); k = max(1, int(ROUND_COAST / 0.05))
+    pad = np.vstack([np.repeat(X[:1], 3 * k, 0), X, np.repeat(X[-1:], 3 * k, 0)])
+    S_ = np.c_[ndi.gaussian_filter1d(pad[:, 0], k), ndi.gaussian_filter1d(pad[:, 1], k)][3 * k:-3 * k]
+    wgt = np.clip(np.minimum(np.arange(n), np.arange(n)[::-1]) / (2 * k), 0, 1)[:, None]          # eased into the old coast at both ends
+    X = X * (1 - wgt) + S_ * wgt
+    pts = [(float(x), float(y)) for x, y in X]
+    for _ in range(3):                                                  # pushed out where it came too near a shown room (along x)
+        line = LineString(pts); bad = 0
+        for q in show:
+            if line.distance(Point(q)) < ROOM_CLEAR:
+                pts = [(max(x, q[0] + ROOM_CLEAR + 0.05) if abs(y - q[1]) < ROOM_CLEAR else x, y) for x, y in pts]; bad += 1
+        if not bad: break
     west = Polygon([(54, pts[0][1])] + pts + [(54, pts[-1][1])]).buffer(0)
     band = box(54, pts[0][1], 95, pts[-1][1])
-    add = west.difference(Lold)                                         # sea that becomes land (never a cut)
+    add = west.difference(Lold)                                         # sea that becomes land
     add = unary_union([q for q in getattr(add, 'geoms', [add]) if q.area > 0.02])
-    g['land'], nl = _edit(g['land'], band, lambda T: T.union(add))
-    g['water'], nw = _edit(g['water'], band, lambda T: T.difference(add))
-    g['sand'], ns = _edit(g['sand'], band, lambda T: T.union(add))
-    for k in ('seafill', 'shallows'):
-        if g.get(k): g[k], _ = _edit(g[k], band, lambda T: T.difference(add))
+    corner = band.intersection(box(54, SOUTH[0] - 3, 95, pts[-1][1])).difference(west).intersection(Lold)   # land corner: only the south corner
+    corner = unary_union([q for q in getattr(corner, 'geoms', [corner]) if q.area > 0.002]) if not corner.is_empty else corner
+    g['land'], nl = _edit(g['land'], band, lambda T: T.union(add).difference(corner))
+    g['water'], nw = _edit(g['water'], band, lambda T: T.difference(add).union(corner))
+    g['sand'], ns = _edit(g['sand'], band, lambda T: T.union(add).difference(corner))
+    for k_ in ('seafill', 'shallows'):
+        if g.get(k_): g[k_], _ = _edit(g[k_], band, lambda T: T.difference(add))
+    tints = {}
+    if not corner.is_empty:                                                # the ground tints and sprites on the corner corner go with it
+        for k_, rs in g.items():
+            if k_ in ('land', 'water', 'sand', 'seafill', 'shallows') or not isinstance(rs, list) or not rs or not isinstance(rs[0], list): continue
+            if any(len(r) > 2 and Polygon(r).buffer(0).intersects(corner) for r in rs):
+                before = _parity(rs).area; g[k_], _ = _edit(rs, corner.buffer(0.01), lambda T: T.difference(corner)); tints[k_] = round(before - _parity(g[k_]).area, 3)
+        for k_ in SPRITES + ('hach',):
+            if k_ in wild:
+                n0 = len(wild[k_]); wild[k_] = [q for q in wild[k_] if not corner.contains(Point(q[0], q[1]))]
+                if n0 - len(wild[k_]): tints['sprites ' + k_] = n0 - len(wild[k_])
     lost = Lold.difference(_parity(g['land'])).area
     # ---- the clearing ----
     cp = [p1[v] for v in CLEAR_ROOMS]
@@ -265,6 +295,6 @@ def apply(town, wild, pos):
     return {'old trails matched to a later redraw': refit, 'rooms moved / new': (len([v for v in moved if v in p0]), len([v for v in moved if v not in p0])),
             'old trails kept as they were / cut to their unmoved runs (pieces kept)': (len(untouched), cut, len([l for l in keep_lines if l])),
             'exits drawn again: dirt trail lines, thin beach lines (exits)': (len(new_dirt), len(new_thin), (len(dirt), len(thin))),
-            'land added (sea pushed east), land lost; rings touched land/water/sand': (round(add.area, 1), round(lost, 4), (nl, nw, ns)),
-            'coast x: rows, x range': (len(sx), round(float(sx.min()), 1), round(float(sx.max()), 1)),
+            'land added (sea pushed east), land lost (the south corner cut); rings touched land/water/sand': (round(add.area, 1), round(lost, 3), (nl, nw, ns)), 'cut corner: tints/sprites removed': tints,
+            'coast x range': (round(min(x for x, y in pts), 1), round(max(x for x, y in pts), 1)),
             'clearing area, sprites cleared': (round(CP.area, 1), dict(gone)), 'route points moved (ambiguous spots skipped)': (nrt[0], len(amb))}
