@@ -86,7 +86,8 @@ The other builders run inside `src/legacy`.
   straight room to room (every point doubled), in `seawaysfaint` (template SEAFAINT, opacity .4: open-sea routes are faint, owner Oct 20); bay water
   extended inside a box; bounds y1 161.
   Added Oct 23 (grp 'ss', `tools/wastelands_editor/add_ahtborne_gap.py`): 18041, 18039, 18042, 18043 (the mob routes' gap 17991-18040). When the
-  owner saves: add them to `legacy/wl3_editor_edges.json`, replace `legacy/wl3_layout_final.json`, legacy rebuild + rebase, keep Otherland's sprites (as 003).
+  Save Oct 23 01:00Z drawn (rebase). The sea is grown round the rooms (SEA_R): moving rooms shrinks it; `changes/005` keeps the old west edge
+  (`legacy/sos_keep_water_oct23.json`, merged into its water ring: no seam). New Wastelands save: check sea lost vs the previous base.
   One-way exits (owner, Oct 20): wavy currents with an arrowhead 0.4 short of the room (`seacurrents`, template SEACUR). Winterlight Island
   (`changes/002`, `snowisles`, template SNOWISLE; re-fitted Oct 22 as a rounded blob, see Otherland): an irregular teardrop, a rounded end at 9842 (not a point), widening SW,
   outline rounded (no spits), its SE coast an even, nearly straight run NE-SW (owner: natural,
