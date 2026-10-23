@@ -2,6 +2,7 @@
 
 ## In progress (2.9)
 
+- Your request (Oct 23): when you pick a location, the jumps you named are drawn as a thin dashed curve instead of the solid route line: the painting (Alms for the Poor to The Forest's Grasp, on 24 routes), the Ofcol Shortcut (Ofcol's gate to A Sparse Trail, 19), the Nidaros Shortcut (5511 to A Bubbling Creek, 3) and Dragon's Pass to the Mire (The Foot of Dragon's Pass to the Mire, 3). Everything else on every route is drawn as before.
 - Your request (Oct 23): the "Otherland" watery trail and its label north-west of the Northern Plains are removed (the one aiming south at Otherland's far end stays).
 - Fixed at your request (Oct 23): the squiggle north of the Northern Plains, by Walking amongst the rushes 4316. The two connecting rooms on its way north-west to Rocky Coastline 4317 (22557, 14314) sat past 4317, so routes overshot and doubled back; they're now evenly spaced on the straight line from 4316 to 4317. The route lines of the 11 locations that pass there (Village of Edo, Otherland (Southern), and the Otherland sub-area and mob cards' North routes) follow. The Northern Plains editor's save has the same spots, so it matches the map.
 - Your request (Oct 23): the "Azure Sea" location (its marker in the far north and its card in the list) is removed.

@@ -1226,13 +1226,18 @@ document.getElementById('zfit').onclick=()=>flyTo(fitAll());
 /* ---------- selection ---------- */
 const tip=document.getElementById('tip'),stage=document.getElementById('stage');
 let sel=null;
+/* JUMP: the jumps the owner names (changes/017) drawn as a thin dashed arc; the rest of the route as usual (owner, Oct 23) */
+function routeD(sg,J){let d='',j='';const at=(a,x,y)=>Math.abs(a[0]-x)<.03&&Math.abs(a[1]-y)<.03,hit=(a,b)=>(J||[]).some(x=>(at(a,x[0],x[1])&&at(b,x[2],x[3]))||(at(b,x[0],x[1])&&at(a,x[2],x[3])));
+  for(const s of sg){let pen=false;s.forEach((q,i)=>{if(i&&hit(s[i-1],q)){const a=s[i-1],L=Math.hypot(q[0]-a[0],q[1]-a[1])||1,k=Math.min(.15*L,10)/L;
+    j+=`M${a[0]} ${a[1]}Q${((a[0]+q[0])/2-(q[1]-a[1])*k).toFixed(2)} ${((a[1]+q[1])/2+(q[0]-a[0])*k).toFixed(2)} ${q[0]} ${q[1]}`;pen=false}
+    d+=(pen?'L':'M')+q[0]+' '+q[1];pen=true})}return {d,j}}
 function drawRoute(p){
   const L=document.getElementById('routeLayer');
   if(!p){L.innerHTML='';return}
   if(p.noroute){L.innerHTML='';return}
   const sg=p.segs||[[...p.path,[p.mx,p.my]]];
-  const d=sg.map(s=>s.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' ')).join(' ');
-  L.innerHTML=`<path d="${d}" fill="none" stroke="var(--glow)" stroke-width=".42" stroke-linecap="round" stroke-linejoin="round"/><path id="rl" d="${d}" fill="none" stroke="var(--pick)" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const {d,j}=routeD(sg,DATA.wild.jumps);
+  L.innerHTML=`<path d="${d}" fill="none" stroke="var(--glow)" stroke-width=".42" stroke-linecap="round" stroke-linejoin="round"/><path id="rl" d="${d}" fill="none" stroke="var(--pick)" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round"/>`+(j?`<path d="${j}" fill="none" stroke="var(--pick)" stroke-width=".1" stroke-dasharray=".45 .35" stroke-linecap="round" opacity=".9"/>`:'');
   if(!reduce){const rl=document.getElementById('rl'),len=rl.getTotalLength();rl.style.strokeDasharray=len;rl.style.strokeDashoffset=len;rl.getBoundingClientRect();rl.style.transition='stroke-dashoffset .8s ease';rl.style.strokeDashoffset=0}
 }
 function select(p){
