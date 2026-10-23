@@ -2,6 +2,7 @@
 
 ## In progress (2.12)
 
+- Your request (Oct 23): a small bay in the west coast by the Knights of the Round: the sea rounds in from the north past the Royal Jetty of Camelot 21075 (now standing in the water, 0.5 rooms out, the shore just south-east of it), comes in to 0.5 rooms of Between a Rock and a Hard Place 11745, turns south a little and goes gently back west to the old coast. 114.5 square rooms of land became sea; 70 trees and 10 grass tufts in it removed. The long trail from the Forest of Tears is untouched and stays 2.3 rooms from the bay.
 - Your save (Oct 23, 19:08): Between a Rock and a Hard Place 11745 moved 3.5 rooms north, as you placed it; its trail to A Humid Cave 11744 and the stairway from 5639 follow it (the stairway is now 11.3 rooms long, 39 steps).
 - Your Barren Peaks / Forgotten Woods save (Oct 23, 18:56): the rooms west of the Woods are drawn where you put them: the 30 you left shown (Knights of the Round, 11743-11745, the Royal Jetty 21075; 65 hidden as you set). Their 29 exits are ordinary Woods dirt trails, straight room to room; 26 trees and 1 grass tuft cleared off them.
 - Your request (Oct 23): the way down from Blood Sea Cottonwoods 5639 to Between a Rock and a Hard Place 11745 is a stairway: the trail with 49 steps across it, closer together and narrower further down, the trail darkening towards 11745.
