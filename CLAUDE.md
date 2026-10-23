@@ -30,7 +30,7 @@ Interactive dark-mode map of the MUD "Disgruntled Realms", from the owner's TinT
 - All 15 layout editors live in the owner's current organization (links in REGION_NOTES). Read saves with ArtifactData get `<key>/current`.
   Hidden/route-only rooms added via `tools/forest_of_tears_editor/add_*.py`; Azure Sea rooms via `tools/otherland_editor/add_azure_east.py`;
   Oct 23 rooms via `tools/otherland_editor/add_sub_areas.py`, `tools/wastelands_editor/add_ahtborne_gap.py` (new editor rooms also go into `legacy/*_editor_edges.json` when saved).
-- In progress (2.9): `changes/001` all type A water routes (seaways) drawn as B (seawaysfaint); type C (olharborways) for secondary routes next, owner to say which. (2.8's files: `applied/v2.8/` 001 Winterlight, 002 sub-areas, 003 Otherland sprites kept, 004 mobs, 005 Sea of Sorrows edge kept.)
+- In progress (2.9): `changes/001` all type A water routes (seaways) drawn as B (seawaysfaint); `002` DD east coast primary path 12984-12993 as B, soft wave; type C (olharborways) for secondary routes next, owner to say which. (2.8's files: `applied/v2.8/` 001 Winterlight, 002 sub-areas, 003 Otherland sprites kept, 004 mobs, 005 Sea of Sorrows edge kept.)
 
 ## Snapshots
 - Version numbers (owner, Oct 21): restarted at the map's revamp (the old count, v20-v24, is kept in the CHANGELOG); this release is 2.8, the next is 2.9

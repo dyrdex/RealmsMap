@@ -59,7 +59,7 @@ The other builders run inside `src/legacy`.
   Coral Depths marker (owner, Oct 20; `changes/005`): no land between cliff and sea there.
 - **Desert of Despair terrain** (owner, Oct 20; `changes/007`, `wild.ddsand`, template DDSAND, over geo.sand 16): grain + wind texture,
   ripple fields, dunes, dry lake beds, rocks, scrub, very few cacti; its own look, not the Wastelands' (no grass tufts or crags).
-- **Water route styles** (owner, Oct 23): no solid routes (type A, `seaways`) any more: primary = `seawaysfaint` (B), secondary = `olharborways` (C). `changes/001` moves all `seaways` into `seawaysfaint`; new water routes go straight into B or C.
+- **Water route styles** (owner, Oct 23): no solid routes (type A, `seaways`) any more: primary = `seawaysfaint` (B), secondary = `olharborways` (C). `changes/001` moves all `seaways` into `seawaysfaint`; new water routes go straight into B or C. Desert of Despair east coast: primary path 12984-12993 is B with a soft wave (amp .06; `changes/002`); its links to the coastline/land stay `seawaves`.
 - **Paths meeting a water route** end exactly on its line, never past it (Oct 19).
 - **Shortcuts in routes** (long straight lines): the Ofcol Shortcut (legacy route_fix, OFCOL) and the Nidaros Shortcut
   (936 sw 5511 -> 5507; `changes/007`). A new shortcut: place its rooms in an editor, then join the routes' pieces at it (as 007).
