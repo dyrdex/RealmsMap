@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress (2.9)
+## Version 2.9 · Open Seas · October 23, 2026
 
 - Your request (Oct 23): Over the Cliff Maze is much smaller. The two water paths that ran far out into it (from 14474 and from The Icy Cliffs 15162) now stop 1 room past the coast (6.6 and 4.6 rooms long before, 1.6 now). The maze is a band along the same 36 rooms of coast, about 2 rooms out to sea (1.6 to 2.3, uneven on the sea side, rounded at both ends): 58 square rooms instead of 273. Its name is smaller (size 0.45) to fit inside.
 - Your request (Oct 23): Dobra's line is one continuous line now (64 rooms, over the Northern Trade Route rooms that were missing when it was first drawn), and Catobeplas's line is joined across Ofcol by the Ofcol Shortcut, shown as the dashed jump like the other Ofcol routes. Both markers stay where they were, and both lose the "areas that aren't drawn yet" note.
