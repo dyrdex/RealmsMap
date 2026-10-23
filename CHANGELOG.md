@@ -1,5 +1,9 @@
 # Realm Map changelog
 
+## In progress (2.11)
+
+- Your request (Oct 23): the Azure Sea Coast layout editor now holds the 26 Azure Sea rooms joined to the coast path that weren't on the map (22 Azure and Green, A Beautiful Coastline 5965, Looking Over the Ocean 14316, 2 spacer rooms 14296/14297; 75 exits), with a light-blue outline and a "Select the rooms added Oct 23" button. They start next to the 29 path rooms they join, at your saved layout (no two rooms closer than 1.0). Nothing on the map changes until you arrange them and save.
+
 ## Version 2.10 · The Ashen Shore · October 23, 2026
 
 - Your request (Oct 23), Ashen Forest far east beach: the shoreline's corners are rounded (smoothed over about 1.2 rooms; no turn sharper than 35 degrees left, there were three, up to 98). At the south end the right-angled corner where the coast stepped back to the cliff is cut off: the shore now curves from the beach (x 67.5 at y 8) back to the old coast at y 13.4, where the sea meets the cliff as before; 4.9 square rooms of land were cut there (no trees, tints or trails on it). Every shown room is still at least 0.8 rooms from the water; the cliff room 2815 is now 0.5 from it.
