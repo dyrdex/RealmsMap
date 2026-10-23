@@ -15,7 +15,7 @@ import json, math, os
 from collections import defaultdict
 from maplib import warp, warpline
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 LABEL = [42.0, -201.6, 0]                           # [x, y, rotation]: north of the long straight 14315 - 4317 (text 13.7 rooms long, measured once;
                                                     #   0.7 from the path, 2.3 from any room, 3.9 from land, no other name within 20)
 STREAM_BOX = (53.0, -38.0, 64.0, -27.0)             # the on-land stream by Ocean Keep (14257 .. 14263): nothing grows within CLEAR of it

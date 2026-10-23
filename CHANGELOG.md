@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress (2.11)
+## Version 2.11 · The Azure Coast · October 23, 2026
 
 - Your request (Oct 23): the deathtrap Death on the Rocks 14279 is marked with a dark red skull and crossbones instead of the X: a red skull with dark eye sockets, nose and teeth over two crossed bones with knobbed ends, about 1.3 rooms across, at 80% opacity, with a thin dark edge so it reads on the blue sea. The nearest other room is 3.8 rooms away. Nothing else changed.
 - Your request (Oct 23): the deathtrap on the Azure Sea Coast is flagged and avoided. Room 12479 in your TinTin map is "A maze of temple corridors" (World of Quests), so I took the coast's own deadly room, Death on the Rocks 14279, the only path room with deathtrap (Lava) terrain. It has a dark red, semi-transparent X (0.84 rooms across, 70% opacity). The primary water route now goes 14278 to Pulling Towards Death 14280 to 14281 instead of through it, passing 3.75 rooms from it. 14279's three links (to 14278, 14280, 14281) are secondary water paths, and its dashed link up to the Barren Peaks now ends at the room. Nothing else changed.

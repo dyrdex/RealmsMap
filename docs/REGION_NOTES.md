@@ -84,7 +84,7 @@ The other builders run inside `src/legacy`.
   Oct 23 (`tools/azure_sea_editor/add_coast_rooms.py`, run once on the built editor): grp 'ad', the 26 unmapped Azure Sea rooms/spacers joined to the
   path (864, 865, 5965, 14288, 14290-14291, 14296-14310, 14316-14317, 14320, 14324-14325), starting spots `editor_spread.spread` from the save.
   Drawn from the save of Oct 23 16:48Z (`legacy/az_layout_oct23.json` + `az_editor_edges_oct23.json`; the legacy final files stay, so a
-  legacy redraw doesn't change; `changes/001_azure_sea_coast_path.py`): only the path's lines (`seawaysfaint`), its `seadash` ends, its seatag and
+  legacy redraw doesn't change; `changes/applied/v2.11/001_azure_sea_coast_path.py`): only the path's lines (`seawaysfaint`), its `seadash` ends, its seatag and
   the Ocean Keep stream's sprites change (owner, Oct 23: never the mainland; ask first). Lines straight room to room + warpline; unmoved
   lines (4317-14314-22557, 4317-Edo) kept, new lines end on them.
   Primary water route (owner, Oct 23) = `PRIMARY` in that change (the chain's western-most rooms, 14257 .. 4317), standard water path; every other
