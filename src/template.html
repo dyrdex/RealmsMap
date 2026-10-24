@@ -191,6 +191,13 @@ WILD+=`<path d="${blobs(GEO.mipool||[])}" fill="#1F302B" fill-rule="evenodd" str
 WILD+=`<path d="${blobs(GEO.snow||[])}" fill="var(--snow)" fill-rule="evenodd" opacity=".95"/>`;   /* Otherland: soft white snow ground (owner, Oct 21); its texture: OLSNOW */
 WILD+=`<path d="${blobs(GEO.iceisle||[])}" fill="#B7C1C6" fill-rule="evenodd"/>`;   /* Otherland: The Iceberg, a little white island (owner, Oct 22; toned down with the snow) */
 WILD+=`<path d="${blobs(GEO.sand)}" fill="var(--sand)" fill-rule="evenodd" opacity=".9"/><path d="${blobs(GEO.blight)}" fill="var(--blight)" fill-rule="evenodd" opacity=".75"/>`;
+{const B=WD.fwbeach;if(B){const P=a=>'M'+a.map(q=>q.join(' ')).join('L');   /* FWBEACH: The Forgotten Beach's sand (owner, Oct 24): fine grain, a few pebbles, wash lines along the shore, flecks of sand past its north edge */
+  WILD+=`<defs><pattern id="fwbgrain" patternUnits="userSpaceOnUse" width="1.3" height="1.1"><g fill="#8A7C5C"><circle cx=".15" cy=".2" r=".022"/><circle cx=".8" cy=".12" r=".018"/><circle cx="1.1" cy=".65" r=".024"/><circle cx=".45" cy=".85" r=".018"/><circle cx=".95" cy="1.0" r=".015"/></g><g fill="#2F2A1E"><circle cx=".6" cy=".45" r=".018"/><circle cx="1.2" cy=".3" r=".014"/><circle cx=".25" cy=".6" r=".015"/></g><ellipse cx=".7" cy=".75" rx=".045" ry=".03" fill="#6B624E"/></pattern></defs>`;
+  const S=B.poly.map(p=>P(p)+'Z').join('');
+  WILD+=`<path d="${S}" fill="url(#fwbgrain)" fill-rule="evenodd" opacity=".75"/>`;
+  WILD+=`<path d="${B.wash.map(P).join('')}" fill="none" stroke="#7C7258" stroke-width=".04" stroke-linecap="round" stroke-dasharray=".5 .25" opacity=".55"/>`;
+  WILD+=B.spots.map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="var(--sand)" opacity=".8"/>`).join('');
+}}
 {const D=WD.ddsand;if(D){const P=a=>'M'+a.map(q=>q.join(' ')).join('L');   /* DDSAND: the Desert of Despair's own terrain (owner, Oct 20): texture, ripples, dunes, dry lake beds, rocks, scrub, a few cacti */
   WILD+=`<defs><pattern id="ddgrain" patternUnits="userSpaceOnUse" width="2.3" height="1.9"><g fill="#7A6A4A"><circle cx=".3" cy=".4" r=".035"/><circle cx="1.4" cy=".2" r=".03"/><circle cx="2.0" cy="1.1" r=".04"/><circle cx=".9" cy="1.5" r=".03"/><circle cx="1.6" cy="1.7" r=".025"/><circle cx=".2" cy="1.2" r=".028"/></g><g fill="#2E281C"><circle cx="1.1" cy=".8" r=".03"/><circle cx="1.9" cy=".5" r=".025"/><circle cx=".6" cy="1.0" r=".025"/></g></pattern>`+
     `<pattern id="ddwind" patternUnits="userSpaceOnUse" width="3.7" height="2.9"><path d="M.2 .7 q.35 -.12 .7 0 t.7 0 M2.1 2.1 q.3 -.1 .6 0 t.6 0 M1.6 1.3 q.25 -.08 .5 0" fill="none" stroke="#6E6044" stroke-width=".035" stroke-linecap="round"/></pattern></defs>`;
