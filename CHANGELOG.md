@@ -15,6 +15,11 @@
 - Your request (Oct 24): the seven deadly drops off the cliff (5640, 5641, 5642, 5643, 5645, 5646, 5495, all down to The Coast's Jagged Teeth): the cliff's rim from 5640 to 5495 is a dark red warning dash (11.7 rooms; the notch at 5644, the safe way down, stays plain) and one skull and crossbones sits on the cliff face midway, below 5642-5643.
 - Your request (Oct 24): more land between the new sea and the path from 1669: the coast follows that path only down to about y -41, then runs west to about x -59 and slopes down to meet the old coast at Sailing the Seas (by the Knock Dock). 128.5 square rooms of sea there (the Knights bay's south end and the strip west of Grimdog) became forest, with 106 trees like the forest round it; 1669 is now 8.8 rooms from the sea, the path to 5491 at least 0.92.
 - Your Barren Peaks save (Oct 24, 14:58): Killing Fields 6997 and A Dark Valley 6998 shown, with their trails to 6996 and to each other; The Silver Sword 6999, A Shadowy Grove 7006 and Glowing Eyes 7007 moved (still hidden, so not drawn); the Crimson Caverns' route line follows the moved rooms.
+- Your report (Oct 24): the odd sea join at the Ashen Forest beach's south-east corner fixed: two overlapping pieces of sea there (and one at the beach's north end) cancelled each other, leaving 3 small holes (0.8 square rooms) and 12 rooms of shoreline drawn out in the open sea; now one clean sea.
+- Your request (Oct 24): the Forest of Tears' big name moved 1 room south, clear of the Treetops and Canopy marker.
+- Your request (Oct 24): The Forgotten Beach's sand now runs from its rooms (5665-5668, 5680-5683) west all the way to the sea (44.6 square rooms more sand; 25 trees and 6 tufts removed).
+- Your request (Oct 24): the Tower of Enlightenment has its own drawing: a stone tower covered in dense ivy, its top crumbled away, cracked, with missing stones, an empty window and doorway, and bushes at its foot (same size as before, 3.4 rooms tall).
+- Your request (Oct 24): A Narrow Trail 6733 (Mount Krozloy) and The hills 6736 (Kingdom of Juargan) added to the Barren Peaks + Forgotten Woods editor, with The hills 6732, the room joining them to the Barren Peaks (6731 e 6732, 6732 n 6733 and e 6736), east of 6731; drawn once you place them and save.
 
 ## Version 2.12 · The Knights of the Round · October 23, 2026
 
