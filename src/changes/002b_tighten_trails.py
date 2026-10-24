@@ -1,5 +1,5 @@
 """Owner, Oct 24: the Forgotten Woods' and the Barren Peaks' trails tightened to their rooms: every shown room of those two areas lies within CAP of
-its trail (the old pipeline smoothed each chain of rooms into a curve that passed up to 1.2 rooms off them). Each trail keeps its own smooth
+its trail (CAP 0.25, owner, Oct 24: 0.15 was too tight; the old pipeline smoothed each chain of rooms into a curve that passed up to 1.2 rooms off them). Each trail keeps its own smooth
 shape and only bends locally towards the rooms it was too far from:
   - a room belongs to its nearest trail (within NEAR) if it isn't hidden in the Barren Peaks + Forgotten Woods editor and one of its exits leads to
     a room also within NEAR of that trail (so stray rooms that aren't on the trail don't pull it);
@@ -17,7 +17,7 @@ import maplib
 
 HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
 AREAS = ('The Forgotten Woods', 'Barren Peaks of Tahjliera')
-CAP, NEAR = 0.15, 1.2
+CAP, NEAR = 0.25, 1.2
 STEP, SIGMA, END_EASE, ITER = 0.1, 0.9, 0.3, 40
 SIMPLIFY = 0.012
 SMOOTH = 4                                            # smoothing passes over the moved stretches (between pulls)

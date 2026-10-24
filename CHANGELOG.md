@@ -27,7 +27,7 @@
 - Your request (Oct 24): the Tower of Enlightenment's drawing has fewer ivy clumps and vines (9 clumps instead of 21).
 - Your request (Oct 24): the six long dashed links from the Barren Peaks' east side to the Azure Sea Coast path are a darker, fainter blue (the two short links elsewhere unchanged).
 - Your request (Oct 24): The Grimdog Port Authority's name directly east of its marker; Old Thalos's directly west of its marker, with Sesuad'ra Rift's marker 0.5 rooms further south (its name beside it as before).
-- Your request (Oct 24): the Forgotten Woods' and the Barren Peaks' trails tightened to their rooms: every shown room on them is now within 0.15 rooms of its trail (332 of 778 were further, up to 1.19). 66 trails bend gently towards their rooms where they were too far and keep their smooth shape elsewhere; their ends (where trails meet) stay put, and 11 trails that joined a moved trail were re-attached to it. 151 trees, 25 tufts and a few other sprites cleared along the moved stretches. The High-Cliff Trail's cliff follows it.
+- Your request (Oct 24): the Forgotten Woods' and the Barren Peaks' trails tightened to their rooms: every shown room on them is now within 0.25 rooms of its trail (first tried at 0.15: too tight). 237 of 778 rooms were further (up to 1.19); 61 trails bend gently towards their rooms where they were too far and keep their smooth shape elsewhere; their ends (where trails meet) stay put, and 11 trails that joined a moved trail were re-attached to it. 118 trees, 17 tufts and a few other sprites cleared along the moved stretches. The High-Cliff Trail's cliff follows it.
 
 ## Version 2.12 · The Knights of the Round · October 23, 2026
 
