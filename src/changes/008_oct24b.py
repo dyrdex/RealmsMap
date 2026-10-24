@@ -4,7 +4,7 @@
     (22139, now hidden, was never drawn). New trails, straight room to room (as 2.12/007): 6730 - 6731 - 6732, 6732 - 6733, 6732 - 6736 (an
     end room off every old trail ends on the nearest trail); fwtracks[229] (6822 ... 6830, through 6824 and 6825) redrawn through its rooms'
     spots (it passed up to 0.79 off them), gently rounded (ROUND_D); route lines through the moved rooms follow them;
-  - Kingdom of Juargan: its route now ends with e (6732 e 6736), so its line and marker reach The hills 6736 (owner: the marker on 6736);
+  - Kingdom of Juargan: the owner's new directions (Oct 24; KJ_ROUTE, numbered form only), its line and marker reach The hills 6736;
   - a new location, Mount Krozloy (A Narrow Trail 6733), the owner's directions (numbered), traced as 2.12/005;
   - Angel's Landing's trail (fwtracks[639], 5667 sw 16226 to the landing) starts where the beach trail (fwtracks[30]) passes 5667, so it no
     longer stops short of it (0.68 off);
@@ -25,6 +25,7 @@ CHAIN229 = [6822, 6823, 6824, 6825, 6826, 6828, 6829, 6830]
 ROUND_D, CLEAR, SNAP = 0.3, 0.3, 0.05
 KROZLOY = ('Mount Krozloy', 6733, 'n;n;n;n;n;n;nw;nw;nw;w;n;e;e;e;e;s;w;sw;s;sw;s;s;sw;sw;s;s;ne;ne;n;nw;w;nw;nw;w;nw;nw;nw;w;w;w;nw;nw;w;w;w;s;e;ne;ne;ne;se;e;e;e;e;se;se;e;e;e;e;e;e;n;e;e;n')
 LONG = 10.0
+KJ_ROUTE = 'n;n;n;n;n;n;nw;nw;nw;w;n;e;e;e;e;s;w;sw;s;sw;s;s;sw;sw;s;s;ne;ne;n;nw;w;nw;nw;w;nw;nw;nw;w;w;w;nw;nw;w;w;w;s;e;ne;ne;ne;se;e;e;e;e;se;se;e;e;e;e;e;e;n;e;e;e'   # (owner, Oct 24; never edited)
 NUDGE = (0.0, 0.5)                                   # Sesuad'ra Rift's marker, south
 SPRITES = ('trees', 'tufts', 'hills', 'thorns', 'brush', 'boulders', 'crags', 'reeds', 'wheattufts')
 
@@ -99,7 +100,7 @@ def apply(town, wild, pos):
     # ---- Kingdom of Juargan to 6736; Mount Krozloy ----
     walk, atw = maplib.tracer(pos, wild)
     kj = next(p for p in wild['places'] if p['name'] == 'Kingdom of Juargan')
-    route = maplib.condense(kj['route'] + ';e'); t, segs = _trace(walk, atw, route)
+    route = maplib.condense(KJ_ROUTE); t, segs = _trace(walk, atw, route)
     assert t[-1] == 6736, t[-3:]
     kj.update(route=route, room=rooms[6736]['name'], dir='here', path=segs[0], segs=segs)
     name, room, raw = KROZLOY

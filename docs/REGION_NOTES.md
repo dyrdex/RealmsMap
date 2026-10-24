@@ -52,6 +52,7 @@ The other builders run inside `src/legacy`.
 | Otherland (Oct 21; `tools/otherland_editor/`) | https://claude.ai/artifact/5B5NWTeurkdsVpDwuPFphX | `ollayout/current` | `ol_layout_final.json` |
 
 ## Standing owner rules, by region
+- **Trails to rooms** (owner, Oct 24; `changes/002b_tighten_trails.py`): Forgotten Woods and Barren Peaks trails stay within 0.15 rooms of their shown rooms (ends fixed). New trails: straight room to room, lightly rounded.
 - **Everywhere**: routes and room counts are the owner's own (`data.py`: `MORE_DIRECTIONS`, `ROUTE_OPTIONS`), never computed;
   directions in numbered form. A route's marker goes where the route leaves the area. Asgard Nexus and World Housing stay off
   the map (Oct 12). Castle Darkhawk has no route yet.

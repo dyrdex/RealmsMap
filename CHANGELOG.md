@@ -21,12 +21,13 @@
 - Your request (Oct 24): the Tower of Enlightenment has its own drawing: a stone tower covered in dense ivy, its top crumbled away, cracked, with missing stones, an empty window and doorway, and bushes at its foot (same size as before, 3.4 rooms tall).
 - Your request (Oct 24): A Narrow Trail 6733 (Mount Krozloy) and The hills 6736 (Kingdom of Juargan) added to the Barren Peaks + Forgotten Woods editor, with The hills 6732, the room joining them to the Barren Peaks (6731 e 6732, 6732 n 6733 and e 6736), east of 6731; drawn once you place them and save.
 - Your Barren Peaks + Forgotten Woods save (Oct 24, 15:44): The hills 6732, A Narrow Trail 6733 and The hills 6736 drawn where you put them, with The Narrowings 6731 (now shown): trails 6730 - 6731 - 6732, 6732 - 6733 and 6732 - 6736; Smeared Blood 6824 and The Forests to the South 6825 moved, and the trail through them (6822 to 6830) now runs through every one of its rooms (it passed up to 0.79 rooms off them); the route lines through them follow.
-- Your request (Oct 24): Kingdom of Juargan's marker on The hills 6736 (its route ends with one more step, e).
+- Your request (Oct 24): Kingdom of Juargan's marker on The hills 6736, with your new directions (#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;s;e;#3 ne;se;#4 e;#2 se;#6 e;n;#3 e).
 - Your request (Oct 24): a new location, Mount Krozloy (A Narrow Trail 6733), with your directions (#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;s;e;#3 ne;se;#4 e;#2 se;#6 e;n;#2 e;n).
 - Your request (Oct 24): the trail from the Forgotten Woods to Angel's Landing now joins the beach trail at The Forgotten Beach 5667 (it stopped 0.68 rooms short of it).
 - Your request (Oct 24): the Tower of Enlightenment's drawing has fewer ivy clumps and vines (9 clumps instead of 21).
 - Your request (Oct 24): the six long dashed links from the Barren Peaks' east side to the Azure Sea Coast path are a darker, fainter blue (the two short links elsewhere unchanged).
 - Your request (Oct 24): The Grimdog Port Authority's name directly east of its marker; Old Thalos's directly west of its marker, with Sesuad'ra Rift's marker 0.5 rooms further south (its name beside it as before).
+- Your request (Oct 24): the Forgotten Woods' and the Barren Peaks' trails tightened to their rooms: every shown room on them is now within 0.15 rooms of its trail (332 of 778 were further, up to 1.19). 66 trails bend gently towards their rooms where they were too far and keep their smooth shape elsewhere; their ends (where trails meet) stay put, and 11 trails that joined a moved trail were re-attached to it. 151 trees, 25 tufts and a few other sprites cleared along the moved stretches. The High-Cliff Trail's cliff follows it.
 
 ## Version 2.12 · The Knights of the Round · October 23, 2026
 
