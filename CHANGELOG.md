@@ -12,6 +12,9 @@
 - Your request (Oct 23): 5644 down to 13640, the only safe way down the cliff: a notch cut through the cliff face with the stairway running down it (8 steps, narrowing as they go down; was 1).
 - Your request (Oct 24): the Tower of Enlightenment's marker is on Path to the Tower 13642 (its line now follows 5644 down to 13640, 13641 and 13642), with a small drawing of the tower just behind it, as big as fits between the cliff, the stairway from 5639 and the trails (3.4 rooms tall, 1.07 wide).
 - Your request (Oct 24): the Grimdog Port Authority's marker moved 2 rooms south-east, off the long path from 1669 (now 1.75 rooms from it; was 0.06).
+- Your request (Oct 24): the seven deadly drops off the cliff (5640, 5641, 5642, 5643, 5645, 5646, 5495, all down to The Coast's Jagged Teeth): the cliff's rim from 5640 to 5495 is a dark red warning dash (11.7 rooms; the notch at 5644, the safe way down, stays plain) and one skull and crossbones sits on the cliff face midway, below 5642-5643.
+- Your request (Oct 24): more land between the new sea and the path from 1669: the coast follows that path only down to about y -41, then runs west to about x -59 and slopes down to meet the old coast at Sailing the Seas (by the Knock Dock). 128.5 square rooms of sea there (the Knights bay's south end and the strip west of Grimdog) became forest, with 106 trees like the forest round it; 1669 is now 8.8 rooms from the sea, the path to 5491 at least 0.92.
+- Your Barren Peaks save (Oct 24, 14:58): Killing Fields 6997 and A Dark Valley 6998 shown, with their trails to 6996 and to each other; The Silver Sword 6999, A Shadowy Grove 7006 and Glowing Eyes 7007 moved (still hidden, so not drawn); the Crimson Caverns' route line follows the moved rooms.
 
 ## Version 2.12 · The Knights of the Round · October 23, 2026
 

@@ -8,6 +8,9 @@ map's own cliff colours: --w-cliff face, --w-hach hachures and rim) runs along t
   Its rim is RIM off the trail's centre line, its face WIDE wide (tapering in over TAPER0 at 5669, out over TAPER1 at 5494).
   - 5644 d 13640, the only safe way down (owner, Oct 23): a notch cut through the face round the stairway (NOTCH each side), the stairway's
     steps redone closer together, all the way down (descents[-1], from 002).
+  - the seven deadly drops (owner, Oct 24: 5640, 5641, 5642, 5643, 5645, 5646, 5495 go down to the deathtraps 5496 / 16224): the rim from
+    5640 to 5495 in a dark red warning dash (`danger`, the deathtrap red; the notch at 5644 stays plain) and one deathtrap emblem on the
+    face midway (SKULL_ROOMS, size SKULL) instead of seven.
   Trees and tufts on the face removed."""
 import math, random
 from shapely.geometry import LineString, Point, Polygon, box
@@ -17,6 +20,8 @@ RIM, WIDE, TAPER0, TAPER1 = 0.22, 0.55, 0.8, 1.6
 NOTCH = 0.3
 HACH = 0.12                                         # hachures apart, along the rim
 STEP, HALF0, HALF1 = 0.13, 0.22, 0.14               # the safe way down's steps: apart, half width at the top, at the bottom
+DANGER = (5640, 5495)                               # the rim between these rooms: the warning dash
+SKULL_ROOMS, SKULL, SKULL_OFF = (5642, 5643), 0.42, 0.72   # the emblem: below the middle of these two, this far down the face
 SPRITES = ('trees', 'tufts', 'hills', 'thorns', 'brush', 'boulders', 'crags', 'reeds', 'wheattufts')
 
 
@@ -85,18 +90,31 @@ def apply(town, wild, pos):
     face = unary_union([p[0] for p in parts]).difference(trails).difference(notch)
     face = unary_union([q for q in getattr(face, 'geoms', [face]) if q.area > 0.01])
     cut = trails.union(notch)
-    rims = []
-    for p in parts:
+    rims, danger = [], []
+    from shapely.ops import substring
+    for k, p in enumerate(parts):
         if p[1] is None: continue
-        r = p[1].difference(notch)
-        for g in getattr(r, 'geoms', [r]):
-            if g.length > 0.15: rims.append([[round(x, 3), round(y, 3)] for x, y in g.coords])
+        pieces = [(p[1], False)]
+        if k == 2:                                  # (5639 - 5494: the stretch with the deadly drops)
+            d0, d1 = sorted(p[1].project(Point(R(v))) for v in DANGER)
+            pieces = [(substring(p[1], 0, d0), False), (substring(p[1], d0, d1), True), (substring(p[1], d1, p[1].length), False)]
+        for line, bad in pieces:
+            r = line.difference(notch)
+            for g in getattr(r, 'geoms', [r]):
+                if g.length > 0.15: (danger if bad else rims).append([[round(x, 3), round(y, 3)] for x, y in g.coords])
     hach = [[[round(c, 3) for c in h[0]], [round(c, 3) for c in h[1]]] for p in parts for h in p[2] if not cut.intersects(LineString(h))]
     polys = []
     for P in getattr(face, 'geoms', [face]):
         polys.append([[round(x, 3), round(y, 3)] for x, y in list(P.exterior.coords)[:-1]])
         polys += [[[round(x, 3), round(y, 3)] for x, y in list(h.coords)[:-1]] for h in P.interiors]
-    wild['fwcliff'] = list(wild.get('fwcliff') or []) + [{'face': polys, 'hach': hach, 'rim': rims}]
+    wild['fwcliff'] = list(wild.get('fwcliff') or []) + [{'face': polys, 'hach': hach, 'rim': rims, 'danger': danger}]
+    t3 = LineString(S3); m = ((R(SKULL_ROOMS[0])[0] + R(SKULL_ROOMS[1])[0]) / 2, (R(SKULL_ROOMS[0])[1] + R(SKULL_ROOMS[1])[1]) / 2)
+    q = t3.interpolate(t3.project(Point(m))); dl = 0.05
+    a_, b_ = t3.interpolate(max(0, t3.project(q) - dl)), t3.interpolate(min(t3.length, t3.project(q) + dl))
+    nx, ny = -(b_.y - a_.y), b_.x - a_.x; l = math.hypot(nx, ny); nx, ny = nx / l, ny / l
+    if not low3.contains(Point(q.x + nx * 0.4, q.y + ny * 0.4)): nx, ny = -nx, -ny
+    skull = [round(q.x + nx * SKULL_OFF, 3), round(q.y + ny * SKULL_OFF, 3), SKULL]
+    wild['deathtraps'] = list(wild.get('deathtraps') or []) + [skull]
     # ---- the safe way down: steps all the way, closer together ----
     Ls = math.dist(a, b); ux, uy = (b[0] - a[0]) / Ls, (b[1] - a[1]) / Ls; nx, ny = -uy, ux
     steps = []; s = 0.12
@@ -122,4 +140,5 @@ def apply(town, wild, pos):
             'hachures': len(hach), 'rim pieces': len(rims), 'face in the sea (area)': round(face.intersection(W).area, 3),
             'rooms on the face': rooms_on, 'other trails over the face (length)': round(others.intersection(face).length, 3),
             'safe way down: length, steps (old -> new), notch width': (round(Ls, 2), (old_steps, len(steps)), 2 * NOTCH), 'sprites removed': gone,
-            '13640 from the face': round(face.distance(Point(R(13640))), 2)}
+            '13640 from the face': round(face.distance(Point(R(13640))), 2), 'warning rim (pieces, length)': (len(danger), round(sum(LineString(d).length for d in danger), 2)),
+            'emblem (x, y, size), from the clifftop trail / the trails below': (skull, round(t3.distance(Point(skull[:2])), 2), round(unary_union([LineString([q_[:2] for q_ in l]) for i, l in enumerate(fw) if len(l) > 1 and i != 16]).distance(Point(skull[:2])), 2))}
