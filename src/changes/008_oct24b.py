@@ -23,7 +23,7 @@ MOVED = [6731, 6824, 6825]
 NEW = [6732, 6733, 6736]
 EDGES = [(6730, 6731), (6731, 6732), (6732, 6733), (6732, 6736)]
 CHAIN229 = [6822, 6823, 6824, 6825, 6826, 6828, 6829, 6830]
-ROUND_D, CLEAR, SNAP = 0.3, 0.3, 0.05
+ROUND_D, CLEAR, SNAP = 0.6, 0.3, 0.05                 # (rounding 0.6: owner, Oct 24)
 KROZLOY = ('Mount Krozloy', 6733, 'n;n;n;n;n;n;nw;nw;nw;w;n;e;e;e;e;s;w;sw;s;sw;s;s;sw;sw;s;s;ne;ne;n;nw;w;nw;nw;w;nw;nw;nw;w;w;w;nw;nw;w;w;w;s;e;ne;ne;ne;se;e;e;e;e;se;se;e;e;e;e;e;e;n;e;e;n')
 LONG = 10.0
 KJ_ROUTE = 'n;n;n;n;n;n;nw;nw;nw;w;n;e;e;e;e;s;w;sw;s;sw;s;s;sw;sw;s;s;ne;ne;n;nw;w;nw;nw;w;nw;nw;nw;w;w;w;nw;nw;w;w;w;s;e;ne;ne;ne;se;e;e;e;e;se;se;e;e;e;e;e;e;n;e;e;e'   # (owner, Oct 24; never edited)
@@ -111,10 +111,10 @@ def apply(town, wild, pos):
     wild['places'].append(dict(name=name, route=route, room=rooms[room]['name'], dir='here', path=segs[0], segs=segs, group='fw', note=None))
     out['Kingdom of Juargan marker; Mount Krozloy (route, rooms walked, marker)'] = (segs and kj['segs'][-1][-1], (route, len(t) - 1, segs[-1][-1]))
     # ---- Angel's Landing's trail joined to the beach trail ----
-    l639 = fw[639]; assert math.dist(l639[0][:2], at(5667)) < 0.01
-    beach = LineString([q[:2] for q in fw[30]]); n = nearest_points(beach, Point(at(5667)))[0]
-    fw[639] = [[round(n.x, 3), round(n.y, 3)]] + list(l639)
-    out["Angel's Landing trail: start joined to the beach trail (gap was)"] = round(beach.distance(Point(at(5667))), 2)
+    l639 = fw[639]; assert math.dist(l639[0][:2], at(5667)) < 0.3   # (002c may have re-attached it to the rounded beach trail already)
+    beach = LineString([q[:2] for q in fw[30]]); n = nearest_points(beach, Point(l639[0][:2]))[0]
+    if n.distance(Point(l639[0][:2])) > 0.01: fw[639] = [[round(n.x, 3), round(n.y, 3)]] + list(l639)
+    out["Angel's Landing trail: start joined to the beach trail (gap was)"] = round(beach.distance(Point(l639[0][:2])), 2)
     # ---- the long dashed links: fainter ----
     D = wild['seadash']; faint = [l for l in D if LineString(l).length > LONG]
     wild['seadash'] = [l for l in D if LineString(l).length <= LONG]; wild['seadashfaint'] = list(wild.get('seadashfaint') or []) + faint
