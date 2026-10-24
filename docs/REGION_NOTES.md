@@ -52,6 +52,7 @@ The other builders run inside `src/legacy`.
 | Otherland (Oct 21; `tools/otherland_editor/`) | https://claude.ai/artifact/5B5NWTeurkdsVpDwuPFphX | `ollayout/current` | `ol_layout_final.json` |
 
 ## Standing owner rules, by region
+- **Woods path review** (owner, Oct 24; `changes/002b`, `009_fw_review.py`): a trail must follow its rooms' real exits (redrawn along them if its order skips exits); a single-exit trail is never pulled; no trail drawn twice. Expected leftovers: Flowing Plains of Grass (no trails), maze entrances ending at the blob, trails ending on the Northern Trade Route.
 - **Trails to rooms** (owner, Oct 24; `changes/002b_tighten_trails.py`): Forgotten Woods and Barren Peaks trails stay within 0.35 rooms of their shown rooms (0.15, 0.25 were too tight); the Lost in the Swamp maze is drawn over the trails (`top`) (ends fixed). New trails: straight room to room, lightly rounded.
 - **Everywhere**: routes and room counts are the owner's own (`data.py`: `MORE_DIRECTIONS`, `ROUTE_OPTIONS`), never computed;
   directions in numbered form. A route's marker goes where the route leaves the area. Asgard Nexus and World Housing stay off
