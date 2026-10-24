@@ -29,6 +29,7 @@
 - Your request (Oct 24): The Grimdog Port Authority's name directly east of its marker; Old Thalos's directly west of its marker, with Sesuad'ra Rift's marker 0.5 rooms further south (its name beside it as before).
 - Your request (Oct 24): the Forgotten Woods' and the Barren Peaks' trails tightened to their rooms: every shown room on them is now within 0.35 rooms of its trail (0.15 and 0.25 were too tight). 133 of 778 rooms were further (up to 1.19); 46 trails bend gently towards their rooms where they were too far and keep their smooth shape elsewhere; their ends (where trails meet) stay put, and 10 trails that joined a moved trail were re-attached to it. 78 trees, 11 tufts and a few other sprites cleared along the moved stretches. The High-Cliff Trail's cliff follows it.
 - Your request (Oct 24): the Lost in the Swamp maze blob is drawn over the trails.
+- Your request (Oct 24): The Crimson Caverns 22807 added to the Barren Peaks + Forgotten Woods editor, east of A Dark Valley 6998 (its exit east to 22808 left off); drawn once you place it and save.
 
 ## Version 2.12 · The Knights of the Round · October 23, 2026
 
