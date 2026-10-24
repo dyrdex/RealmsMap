@@ -11,7 +11,8 @@
   - the long dashed links from the Barren Peaks' east side to the Azure Sea Coast path (seadash longer than LONG): moved to `seadashfaint`
     (template: a darker blue, fainter), the two short links stay as they were;
   - The Grimdog Port Authority's label pinned east of its marker, Old Thalos's west of its marker (template LBL/PINNED); Sesuad'ra Rift's
-    marker NUDGE south to make room, its label pinned at the same spot beside it as before."""
+    marker NUDGE south to make room, its label pinned at the same spot beside it as before;
+  - the Lost in the Swamp maze blob drawn over the trails (`top`, as The Wild Woodland; owner: the tightened trails showed over it)."""
 import json, math, os
 import maplib
 from shapely.geometry import LineString, Point
@@ -122,4 +123,6 @@ def apply(town, wild, pos):
     sr = next(p for p in wild['places'] if p['name'] == "Sesuad'ra Rift"); a0 = list(sr['at'])
     sr['at'] = [round(a0[0] + NUDGE[0], 2), round(a0[1] + NUDGE[1], 2)]
     out["Sesuad'ra Rift marker (old -> new)"] = (a0, sr['at'])
+    mz = next(m for m in wild['fwmazes'] if m.get('name') == 'Lost in the Swamp'); mz['top'] = True
+    out['Lost in the Swamp maze over the trails'] = True
     return out

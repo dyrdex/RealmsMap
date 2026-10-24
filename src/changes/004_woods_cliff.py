@@ -64,8 +64,9 @@ def apply(town, wild, pos):
     R = lambda v: tuple(pos[str(v)][:2])
     fw = wild['fwtracks']
     t30 = [tuple(q[:2]) for q in fw[30]]; i69 = min(range(len(t30)), key=lambda i: math.dist(t30[i], R(5669)))
-    assert math.dist(t30[0], R(5628)) < 0.01 and math.dist(t30[i69], R(5669)) < 0.3
-    S1 = [R(5669)] + t30[:i69 + 1][::-1][1:] if math.dist(t30[i69], R(5669)) > 0.01 else t30[:i69 + 1][::-1]   # 5669 -> 5628
+    assert math.dist(t30[0], R(5628)) < 0.01 and LineString(t30).distance(Point(R(5669))) < 0.4
+    from shapely.ops import substring as _sub
+    g30 = LineString(t30); S1 = list(_sub(g30, 0, g30.project(Point(R(5669)))).coords)[::-1]   # 5669 -> 5628 (cut where the trail passes 5669)
     t16 = [tuple(q[:2]) for q in fw[16]]
     at = lambda v: min(range(len(t16)), key=lambda i: math.dist(t16[i], R(v)))
     i28, i39, i94 = at(5628), at(5639), at(5494)
