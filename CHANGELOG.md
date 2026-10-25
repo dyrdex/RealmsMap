@@ -11,10 +11,10 @@
   - Selecting it lights Sailing the Seas' route (unchanged) and then a dotted, wavy boat line with large bends north over the Blood Sea to the island's marker (135 rooms long, at least 2 rooms off any coast). The boat line shows only while the place is selected.
 - Your request (Oct 25): Hurricane Island, 9.59 across on average (2/3 of Fireball Island's 14.39), with an uneven outline (9.8 wide, 10.7 tall). Centred at -117.9, 1: 12 rooms west of The Blood Sea's marker, 2 further than asked, because the marker sits in a bay with headlands north and south. That keeps the island 2.17 rooms off the coast. It's sandy all over, with wind ripples in the sand and grass bent east. A ridge of three craggy peaks has sand drifted up its west slopes and blowing off its crests, and gusts curl across the island. On the west coast lies a wrecked boat: hull keeled over, ribs bare, mast snapped, a rag of sail, planks strewn on the sand.
   - Its marker is on the east beach and its name, larger than usual (1.4), is centred above the island. Directions: #53 w;se;d;u;d;u (yours, unchanged; they reach Hurricane Island 14220). The highlighted line follows #53 w as far as it is drawn (to The Misery of Mourning, as The Blood Sea's) and then runs straight to the marker (14.4 rooms, 9.8 of them over the sea).
-
 - Your request (Oct 25): Hurricane Island halved: 4.8 across on average (was 9.59; 1/3 of Fireball Island's). Now that it fits, it sits exactly 10 rooms west of The Blood Sea's marker (-115.9, 1), 2.32 off the coast. Its mountains, wreck and gusts are scaled down with it (24 sand ripples, 14 grass tufts). Its name is still size 1.4, centred above it.
 - Your request (Oct 25): Fireball Island's volcano made smaller (0.65 of its old size: 4.9 wide at its foot, 4 tall) and in softer colours: muted ember orange instead of bright orange and yellow for the crater, lava, glow and fireballs.
 - Your request (Oct 25): a small wooden dock at Fireball Island's marker (planks on posts), running south-east from the marker to 1 room past the shore.
+
 ## Version 2.14 · The Hometowns · October 25, 2026
 
 - Your request (Oct 25): nine new destinations in the list, each with your directions. None is fully mapped yet, so each line runs from Darkhaven Square as far as the drawn rooms go and stops at the last one (its card says where).
