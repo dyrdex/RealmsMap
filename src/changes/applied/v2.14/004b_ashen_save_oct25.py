@@ -13,7 +13,7 @@ def line(a, b, step=0.32):
 
 
 def apply(town, wild, pos):
-    o = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'legacy', 'ash_layout_oct25.json')))
+    o = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'legacy', 'ash_layout_oct25.json')))
     sv = dict(zip(o['ids'], zip(o['xs'], o['ys'])))
     assert math.dist(sv[1255], pos['1255']) < 1e-6
     for v in CHAIN[1:]:

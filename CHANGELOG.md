@@ -1,6 +1,8 @@
 # Realm Map changelog
 
-## In progress (2.14)
+## In progress (2.15)
+
+## Version 2.14 · The Hometowns · October 25, 2026
 
 - Your request (Oct 25): nine new destinations in the list, each with your directions. None is fully mapped yet, so each line runs from Darkhaven Square as far as the drawn rooms go and stops at the last one (its card says where).
   - Dwarven Catacombs (Northern Entrance): line stops at Within the Ashen Forest 2857 (after 22 of its 58 steps); marker 3.7 rooms north of the Mountains of Desolation's, at y 7.5.

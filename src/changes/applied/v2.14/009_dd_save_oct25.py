@@ -36,9 +36,9 @@ def _chains(G, P):
 
 def apply(town, wild, pos):
     here = os.path.dirname(os.path.abspath(__file__))
-    o = json.load(open(os.path.join(here, '..', 'legacy', 'dd_layout_oct25.json')))
+    o = json.load(open(os.path.join(here, '..', '..', '..', 'legacy', 'dd_layout_oct25.json')))
     sv = dict(zip(o['ids'], zip(o['xs'], o['ys']))); hid = set(o['hidden'])
-    prev = json.load(open(os.path.join(here, '..', 'legacy', 'dd_layout_az.json')))          # the save before (Oct 21 14:20Z, drawn by applied/v2.3/001)
+    prev = json.load(open(os.path.join(here, '..', '..', '..', 'legacy', 'dd_layout_az.json')))          # the save before (Oct 21 14:20Z, drawn by applied/v2.3/001)
     pv = dict(zip(prev['ids'], zip(prev['xs'], prev['ys']))); old_hidden = set(prev['hidden'])
     moved = [v for v in sv if v in pv and math.dist(sv[v], pv[v]) > 1e-6]       # only what the owner moved (21 map rooms differ from the save on purpose)
     assert all(str(v) in pos and math.dist(pos[str(v)], pv[v]) < 1e-6 for v in moved)

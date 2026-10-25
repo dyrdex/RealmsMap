@@ -22,7 +22,7 @@ PLACES = [   # name, owner's directions, marker room (None: list only), where, n
 
 
 def apply(town, wild, pos):
-    o = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'legacy', 'ft_layout_oct25b.json')))
+    o = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'legacy', 'ft_layout_oct25b.json')))
     sv = dict(zip(o['ids'], zip(o['xs'], o['ys'])))
     for v in NEW:
         assert str(v) not in pos and v in o['hidden'], v

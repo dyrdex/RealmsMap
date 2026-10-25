@@ -51,7 +51,7 @@ def apply(town, wild, pos):
     rep['forest hole'] = {'deep piece removed': hole[0], 'area': round(area, 2), 'trees there before': len(have), 'added': len(new), 'density around': round(dens, 2)}
     # the Mire trails
     rooms, exits = maplib.world()
-    mi = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'legacy', 'mi_layout_final.json')))
+    mi = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'legacy', 'mi_layout_final.json')))
     sv = dict(zip(mi['ids'], zip(mi['xs'], mi['ys']))); assert not SECTION & set(mi['hidden'])
     for v in SECTION: assert math.dist(sv[v], pos[str(v)]) < 1e-6, v
     tr = wild['fwtracks']
