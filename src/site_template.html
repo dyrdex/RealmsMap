@@ -159,7 +159,7 @@ function routeD(sg,J){let d='',j='';const at=(a,x,y)=>Math.abs(a[0]-x)<.03&&Math
 function drawRoute(p,k){
   const L=document.getElementById('routeLayer');
   if(!p){L.innerHTML='';return}
-  if(p.noroute){L.innerHTML='';return}
+  if(p.noroute||p.hidepath){L.innerHTML='';return}   /* hidepath: directions on the card, no line drawn (owner, Oct 25) */
   const sg=routeSegs(p,k);
   const {d,j}=routeD(sg,D.jumps);
   L.innerHTML=`<path d="${d}" fill="none" stroke="var(--glow)" stroke-width=".42" stroke-linecap="round" stroke-linejoin="round"/><path id="rl" d="${d}" fill="none" stroke="var(--pick)" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round"/>`+(j?`<path d="${j}" fill="none" stroke="var(--pick)" stroke-width=".1" stroke-dasharray=".45 .35" stroke-linecap="round" opacity=".9"/>`:'');

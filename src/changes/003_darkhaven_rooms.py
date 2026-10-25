@@ -10,7 +10,9 @@ import maplib
 R = lambda q: [round(q[0], 3), round(q[1], 3)]
 SPOTS = {   # the Rainbow from the block's south-east corner west and up to 13604; the gate north of it, the void east of it
     13599: (-1.0, 2.95), 13600: (-1.85, 3.05), 13601: (-2.7, 3.05), 13602: (-3.55, 2.95), 13603: (-4.4, 2.6), 13604: (-5.1, 1.85),
-    13606: (-5.1, 0.95), 1416: (-4.5, 1.85), 1453: (2.0, 1.0)}
+    13606: (-5.1, 0.95), 1416: (-4.5, 1.85), 1453: (0.8, 0.85)}   # (Town Hall: by the corner of Vertic Avenue and Horizon Road, owner Oct 25; was 2, 1)
+AT = {'The Astral Plane': (-0.8, 0.85), 'The Sands of Teracchei': (-0.8, 1.75)}   # markers by the corner of Vertic and Horizon, east of their
+                                                  # names, the Sands directly south of the Astral Plane; no route line for either (owner, Oct 25)
 PLACES = [   # name, owner's directions, kind
     ('The Astral Plane', '#8 u;n', None),
     ('The Sands of Teracchei', '#8 u;e', None),
@@ -34,6 +36,7 @@ def apply(town, wild, pos):
             if at(v) and (not path or path[-1] != R(at(v))): path.append(R(at(v)))
         p = dict(name=name, route=route, room=rooms[t[-1]]['name'], dir='here', path=path, segs=[path], note=None)
         if kind: p['kind'] = kind
+        if name in AT: p['at'] = list(AT[name]); p['hidepath'] = True
         wild['places'].append(p)
         rep[name] = {'ends at': (t[-1], rooms[t[-1]]['name']), 'marker': path[-1], 'drawn points': len(path)}
     next(p for p in wild['places'] if p['name'] == 'The Sands of Teracchei')['card'] = 'Gith Hometown'   # (owner, Oct 25: Sands of Teracchei)

@@ -22,6 +22,7 @@
 - Your request (Oct 25): the Western Trade Route's line now stops at its marker (831, after 9 of its 10 steps).
 - Your request (Oct 25): new rooms in Darkhaven, placed by hand (there's no town layout editor) in the empty block south-west of Darkhaven Square: the Rainbow (13599-13604) runs from the block's south-east corner west and up to 13604; The Astral Gate 13606 north of it, An Endless Sea of Void 1416 east of it. The Lobby of Darkhaven Town Hall 1453 just south of Horizon Road 763. In the Air 12176/13598 stay on the Square (they are above it). Nothing else in the town changed (checked pixel by pixel: only those two blocks differ).
 - Your request (Oct 25): three new destinations with your directions: The Astral Plane (#8 u;n, marker on The Astral Gate), The Sands of Teracchei (#8 u;e, marker on An Endless Sea of Void; card "Gith Hometown") and Town Hall (e;s, a square landmark marker on its lobby); names east of their markers, in the town's small style.
+- Your request (Oct 25): Town Hall's marker moved west, by the corner of Vertic Avenue and Horizon Road (0.8, 0.85; was 2, 1). The Astral Plane's marker moved to that corner too, east of its name (-0.8, 0.85); The Sands of Teracchei's marker directly south of it (-0.8, 1.75), east of its name. Selecting either no longer draws a route line (the card still shows the directions).
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 

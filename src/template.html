@@ -739,7 +739,7 @@ Object.assign(LBL,{'Crystalmir Lake':[.55,.06,'start'],'The Dunhill Demesnes':[0
 LBL['The Grimdog Port Authority']=[.55,.18,'start'];PINNED.add('The Grimdog Port Authority');LBL['Old Thalos']=[-.55,.18,'end'];PINNED.add('Old Thalos');LBL["Sesuad'ra Rift"]=[-.63,.91,'end'];PINNED.add("Sesuad'ra Rift");   /* owner, Oct 24: Grimdog's name east of its marker (over the Western Trade Route: fine), Old Thalos's west of its marker; Sesuad'ra Rift's marker moved south for it, its name where it was beside it */
 LBL['Knights of the Round']=[2.4,.06,'start'];PINNED.add('Knights of the Round');   /* 1.85 further east since the Woods' coast trail moved (save Oct 23 22:07Z): clear of it */
 LBL['Dwarven Catacombs']=[.55,.06,'start'];LBL['Dragontail Glen']=[0,-.8,'middle'];LBL['Mathlaan Lagoon']=[-.55,.06,'end'];PINNED.add('Mathlaan Lagoon');PINNED.add('Dwarven Catacombs');PINNED.add('Dragontail Glen');   /* owner, Oct 25: Dwarven Catacombs' name right by its marker; Dragontail Glen's centred above its marker (over the road: fine); Mathlaan Lagoon's west of its marker, off Ocean Keep's town drawing */
-for(const n of ['The Astral Plane','The Sands of Teracchei','Town Hall'])PINNED.add(n);LBL['Town Hall']=[.3,0,'start'];   /* Darkhaven's new rooms (owner, Oct 25): names east of their markers, inside their empty blocks */
+for(const n of ['The Astral Plane','The Sands of Teracchei','Town Hall'])PINNED.add(n);LBL['Town Hall']=[.3,0,'start'];LBL['The Astral Plane']=[-.3,0,'end'];LBL['The Sands of Teracchei']=[-.3,0,'end'];   /* Darkhaven's new rooms (owner, Oct 25): Town Hall's name east of its marker, the Astral Plane's and the Sands' west of theirs (owner, Oct 25) */
 LBL['The Island of Irrybis']=[-.85,2.05,'end'];PINNED.add('The Island of Irrybis');   /* west of its marker (16240), under the island (owner, Oct 23) */
 LBL['Northern Plains']=[.77,-1.338,'start'];LBL['Unholy Grounds']=[.77,.175,'start'];PINNED.add('Northern Plains');PINNED.add('Unholy Grounds');   /* one marker (4221): Northern Plains above Unholy Grounds (owner, Oct 23) */   /* east of its marker, off Camelot (the label solver doesn't see drawings; owner, Oct 23) */
 for(const p of P){if(p.nolabel||p.nopin)continue;   /* named by a label already on the map */
@@ -1302,7 +1302,7 @@ function routeD(sg,J){let d='',j='';const at=(a,x,y)=>Math.abs(a[0]-x)<.03&&Math
 function drawRoute(p){
   const L=document.getElementById('routeLayer');
   if(!p){L.innerHTML='';return}
-  if(p.noroute){L.innerHTML='';return}
+  if(p.noroute||p.hidepath){L.innerHTML='';return}   /* hidepath: directions on the card, no line drawn (owner, Oct 25) */
   const sg=p.segs||[[...p.path,[p.mx,p.my]]];
   const {d,j}=routeD(sg,DATA.wild.jumps);
   L.innerHTML=`<path d="${d}" fill="none" stroke="var(--glow)" stroke-width=".42" stroke-linecap="round" stroke-linejoin="round"/><path id="rl" d="${d}" fill="none" stroke="var(--pick)" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round"/>`+(j?`<path d="${j}" fill="none" stroke="var(--pick)" stroke-width=".1" stroke-dasharray=".45 .35" stroke-linecap="round" opacity=".9"/>`:'');
