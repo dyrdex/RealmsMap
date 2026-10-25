@@ -1,5 +1,16 @@
 # Realm Map changelog
 
+## In progress (2.14)
+
+- Your request (Oct 25): nine new destinations in the list, each with your directions. None is fully mapped yet, so each line runs from Darkhaven Square as far as the drawn rooms go and stops at the last one (its card says where).
+  - Dwarven Catacombs (Northern Entrance): line stops at Within the Ashen Forest 2857 (after 22 of its 58 steps); marker 3.7 rooms north of the Mountains of Desolation's, at y 7.5.
+  - Dragontail Glen: line stops at The Foothills 4768 (Crystalmir Lake's marker; after 66 of 78 steps); marker 2.6 rooms west-north-west of Crystalmir Lake's, 1.0 room below the road.
+  - The Blood Sea: line stops at The Misery of Mourning 1638 (after 54 of 57 steps); marker at -105.9, 1.
+  - Azure Sea: the whole route is drawn, to Azure and Green 1494; marker 0.6 rooms south-east of it.
+  - The Burrows: line stops at A Dimly Lit Path 1984 (after 16 of 26 steps); marker 3 rooms north of The Shire's.
+  - Mathlaan Lagoon: line stops at Overlooking Ocean Keep 3080 (after 46 of 64 steps); marker 1.6 rooms north-west of Ocean Keep's.
+  - The Keep of Mahn-Tor (The Keep), Cold Comfort, Galaxy: in the list only, no marker or name on the map; their lines stop at Law Avenue 797, outside the Darkhaven Art Gallery (after 10 steps). Your note for Cold Comfort ("scan/scry for the room with a se exit") is on its card. The directions themselves are unchanged.
+
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 
 - Your request (Oct 23): Before the Swan-ship 16240 added on the very edge of the Northern Plains' coast, 3 rooms west-south-west of Dark Cliffs 4400 (0.34 inside the shore; the terrain is unchanged). 4400 down to 16240 is drawn as a stairway down the cliff (8 steps, narrowing and darkening as it goes down, as the Knights of the Round's 5639 down to 11745).

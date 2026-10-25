@@ -130,7 +130,7 @@ new TileL('tiles/{z}/{x}/{y}.webp',{tileSize:D.tile,minNativeZoom:D.zmin,maxNati
 /* ---------- live layer: area names, selected route, markers and their names (world units) ---------- */
 const attrs=o=>Object.entries(o).map(([k,v])=>`${k}="${esc(v)}"`).join(' ');
 let s=`<defs>${A.defs.join('')}</defs>${A.areas.join('')}<g id="routeLayer"></g><g id="pins">${D.extras.join('')}`;
-for(const p of P)s+=`<g class="pin" data-i="${p.i}" transform="translate(${p.mx},${p.my})"><circle r=".55" fill="transparent"/>${p.shape}</g>`;
+for(const p of P)if(p.shape)s+=`<g class="pin" data-i="${p.i}" transform="translate(${p.mx},${p.my})"><circle r=".55" fill="transparent"/>${p.shape}</g>`;
 for(const p of P)if(p.label)s+=`<text class="lbl plabel" data-i="${p.i}" ${attrs(p.label)}>${esc(p.name)}</text>`;
 const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
 svg.id='live';svg.setAttribute('viewBox',`${x0} ${y0} ${x1-x0} ${y1-y0}`);svg.innerHTML=s+'</g>';
