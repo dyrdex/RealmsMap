@@ -45,6 +45,7 @@
 - Your request (Oct 25): the trail from Lost Between Woods 1755 to The Weeping Forest 1754 now runs straight on past 1754 along its own line for 2 more rooms (a drawing only; no route changed).
 - Your request (Oct 25): the Land of the Fire Newts' marker is on its last room, The Obsidian Hills 3352; Machine Dreams and The Domain of World Eater share their own marker on Hanging on Air 3360, where their lines end; their names sit east of the markers (Machine Dreams above The Domain of World Eater).
 - Your request (Oct 25): the Dwarven Catacombs' marker moved south, halfway between that marker and the Mountains of Desolation's (22.29, 9.45; was 21.31, 7.5), its name east of it, just below The Domain of World Eater's.
+- Your Desert of Despair save (Oct 25, 05:31): the 33 rooms you moved (the canyon 6543-6567, the Great Eastern Desert tunnel 6548, 6549, 9058-9070) are where you put them, and the 19 you turned on are now drawn, with the 6 new rooms: desert trails from Overlooking the Canyon 6379 down into the canyon (6543-6546), along the river canyon to The mouth of a cave 6561, and through the tunnel to Cave-in 9077 and on to the Southern entrance to the Catacombs 9081 (25 exits, up/down climbs included); 12993 on to Azure and Green 12994 and A dark, scarlet main 12995 as the east coast's water path. Thul Ab'hara's two routes (River, East) follow the moved rooms; same directions.
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 
