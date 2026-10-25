@@ -2,7 +2,7 @@
 drawn by template FIREBALL's dock):
   King's Castle: on the coast due east of 3245; Ocean Keep: due north of 3069; Raven Tor: north-east of its marker; Solace: due north of its
   marker; Wild Tundra: north-west off 14444; Edo: off its island's south-east corner, running south-east.
-  Azure Sea: on the coast due north of 12956 (owner, Oct 25; first given as 12982, out at sea with no coast north of it)."""
+  Coral Depths: on the coast just north of 6291 The Docks, pointing north (owner, Oct 25; first given as 12982, then 12956)."""
 import math
 from shapely.geometry import Polygon, LineString, Point
 from shapely.ops import nearest_points
@@ -10,7 +10,7 @@ from shapely.ops import nearest_points
 INLAND, OUT = 0.3, 1.0
 DIRS = {'e': (1, 0), 'n': (0, -1), 'ne': (1, -1), 'nw': (-1, -1), 'se': (1, 1)}
 DOCKS = [("King's Castle", 'room', 3245, 'e'), ('Ocean Keep', 'room', 3069, 'n'), ('Raven Tor', 'pin', 'Raven Tor', 'ne'),
-         ('Solace', 'pin', 'Town of Solace', 'n'), ('Wild Tundra', 'room', 14444, 'nw'), ('Azure Sea', 'room', 12956, 'n'),
+         ('Solace', 'pin', 'Town of Solace', 'n'), ('Wild Tundra', 'room', 14444, 'nw'), ('Coral Depths', 'room', 6291, 'n'),
          ('Edo', 'corner', 'Village of Edo', 'se')]
 DIRV = {'n': (0, -1), 's': (0, 1), 'e': (1, 0), 'w': (-1, 0), 'ne': (.7071, -.7071), 'nw': (-.7071, -.7071), 'se': (.7071, .7071), 'sw': (-.7071, .7071)}
 

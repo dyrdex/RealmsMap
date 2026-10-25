@@ -6,7 +6,7 @@ shapes and looks varied (template ISLES):
     still a little scary): black-green canopy, red veins (streams) through it, bare snags above the trees, dark pools, mist.
   'Due east/west of' an area: level with the centre of its ground (Ashen: geo.ash, Woods: geo.fwwood, Mire: geo.mimud + bog2, by their bounds);
   'central': half way between the coast at that height and the map's edge, then moved out to sea until 2 clear of any land.
-  Markers on the dock side (Bilwen, Eurion: west, towards Darkhaven Marina; Deathvein: east), docks from the marker out 1 past the shore;
+  Markers on the dock side (Bilwen, Eurion: west, towards Darkhaven Marina; Deathvein: south, owner Oct 25), docks from the marker out 1 past the shore;
   names large (1.4), centred above each island (p.lbl); the owner's directions, no route drawn (hidepath)."""
 import math, random
 from shapely.geometry import Polygon, LineString, Point
@@ -16,7 +16,7 @@ MERIDIA = 'Board the great ship Meridia (Darkhaven Marina 5-6pm).'
 ISLES = [  # name, area tint(s), side, diameter, kind, dock/marker direction (deg, y down), directions, sea
     ('Bilwen', ('ash',), 'east', 4.3, 'meadow', 180, MERIDIA, 'Azure Sea'),
     ('Eurion', ('fwwood',), 'east', 4.1, 'rock', 185, MERIDIA, 'Azure Sea'),
-    ('Deathvein Island', ('mimud', 'bog2'), 'west', 4.2, 'darkjungle', 0, 'Captain the Fair Lady (Docks at random docks).', 'Blood Sea'),
+    ('Deathvein Island', ('mimud', 'bog2'), 'west', 4.2, 'darkjungle', 90, 'Captain the Fair Lady (Docks at random docks).', 'Blood Sea'),
 ]
 CLEAR = 2.0
 
@@ -109,7 +109,7 @@ def apply(town, wild, pos):
                         if not inner.buffer(-0.08).contains(Point(q)): break
                         line2.append(q)
                     if len(line2) > 3: veins.append([[R4(x), R4(y)] for x, y in line2])
-            d['veins'] = veins
+            d['veins'] = []                                # (owner, Oct 25: no red lines; still made, so nothing else moves)
             d['canopy'] = [[R4(x), R4(y), round(rng.uniform(.2, .32), 2), rng.randrange(4)] for x, y in _grid(inner.buffer(-0.12), 0.3, rng, 1.0)]
             d['dead'] = [[R4(x), R4(y), round(rng.uniform(.75, 1.05), 2), rng.randrange(3)] for x, y in _grid(inner.buffer(-0.35), 0.9, rng, 0.35)]
             d['pools'] = [[R4(x), R4(y), round(rng.uniform(.12, .2), 2)] for x, y in _grid(inner.buffer(-0.35), 1.1, rng, 0.3)][:4]

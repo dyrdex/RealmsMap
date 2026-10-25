@@ -25,7 +25,8 @@
 - Your request (Oct 25): Deathvein Island redrawn as a jungle island that still looks a little scary: dark beach, black-green jungle canopy, red veins (streams) running through the trees, a few bare snags above the canopy, dark pools and mist.
 - Your request (Oct 25): new place "Blood Sea - Fathomless Depths", with your directions (#53 w;se;#13 d;n). Its marker is 4 rooms west of Hurricane Island, level with its centre (-122.35, 1), with its name west of the marker. Its line follows The Blood Sea's to The Blood Sea's marker, then runs straight west to this marker (16.5 rooms, crossing Hurricane Island); the final se;#13 d;n isn't drawn.
 - Your request (Oct 25): a giant sea creature in the Blood Sea due west of the Forgotten Woods, at -126.9, -55.2 (level with the middle of the Woods; halfway from that coast to the map's west edge; 40 rooms off land, 6.8 from Fireball Island's boat line). Drawn as on old pirate maps: a dark shape under the water, a hump of mottled hide with one pale eye, and six tentacles barely breaking the surface (curled tips, suckers, ripples), about 9 rooms across.
-- Coral Depths dock (north of 12956): unchanged for now. Its current spot is the coast just north of 12956 (the south tip of the Coral Depths peninsula); a dock there pointing north would run onto land, so I asked you which you meant.
+- Your request (Oct 25): the Coral Depths dock moved to the coast just north of 6291 The Docks (3.6 rooms north of the room), pointing north into the channel (it was at the peninsula's south tip, north of 12956).
+- Your request (Oct 25): Deathvein Island: the red lines removed; its dock (and marker) moved to the south shore, pointing south.
 
 ## Version 2.14 · The Hometowns · October 25, 2026
 
