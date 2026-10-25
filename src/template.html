@@ -734,6 +734,7 @@ for(const p of P){if(p.nopin)continue;   /* in the list only: no marker, no name
   const r=sub?.2:p.group?.36:.26;
   const S_=p.small?.17:p.group?.34:.24;const shape=p.kind==='structure'?`<rect class="dot" x="${-S_}" y="${-S_}" width="${2*S_}" height="${2*S_}" rx=".06" fill="var(--pin)" stroke="var(--panel)" stroke-width=".07"/>`:p.kind==='town'?`<g transform="translate(0 .35) scale(2.125)" stroke="var(--panel)" stroke-width=".03" stroke-linejoin="round"><rect class="dot" x="-.5" y="-.02" width="1" height=".42" fill="var(--pin)"/><rect class="dot" x="-.58" y="-.38" width=".34" height=".78" fill="var(--pin)"/><rect class="dot" x=".24" y="-.38" width=".34" height=".78" fill="var(--pin)"/><rect class="dot" x="-.18" y="-.58" width=".36" height=".98" fill="var(--pin)"/><path class="dot" d="M-.23 -.58 L0 -.9 L.23 -.58Z" fill="var(--pin)"/><g class="dot" fill="var(--pin)"><rect x="-.58" y="-.49" width=".1" height=".11"/><rect x="-.46" y="-.49" width=".1" height=".11"/><rect x="-.34" y="-.49" width=".1" height=".11"/><rect x=".24" y="-.49" width=".1" height=".11"/><rect x=".36" y="-.49" width=".1" height=".11"/><rect x=".48" y="-.49" width=".1" height=".11"/></g><path d="M-.1 .4 V.18 a.1 .1 0 0 1 .2 0 V.4Z" fill="var(--panel)" stroke="none"/></g>`:p.kind==='mob'?`<circle class="dot" r="${p.group?.3:.2}" fill="var(--mob)" stroke="var(--panel)" stroke-width=".07"/><circle r="${p.group?.5:.34}" fill="none" stroke="var(--mob)" stroke-width=".07"/>`:p.kind==='guild'?`<rect class="dot" x="-.21" y="-.21" width=".42" height=".42" transform="rotate(45)" fill="var(--pin)" stroke="var(--panel)" stroke-width=".07"/>`:`<circle class="dot" r="${r}" fill="var(--pin)" stroke="var(--panel)" stroke-width=".07"/>`;
   pins+=`<g class="pin" data-i="${p.i}" transform="translate(${p.mx},${p.my})"><circle r=".55" fill="transparent"/>${shape}${p.dir==='d'&&!sub?`<path d="M-.14 .36 L0 .52 L.14 .36" fill="none" stroke="var(--pin)" stroke-width=".06"/>`:''}</g>`;
+  for(const e of (p.more||[]))pins+=`<g class="pin" data-i="${p.i}" data-opt="${e.opt}" transform="translate(${e.at[0]},${e.at[1]})"><circle r=".55" fill="transparent"/>${shape}</g>`;   /* more markers for the same place, each opening its card on one route option (owner, Oct 25: the Dwarven Catacombs' two entrances) */
 }
 // labels
 const LBL={'Thalos':[-.55,.06,'end'],'Camden':[.5,.75,'start'],'Darkhaven Art Gallery':[-0.15,-.5,'end'],'Dragon Cult':[.38,.02,'start'],'Warehouse':[-.38,.0,'end'],'Halls of Knowledge':[.4,.02,'start'],'Isle of the Monkeys':[-.3,.12,'end'],'A Moment in Nature':[.3,.12,'start'],'Guild of Origin':[-.1,-.5,'end'],'Guild of Spirit':[.35,-.2,'start'],'Guild of Nature':[.38,.05,'start'],'Castle Darkhawk':[.4,.0,'start'],'Notre Dame de Sioux':[.4,.0,'start'],'Sonoria':[.45,.0,'start'],"V'laresch":[.55,.2,'start'],'Old Thalos':[-.55,.2,'end'],'Haven of Everlasting Light':[-.55,.06,'end'],"Intrigues of the Miden'nir":[-.55,.1,'end'],'Southern Plains':[-.55,.06,'end'],'Shattered Refuge':[-.55,.1,'end'],'Ofcol':[-1.5,-.15,'end'],'Keep of Lomar':[-.55,.06,'end'],'Mountain of Lost Souls':[-.55,.06,'end'],'Revelation City':[-.55,.06,'end'],"Ezard's Fields":[.55,.06,'start'],'Northern Trade Route':[0,-.62,'middle'],'Darkhaven Marina':[.4,.05,'start'],"Falcon's Nest Tavern":[-.5,.08,'end']};
@@ -748,7 +749,8 @@ LBL['Northern Plains']=[.77,-1.338,'start'];LBL['Unholy Grounds']=[.77,.175,'sta
 for(const p of P){if(p.nolabel||p.nopin)continue;   /* named by a label already on the map */
   if(p.lake){const L=p.lake,ca=Math.cos(L.a*Math.PI/180),sa=Math.sin(L.a*Math.PI/180),tx=L.drop!=null?L.x:p.mx+ca*(L.half?1.1:.55),ty=L.drop!=null?L.y:p.my+sa*(L.half?1.1:.55);
   pins+=`<text class="plabel" data-i="${p.i}" x="${tx}" y="${ty}" transform="rotate(${L.a} ${tx} ${ty})" text-anchor="${L.drop!=null?'middle':'start'}" dominant-baseline="middle" font-size="${L.size||.66}" font-style="italic" letter-spacing="${L.ls||.14}" fill="var(--lake-label)" style="cursor:pointer;paint-order:stroke;stroke:var(--water);stroke-width:${((L.size||.66)*.24).toFixed(3)}px;stroke-linejoin:round">${esc(p.name)}</text>`;continue}
- const o=LBL[p.key||p.name]||(p.group?[.55,.06,'start']:[.35,0,'start']);pins+=`<text class="lbl plabel" data-i="${p.i}" x="${p.mx+o[0]}" y="${p.my+o[1]+.15}" text-anchor="${o[2]}" font-size="${groupHalls.includes(p.name)?.36:p.small?.6:p.group?.96:.44}" font-style="italic" style="stroke-width:${p.group?.16:.11}px;cursor:pointer">${esc(p.name)}</text>`}
+ const o=LBL[p.key||p.name]||(p.group?[.55,.06,'start']:[.35,0,'start']);pins+=`<text class="lbl plabel" data-i="${p.i}" x="${p.mx+o[0]}" y="${p.my+o[1]+.15}" text-anchor="${o[2]}" font-size="${groupHalls.includes(p.name)?.36:p.small?.6:p.group?.96:.44}" font-style="italic" style="stroke-width:${p.group?.16:.11}px;cursor:pointer">${esc(p.name)}</text>`
+ for(const e of (p.more||[])){const q=e.lbl||o;pins+=`<text class="lbl plabel" data-i="${p.i}" data-opt="${e.opt}" x="${e.at[0]+q[0]}" y="${e.at[1]+q[1]+.15}" text-anchor="${q[2]}" font-size="${p.group?.96:.44}" font-style="italic" style="stroke-width:${p.group?.16:.11}px;cursor:pointer">${esc(p.name)}</text>`}}
 document.getElementById('pins').innerHTML=pins;
 const LCACHE={};function laneD(pts,k){if(LCACHE[k])return LCACHE[k];let all=[];for(let i=0;i<pts.length-1;i++){const s=wobPts(pts[i],pts[i+1],.06,.35);if(i)s.shift();all=all.concat(s)}return LCACHE[k]=curve(all)}
 const LANES=['Guild of Spirit','Guild of Origin','Castle Darkhawk','Notre Dame de Sioux','Sonoria'];
@@ -764,10 +766,10 @@ document.getElementById('lanes').innerHTML=ln;
   world.setAttribute('transform',`scale(${K})`);
   const rect=e=>{const r=e.getBoundingClientRect();return {x0:(r.left-sr.left)/K,y0:(r.top-sr.top)/K,x1:(r.right-sr.left)/K,y1:(r.bottom-sr.top)/K}};
   const ov=(a,b)=>a.x0<b.x1&&a.x1>b.x0&&a.y0<b.y1&&a.y1>b.y0;
-  const labs=[...svg.querySelectorAll('.plabel.lbl')].filter(t=>P[+t.dataset.i].group);
+  const labs=[...svg.querySelectorAll('.plabel.lbl:not([data-opt])')].filter(t=>P[+t.dataset.i].group);
   const wildSet=new Set(labs);
   const texts=[...svg.querySelectorAll('#world text')].filter(t=>!wildSet.has(t)).map(rect).filter(r=>r.x1-r.x0>0);   // titles, the lake's name, the town's own names ...
-  const pinR={};svg.querySelectorAll('.pin').forEach(g=>{pinR[+g.dataset.i]=rect(g)});
+  const pinR={};svg.querySelectorAll('.pin:not([data-opt])').forEach(g=>{pinR[+g.dataset.i]=rect(g)});
   const pins=Object.values(pinR);
   texts.push({x0:-7.8,y0:-9.8,x1:7.8,y1:9.8});                                  // the town walls
   const W=DATA.wild,lines=[...(W.fwtracks||[]),...(W.oltracks||[]),...(W.ashtracks||[]),...(W.etrtracks||[]),...(W.swtracks||[]),W.road,W.southpath,W.link,...(W.ring||[]),...(W.ribbons||[])].filter(Boolean);
@@ -1341,7 +1343,7 @@ function select(p){
 document.getElementById('close').onclick=()=>select(null);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')select(null)});
 svg.querySelectorAll('.pin,.plabel').forEach(g=>{const p=P[+g.dataset.i];
-  g.addEventListener('click',()=>select(p));
+  g.addEventListener('click',()=>select(p,+(g.dataset.opt||0)));
   g.addEventListener('mousemove',e=>{const r=stage.getBoundingClientRect();tip.style.display='block';tip.textContent=p.name;tip.style.left=(e.clientX-r.left+14)+'px';tip.style.top=(e.clientY-r.top+12)+'px'});
   g.addEventListener('mouseleave',()=>tip.style.display='none')});
 const li=p=>`<li><button data-i="${p.i}" aria-current="false"><span>${esc(p.name)}</span><span class="meta">${groupHalls.includes(p.name)?'in the Halls':''}</span></button></li>`;
