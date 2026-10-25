@@ -37,6 +37,8 @@ def apply(town, wild, pos):
         p = dict(name=name, route=route, room=rooms[t[-1]]['name'], dir='here', path=path, segs=[path], note=None)
         if kind: p['kind'] = kind
         if name in AT: p['at'] = list(AT[name]); p['hidepath'] = True
+        if name == 'Town Hall':   # e then s, plainly (owner, Oct 25): east along Horizon Road to above the lobby, then straight south to it
+            q = path[-1]; p['path'] = p['segs'][0] = path = [[0, 0], [q[0], 0], q]
         wild['places'].append(p)
         rep[name] = {'ends at': (t[-1], rooms[t[-1]]['name']), 'marker': path[-1], 'drawn points': len(path)}
     next(p for p in wild['places'] if p['name'] == 'The Sands of Teracchei')['card'] = 'Gith Hometown'   # (owner, Oct 25: Sands of Teracchei)
