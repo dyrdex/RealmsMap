@@ -230,3 +230,4 @@ The other builders run inside `src/legacy`.
   Plants (owner, Oct 22; `v2.5/010`, `wild.olflora` [x,y,scale,kind p/b/s/g,variant], template OLFLORA sprites op*/ob*/os*/og*): density by the nearest room name's land kind (DENS).
   Shore ice (owner, Oct 22): floes + small bergs along the WHOLE sea coast at the south shore's density (`v2.5/006`, appended to `olsouth.floes` / `olharbor.bergs`).
 - **Fireball Island** (owner, Oct 25; `changes/002_fireball_island.py`, template FIREBALL): diameter = Angel's Landing island's height; boat-only place: `route` is the owner's text, `rhead` 'Directions:', `segs` = Sailing the Seas' route, `sail` = the dotted boat line (drawn only when selected).
+- **Hurricane Island** (owner, Oct 25; `changes/003_hurricane_island.py`, template HURRICANE): 2/3 of Fireball's diameter, kept 2 off the coast; route '#53 w;se;d;u;d;u' drawn as #53 w's drawn part + a straight line to the pin (owner: ignore the se;d;u;d;u).
