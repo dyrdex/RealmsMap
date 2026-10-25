@@ -1,6 +1,6 @@
 # Realm Map changelog
 
-## In progress (2.13)
+## Version 2.13 · The Forgotten Coast · October 25, 2026
 
 - Your request (Oct 23): Before the Swan-ship 16240 added on the very edge of the Northern Plains' coast, 3 rooms west-south-west of Dark Cliffs 4400 (0.34 inside the shore; the terrain is unchanged). 4400 down to 16240 is drawn as a stairway down the cliff (8 steps, narrowing and darkening as it goes down, as the Knights of the Round's 5639 down to 11745).
 - Your request (Oct 23): the Island of Irrybis: a small forested island just west of 16240, off the coast (3.3 by 2.2 rooms, 1.4 rooms of sea between it and the coast, 13 trees). The Island of Irrybis's marker is now on 16240 (the last step of its route, d); its name sits west of the marker, under the island.

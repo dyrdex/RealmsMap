@@ -18,7 +18,7 @@ from shapely.strtree import STRtree
 from shapely.ops import unary_union
 import maplib
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 AREAS = ('The Forgotten Woods', 'Barren Peaks of Tahjliera')
 CAP, NEAR = 0.35, 1.2
 WIDE = 2.0                                          # (rooms this near a trail may be on its exit chain, when it is redrawn)

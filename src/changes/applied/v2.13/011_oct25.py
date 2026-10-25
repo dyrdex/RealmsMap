@@ -6,7 +6,7 @@ import maplib
 from shapely.geometry import LineString, Point
 from shapely.ops import unary_union
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 ROOM, FROM, PLACE = 22807, 6998, 'The Crimson Caverns'
 CLEAR = 0.3
 SPRITES = ('trees', 'tufts', 'hills', 'thorns', 'brush', 'boulders', 'crags', 'reeds', 'wheattufts')

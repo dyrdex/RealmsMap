@@ -14,7 +14,7 @@ from shapely.geometry import LineString, Point
 from shapely.strtree import STRtree
 import maplib
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 ROUND, ROUND_STEP, ROUND_MIN = 0.6, 0.15, 0.3
 CAP, SIMPLIFY, FLANK = 0.35, 0.03, 0.3
 AREAS = ('The Forgotten Woods', 'Barren Peaks of Tahjliera', 'Knights of the Round', 'The Blood Sea')
@@ -54,7 +54,7 @@ def _has_flank(l):
 
 def apply(town, wild, pos):
     rooms, _ = maplib.world()
-    base = json.load(open(os.path.join(HERE, '..', 'base', 'map.json')))['wild']['fwtracks']
+    base = json.load(open(os.path.join(LEG, 'fwtracks_v212.json')))   # (the 2.12 base's own trails, kept: the base itself changes at each freeze)
     base_set = {tuple(tuple(round(c, 3) for c in q[:2]) for q in l) for l in base}
     P = {int(k): tuple(p[:2]) for k, p in pos.items()}
     for k, p in (wild.get('track') or {}).items():

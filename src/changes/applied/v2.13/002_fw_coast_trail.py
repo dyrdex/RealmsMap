@@ -13,7 +13,7 @@ import json, math, os
 from shapely.geometry import LineString, Point
 from shapely.ops import unary_union
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 CHAIN = [5484, 5485, 5486, 5487, 5488, 5489, 5490, 5491, 5492, 5493, 5494, 5495, 5646, 5645, 5644, 5643, 5642, 5641, 5640, 5639, 5638,
          5637, 5636, 5635, 5634, 5632, 5631, 5630, 5629, 5628]
 MOVED = [5484, 5485, 5486, 5487, 5488, 5489, 5490, 5491, 5492, 5493, 5494, 5495, 5496, 5629, 5630, 5631, 5632, 5634, 5635, 5636, 5637, 5638,

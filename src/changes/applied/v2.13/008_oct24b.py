@@ -18,7 +18,7 @@ import maplib
 from shapely.geometry import LineString, Point
 from shapely.ops import unary_union, nearest_points
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 MOVED = [6731, 6824, 6825]
 NEW = [6732, 6733, 6736]
 EDGES = [(6730, 6731), (6731, 6732), (6732, 6733), (6732, 6736)]

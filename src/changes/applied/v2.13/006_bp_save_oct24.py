@@ -7,7 +7,7 @@ import json, math, os
 from shapely.geometry import LineString, Point
 from shapely.ops import unary_union
 
-HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', 'legacy')
+HERE = os.path.dirname(os.path.abspath(__file__)); LEG = os.path.join(HERE, '..', '..', '..', 'legacy')
 SHOWN = [6997, 6998]
 MOVED = [6997, 6998, 6999, 7006, 7007]
 CLEAR = 0.3
