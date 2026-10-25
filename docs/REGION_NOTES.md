@@ -12,6 +12,13 @@ number, don't read it whole.
 - Places (`wild.places`, 131): `name`, `route` (owner's directions), `room`, `dir`, `path`/`segs` (the traced line, one list per
   unbroken piece), `note`, `group`, `where`; some `kind` (town emblem), `opts` (route options), `at` (marker spot off its room),
   `nolabel`, `small`, `key` (old name, for label tweaks).
+  `nopin`: in the list only, no marker and no name on the map (owner, Oct 25; template + site). Partly mapped routes (owner, Oct 25;
+  `changes/001_new_destinations.py`): the line stops at the last drawn room on the way; the card says where.
+  Darkhaven rooms without an editor (owner, Oct 25; `changes/003_darkhaven_rooms.py`): set in `room_pos` by hand, only in the empty block SW of the
+  Square (and S of 763); never change the town's drawing (diff its pixels against the last commit).
+  `hidepath`: the card keeps the directions, no route line drawn on selecting it (The Astral Plane, The Sands of Teracchei; owner Oct 25).
+  Clearings (smrpatch): trails stop at their edge, never under them (owner, Oct 25).
+  `card`: the owner's own line under a card's name, replacing 'Area off ... · reached at ...' (hometowns, owner Oct 25; `changes/002_oct25b.py`).
 - Drawing layers: sprites `trees`, `tufts`, `peaks`, `crags`, `boulders`, `hills`, `brush`, `wheattufts`, `reeds`, `thorns`
   (lists of [x, y, size, ...]); ground tints `geo.<name>` (polygons: land, deep, wheat, barren, cliff, ...); lines `fwtracks` (dirt
   trails), `etrtracks` (trade roads), `dirtroads`, `seaways`, `streams`, `smr*`, `mdfaint`, `pffaint`; drawings `gfx` (sprite

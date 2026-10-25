@@ -22,15 +22,18 @@ TILE_CACHE = os.environ.get('TILE_CACHE', os.path.abspath('../.tile_cache'))
 # big area and maze names: kept live (sharp at every zoom), not baked into tiles
 AREA_NAMES = ["The Forgotten Woods", "Shadow Grove", "Miden'nir", "The Maze of Trees",
               "Lost in the Swamp", "The Hidden Grove", "Ashen", "Forest", "Forest of Tears"]
-CARD_KEYS = ('name', 'route', 'room', 'dir', 'note', 'kind', 'noroute', 'group', 'where', 'alt')
+CARD_KEYS = ('name', 'route', 'room', 'dir', 'note', 'kind', 'noroute', 'group', 'where', 'alt', 'card', 'hidepath')
 
 EXPORT_JS = '''(names)=>{
   const w=document.getElementById('world');
   const P=[...DATA.places,...((DATA.wild&&DATA.wild.places)||[])];
-  const lab={};w.querySelectorAll('.plabel').forEach(t=>lab[t.dataset.i]=t);
-  const pins={};w.querySelectorAll('#pins .pin').forEach(g=>pins[g.dataset.i]=g);
+  const lab={};w.querySelectorAll('.plabel:not([data-opt])').forEach(t=>lab[t.dataset.i]=t);
+  const pins={};w.querySelectorAll('#pins .pin:not([data-opt])').forEach(g=>pins[g.dataset.i]=g);
+  const more={};w.querySelectorAll('#pins .pin[data-opt]').forEach(g=>{const m=g.transform.baseVal.consolidate().matrix,t=w.querySelector(`.plabel[data-i="${g.dataset.i}"][data-opt="${g.dataset.opt}"]`);
+    (more[g.dataset.i]=more[g.dataset.i]||[]).push({opt:+g.dataset.opt,mx:+m.e.toFixed(3),my:+m.f.toFixed(3),shape:[...g.children].filter(c=>!(c.tagName==='circle'&&c.getAttribute('fill')==='transparent')).map(c=>c.outerHTML).join(''),
+      label:t?Object.fromEntries([...t.attributes].filter(a=>!['class','data-i','data-opt'].includes(a.name)).map(a=>[a.name,a.value])):null})});
   const places=P.map((p,i)=>{const g=pins[i],t=lab[i];
-    return {p,shape:g?[...g.children].filter(c=>!(c.tagName==='circle'&&c.getAttribute('fill')==='transparent')).map(c=>c.outerHTML).join(''):'',
+    return {p,more:more[i]||null,shape:g?[...g.children].filter(c=>!(c.tagName==='circle'&&c.getAttribute('fill')==='transparent')).map(c=>c.outerHTML).join(''):'',
       label:t?Object.fromEntries([...t.attributes].filter(a=>!['class','data-i'].includes(a.name)).map(a=>[a.name,a.value])):null}});
   const extras=[...w.querySelectorAll('#pins > :not(.pin):not(text)')].map(e=>e.outerHTML);
   const areas=[...w.querySelectorAll('text')].filter(t=>names.includes(t.textContent)&&!t.closest('#pins'));
@@ -77,7 +80,7 @@ def r2(v):
 
 def render():
     with sync_playwright() as p:
-        b = p.chromium.launch(args=['--force-color-profile=srgb'])
+        b = p.chromium.launch(args=['--force-color-profile=srgb'], **({'executable_path': os.environ['PW_CHROME']} if os.environ.get('PW_CHROME') else {}))   # (PW_CHROME: a local browser, for runs outside CI)
         pg = b.new_page(viewport={'width': CHUNK, 'height': CHUNK}, device_scale_factor=1, color_scheme='dark')
         pg.goto('file://' + font_page())
         pg.wait_for_function('window.__booted', timeout=60000); pg.wait_for_timeout(300)
@@ -137,6 +140,7 @@ def main():
         p = q['p']
         c = {k: p[k] for k in CARD_KEYS if k in p and p[k] not in (None, '', [], False)}
         c.update(i=p['i'], mx=round(p['mx'], 3), my=round(p['my'], 3), shape=q['shape'], label=q['label'])
+        if q.get('more'): c['more'] = q['more']                                                # a place's other markers (Oct 25)
         if p.get('opts'): c['opts'] = [{k: v for k, v in o.items() if k != 'segs' and v not in (None, '', False)} for o in p['opts']]   # route options: text on the card, lines in routes.json
         places.append(c)
         routes.append({'path': r2(p['path']), **({'segs': r2(p['segs'])} if p.get('segs') else {}), **({'opts': [r2(o['segs']) for o in p['opts']]} if p.get('opts') else {})})
