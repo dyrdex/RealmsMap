@@ -19,6 +19,9 @@
 - Your request (Oct 25): Dwarven Catacombs (Northern Entrance) renamed Dwarven Catacombs; Tribal Swamplands (Lizardmen) renamed Tribal Swamplands.
 - Your request (Oct 25): the Western Trade Route's marker moved to Entrance to the Western Trade Route 831 (#6 w;sw), 11.3 rooms east of where it was (A Road Through the Forest of Tears 832); its directions are unchanged.
 - Your request (Oct 25): the Southern Mountain Range's big area name ("Southern" over "Mountain Range"), north-east of Suds 'n Stones (centred 5 rooms east and 4 north of its marker); it touches no marker or marker name, and crosses one trail.
+- Your request (Oct 25): the Western Trade Route's line now stops at its marker (831, after 9 of its 10 steps).
+- Your request (Oct 25): new rooms in Darkhaven, placed by hand (there's no town layout editor) in the empty block south-west of Darkhaven Square: the Rainbow (13599-13604) runs from the block's south-east corner west and up to 13604; The Astral Gate 13606 north of it, An Endless Sea of Void 1416 east of it. The Lobby of Darkhaven Town Hall 1453 just south of Horizon Road 763. In the Air 12176/13598 stay on the Square (they are above it). Nothing else in the town changed (checked pixel by pixel: only those two blocks differ).
+- Your request (Oct 25): three new destinations with your directions: The Astral Plane (#8 u;n, marker on The Astral Gate), The Sands of Teracchei (#8 u;e, marker on An Endless Sea of Void; card "Gith Hometown") and Town Hall (e;s, a square landmark marker on its lobby); names east of their markers, in the town's small style.
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 

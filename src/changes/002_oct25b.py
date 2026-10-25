@@ -47,6 +47,8 @@ def apply(town, wild, pos):
         if nolabel: p['nolabel'] = True
         if name in PIN_AT:
             v = walk(maplib.condense(PIN_AT[name]))[-1]; p['at'] = R(at(v)); rep[name + ' pin'] = (v, rooms[v]['name'], p['at'])
+            k = t.index(v); p['path'] = p['segs'][0] = path[:path.index(R(at(v))) + 1]   # the line stops at the pin too (owner, Oct 25)
+            rep[name + ' line'] = (len(p['path']), 'points, was', len(path), '; stops after', k, 'of', len(t) - 1, 'steps')
         wild['places'].append(p)
         rep[name] = {'ends at': (t[-1], rooms[t[-1]]['name']), 'marker': path[-1], 'label': not nolabel}
     for name, card in CARDS.items():
