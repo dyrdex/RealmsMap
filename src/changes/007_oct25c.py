@@ -4,7 +4,8 @@
     (own random.Random; none under the mausoleum or on the marker).
   - The Mire trails on the way to Tribal Swamplands redrawn from the Mire editor save (legacy/mi_layout_final.json, the save on file,
     Oct 18 15:43Z): the trail cutting from 8355 straight to 8362 and the one stopping short of 8357 are gone; every exit between the shown
-    rooms of that corner (8350-8359, 8362) is a straight Woods-style trail, room to room. The stub from 8055 to 8355 stays."""
+    rooms of that corner (8350-8359, 8362) is a straight Woods-style trail, room to room. The stub from 8055 to 8355 stays. The clearing
+    there (smrpatch, x -90.06..-86.22, y 117.44..120.56) is drawn over those trails (`smrpatchtop`; owner, Oct 25)."""
 import json, math, os, random, maplib
 
 SECTION = {8350, 8351, 8352, 8353, 8354, 8355, 8356, 8357, 8358, 8359, 8362}
@@ -62,4 +63,8 @@ def apply(town, wild, pos):
     for i, ln in zip(bad, lines[:2]): tr[i] = ln                 # (in place, so no other trail's index moves)
     tr.extend(lines[2:])
     rep['mire trails'] = {'removed': bad, 'drawn (room pairs)': pairs}
+    cl = [i for i, p in enumerate(wild['smrpatch']) if -90.1 < min(q[0] for q in p) < -90 and 120.5 < max(q[1] for q in p) < 120.6]   # the clearing north of
+    assert len(cl) == 1, cl                                                                        # Tribal Swamplands (x -90.06..-86.22, y 117.44..120.56)
+    wild['smrpatchtop'] = [wild['smrpatch'].pop(cl[0])]                                            # drawn over the trails (template), not under them
+    rep['clearing over the trails'] = cl[0]
     return rep

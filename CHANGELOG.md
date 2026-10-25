@@ -38,6 +38,7 @@
 - Your request (Oct 25): the bare patch in the Forest of Tears by Abishai's Morgue filled in (4.5 square rooms, x -42.3 to -39.8, y 5.5 to 8.0): a small piece of the deep-forest shading there was cutting a hole in it; removed, and 7 trees added (none under the mausoleum or on the marker).
 - Your request (Oct 25): the hut over The Main Road of Loch Pyga 1223 is now three small huts in a row running east-west (0.8 rooms apart, the middle one on 1223), each different: a gabled one, a low thatched one with a lit window, a tall one with a chimney.
 - Your request (Oct 25): the Mire trails on the way to Tribal Swamplands redrawn from your Mire layout: the trail that cut from 8355 straight to 8362 and the one that stopped short of 8357 are gone; all 15 exits between the rooms of that corner (8350-8359, 8362) are now trails, room to room, so the route line runs along them.
+- Your request (Oct 25): the clearing just north of Tribal Swamplands is now drawn over the Mire trails there, not under them.
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 
