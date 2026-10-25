@@ -39,6 +39,9 @@
 - Your request (Oct 25): the hut over The Main Road of Loch Pyga 1223 is now three small huts in a row running east-west (0.8 rooms apart, the middle one on 1223), each different: a gabled one, a low thatched one with a lit window, a tall one with a chimney.
 - Your request (Oct 25): the Mire trails on the way to Tribal Swamplands redrawn from your Mire layout: the trail that cut from 8355 straight to 8362 and the one that stopped short of 8357 are gone; all 15 exits between the rooms of that corner (8350-8359, 8362) are now trails, room to room, so the route line runs along them.
 - Your request (Oct 25): the clearing just north of Tribal Swamplands is now drawn over the Mire trails there, not under them.
+- Your request (Oct 25): the Mire trails no longer run under the clearing just north of Tribal Swamplands: like every other clearing, the trails stop at its edge (the 15 exits there are now 7 trail pieces outside it; the clearing is drawn as before).
+- Your request (Oct 25): Major Oak's, Bartok Grove's, The Burrows' and Ezard's Fields' names directly east of their markers.
+- Your Ashen Forest save (Oct 25, 04:58): Moria 3347, 3348 and the Land of the Fire Newts 3352-3360 drawn where you put them, one trail from Within the Ashen Forest 1255 along their exits (nothing else moved). The Land of the Fire Newts' line now runs the whole way to The Obsidian Hills 3352; Machine Dreams' and The Domain of World Eater's lines run on to Hanging on Air 3360, where Machine Dreams begins (not drawn yet). The three still share the marker by 1255.
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 
