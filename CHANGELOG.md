@@ -2,6 +2,11 @@
 
 ## In progress (2.15)
 
+- Your request (Oct 25): room 8727 (A dark bend in the forest) added one room north of A Wind Torn Beach 8724, with its trail from 8724.
+- Your request (Oct 25): the deathtrap emblems are a darker red (skull #6E1717, was #B02424; crossbones #5E1313, was #8E1B1B), so they stand out less.
+- Your request (Oct 25): Keep of Lomar's and Tullfuhrzky Manor's names directly west of their markers; White Pine Camp's and Ashen Forest's directly east of theirs.
+- Your request (Oct 25): the watchtower and archway north of Angel's Landing redrawn as an ancient ruin: broken tower top with one merlon left, a crumbled archway with a slipped keystone, the wooden guardhouse fallen in, cracks, moss, ivy, a sapling growing from the stones, rubble and grass at the foot. Same size and spot.
+
 ## Version 2.14 · The Hometowns · October 25, 2026
 
 - Your request (Oct 25): nine new destinations in the list, each with your directions. None is fully mapped yet, so each line runs from Darkhaven Square as far as the drawn rooms go and stops at the last one (its card says where).
