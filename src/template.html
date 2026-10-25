@@ -266,6 +266,29 @@ const DOCK=([x0,y0,x1,y1])=>{const L=Math.hypot(x1-x0,y1-y0),a=Math.atan2(y1-y0,
   for(const [dx,dy,l] of [[-1.05,-3.1,.95],[-.15,-2.0,.8],[-1.25,-.2,.7],[.35,.9,.85],[-.75,2.4,.9],[.2,3.6,.6],[-1.3,3.3,.45]]){const a=cx+dx*r/4.8,y=cy+dy*r/4.8,L=l*r,F2=n=>n.toFixed(2);
     WILD+=`<path d="M${F2(a)} ${F2(y)} c${F2(L*.25)} -.35 ${F2(L*.45)} .3 ${F2(L*.65)} 0 s${F2(L*.25)} -.3 ${F2(L*.35)} -.05 q.45 .05 .4 -.32 q-.07 -.28 -.36 -.16" fill="none" stroke="#D8D2BE" stroke-width=".06" stroke-linecap="round" opacity=".38"/>`}
 }}
+for(const B of (WD.isles||[])){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z',F=n=>(+n).toFixed(2);   /* ISLES: Bilwen (meadow), Eurion (rock), Deathvein Island (blight) (owner, Oct 25) */
+  if(B.kind==='meadow'){
+    WILD+=`<path d="${P(B.isle)}" fill="#6F6446"/><path d="${P(B.inner)}" fill="#3F5C33" stroke="#2C4226" stroke-width=".05"/>`;
+    WILD+=`<path d="${B.wash.map(P).join('')}" fill="none" stroke="#9A8C66" stroke-width=".035" stroke-dasharray=".35 .22" opacity=".6"/>`;
+    WILD+=B.swirls.map(([x,y])=>`<path d="M${F(x-.25)} ${F(y)} q.12 -.12 .25 0 t.25 0" fill="none" stroke="#557A44" stroke-width=".05" stroke-linecap="round" opacity=".7"/>`).join('');   /* grass */
+    const FC=['#D9CE8A','#C9C3D6','#E3DCCB'];WILD+=B.flowers.map(([x,y,v])=>`<circle cx="${x}" cy="${y}" r=".045" fill="${FC[v]}" opacity=".85"/>`).join('');   /* wildflowers */
+    WILD+=B.rocks.map(([x,y,r])=>`<ellipse cx="${F(x+.03)}" cy="${F(y+.04)}" rx="${F(r*1.2)}" ry="${F(r*.7)}" fill="#000" opacity=".3"/><ellipse cx="${x}" cy="${y}" rx="${F(r*1.15)}" ry="${F(r*.85)}" fill="#7E7A70" stroke="#2A2824" stroke-width=".025"/>`).join('');
+    WILD+=B.trees.slice().sort((a,b)=>a[1]-b[1]).map(([x,y,r])=>`<ellipse cx="${F(x+.06)}" cy="${F(y+r*.8)}" rx="${F(r*.9)}" ry="${F(r*.3)}" fill="#000" opacity=".3"/><circle cx="${x}" cy="${y}" r="${r}" fill="#2F5A2E" stroke="#1C3519" stroke-width=".03"/><circle cx="${F(x-r*.3)}" cy="${F(y-r*.3)}" r="${F(r*.5)}" fill="#4D7E42" opacity=".85"/>`).join('');   /* round trees */
+  }else if(B.kind==='rock'){
+    WILD+=`<path d="${P(B.isle)}" fill="#5E584C"/><path d="${P(B.inner)}" fill="#4B473F" stroke="#1E1C18" stroke-width=".05"/>`;
+    WILD+=`<path d="${B.hach.map(([a,b,c,d])=>`M${a} ${b}L${c} ${d}`).join('')}" stroke="#1E1C18" stroke-width=".035" opacity=".65"/>`;   /* the cliffs */
+    WILD+=`<path d="${P(B.top)}" fill="#68625A" stroke="#26231E" stroke-width=".05"/>`;   /* the plateau */
+    WILD+=B.scree.map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#8A8478" opacity=".7"/>`).join('');
+    WILD+=B.pines.slice().sort((a,b)=>a[1]-b[1]).map(([x,y,k])=>`<g transform="translate(${x} ${y}) scale(${k})"><ellipse cx=".04" cy=".12" rx=".16" ry=".05" fill="#000" opacity=".35"/><path d="M0 -.42 L.15 -.12 L.07 -.13 L.19 .1 L-.19 .1 L-.07 -.13 L-.15 -.12Z" fill="#1F3324" stroke="#0F1A12" stroke-width=".02"/></g>`).join('');   /* dark pines */
+  }else{
+    WILD+=`<path d="${P(B.isle)}" fill="#3A3036"/><path d="${P(B.inner)}" fill="#241C22" stroke="#140F13" stroke-width=".05"/>`;   /* black blighted ground */
+    WILD+=B.pools.map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="${F(r*1.3)}" ry="${F(r*.8)}" fill="#3A1418" stroke="#140F13" stroke-width=".03"/>`).join('');
+    WILD+=`<path d="${B.veins.map(v=>'M'+v.map(q=>q.join(' ')).join('L')).join('')}" fill="none" stroke="#4A0F14" stroke-width=".13" stroke-linecap="round" stroke-linejoin="round"/><path d="${B.veins.map(v=>'M'+v.map(q=>q.join(' ')).join('L')).join('')}" fill="none" stroke="#8C2A2A" stroke-width=".05" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>`;   /* red veins */
+    const DT=['M0 .1 L0 -.4 M0 -.15 L-.15 -.3 M0 -.25 L.14 -.38 M-.15 -.3 L-.2 -.42','M0 .1 L.02 -.36 M.01 -.1 L.16 -.24 M.02 -.22 L-.12 -.36 M.16 -.24 L.2 -.33','M0 .1 L-.02 -.42 M-.01 -.18 L-.17 -.24 M-.02 -.3 L.12 -.4'];
+    WILD+=B.dead.slice().sort((a,b)=>a[1]-b[1]).map(([x,y,k,v])=>`<g transform="translate(${x} ${y}) scale(${k})"><ellipse cx=".04" cy=".11" rx=".14" ry=".04" fill="#000" opacity=".4"/><path d="${DT[v]}" fill="none" stroke="#6E625C" stroke-width=".045" stroke-linecap="round"/></g>`).join('');   /* dead trees */
+    WILD+=B.mist.map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${F(r*.45)}" fill="#8A8590" opacity=".12"/>`).join('');   /* mist */
+  }
+}
 {const D=WD.ddsand;if(D){const P=a=>'M'+a.map(q=>q.join(' ')).join('L');   /* DDSAND: the Desert of Despair's own terrain (owner, Oct 20): texture, ripples, dunes, dry lake beds, rocks, scrub, a few cacti */
   WILD+=`<defs><pattern id="ddgrain" patternUnits="userSpaceOnUse" width="2.3" height="1.9"><g fill="#7A6A4A"><circle cx=".3" cy=".4" r=".035"/><circle cx="1.4" cy=".2" r=".03"/><circle cx="2.0" cy="1.1" r=".04"/><circle cx=".9" cy="1.5" r=".03"/><circle cx="1.6" cy="1.7" r=".025"/><circle cx=".2" cy="1.2" r=".028"/></g><g fill="#2E281C"><circle cx="1.1" cy=".8" r=".03"/><circle cx="1.9" cy=".5" r=".025"/><circle cx=".6" cy="1.0" r=".025"/></g></pattern>`+
     `<pattern id="ddwind" patternUnits="userSpaceOnUse" width="3.7" height="2.9"><path d="M.2 .7 q.35 -.12 .7 0 t.7 0 M2.1 2.1 q.3 -.1 .6 0 t.6 0 M1.6 1.3 q.25 -.08 .5 0" fill="none" stroke="#6E6044" stroke-width=".035" stroke-linecap="round"/></pattern></defs>`;
@@ -696,7 +719,7 @@ for(const d of (WD.docks||[])){const ar=d.a*Math.PI/180,ca=Math.cos(ar),sa=Math.
   if(d.shack===false)continue;   /* (a dock alone: the Royal Jetty of Camelot, owner Oct 23) */
   const cx=d.x-ca*1.15,cy=d.y-sa*1.15,w=.95,hh=.62,x0=cx-w/2,y0=cy-hh/2;
   h+=`<ellipse cx="${(cx+.06).toFixed(3)}" cy="${(cy+hh/2).toFixed(3)}" rx=".6" ry=".1" fill="var(--t-shade)"/><rect x="${x0.toFixed(3)}" y="${(y0+.12).toFixed(3)}" width="${w}" height="${(hh-.12).toFixed(3)}" fill="var(--wood)" stroke="var(--wood-line)" stroke-width=".035"/><path d="M${(x0-.07).toFixed(3)} ${(y0+.17).toFixed(3)} L${cx.toFixed(3)} ${(y0-.22).toFixed(3)} L${(x0+w+.07).toFixed(3)} ${(y0+.17).toFixed(3)}Z" fill="var(--wood-roof)" stroke="var(--wood-line)" stroke-width=".035" stroke-linejoin="round"/><rect x="${(cx-.12).toFixed(3)}" y="${(y0+hh-.22).toFixed(3)}" width=".24" height=".22" fill="var(--wood-line)"/>`;}
-h+=[...(WD.fireball&&WD.fireball.dock?[WD.fireball.dock]:[]),...(WD.smalldocks||[])].map(DOCK).join('');   /* the small docks (Fireball Island's; King's Castle, Ocean Keep, Raven Tor, Solace, Wild Tundra, Edo; owner, Oct 25), over the sea layer */
+h+=[...(WD.fireball&&WD.fireball.dock?[WD.fireball.dock]:[]),...(WD.smalldocks||[]),...(WD.isles||[]).map(b=>b.dock)].map(DOCK).join('');   /* the small docks (Fireball Island's; King's Castle, Ocean Keep, Raven Tor, Solace, Wild Tundra, Edo; owner, Oct 25), over the sea layer */
 if(WD.precarious){const [x,y]=WD.precarious;
   h+=`<rect x="${x-.2}" y="${y-.45}" width=".4" height=".9" fill="var(--wood)" stroke="var(--wood-line)" stroke-width=".03" transform="rotate(4 ${x} ${y})"/>`+[0,1,2,3,4].map(k=>`<line x1="${x-.2}" y1="${y-.35+k*.18}" x2="${x+.2}" y2="${y-.33+k*.18}" stroke="var(--wood-line)" stroke-width=".02" opacity=".6"/>`).join('');}
 // town ground inside the walls
@@ -821,7 +844,7 @@ LBL['Northern Plains']=[.77,-1.338,'start'];LBL['Unholy Grounds']=[.77,.175,'sta
 for(const p of P){if(p.nolabel||p.nopin)continue;   /* named by a label already on the map */
   if(p.lake){const L=p.lake,ca=Math.cos(L.a*Math.PI/180),sa=Math.sin(L.a*Math.PI/180),tx=L.drop!=null?L.x:p.mx+ca*(L.half?1.1:.55),ty=L.drop!=null?L.y:p.my+sa*(L.half?1.1:.55);
   pins+=`<text class="plabel" data-i="${p.i}" x="${tx}" y="${ty}" transform="rotate(${L.a} ${tx} ${ty})" text-anchor="${L.drop!=null?'middle':'start'}" dominant-baseline="middle" font-size="${L.size||.66}" font-style="italic" letter-spacing="${L.ls||.14}" fill="var(--lake-label)" style="cursor:pointer;paint-order:stroke;stroke:var(--water);stroke-width:${((L.size||.66)*.24).toFixed(3)}px;stroke-linejoin:round">${esc(p.name)}</text>`;continue}
- const o=LBL[p.key||p.name]||(p.group?[.55,.06,'start']:[.35,0,'start']);pins+=`<text class="lbl plabel" data-i="${p.i}" x="${p.mx+o[0]}" y="${p.my+o[1]+.15}" text-anchor="${o[2]}" font-size="${p.fs||(groupHalls.includes(p.name)?.36:p.small?.6:p.group?.96:.44)}" font-style="italic" style="stroke-width:${p.fs?(p.fs/6).toFixed(2):p.group?.16:.11}px;cursor:pointer">${esc(p.name)}</text>`   /* p.fs: a larger name (Fireball Island, owner Oct 25) */
+ const o=p.lbl||LBL[p.key||p.name]||(p.group?[.55,.06,'start']:[.35,0,'start']);pins+=`<text class="lbl plabel" data-i="${p.i}" x="${p.mx+o[0]}" y="${p.my+o[1]+.15}" text-anchor="${o[2]}" font-size="${p.fs||(groupHalls.includes(p.name)?.36:p.small?.6:p.group?.96:.44)}" font-style="italic" style="stroke-width:${p.fs?(p.fs/6).toFixed(2):p.group?.16:.11}px;cursor:pointer">${esc(p.name)}</text>`   /* p.fs: a larger name (Fireball Island, owner Oct 25) */
  for(const e of (p.more||[])){const q=e.lbl||o;pins+=`<text class="lbl plabel" data-i="${p.i}" data-opt="${e.opt}" x="${e.at[0]+q[0]}" y="${e.at[1]+q[1]+.15}" text-anchor="${q[2]}" font-size="${p.group?.96:.44}" font-style="italic" style="stroke-width:${p.group?.16:.11}px;cursor:pointer">${esc(p.name)}</text>`}}
 document.getElementById('pins').innerHTML=pins;
 const LCACHE={};function laneD(pts,k){if(LCACHE[k])return LCACHE[k];let all=[];for(let i=0;i<pts.length-1;i++){const s=wobPts(pts[i],pts[i+1],.06,.35);if(i)s.shift();all=all.concat(s)}return LCACHE[k]=curve(all)}
@@ -867,7 +890,7 @@ document.getElementById('lanes').innerHTML=ln;
   const crowd=L=>{const p=pinR[L.i];let n=0;for(const q of pins){if(Math.abs((q.x0+q.x1)/2-(p.x0+p.x1)/2)<7&&Math.abs((q.y0+q.y1)/2-(p.y0+p.y1)/2)<7)n++}return n};
   info.sort((a,b)=>crowd(b)-crowd(a));
   for(let pass=0;pass<3;pass++){let moved=0;
-    for(const L of info){if(PINNED.has(P[L.i].name))continue;const cs=cands(L);let best=0,bs=Infinity;cs.forEach((c,k)=>{const s=score(L,c,k);if(s<bs){bs=s;best=k}});
+    for(const L of info){if(PINNED.has(P[L.i].name)||P[L.i].lbl)continue;const cs=cands(L);let best=0,bs=Infinity;cs.forEach((c,k)=>{const s=score(L,c,k);if(s<bs){bs=s;best=k}});
       const c=cs[best];if(c.x!==L.x||c.y!==L.y||c.anchor!==L.anchor){L.x=c.x;L.y=c.y;L.anchor=c.anchor;cur.set(L,rectOf(L,L));moved++}}
     if(!moved)break}
   for(const L of info){L.t.setAttribute('x',L.x.toFixed(3));L.t.setAttribute('y',L.y.toFixed(3));L.t.setAttribute('text-anchor',L.anchor)}

@@ -16,7 +16,11 @@
 - Your request (Oct 25): a small wooden dock at Fireball Island's marker (planks on posts), running south-east from the marker to 1 room past the shore.
 - Fixed (Oct 25): Fireball Island's dock was hidden. The part over the water was drawn under the sea, so only a stub on the beach showed. It is now drawn above the sea.
 - Your request (Oct 25): six more small docks like Fireball Island's, each from 0.3 rooms inside the shore to 1 room past it: King's Castle (the coast due east of 3245, 5.8 rooms from the room), Ocean Keep (due north of 3069, 9.0 rooms), Raven Tor (north-east of its marker, 3.6), Solace (due north of its marker, 3.6; it starts 0.6 rooms north of the town drawing), Wild Tundra (north-west off 14444, 1.3) and Edo (off the island's south-east corner, running south-east). None touches a marker or a name.
-  - Azure Sea, "due north of 12982": not drawn yet. 12982 is out at sea, and due north of it there is no coast for 62 rooms; the nearest coast is due south of it (4.9 rooms).
+- Your request (Oct 25): the Azure Sea dock, on the coast due north of 12956 (7.0 rooms north of the room, which is out at sea), running south into the water.
+- Your request (Oct 25): three more islands, each a little smaller than Hurricane Island (4.8 across), each with a small dock and a different shape and look. "Due east/west of" an area means level with the middle of its ground drawing; "central" means halfway between the coast at that height and the map's edge. Each has its marker on the dock side, a large name (1.4) above it, and your directions with no route line.
+  - Bilwen (4.3 across): central Azure Sea due east of the Ashen Forest, at 129.6, 12.5 (60 rooms off the coast). A green meadow island with a cove on its north-east, wildflowers, a few round trees and boulders. Its dock faces west, towards Darkhaven Marina. Directions: Board the great ship Meridia (Darkhaven Marina 5-6pm).
+  - Eurion (4.1 across): central Azure Sea due east of the Forgotten Woods, at 123.8, -55.2 (58 rooms off the coast). A long, jagged rock island: cliffs all round a stony plateau, dark pines on its north-east half, scree. Its dock faces west. Same directions as Bilwen.
+  - Deathvein Island (4.2 across): the Blood Sea due west of the Mire's centre, at -152.7, 73.5 (35 rooms off the coast). Three-lobed, with black blighted ground, red veins running through it, dead trees, dark pools and mist. Its dock faces east. Directions: Captain the Fair Lady (Docks at random docks).
 
 ## Version 2.14 · The Hometowns · October 25, 2026
 
