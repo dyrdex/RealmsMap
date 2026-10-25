@@ -4,7 +4,7 @@
   - desert trails (`fwtracks`, straight room to room, as applied/v2.3/001) for every exit between two shown rooms where one of them is newly
     shown or new (up/down exits included: the climbs into the canyon); none were drawn before (all those rooms were hidden); 12993-12994-12995 in
     the sea: the east coast's water path (B, `seawaysfaint`, `maplib.warpline`), going on from 12993;
-  - the river canyon 6546-6561 drawn as a river (`streams`), not a trail (owner, Oct 25);
+  - the river canyon 6546-6561 drawn as the standard water path (B, `seawaysfaint`, `maplib.warpline`), not a trail (owner, Oct 25; the stream style was too bold);
   - Thul Ab'hara's two routes (River, East) re-traced over the moved rooms (same directions)."""
 import json, math, os, maplib
 
@@ -65,7 +65,7 @@ def apply(town, wild, pos):
     RIVER = [6546, 6550, 6551, 6554, 6555, 6557, 6558, 6559, 6561]   # the river canyon (water rooms): a river, not a trail (owner, Oct 25)
     river = [l for c, l in lines if c == RIVER or c == RIVER[::-1]]; assert len(river) == 1
     wild['fwtracks'].extend(l for c, l in lines if l is not river[0])
-    wild['streams'] = (wild.get('streams') or []) + river                # (template: the map's stream style)
+    wild['seawaysfaint'].append(maplib.warpline(river[0]))              # as the standard water path (B, bent), on land (owner, Oct 25: the stream style was too bold)
     wild['seawaysfaint'].extend(maplib.warpline(l) for _, l in water)
     walk, at = maplib.tracer(pos, wild)
     p = next(p for p in wild['places'] if p['name'] == "Thul Ab'hara")
