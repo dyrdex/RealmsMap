@@ -36,6 +36,7 @@
 - Your request (Oct 24): the four links between the Forgotten Woods and the Lake of Tich'Pyga at the lake's north-east corner (Northwestern Lake 1154 - 977, The Northern Shore 1205 - 5478, The Strand Bends 1208 - 5476, Hamlet of Loch Pyga 1210 - The Shores of Tich'Pyga 847) are thin dashed lines instead of trails.
 - Your request (Oct 24): more deadly drops marked: the cliff's rim along the High-Cliff Trail (Scaling the Cliffs 5671 to High-Cliff Trail 5677) and at Overlooking the Blood Sea 5631 is the red warning dash (10.3 rooms more), with one skull on the High-Cliff Trail's cliff face below Ocean View 5674; The Deceptive Shoreline 5689 and Blood Sea Cliffs 5692, where there is no cliff drawn, each have a small skull on their sea side.
 - Your request (Oct 24): A Dark Hole 5796, a deathtrap, drawn one room south-west of Burrowing into the Hills 5795 with its trail and the skull and crossbones; also added to the Barren Peaks + Forgotten Woods editor at that spot (it wasn't in it).
+- Your Barren Peaks + Forgotten Woods save (Oct 25, 00:12): The Crimson Caverns 22807 drawn where you put it, with its trail from A Dark Valley 6998; the Crimson Caverns' line and marker now end on 22807 (your directions unchanged).
 
 ## Version 2.12 · The Knights of the Round · October 23, 2026
 
