@@ -25,6 +25,8 @@ number, don't read it whole.
 ## Layout editors
 Republished Oct 19 in the owner's current claude.ai organization (the old links in `docs/archive/` are in another organization and are not
 used any more); each was loaded with the owner's latest save (its `<key>/current` document), so it opens where the owner left off.
+Barren Peaks editor's background (land, sea, trails) refreshed from the current map Oct 23 (`tools/barren_peaks_editor/refresh_ctx.py`); rerun it after coast changes there.
+Forest of Tears room 1669 is also in the Barren Peaks editor (movable, `add_1669.py`, Oct 23; 1668 as a fixed dot): once the owner saves it there, that spot wins and the Forest of Tears editor's 1669 is updated to match (fwtracks[375] ends at 1669, [384] runs 1669 to 5491).
 New areas: rooms go into a layout editor first; drawn only after the owner places them and saves (owner, Oct 18).
 Starting spots from `src/editor_spread.py` (`spread_clear`), with its numbers reported (owner, Oct 16).
 To make a new editor: copy the newest builder (`tools/mire_editor/build_mi_editor.py`, run from anywhere; it reads the old saves
@@ -50,6 +52,9 @@ The other builders run inside `src/legacy`.
 | Otherland (Oct 21; `tools/otherland_editor/`) | https://claude.ai/artifact/5B5NWTeurkdsVpDwuPFphX | `ollayout/current` | `ol_layout_final.json` |
 
 ## Standing owner rules, by region
+- **Trail rounding** (owner, Oct 24; `changes/002c_round_trails.py`): room-to-room trails are rounded over 0.6 rooms at each bend (the page's curve cuts corners between stretch midpoints; flank points at 0.6). Use 0.6 for new trails.
+- **Woods path review** (owner, Oct 24; `changes/002b`, `009_fw_review.py`): a trail must follow its rooms' real exits (redrawn along them if its order skips exits); a single-exit trail is never pulled; no trail drawn twice. Expected leftovers: Flowing Plains of Grass (no trails), maze entrances ending at the blob, trails ending on the Northern Trade Route.
+- **Trails to rooms** (owner, Oct 24; `changes/002b_tighten_trails.py`): Forgotten Woods and Barren Peaks trails stay within 0.35 rooms of their shown rooms (0.15, 0.25 were too tight); the Lost in the Swamp maze is drawn over the trails (`top`) (ends fixed). New trails: straight room to room, lightly rounded.
 - **Everywhere**: routes and room counts are the owner's own (`data.py`: `MORE_DIRECTIONS`, `ROUTE_OPTIONS`), never computed;
   directions in numbered form. A route's marker goes where the route leaves the area. Asgard Nexus and World Housing stay off
   the map (Oct 12). Castle Darkhawk has no route yet.
@@ -60,6 +65,8 @@ The other builders run inside `src/legacy`.
 - **Desert of Despair terrain** (owner, Oct 20; `changes/007`, `wild.ddsand`, template DDSAND, over geo.sand 16): grain + wind texture,
   ripple fields, dunes, dry lake beds, rocks, scrub, very few cacti; its own look, not the Wastelands' (no grass tufts or crags).
 - **Sea everywhere** (owner, Oct 23; `changes/009`; frame widened by `008`: +60 W/E, S/E 20 past the farthest room): all open background inside `bounds` is sea, merged into `geo.water` (one shape, rings even-odd). New land drawn later must cut the sea (and redo its rings).
+- **16240 + the Island of Irrybis** (owner, Oct 23; `changes/001_irrybis.py`): 16240 drawn directly at the owner's request (not in the Northern Plains editor), on the coast WSW of 4400; 4400 d 16240 a stairway (`descents`); the island is its own land piece + a hole in `geo.water` (evenodd), Woods trees; the place's marker on 16240, label pinned (template LBL/PINNED) west of it, under the island.
+- **Woods coast cliff + inlet** (owner, Oct 23; `changes/003_blood_sea_inlet.py`, `004_woods_cliff.py`): sea just below the foot rooms (11745, 13640-13642) and the clifftop 5644/5645, inlet along 5646/5495 ending in sand by 5494; the coast parallels fwtracks[384] (5491-1669) about 1 off down to y -41, then west to x -59 and slopes to the old coast at Sailing the Seas (owner, Oct 24: enough land between sea and path). The deadly drops 5640-5495: red warning rim + one skull (owner, Oct 24: not 7 emblems). Cliff (`fwcliff`, template FWCLIFF) 5669-5494 on the low side: south of 5669-5628, the loop's outside 5628-5639, the sea side after. 5644 d 13640 is the only safe way down: a notch + stairway.
 - **4316 - 4317** (owner, Oct 23; `changes/015`): 22557, 14314 evenly on the line 4316-4317 (4317 isn't in the Northern Plains editor; its save now has these spots, as `legacy/np_layout_final.json`).
 - **Sea names** (owner, Oct 23; `changes/010`, `arealabels`): The Straight of Ahtborne (sea S of the Tower of Despair), Blood Sea (west) and Azure Sea (east; no "The", size 3.6 via `arealabels` fs) at the map's mid-height; Otherland's name N of the Ledge of Life.
 - **Standard water path** (owner, Oct 23): every water path but type C has Otherland's trail bend (`maplib.warpline`, one field for the whole map; `changes/006` bends all B routes and the currents; `005` the Ocean Keep stream made B, `streams` now empty; draw new non-C paths with it). Ends of trails/C/dashed links meeting a B route sit on the bent line.
