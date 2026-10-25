@@ -35,6 +35,9 @@
 - Your request (Oct 25): a small stone mausoleum drawing (0.9 rooms wide: steps, pillars, a pediment, a dark door and a little cross) at -42.8, 7.5, 1.0 room west of Abishai's Morgue's marker.
 - Your request (Oct 25): the mausoleum by Abishai's Morgue is much bigger: 2.2 rooms wide, 2.0 tall (was 0.9), same spot (-42.8, 7.5); it stays clear of the marker and its name (0.3 rooms to the marker).
 - Your request (Oct 25): a small wooden shack (0.8 rooms wide) over The Main Road of Loch Pyga 1223 (Lake of Tich'Pyga).
+- Your request (Oct 25): the bare patch in the Forest of Tears by Abishai's Morgue filled in (4.5 square rooms, x -42.3 to -39.8, y 5.5 to 8.0): a small piece of the deep-forest shading there was cutting a hole in it; removed, and 7 trees added (none under the mausoleum or on the marker).
+- Your request (Oct 25): the hut over The Main Road of Loch Pyga 1223 is now three small huts in a row running east-west (0.8 rooms apart, the middle one on 1223), each different: a gabled one, a low thatched one with a lit window, a tall one with a chimney.
+- Your request (Oct 25): the Mire trails on the way to Tribal Swamplands redrawn from your Mire layout: the trail that cut from 8355 straight to 8362 and the one that stopped short of 8357 are gone; all 15 exits between the rooms of that corner (8350-8359, 8362) are now trails, room to room, so the route line runs along them.
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 
