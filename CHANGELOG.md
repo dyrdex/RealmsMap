@@ -24,6 +24,7 @@
 - Your request (Oct 25): three new destinations with your directions: The Astral Plane (#8 u;n, marker on The Astral Gate), The Sands of Teracchei (#8 u;e, marker on An Endless Sea of Void; card "Gith Hometown") and Town Hall (e;s, a square landmark marker on its lobby); names east of their markers, in the town's small style.
 - Your request (Oct 25): Town Hall's marker moved west, by the corner of Vertic Avenue and Horizon Road (0.8, 0.85; was 2, 1). The Astral Plane's marker moved to that corner too, east of its name (-0.8, 0.85); The Sands of Teracchei's marker directly south of it (-0.8, 1.75), east of its name. Selecting either no longer draws a route line (the card still shows the directions).
 - Your request (Oct 25): Town Hall's route line now reads as e then s: east along Horizon Road from the Square to just above the lobby (0.8 rooms), then straight south to it (it used to run east past it and back south-west).
+- Your request (Oct 25): Darkhaven Square is now square (1.28 rooms a side, paved, with a dashed inner border; was round), and the star in its middle is a small fountain (a stone basin 0.58 across with water, a pedestal and a little spray). Nothing else moved (checked pixel by pixel: only the Square changed).
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 

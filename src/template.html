@@ -699,9 +699,11 @@ for(const g of T.gates){
 }
 h+=`<g id="lanes"></g>`;
 // square: paved plaza with a well
-h+=`<path d="${wobRing(Array.from({length:12},(_,i)=>[Math.cos(i*Math.PI/6)*.72,Math.sin(i*Math.PI/6)*.72]),.03)}" fill="var(--street)" stroke="var(--street-edge)" stroke-width=".06"/>`;
-h+=`<circle r=".5" fill="none" stroke="var(--street-edge)" stroke-width=".03" stroke-dasharray=".05 .07"/>`;
-h+=`<path d="${Array.from({length:10},(_,i)=>{const a=i*Math.PI/5-Math.PI/2,r=i%2?.15:.38;return (i?'L':'M')+(Math.cos(a)*r).toFixed(3)+' '+(Math.sin(a)*r).toFixed(3)}).join(' ')}Z" fill="var(--ink)"/>`;
+wobRing(Array.from({length:12},(_,i)=>[Math.cos(i*Math.PI/6)*.72,Math.sin(i*Math.PI/6)*.72]),.03);   /* (the old round plaza's random draws, still taken so nothing drawn after it moves) */
+h+=`<rect x="-.64" y="-.64" width="1.28" height="1.28" rx=".05" fill="var(--street)" stroke="var(--street-edge)" stroke-width=".06"/>`;   /* the Square: square (owner, Oct 25; was round) */
+h+=`<rect x="-.5" y="-.5" width="1" height="1" fill="none" stroke="var(--street-edge)" stroke-width=".03" stroke-dasharray=".05 .07"/>`;
+h+=`<circle r=".29" fill="var(--water)" stroke="var(--stone)" stroke-width=".07"/><circle r=".29" fill="none" stroke="var(--stone-hi)" stroke-width=".02" opacity=".6"/>`;   /* a small fountain in the middle (owner, Oct 25; was a star): stone basin, water, */
+h+=`<circle r=".07" fill="var(--stone-hi)"/><path d="M0 -.05 Q -.1 -.2 -.18 -.08 M0 -.05 Q .1 -.2 .18 -.08 M0 -.05 Q 0 -.22 0 -.2" fill="none" stroke="var(--street)" stroke-width=".025" stroke-linecap="round" opacity=".85"/>`;   /* a pedestal and its spray */
 h+=`<text class="lbl" x="-.8" y="-.6" text-anchor="end" font-size=".52" font-weight="700" font-style="italic" style="stroke-width:.13px">Darkhaven Square</text>`;
 
 // route layer + pins
