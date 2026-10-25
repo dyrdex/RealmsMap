@@ -14,6 +14,9 @@
 - Your request (Oct 25): Hurricane Island halved: 4.8 across on average (was 9.59; 1/3 of Fireball Island's). Now that it fits, it sits exactly 10 rooms west of The Blood Sea's marker (-115.9, 1), 2.32 off the coast. Its mountains, wreck and gusts are scaled down with it (24 sand ripples, 14 grass tufts). Its name is still size 1.4, centred above it.
 - Your request (Oct 25): Fireball Island's volcano made smaller (0.65 of its old size: 4.9 wide at its foot, 4 tall) and in softer colours: muted ember orange instead of bright orange and yellow for the crater, lava, glow and fireballs.
 - Your request (Oct 25): a small wooden dock at Fireball Island's marker (planks on posts), running south-east from the marker to 1 room past the shore.
+- Fixed (Oct 25): Fireball Island's dock was hidden. The part over the water was drawn under the sea, so only a stub on the beach showed. It is now drawn above the sea.
+- Your request (Oct 25): six more small docks like Fireball Island's, each from 0.3 rooms inside the shore to 1 room past it: King's Castle (the coast due east of 3245, 5.8 rooms from the room), Ocean Keep (due north of 3069, 9.0 rooms), Raven Tor (north-east of its marker, 3.6), Solace (due north of its marker, 3.6; it starts 0.6 rooms north of the town drawing), Wild Tundra (north-west off 14444, 1.3) and Edo (off the island's south-east corner, running south-east). None touches a marker or a name.
+  - Azure Sea, "due north of 12982": not drawn yet. 12982 is out at sea, and due north of it there is no coast for 62 rooms; the nearest coast is due south of it (4.9 rooms).
 
 ## Version 2.14 · The Hometowns · October 25, 2026
 
