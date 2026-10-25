@@ -30,6 +30,9 @@
 - Your request (Oct 25): Olympus, Scourge of Time and The Domain of World Eater in the list only (no marker, no route line). Your note "scan/scry to find Formless Void Maze" is on The Domain of World Eater's card; its commas are read as ";".
 - Your Forest of Tears save (Oct 25, 04:13): the 13 rooms you moved (Kontaur 4002-4011, The Underworld 878, the Graveyard 7807-7809, A Dark Breezeway 7834; 0.35 to 1.44 rooms) are where you put them; still hidden. Abishai's Morgue's and The Underworld's markers and lines follow (Abishai's Morgue's marker 0.35 rooms north, The Underworld's 1.27 north-east).
 - Your request (Oct 25): new directions for the Land of the Fire Newts (#13 e;#3 s;e;s;e;s) and Machine Dreams (#13 e;#3 s;e;s;e;#3 s;e;#3 s;e;s;d), and The Domain of World Eater (#13 e;#3 s;e;s;e;#3 s;e;#3 s;e;s;#3 d, then scan/scry for the Formless Void Maze) now shown on the map like them. All three run from Darkhaven through the Ashen Forest to Within the Ashen Forest 1255 (24 drawn steps) and on south into Moria, which isn't drawn yet, so their lines stop there and they share its marker; The Domain of World Eater's name sits above the other two, east of the marker.
+- Your request (Oct 25): the names by the shared marker at 1255 now read, top to bottom: Land of the Fire Newts, Machine Dreams, The Domain of World Eater.
+- Your request (Oct 25): new directions for Abishai's Morgue (#9 w;sw;#4 w;s;sw;#2 w;#2 s;se;s;window): every room on the way is drawn now, so the line runs the whole way to Amid the Tombs of the Affluent 7809 (the window is the way in) and the marker is there.
+- Your request (Oct 25): a small stone mausoleum drawing (0.9 rooms wide: steps, pillars, a pediment, a dark door and a little cross) at -42.8, 7.5, 1.0 room west of Abishai's Morgue's marker.
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 
