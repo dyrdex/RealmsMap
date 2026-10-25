@@ -2,7 +2,8 @@
 shapes and looks varied (template ISLES):
   - Bilwen: the central Azure Sea, due east of the Ashen Forest; green meadow island, a cove, wildflowers, a few round trees, boulders;
   - Eurion: the central Azure Sea, due east of the Forgotten Woods; long, jagged rock island, cliffs all round, dark pines, scree;
-  - Deathvein Island: the Blood Sea, due west of the Mire's centre; three-lobed, black blighted ground, red veins, dead trees, mist.
+  - Deathvein Island: the Blood Sea, due west of the Mire's centre; three-lobed; a dark, menacing jungle (owner, Oct 25: a jungle island,
+    still a little scary): black-green canopy, red veins (streams) through it, bare snags above the trees, dark pools, mist.
   'Due east/west of' an area: level with the centre of its ground (Ashen: geo.ash, Woods: geo.fwwood, Mire: geo.mimud + bog2, by their bounds);
   'central': half way between the coast at that height and the map's edge, then moved out to sea until 2 clear of any land.
   Markers on the dock side (Bilwen, Eurion: west, towards Darkhaven Marina; Deathvein: east), docks from the marker out 1 past the shore;
@@ -15,7 +16,7 @@ MERIDIA = 'Board the great ship Meridia (Darkhaven Marina 5-6pm).'
 ISLES = [  # name, area tint(s), side, diameter, kind, dock/marker direction (deg, y down), directions, sea
     ('Bilwen', ('ash',), 'east', 4.3, 'meadow', 180, MERIDIA, 'Azure Sea'),
     ('Eurion', ('fwwood',), 'east', 4.1, 'rock', 185, MERIDIA, 'Azure Sea'),
-    ('Deathvein Island', ('mimud', 'bog2'), 'west', 4.2, 'blight', 0, 'Captain the Fair Lady (Docks at random docks).', 'Blood Sea'),
+    ('Deathvein Island', ('mimud', 'bog2'), 'west', 4.2, 'darkjungle', 0, 'Captain the Fair Lady (Docks at random docks).', 'Blood Sea'),
 ]
 CLEAR = 2.0
 
@@ -72,7 +73,7 @@ def apply(town, wild, pos):
         made.append(isle)
         ring = lambda g: [[R4(x), R4(y)] for x, y in list(g.exterior.coords)[:-1]]
         poly = ring(isle); G['land'] = list(G['land']) + [poly]; G['water'] = list(G['water']) + [poly]
-        rim = 0.32 if kind == 'meadow' else 0.18 if kind == 'rock' else 0.12
+        rim = 0.32 if kind == 'meadow' else 0.18 if kind == 'rock' else 0.22
         inner = isle.buffer(-rim)
         d = {'kind': kind, 'isle': poly, 'inner': ring(inner), 'wash': [ring(isle.buffer(-0.12))]}
         if kind == 'meadow':
@@ -109,7 +110,8 @@ def apply(town, wild, pos):
                         line2.append(q)
                     if len(line2) > 3: veins.append([[R4(x), R4(y)] for x, y in line2])
             d['veins'] = veins
-            d['dead'] = [[R4(x), R4(y), round(rng.uniform(.75, 1.05), 2), rng.randrange(3)] for x, y in _grid(inner.buffer(-0.25), 0.62, rng, 0.6)]
+            d['canopy'] = [[R4(x), R4(y), round(rng.uniform(.2, .32), 2), rng.randrange(4)] for x, y in _grid(inner.buffer(-0.12), 0.3, rng, 1.0)]
+            d['dead'] = [[R4(x), R4(y), round(rng.uniform(.75, 1.05), 2), rng.randrange(3)] for x, y in _grid(inner.buffer(-0.35), 0.9, rng, 0.35)]
             d['pools'] = [[R4(x), R4(y), round(rng.uniform(.12, .2), 2)] for x, y in _grid(inner.buffer(-0.35), 1.1, rng, 0.3)][:4]
             d['mist'] = [[R4(x), R4(y), round(rng.uniform(.35, .6), 2)] for x, y in _grid(isle, 0.9, rng, 0.5)]
         # ---- the marker on the dock side's beach, the dock out from it ----

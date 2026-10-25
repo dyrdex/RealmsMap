@@ -9,7 +9,8 @@ import math, random
 from shapely.geometry import Polygon, LineString, Point, box
 from shapely.ops import unary_union
 
-ROUTE = "Board the Bounty's Revenge in Grimdog Port Authority. Docks at the north of the Knock Dock 02:00 - 04:00."
+ROUTE = '#9 w;#2 nw;n;w;nw;w;#2 nw;#8 w;nw;#3 w;nw;w;#2 nw;#2 w;#2 sw;w;sw;#4 w;#2 nw;n;nw;n;#13 w;#3 n'   # (owner, Oct 25; the line drawn stays as it was)
+CARD = "Board the Bounty's Revenge in Grimdog Port Authority. Docks 02:00 - 04:00."   # the card's line under the name (owner, Oct 25)
 FROM = 'Sailing the Seas'
 WAY = [(-97.0, -19.6), (-108.5, -30.0), (-100.0, -44.5), (-114.5, -58.0), (-102.5, -72.5), (-117.0, -86.0), (-105.5, -99.5), (-111.0, -110.5)]
 WAVE_A, WAVE_L = 0.45, 4.2                    # the boat line's small waves on top of its bends
@@ -99,7 +100,7 @@ def apply(town, wild, pos):
     sea_line = LineString(sail[12:-12])
     near_land = round(sea_line.distance(land), 2); near_isle = round(LineString(sail[:-14]).distance(isle), 2)
     wild['places'].append({'name': 'Fireball Island', 'route': ROUTE, 'room': 'Fireball Island', 'dir': 'here', 'group': src.get('group'),
-                           'where': 'in the Blood Sea', 'card': 'Island in the Blood Sea · reached by boat', 'rhead': 'Directions:', 'note': None,
+                           'where': 'in the Blood Sea', 'card': CARD, 'note': None,
                            'path': [list(q) for q in src['path']] + sail[1:], 'segs': [[list(q) for q in g] for g in (src.get('segs') or [src['path']])],
                            'sail': sail, 'at': pin, 'fs': 1.4})
     wild['fireball'] = {'isle': poly, 'jungle': ring(jungle), 'wash': wash, 'canopy': canopy, 'palms': palms, 'volcano': [round(vx, 2), round(vy, 2), VOLC[2]], 'dock': dock}
