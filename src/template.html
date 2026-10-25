@@ -200,7 +200,7 @@ WILD+=`<path d="${blobs(GEO.sand)}" fill="var(--sand)" fill-rule="evenodd" opaci
 }}
 {const B=WD.fireball;if(B){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z';   /* FIREBALL: Fireball Island (owner, Oct 25): a sand beach all round, jungle inside it (canopy clumps, palms on the beach's edge), a new volcano at its centre */
   WILD+=`<defs><pattern id="fbgrain" patternUnits="userSpaceOnUse" width="1.2" height="1.0"><g fill="#9A8A62"><circle cx=".15" cy=".2" r=".022"/><circle cx=".8" cy=".12" r=".018"/><circle cx="1.05" cy=".6" r=".024"/><circle cx=".45" cy=".8" r=".018"/></g><g fill="#2F2A1E"><circle cx=".6" cy=".45" r=".018"/><circle cx=".25" cy=".6" r=".015"/></g></pattern>
-    <radialGradient id="fbglow"><stop offset="0" stop-color="#FFB347" stop-opacity=".75"/><stop offset=".45" stop-color="#E8571C" stop-opacity=".35"/><stop offset="1" stop-color="#E8571C" stop-opacity="0"/></radialGradient></defs>`;
+    <radialGradient id="fbglow"><stop offset="0" stop-color="#C99A66" stop-opacity=".45"/><stop offset=".45" stop-color="#A9583A" stop-opacity=".2"/><stop offset="1" stop-color="#A9583A" stop-opacity="0"/></radialGradient></defs>`;
   WILD+=`<path d="${P(B.isle)}" fill="#5E5438"/><path d="${P(B.isle)}" fill="url(#fbgrain)" opacity=".8"/>`;   /* the beach */
   WILD+=`<path d="${B.wash.map(P).join('')}" fill="none" stroke="#8C7E5C" stroke-width=".04" stroke-linecap="round" stroke-dasharray=".55 .3" opacity=".6"/>`;
   WILD+=`<path d="${P(B.jungle)}" fill="#1B2E1C" stroke="#14221A" stroke-width=".08"/>`;   /* the jungle floor */
@@ -217,17 +217,21 @@ WILD+=`<path d="${blobs(GEO.sand)}" fill="var(--sand)" fill-rule="evenodd" opaci
   v+=`<path d="M.2 -5.7 Q.6 -6.02 .98 -5.6 Q1.35 -4.5 1.8 -3.15 Q2.75 -1.05 3.8 0 L1.1 0 Q1.0 -3 .2 -5.7Z" fill="#231D1B" opacity=".85"/><path d="M-1.0 -5.55 Q-1.3 -4.6 -1.75 -3.2 Q-2.7 -1.1 -3.8 0 L-3.2 0 Q-2.2 -1.6 -1.6 -3.4Z" fill="#544A44" opacity=".55"/>`;
   for(const [a,b,c,d] of [[-.7,-5.3,-2.4,-.4],[-.35,-5.4,-1.3,-.3],[.05,-5.5,-.2,-.2],[.45,-5.4,.9,-.2],[.8,-5.2,2.2,-.3],[-.95,-4.9,-3.0,-.2],[1.1,-4.8,3.0,-.2]])v+=`<path d="M${a} ${b} Q${((a+c)/2+(c<0?.25:-.25)).toFixed(2)} ${((b+d)/2).toFixed(2)} ${c} ${d}" fill="none" stroke="#120E0C" stroke-width=".05" opacity=".55"/>`;   /* the ribs */
   for(const [x,y] of [[-1.2,-2.6],[1.3,-2.1],[-.4,-3.9],[.6,-4.4],[-2.0,-1.3],[2.1,-.9]])v+=`<path d="M${x-.18} ${y} l.1 -.1 l.12 .03 l.1 .07" fill="none" stroke="#6E625A" stroke-width=".035" opacity=".6"/>`;   /* broken rock */
-  v+=`<ellipse cx="-.1" cy="-5.78" rx="1.02" ry=".26" fill="#5C1E0E" stroke="#120E0C" stroke-width=".05"/><ellipse cx="-.1" cy="-5.8" rx=".8" ry=".17" fill="#E8571C"/><ellipse cx="-.15" cy="-5.82" rx=".45" ry=".09" fill="#FFD36A"/>`;   /* the crater */
+  v+=`<ellipse cx="-.1" cy="-5.78" rx="1.02" ry=".26" fill="#4A2318" stroke="#120E0C" stroke-width=".05"/><ellipse cx="-.1" cy="-5.8" rx=".8" ry=".17" fill="#A9583A"/><ellipse cx="-.15" cy="-5.82" rx=".45" ry=".09" fill="#C9AA74"/>`;   /* the crater */
   for(const [d,w] of [['M-.55 -5.62 Q-.9 -4.6 -.6 -3.7 Q-.3 -2.9 -.95 -2.0 Q-1.4 -1.3 -1.2 -.5',.17],['M.35 -5.62 Q.7 -4.9 .5 -4.1 Q.35 -3.4 .95 -2.6 Q1.4 -1.9 1.55 -1.0',.14],['M-.1 -5.62 Q.05 -5.0 -.15 -4.5',.11]])
-    v+=`<path d="${d}" fill="none" stroke="#7A2410" stroke-width="${(w+.08).toFixed(2)}" stroke-linecap="round" opacity=".8"/><path d="${d}" fill="none" stroke="#E8571C" stroke-width="${w}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#FFB347" stroke-width="${(w*.35).toFixed(3)}" stroke-linecap="round" opacity=".9"/>`;   /* the lava runs */
+    v+=`<path d="${d}" fill="none" stroke="#5E2A1A" stroke-width="${(w+.08).toFixed(2)}" stroke-linecap="round" opacity=".8"/><path d="${d}" fill="none" stroke="#A9583A" stroke-width="${w}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#C99A66" stroke-width="${(w*.35).toFixed(3)}" stroke-linecap="round" opacity=".9"/>`;   /* the lava runs */
   for(const [x,y,r,o] of [[-.15,-6.45,.42,.75],[.25,-7.15,.55,.7],[.85,-7.95,.68,.6],[1.6,-8.6,.78,.5],[2.5,-9.05,.85,.38],[3.4,-9.3,.8,.26],[-.35,-7.0,.36,.55],[.4,-8.45,.5,.45]])v+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#57504C" opacity="${o}"/><circle cx="${(x-r*.3).toFixed(2)}" cy="${(y-r*.3).toFixed(2)}" r="${(r*.45).toFixed(2)}" fill="#7A726C" opacity="${(o*.6).toFixed(2)}"/>`;   /* the plume */
-  v+=`<circle cx="-.1" cy="-6.25" r=".38" fill="#A0462A" opacity=".45"/>`;
+  v+=`<circle cx="-.1" cy="-6.25" r=".38" fill="#7A4A3A" opacity=".45"/>`;
   for(const [x0,y0,cx,cy,x,y,r] of [[-.4,-6.0,-1.6,-8.3,-2.6,-6.9,.17],[.3,-6.0,1.5,-8.9,2.9,-6.2,.15],[-.2,-6.0,-.7,-7.9,-1.2,-7.4,.12],[.1,-6.0,.9,-7.6,1.6,-7.1,.11]])
-    v+=`<path d="M${x0} ${y0} Q${cx} ${cy} ${x} ${y}" fill="none" stroke="#E8571C" stroke-width=".05" stroke-dasharray=".14 .12" opacity=".7"/><circle cx="${x}" cy="${y}" r="${(r*1.9).toFixed(2)}" fill="url(#fbglow)"/><circle cx="${x}" cy="${y}" r="${r}" fill="#FFB347" stroke="#E8571C" stroke-width=".04"/>`;   /* fireballs */
+    v+=`<path d="M${x0} ${y0} Q${cx} ${cy} ${x} ${y}" fill="none" stroke="#A9583A" stroke-width=".05" stroke-dasharray=".14 .12" opacity=".7"/><circle cx="${x}" cy="${y}" r="${(r*1.9).toFixed(2)}" fill="url(#fbglow)"/><circle cx="${x}" cy="${y}" r="${r}" fill="#C99A66" stroke="#A9583A" stroke-width=".04"/>`;   /* fireballs */
   for(const [x,y,r] of [[-3.5,-.2,.42],[-3.0,-.45,.5],[-2.45,-.3,.46],[-1.9,-.15,.4],[-1.4,-.25,.44],[-.85,-.12,.38],[-.3,-.2,.42],[.25,-.14,.4],[.8,-.22,.44],[1.35,-.15,.4],[1.9,-.3,.46],[2.45,-.4,.48],[3.0,-.3,.44],[3.5,-.18,.4],[-2.7,-.85,.34],[2.7,-.8,.32],[-1.6,-.65,.3],[1.65,-.6,.28]])v+=clump([x,y,r,((x*7|0)%3+3)%3]);   /* the jungle round its foot */
   WILD+=`<g transform="translate(${vx} ${vy}) scale(${vk})">${v}</g>`;
   WILD+=C.filter(c=>c[1]>=vy-.25).map(clump).join('');
   WILD+=B.palms.slice().sort((a,b)=>a[1]-b[1]).map(palm).join('');
+  if(B.dock){const [x0,y0,x1,y1]=B.dock,L=Math.hypot(x1-x0,y1-y0),a=Math.atan2(y1-y0,x1-x0)*180/Math.PI;let d=`<rect x="0" y="-.13" width="${L.toFixed(2)}" height=".3" fill="#000" opacity=".3" transform="translate(.05 .06)"/><rect x="0" y="-.17" width="${L.toFixed(2)}" height=".34" fill="#6E5536" stroke="#1D1510" stroke-width=".03"/>`;
+    for(let s=.12;s<L;s+=.13)d+=`<line x1="${s.toFixed(2)}" y1="-.17" x2="${s.toFixed(2)}" y2=".17" stroke="#3E2E1E" stroke-width=".018"/>`;
+    for(let s=.25;s<=L+.01;s+=.42)d+=`<circle cx="${Math.min(s,L-.05).toFixed(2)}" cy="-.2" r=".055" fill="#3A2A1A"/><circle cx="${Math.min(s,L-.05).toFixed(2)}" cy=".2" r=".055" fill="#3A2A1A"/>`;
+    WILD+=`<g transform="translate(${x0} ${y0}) rotate(${a.toFixed(1)})">${d}</g>`}   /* the dock at the marker, out south-east into the sea (owner, Oct 25) */
 }}
 {const B=WD.hurricane;if(B){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z',F=n=>(+n).toFixed(2);   /* HURRICANE: Hurricane Island (owner, Oct 25): sandy all over, a mountain ridge, wind-swept from the west (streaks, bent grass, sand blown off the crests, gusts), a boat wreck on its west coast */
   WILD+=`<defs><pattern id="higrain" patternUnits="userSpaceOnUse" width="1.1" height=".9"><g fill="#A4936A"><circle cx=".12" cy=".2" r=".02"/><circle cx=".75" cy=".1" r=".017"/><circle cx=".95" cy=".55" r=".022"/><circle cx=".4" cy=".72" r=".017"/></g><g fill="#3A3324"><circle cx=".55" cy=".4" r=".016"/><circle cx=".2" cy=".55" r=".014"/></g></pattern></defs>`;
@@ -245,18 +249,18 @@ WILD+=`<path d="${blobs(GEO.sand)}" fill="var(--sand)" fill-rule="evenodd" opaci
     <path d="M${F(x-w*.18)} ${F(-h*.85)} L${F(x-w*.1)} ${F(-h*.5)} M${F(x+w*.3)} ${F(-h*.72)} L${F(x+w*.22)} ${F(-h*.4)} M${F(x-w*.55)} ${F(-h*.45)} L${F(x-w*.45)} ${F(-h*.2)}" stroke="#16120D" stroke-width=".035" opacity=".55"/>
     <path d="M${x} ${-h} q.5 -.08 1.0 .05 q.4 .1 .85 0 M${F(x+w*.12)} ${F(-h*.8)} q.45 -.05 .9 .08 q.35 .08 .7 0" fill="none" stroke="#C2B286" stroke-width=".04" stroke-linecap="round" opacity=".6"/>`;
   m+=peak(-1.55,1.45,2.3,'#5E5648','#433D33')+peak(1.6,1.35,2.0,'#5E5648','#433D33')+peak(.1,1.75,3.3,'#686051','#4A4338');
-  WILD+=`<g transform="translate(${rx} ${ry}) scale(1.3)">${m}</g>`;
+  WILD+=`<g transform="translate(${rx} ${ry}) scale(${(1.3*B.r/4.8).toFixed(3)})">${m}</g>`;   /* (scaled with the island: 4.8 its first radius) */
   WILD+=B.tufts.filter(t=>t[1]>=ry-.2).map(tuft).join('');
   /* the wreck: a broken hull keeled over in the sand, ribs bare, its mast snapped, a rag of sail, planks strewn */
   const [wx,wy]=B.wreck;
-  WILD+=`<g transform="translate(${wx} ${wy}) rotate(-14) scale(1.25)"><ellipse cx=".1" cy=".32" rx="1.25" ry=".22" fill="#000" opacity=".3"/>
+  WILD+=`<g transform="translate(${wx} ${wy}) rotate(-14) scale(${(1.25*B.r/4.8).toFixed(3)})"><ellipse cx=".1" cy=".32" rx="1.25" ry=".22" fill="#000" opacity=".3"/>
     <path d="M-1.1 .1 Q-.95 .42 -.3 .45 L.75 .42 Q1.05 .3 1.15 -.05 L.7 -.05 L.55 .12 L.2 -.02 L-.1 .14 L-.45 -.04 L-.75 .1Z" fill="#4E3B27" stroke="#1A120B" stroke-width=".05" stroke-linejoin="round"/>
     <path d="M-.85 .28 H.95 M-.95 .2 H1.05" stroke="#2E2216" stroke-width=".025" opacity=".8"/>
     <path d="M-.45 .1 Q-.55 -.35 -.3 -.6 M-.1 .14 Q-.15 -.4 .05 -.62 M.25 .05 Q.25 -.38 .42 -.55 M.6 .1 Q.65 -.25 .8 -.38" fill="none" stroke="#5C4630" stroke-width=".07" stroke-linecap="round"/>
     <path d="M.05 .2 L-.15 -.85" stroke="#3E2E1E" stroke-width=".09" stroke-linecap="round"/><path d="M-.15 -.85 L-.1 -.95 L-.22 -.9" fill="none" stroke="#3E2E1E" stroke-width=".05"/>
     <path d="M-.13 -.7 Q.2 -.62 .38 -.4 Q.22 -.42 .12 -.3 Q.05 -.45 -.08 -.42Z" fill="#9C927A" opacity=".85" stroke="#2E2216" stroke-width=".02"/>
     <path d="M-1.3 .38 Q-.6 .3 -.1 .42 Q.5 .5 1.3 .36 L1.3 .5 L-1.3 .5Z" fill="#6B5F42"/></g>`;
-  for(const [x,y,a] of [[1.8,.6,20],[2.1,.2,-35],[-1.75,.55,10],[1.5,.95,65]])WILD+=`<rect x="${F(wx+x-.22)}" y="${F(wy+y-.04)}" width=".44" height=".08" fill="#4E3B27" stroke="#1A120B" stroke-width=".02" transform="rotate(${a} ${F(wx+x)} ${F(wy+y)})"/>`;   /* planks */
+  const wk=B.r/4.8;for(const [x0,y0,a] of [[1.8,.6,20],[2.1,.2,-35],[-1.75,.55,10],[1.5,.95,65]]){const x=x0*wk,y=y0*wk;WILD+=`<rect x="${F(wx+x-.22*wk)}" y="${F(wy+y-.04*wk)}" width="${F(.44*wk)}" height="${F(.08*wk)}" fill="#4E3B27" stroke="#1A120B" stroke-width=".02" transform="rotate(${a} ${F(wx+x)} ${F(wy+y)})"/>`;}   /* planks */
   /* gusts: long curling strokes blowing across the island from the west */
   const [cx,cy]=B.c,r=B.r;
   for(const [dx,dy,l] of [[-1.05,-3.1,.95],[-.15,-2.0,.8],[-1.25,-.2,.7],[.35,.9,.85],[-.75,2.4,.9],[.2,3.6,.6],[-1.3,3.3,.45]]){const a=cx+dx*r/4.8,y=cy+dy*r/4.8,L=l*r,F2=n=>n.toFixed(2);
@@ -810,7 +814,7 @@ for(const n of ['The Astral Plane','The Sands of Teracchei','Town Hall'])PINNED.
 LBL['New Hope Farm']=[0,1.0,'middle'];PINNED.add('New Hope Farm');for(const n of ['Major Oak','Bartok Grove','The Burrows',"Ezard's Fields"]){LBL[n]=[.55,.06,'start'];PINNED.add(n)}   /* directly east of their markers, over the trails if need be (owner, Oct 25) */   /* under its marker, clear of Bartok Grove's name (Oct 25) */
 LBL['Keep of Lomar']=[-.55,.06,'end'];LBL['Tullfuhrzky Manor']=[-.55,.06,'end'];LBL['White Pine Camp']=[.55,.06,'start'];LBL['Ashen Forest']=[.55,.06,'start'];for(const n of ['Keep of Lomar','Tullfuhrzky Manor','White Pine Camp','Ashen Forest'])PINNED.add(n);   /* directly west (Keep of Lomar, Tullfuhrzky Manor) / east (White Pine Camp, Ashen Forest) of their markers (owner, Oct 25) */
 LBL['Fireball Island']=[-.6,.32,'end'];PINNED.add('Fireball Island');   /* a large name west of its marker on the south-east beach (owner, Oct 25) */
-LBL['Hurricane Island']=[-3.47,-6.84,'middle'];PINNED.add('Hurricane Island');   /* a large name centred over the island, north of it (owner, Oct 25) */
+LBL['Hurricane Island']=[-1.46,-4.1,'middle'];PINNED.add('Hurricane Island');   /* a large name centred over the island, north of it (owner, Oct 25) */
 LBL['The Island of Irrybis']=[-.85,2.05,'end'];PINNED.add('The Island of Irrybis');   /* west of its marker (16240), under the island (owner, Oct 23) */
 LBL['Northern Plains']=[.77,-1.338,'start'];LBL['Unholy Grounds']=[.77,.175,'start'];PINNED.add('Northern Plains');PINNED.add('Unholy Grounds');   /* one marker (4221): Northern Plains above Unholy Grounds (owner, Oct 23) */   /* east of its marker, off Camelot (the label solver doesn't see drawings; owner, Oct 23) */
 for(const p of P){if(p.nolabel||p.nopin)continue;   /* named by a label already on the map */

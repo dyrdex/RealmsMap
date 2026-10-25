@@ -14,7 +14,8 @@ FROM = 'Sailing the Seas'
 WAY = [(-97.0, -19.6), (-108.5, -30.0), (-100.0, -44.5), (-114.5, -58.0), (-102.5, -72.5), (-117.0, -86.0), (-105.5, -99.5), (-111.0, -110.5)]
 WAVE_A, WAVE_L = 0.45, 4.2                    # the boat line's small waves on top of its bends
 BEACH = 0.95                                  # the beach's mean width
-VOLC = (0.0, 2.1, 1.0)                        # the volcano's base centre (from the island's centre) and scale: base 7.6 wide, peak 6.2 up
+VOLC = (0.0, 1.6, 0.65)                       # the volcano's base centre (from the island's centre) and scale: base 7.6 wide, peak 6.2 up at 1 (owner, Oct 25: smaller, 0.65)
+DOCK_A, DOCK_OUT = 45, 1.0                    # the dock: from the marker south-east (degrees from east, y down), this far past the shore (owner, Oct 25)
 PIN_A = 52                                    # the marker: this many degrees round from east (y down), on the beach
 
 
@@ -79,6 +80,11 @@ def apply(town, wild, pos):
     a = math.radians(PIN_A); r = rf(a) - bw(a) * 0.45
     pin = [round(cx + r * math.cos(a), 2), round(cy + r * math.sin(a), 2)]
     assert isle.contains(Point(pin)) and not jungle.buffer(-0.1).contains(Point(pin))
+    # ---- the dock: from the marker out south-east, one room past the shore ----
+    da = math.radians(DOCK_A); ux, uy = math.cos(da), math.sin(da)
+    ray = LineString([pin, (pin[0] + ux * 6, pin[1] + uy * 6)]); hit = ray.intersection(isle.exterior)
+    hits = list(hit.geoms) if hasattr(hit, 'geoms') else [hit]; sh = min(hits, key=lambda q: Point(pin).distance(q))
+    dock = [pin[0], pin[1], round(sh.x + ux * DOCK_OUT, 2), round(sh.y + uy * DOCK_OUT, 2)]
     # ---- the boat line: from Sailing the Seas, big bends north, small waves on top ----
     src = next(p for p in wild['places'] if p['name'] == FROM)
     start = tuple(src['path'][-1])
@@ -96,8 +102,8 @@ def apply(town, wild, pos):
                            'where': 'in the Blood Sea', 'card': 'Island in the Blood Sea · reached by boat', 'rhead': 'Directions:', 'note': None,
                            'path': [list(q) for q in src['path']] + sail[1:], 'segs': [[list(q) for q in g] for g in (src.get('segs') or [src['path']])],
                            'sail': sail, 'at': pin, 'fs': 1.4})
-    wild['fireball'] = {'isle': poly, 'jungle': ring(jungle), 'wash': wash, 'canopy': canopy, 'palms': palms, 'volcano': [round(vx, 2), round(vy, 2), VOLC[2]]}
+    wild['fireball'] = {'isle': poly, 'jungle': ring(jungle), 'wash': wash, 'canopy': canopy, 'palms': palms, 'volcano': [round(vx, 2), round(vy, 2), VOLC[2]], 'dock': dock}
     return {"Angel's Landing island height = diameter": round(H, 2), 'centre (coast x, edge x)': (C, round(west, 2), wild['bounds'][0]),
             'island box, area': ([round(c, 2) for c in isle.bounds], round(isle.area, 1)), 'beach area': round(isle.difference(jungle).area, 1),
-            'canopy clumps, palms': (len(canopy), len(palms)), 'volcano at': wild['fireball']['volcano'], 'marker': pin,
+            'canopy clumps, palms': (len(canopy), len(palms)), 'volcano at': wild['fireball']['volcano'], 'marker': pin, 'dock (from, to; shore to its end)': (dock, round(math.dist((sh.x, sh.y), dock[2:]), 2)),
             'boat line: points, length, nearest land, nearest the island before landing': (len(sail), round(L.length, 1), near_land, near_isle)}

@@ -11,7 +11,7 @@ from shapely.geometry import Polygon, LineString, Point
 
 ROUTE = '#53 w;se;d;u;d;u'
 FROM = 'The Blood Sea'
-SCALE = 2 / 3
+SCALE = 1 / 3                                  # owner, Oct 25: half its first size (2/3 of Fireball's diameter -> 1/3)
 CLEAR = 2.0
 
 
@@ -54,12 +54,12 @@ def apply(town, wild, pos):
     inner = isle.buffer(-0.45); streaks = []; tufts = []
     x0, y0, x1, y1 = isle.bounds
     for _ in range(400):
-        x, y = rng.uniform(x0, x1), rng.uniform(y0, y1); L = rng.uniform(0.6, 1.5)
-        if inner.contains(Point(x, y)) and inner.contains(Point(x + L, y + L * 0.12)) and len(streaks) < 70:
+        x, y = rng.uniform(x0, x1), rng.uniform(y0, y1); L = rng.uniform(0.4, 0.9)
+        if inner.contains(Point(x, y)) and inner.contains(Point(x + L, y + L * 0.12)) and len(streaks) < 24:
             streaks.append([round(x, 2), round(y, 2), round(L, 2), round(rng.uniform(-.12, .12), 2)])
     for _ in range(300):
         x, y = rng.uniform(x0, x1), rng.uniform(y0, y1)
-        if inner.contains(Point(x, y)) and len(tufts) < 46: tufts.append([round(x, 2), round(y, 2), round(rng.uniform(.7, 1.1), 2)])
+        if inner.contains(Point(x, y)) and len(tufts) < 14: tufts.append([round(x, 2), round(y, 2), round(rng.uniform(.7, 1.1), 2)])
     # ---- the wreck: on the west beach ----
     aw = math.radians(183); rw = rf(aw) - 0.85
     wreck = [round(C[0] + rw * math.cos(aw), 2), round(cy + rw * math.sin(aw), 2)]
