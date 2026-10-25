@@ -42,6 +42,9 @@
 - Your request (Oct 25): the Mire trails no longer run under the clearing just north of Tribal Swamplands: like every other clearing, the trails stop at its edge (the 15 exits there are now 7 trail pieces outside it; the clearing is drawn as before).
 - Your request (Oct 25): Major Oak's, Bartok Grove's, The Burrows' and Ezard's Fields' names directly east of their markers.
 - Your Ashen Forest save (Oct 25, 04:58): Moria 3347, 3348 and the Land of the Fire Newts 3352-3360 drawn where you put them, one trail from Within the Ashen Forest 1255 along their exits (nothing else moved). The Land of the Fire Newts' line now runs the whole way to The Obsidian Hills 3352; Machine Dreams' and The Domain of World Eater's lines run on to Hanging on Air 3360, where Machine Dreams begins (not drawn yet). The three still share the marker by 1255.
+- Your request (Oct 25): the trail from Lost Between Woods 1755 to The Weeping Forest 1754 now runs on about two rooms further south-west, bending gently at 1754, to Drowning in Sorrow 1919 (a drawing only; no route changed).
+- Your request (Oct 25): the Land of the Fire Newts' marker is on its last room, The Obsidian Hills 3352; Machine Dreams and The Domain of World Eater share their own marker on Hanging on Air 3360, where their lines end; their names sit east of the markers (Machine Dreams above The Domain of World Eater).
+- Your request (Oct 25): the Dwarven Catacombs' marker moved south, halfway between that marker and the Mountains of Desolation's (22.29, 9.45; was 21.31, 7.5), its name east of it, just below The Domain of World Eater's.
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 

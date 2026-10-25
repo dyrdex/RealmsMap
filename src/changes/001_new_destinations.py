@@ -9,7 +9,8 @@ DAG = '#4 s;w;#2 n;give 5k coins receptionist;unlock n;open n'
 PLACES = [   # name, owner's directions, marker spot (None: list only), where
     ('Dwarven Catacombs',
      '#8 e;se;se;s;#3 se;e;ne;ne;n;ne;ne;n;nw;n;ne;w;push leaves;pull leaves;e;e;n;n;u;open u;u;open u;u;e;d;d;#4 n;open n;n;open n;n;d',
-     (21.31, 7.5), 'past the Mountains of Desolation'),          # north of the Mountains of Desolation marker (21.31, 11.23), y 7.5
+     (22.29, 9.45), 'past the Mountains of Desolation'),         # halfway between Machine Dreams' marker (Hanging on Air 3360, 23.28, 7.66) and the
+                                                                    # Mountains of Desolation's (21.31, 11.23) (owner, Oct 25; was 21.31, 7.5)
     ('Dragontail Glen',
      'nw;w;w;n;n;n;n;e;look painting;n;nw;n;n;nw;w;nw;nw;w;w;w;nw;nw;sw;sw;w;sw;w;nw;w;w;w;w;w;w;w;s;w;sw;s;s;w;w;w;w;nw;nw;w;w;sw;sw;sw;sw;w;n;d;w;w;n;n;w;w;w;n;n',
      (-10.5, -136.6), 'past Crystalmir Lake'),                     # WNW of the Crystalmir Lake marker (-8.09, -135.67), 1.0 below the road
