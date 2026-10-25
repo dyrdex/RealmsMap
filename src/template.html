@@ -204,30 +204,30 @@ const DOCK=([x0,y0,x1,y1])=>{const L=Math.hypot(x1-x0,y1-y0),a=Math.atan2(y1-y0,
     return `<g transform="translate(${x0} ${y0}) rotate(${a.toFixed(1)})">${d}</g>`};   /* DOCK: a small plank dock on posts, from the shore out into the sea (Fireball Island's, owner Oct 25) */
 {const B=WD.fireball;if(B){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z';   /* FIREBALL: Fireball Island (owner, Oct 25): a sand beach all round, jungle inside it (canopy clumps, palms on the beach's edge), a new volcano at its centre */
   WILD+=`<defs><pattern id="fbgrain" patternUnits="userSpaceOnUse" width="1.2" height="1.0"><g fill="#9A8A62"><circle cx=".15" cy=".2" r=".022"/><circle cx=".8" cy=".12" r=".018"/><circle cx="1.05" cy=".6" r=".024"/><circle cx=".45" cy=".8" r=".018"/></g><g fill="#2F2A1E"><circle cx=".6" cy=".45" r=".018"/><circle cx=".25" cy=".6" r=".015"/></g></pattern>
-    <radialGradient id="fbglow"><stop offset="0" stop-color="#C99A66" stop-opacity=".45"/><stop offset=".45" stop-color="#A9583A" stop-opacity=".2"/><stop offset="1" stop-color="#A9583A" stop-opacity="0"/></radialGradient></defs>`;
-  WILD+=`<path d="${P(B.isle)}" fill="#5E5438"/><path d="${P(B.isle)}" fill="url(#fbgrain)" opacity=".8"/>`;   /* the beach */
+    <radialGradient id="fbglow"><stop offset="0" stop-color="#7A5A44" stop-opacity=".22"/><stop offset=".45" stop-color="#5E3A2C" stop-opacity=".1"/><stop offset="1" stop-color="#5E3A2C" stop-opacity="0"/></radialGradient></defs>`;
+  WILD+=`<path d="${P(B.isle)}" fill="#4F4733"/><path d="${P(B.isle)}" fill="url(#fbgrain)" opacity=".8"/>`;   /* the beach */
   WILD+=`<path d="${B.wash.map(P).join('')}" fill="none" stroke="#8C7E5C" stroke-width=".04" stroke-linecap="round" stroke-dasharray=".55 .3" opacity=".6"/>`;
-  WILD+=`<path d="${P(B.jungle)}" fill="#1B2E1C" stroke="#14221A" stroke-width=".08"/>`;   /* the jungle floor */
-  const CC=[['#21402A','#335C35'],['#284A2B','#3D6B3A'],['#2F5530','#4A7A40']];
-  const clump=([x,y,r,v])=>{const [a,b]=CC[v];return `<circle cx="${(x+.07).toFixed(2)}" cy="${(y+.1).toFixed(2)}" r="${r}" fill="#0E1A10" opacity=".55"/><circle cx="${x}" cy="${y}" r="${r}" fill="${a}"/><circle cx="${(x-r*.28).toFixed(2)}" cy="${(y-r*.3).toFixed(2)}" r="${(r*.5).toFixed(2)}" fill="${b}" opacity=".85"/><circle cx="${(x+r*.3).toFixed(2)}" cy="${(y-r*.05).toFixed(2)}" r="${(r*.3).toFixed(2)}" fill="${b}" opacity=".5"/>`};
-  const palm=([x,y,h,l])=>{const F=n=>n.toFixed(2),s=.5*h,tx=x+l,ty=y-1.0*s;let o=`<ellipse cx="${F(x+.05)}" cy="${F(y+.04)}" rx=".22" ry=".06" fill="#000" opacity=".3"/><path d="M${F(x)} ${F(y)} Q${F(x+l*.3)} ${F(y-.55*s)} ${F(tx)} ${F(ty)}" fill="none" stroke="#3A2C1C" stroke-width=".07" stroke-linecap="round"/>`;
-    for(const [dx,dy] of [[-.34,.1],[.34,.12],[-.22,-.14],[.24,-.12],[0,-.22]])o+=`<path d="M${F(tx)} ${F(ty)} Q${F(tx+dx*.6)} ${F(ty+dy-.12)} ${F(tx+dx)} ${F(ty+dy+.08)}" fill="none" stroke="#3F6A33" stroke-width=".085" stroke-linecap="round"/>`;
+  WILD+=`<path d="${P(B.jungle)}" fill="#16241C" stroke="#101A14" stroke-width=".08"/>`;   /* the jungle floor */
+  const CC=[['#16241C','#243527'],['#1E2E22','#2A3D2C'],['#243527','#33472F']];   /* the map's own tree greens (owner, Oct 25: toned down) */
+  const clump=([x,y,r,v])=>{const [a,b]=CC[v];return `<circle cx="${(x+.07).toFixed(2)}" cy="${(y+.1).toFixed(2)}" r="${r}" fill="#0E1A10" opacity=".55"/><circle cx="${x}" cy="${y}" r="${r}" fill="${a}"/><circle cx="${(x-r*.28).toFixed(2)}" cy="${(y-r*.3).toFixed(2)}" r="${(r*.5).toFixed(2)}" fill="${b}" opacity=".6"/><circle cx="${(x+r*.3).toFixed(2)}" cy="${(y-r*.05).toFixed(2)}" r="${(r*.3).toFixed(2)}" fill="${b}" opacity=".35"/>`};
+  const palm=([x,y,h,l])=>{const F=n=>n.toFixed(2),s=.5*h,tx=x+l,ty=y-1.0*s;let o=`<ellipse cx="${F(x+.05)}" cy="${F(y+.04)}" rx=".22" ry=".06" fill="#000" opacity=".3"/><path d="M${F(x)} ${F(y)} Q${F(x+l*.3)} ${F(y-.55*s)} ${F(tx)} ${F(ty)}" fill="none" stroke="#2E2418" stroke-width=".07" stroke-linecap="round"/>`;
+    for(const [dx,dy] of [[-.34,.1],[.34,.12],[-.22,-.14],[.24,-.12],[0,-.22]])o+=`<path d="M${F(tx)} ${F(ty)} Q${F(tx+dx*.6)} ${F(ty+dy-.12)} ${F(tx+dx)} ${F(ty+dy+.08)}" fill="none" stroke="#33452F" stroke-width=".085" stroke-linecap="round"/>`;
     return o+`<circle cx="${F(tx)}" cy="${F(ty)}" r=".05" fill="#4A3622"/>`};
   const [vx,vy,vk]=B.volcano,C=B.canopy.slice().sort((a,b)=>a[1]-b[1]);
   WILD+=C.filter(c=>c[1]<vy-.25).map(clump).join('');
   /* the volcano: a black basalt cone, ribbed, its foot swallowed by the jungle; a glowing crater, lava runs down into the trees, a leaning plume of ash and smoke, fireballs flung from the crater */
   let v=`<ellipse cx="0" cy=".05" rx="4.1" ry=".55" fill="#000" opacity=".35"/><ellipse cx="0" cy="-5.75" rx="2.6" ry="1.6" fill="url(#fbglow)"/>`;
-  v+=`<path d="M-3.8 0 Q-2.7 -1.1 -1.75 -3.2 Q-1.3 -4.6 -1.0 -5.55 Q-.7 -5.95 -.4 -5.72 L-.12 -5.95 L.2 -5.7 Q.6 -6.02 .98 -5.6 Q1.35 -4.5 1.8 -3.15 Q2.75 -1.05 3.8 0Z" fill="#3B3431" stroke="#120E0C" stroke-width=".07" stroke-linejoin="round"/>`;
-  v+=`<path d="M.2 -5.7 Q.6 -6.02 .98 -5.6 Q1.35 -4.5 1.8 -3.15 Q2.75 -1.05 3.8 0 L1.1 0 Q1.0 -3 .2 -5.7Z" fill="#231D1B" opacity=".85"/><path d="M-1.0 -5.55 Q-1.3 -4.6 -1.75 -3.2 Q-2.7 -1.1 -3.8 0 L-3.2 0 Q-2.2 -1.6 -1.6 -3.4Z" fill="#544A44" opacity=".55"/>`;
+  v+=`<path d="M-3.8 0 Q-2.7 -1.1 -1.75 -3.2 Q-1.3 -4.6 -1.0 -5.55 Q-.7 -5.95 -.4 -5.72 L-.12 -5.95 L.2 -5.7 Q.6 -6.02 .98 -5.6 Q1.35 -4.5 1.8 -3.15 Q2.75 -1.05 3.8 0Z" fill="#2E2A28" stroke="#120E0C" stroke-width=".07" stroke-linejoin="round"/>`;
+  v+=`<path d="M.2 -5.7 Q.6 -6.02 .98 -5.6 Q1.35 -4.5 1.8 -3.15 Q2.75 -1.05 3.8 0 L1.1 0 Q1.0 -3 .2 -5.7Z" fill="#231D1B" opacity=".85"/><path d="M-1.0 -5.55 Q-1.3 -4.6 -1.75 -3.2 Q-2.7 -1.1 -3.8 0 L-3.2 0 Q-2.2 -1.6 -1.6 -3.4Z" fill="#3E3834" opacity=".55"/>`;
   for(const [a,b,c,d] of [[-.7,-5.3,-2.4,-.4],[-.35,-5.4,-1.3,-.3],[.05,-5.5,-.2,-.2],[.45,-5.4,.9,-.2],[.8,-5.2,2.2,-.3],[-.95,-4.9,-3.0,-.2],[1.1,-4.8,3.0,-.2]])v+=`<path d="M${a} ${b} Q${((a+c)/2+(c<0?.25:-.25)).toFixed(2)} ${((b+d)/2).toFixed(2)} ${c} ${d}" fill="none" stroke="#120E0C" stroke-width=".05" opacity=".55"/>`;   /* the ribs */
   for(const [x,y] of [[-1.2,-2.6],[1.3,-2.1],[-.4,-3.9],[.6,-4.4],[-2.0,-1.3],[2.1,-.9]])v+=`<path d="M${x-.18} ${y} l.1 -.1 l.12 .03 l.1 .07" fill="none" stroke="#6E625A" stroke-width=".035" opacity=".6"/>`;   /* broken rock */
-  v+=`<ellipse cx="-.1" cy="-5.78" rx="1.02" ry=".26" fill="#4A2318" stroke="#120E0C" stroke-width=".05"/><ellipse cx="-.1" cy="-5.8" rx=".8" ry=".17" fill="#A9583A"/><ellipse cx="-.15" cy="-5.82" rx=".45" ry=".09" fill="#C9AA74"/>`;   /* the crater */
+  v+=`<ellipse cx="-.1" cy="-5.78" rx="1.02" ry=".26" fill="#2E1E18" stroke="#120E0C" stroke-width=".05"/><ellipse cx="-.1" cy="-5.8" rx=".8" ry=".17" fill="#5E3A2C"/><ellipse cx="-.15" cy="-5.82" rx=".45" ry=".09" fill="#7A5A44"/>`;   /* the crater */
   for(const [d,w] of [['M-.55 -5.62 Q-.9 -4.6 -.6 -3.7 Q-.3 -2.9 -.95 -2.0 Q-1.4 -1.3 -1.2 -.5',.17],['M.35 -5.62 Q.7 -4.9 .5 -4.1 Q.35 -3.4 .95 -2.6 Q1.4 -1.9 1.55 -1.0',.14],['M-.1 -5.62 Q.05 -5.0 -.15 -4.5',.11]])
-    v+=`<path d="${d}" fill="none" stroke="#5E2A1A" stroke-width="${(w+.08).toFixed(2)}" stroke-linecap="round" opacity=".8"/><path d="${d}" fill="none" stroke="#A9583A" stroke-width="${w}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#C99A66" stroke-width="${(w*.35).toFixed(3)}" stroke-linecap="round" opacity=".9"/>`;   /* the lava runs */
+    v+=`<path d="${d}" fill="none" stroke="#2E1A14" stroke-width="${(w+.06).toFixed(2)}" stroke-linecap="round" opacity=".7"/><path d="${d}" fill="none" stroke="#5E3A2C" stroke-width="${(w*.8).toFixed(3)}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#7A5A44" stroke-width="${(w*.3).toFixed(3)}" stroke-linecap="round" opacity=".6"/>`;   /* the lava runs */
   for(const [x,y,r,o] of [[-.15,-6.45,.42,.75],[.25,-7.15,.55,.7],[.85,-7.95,.68,.6],[1.6,-8.6,.78,.5],[2.5,-9.05,.85,.38],[3.4,-9.3,.8,.26],[-.35,-7.0,.36,.55],[.4,-8.45,.5,.45]])v+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#57504C" opacity="${o}"/><circle cx="${(x-r*.3).toFixed(2)}" cy="${(y-r*.3).toFixed(2)}" r="${(r*.45).toFixed(2)}" fill="#7A726C" opacity="${(o*.6).toFixed(2)}"/>`;   /* the plume */
-  v+=`<circle cx="-.1" cy="-6.25" r=".38" fill="#7A4A3A" opacity=".45"/>`;
+  v+=`<circle cx="-.1" cy="-6.25" r=".38" fill="#4A3630" opacity=".35"/>`;
   for(const [x0,y0,cx,cy,x,y,r] of [[-.4,-6.0,-1.6,-8.3,-2.6,-6.9,.17],[.3,-6.0,1.5,-8.9,2.9,-6.2,.15],[-.2,-6.0,-.7,-7.9,-1.2,-7.4,.12],[.1,-6.0,.9,-7.6,1.6,-7.1,.11]])
-    v+=`<path d="M${x0} ${y0} Q${cx} ${cy} ${x} ${y}" fill="none" stroke="#A9583A" stroke-width=".05" stroke-dasharray=".14 .12" opacity=".7"/><circle cx="${x}" cy="${y}" r="${(r*1.9).toFixed(2)}" fill="url(#fbglow)"/><circle cx="${x}" cy="${y}" r="${r}" fill="#C99A66" stroke="#A9583A" stroke-width=".04"/>`;   /* fireballs */
+    v+=`<path d="M${x0} ${y0} Q${cx} ${cy} ${x} ${y}" fill="none" stroke="#5E3A2C" stroke-width=".04" stroke-dasharray=".14 .12" opacity=".5"/><circle cx="${x}" cy="${y}" r="${(r*1.9).toFixed(2)}" fill="url(#fbglow)"/><circle cx="${x}" cy="${y}" r="${r}" fill="#6E5040" stroke="#4A3026" stroke-width=".04"/>`;   /* fireballs */
   for(const [x,y,r] of [[-3.5,-.2,.42],[-3.0,-.45,.5],[-2.45,-.3,.46],[-1.9,-.15,.4],[-1.4,-.25,.44],[-.85,-.12,.38],[-.3,-.2,.42],[.25,-.14,.4],[.8,-.22,.44],[1.35,-.15,.4],[1.9,-.3,.46],[2.45,-.4,.48],[3.0,-.3,.44],[3.5,-.18,.4],[-2.7,-.85,.34],[2.7,-.8,.32],[-1.6,-.65,.3],[1.65,-.6,.28]])v+=clump([x,y,r,((x*7|0)%3+3)%3]);   /* the jungle round its foot */
   WILD+=`<g transform="translate(${vx} ${vy}) scale(${vk})">${v}</g>`;
   WILD+=C.filter(c=>c[1]>=vy-.25).map(clump).join('');
@@ -729,19 +729,19 @@ if(WD.kraken){const [kx,ky,ks]=WD.kraken,F=n=>n.toFixed(3);   /* KRAKEN: the gia
     for(let i=0;i<n;i++){const a=C[Math.max(0,i-1)],b=C[Math.min(n-1,i+1)],tx=b[0]-a[0],ty=b[1]-a[1],tl=Math.hypot(tx,ty)||1,nx=-ty/tl,ny=tx/tl,w=(w0*(1-i/n)+.025)*s;
       L.push([C[i][0]+nx*w,C[i][1]+ny*w]);R.push([C[i][0]-nx*w,C[i][1]-ny*w]);if(i%3===1&&i<n-4)su.push([C[i][0]-nx*w*.55,C[i][1]-ny*w*.55,w*.32])}
     const d='M'+L.map(q=>F(q[0])+' '+F(q[1])).join('L')+'L'+R.reverse().map(q=>F(q[0])+' '+F(q[1])).join('L')+'Z';
-    let g=`<path d="${d}" fill="#4E3434" stroke="#140C0C" stroke-width="${F(.05*s)}" stroke-linejoin="round"/>`;
-    g+=`<path d="M${C.slice(0,Math.floor(n*.8)).map(q=>F(q[0]+.04*s*m)+' '+F(q[1]-.03*s)).join('L')}" fill="none" stroke="#6E4C48" stroke-width="${F(.05*s)}" stroke-linecap="round" opacity=".7"/>`;   /* its lit top */
-    g+=su.map(([x,y,r])=>`<circle cx="${F(x)}" cy="${F(y)}" r="${F(r)}" fill="#8A6A5E" stroke="#140C0C" stroke-width="${F(.012*s)}"/>`).join('');   /* suckers */
-    const rip=(r,o)=>`<ellipse cx="${F(bx)}" cy="${F(by+.02*s)}" rx="${F(r*s)}" ry="${F(r*.32*s)}" fill="none" stroke="#9DB4BA" stroke-width="${F(.035*s)}" opacity="${o}"/>`;
-    return `<ellipse cx="${F(bx)}" cy="${F(by+.04*s)}" rx="${F(.42*s)}" ry="${F(.13*s)}" fill="#0B1418" opacity=".55"/>`+g+`<path d="M${F(bx-.36*s)} ${F(by)} q${F(.18*s)} ${F(-.09*s)} ${F(.36*s)} 0 t${F(.36*s)} 0" fill="#1D3A44" stroke="#9DB4BA" stroke-width="${F(.03*s)}" opacity=".9"/>`+rip(.55,.45)+rip(.8,.22)};
+    let g=`<path d="${d}" fill="#3A3A34" stroke="#15171A" stroke-width="${F(.05*s)}" stroke-linejoin="round"/>`;
+    g+=`<path d="M${C.slice(0,Math.floor(n*.8)).map(q=>F(q[0]+.04*s*m)+' '+F(q[1]-.03*s)).join('L')}" fill="none" stroke="#4E4E46" stroke-width="${F(.05*s)}" stroke-linecap="round" opacity=".7"/>`;   /* its lit top */
+    g+=su.map(([x,y,r])=>`<circle cx="${F(x)}" cy="${F(y)}" r="${F(r)}" fill="#55534A" stroke="#15171A" stroke-width="${F(.012*s)}"/>`).join('');   /* suckers */
+    const rip=(r,o)=>`<ellipse cx="${F(bx)}" cy="${F(by+.02*s)}" rx="${F(r*s)}" ry="${F(r*.32*s)}" fill="none" stroke="#7F9498" stroke-width="${F(.035*s)}" opacity="${o}"/>`;
+    return `<ellipse cx="${F(bx)}" cy="${F(by+.04*s)}" rx="${F(.42*s)}" ry="${F(.13*s)}" fill="#0E1C24" opacity=".55"/>`+g+`<path d="M${F(bx-.36*s)} ${F(by)} q${F(.18*s)} ${F(-.09*s)} ${F(.36*s)} 0 t${F(.36*s)} 0" fill="#22404A" stroke="#7F9498" stroke-width="${F(.03*s)}" opacity=".9"/>`+rip(.55,.45)+rip(.8,.22)};
   let k='';
-  for(const [rx,ry,o] of [[4.6,2.2,.16],[3.7,1.75,.18],[2.8,1.3,.2]])k+=`<ellipse cx="${kx}" cy="${ky}" rx="${F(rx*ks)}" ry="${F(ry*ks)}" fill="#08121A" opacity="${o}"/>`;   /* the dark shape under the water */
-  for(const [dx,dy,r] of [[-1.6,1.2,.9],[1.9,-.9,1.1],[0,-1.7,.7]])k+=`<ellipse cx="${F(kx+dx*ks)}" cy="${F(ky+dy*ks)}" rx="${F(r*ks)}" ry="${F(r*.3*ks)}" fill="none" stroke="#9DB4BA" stroke-width=".035" opacity=".18"/>`;   /* swirls on the surface */
+  for(const [rx,ry,o] of [[4.6,2.2,.16],[3.7,1.75,.18],[2.8,1.3,.2]])k+=`<ellipse cx="${kx}" cy="${ky}" rx="${F(rx*ks)}" ry="${F(ry*ks)}" fill="#14262E" opacity="${o}"/>`;   /* the dark shape under the water */
+  for(const [dx,dy,r] of [[-1.6,1.2,.9],[1.9,-.9,1.1],[0,-1.7,.7]])k+=`<ellipse cx="${F(kx+dx*ks)}" cy="${F(ky+dy*ks)}" rx="${F(r*ks)}" ry="${F(r*.3*ks)}" fill="none" stroke="#7F9498" stroke-width=".035" opacity=".18"/>`;   /* swirls on the surface */
   /* the hump, mostly under: a ridge of mottled hide, one pale eye */
-  k+=`<path d="M${F(kx-1.15*ks)} ${F(ky+.2*ks)} Q${F(kx-.6*ks)} ${F(ky-.55*ks)} ${F(kx+.1*ks)} ${F(ky-.5*ks)} Q${F(kx+.8*ks)} ${F(ky-.45*ks)} ${F(kx+1.2*ks)} ${F(ky+.2*ks)}Z" fill="#3E2A2C" stroke="#140C0C" stroke-width=".05"/>`;
-  for(const [dx,dy,r] of [[-.55,-.12,.09],[-.2,-.3,.07],[.35,-.22,.08],[.7,-.05,.06]])k+=`<circle cx="${F(kx+dx*ks)}" cy="${F(ky+dy*ks)}" r="${F(r*ks)}" fill="#5A3E3E" opacity=".8"/>`;
-  k+=`<ellipse cx="${F(kx+.55*ks)}" cy="${F(ky-.08*ks)}" rx="${F(.16*ks)}" ry="${F(.1*ks)}" fill="#C9B47A" stroke="#140C0C" stroke-width=".03"/><ellipse cx="${F(kx+.57*ks)}" cy="${F(ky-.08*ks)}" rx="${F(.035*ks)}" ry="${F(.085*ks)}" fill="#140C0C"/>`;
-  k+=`<path d="M${F(kx-1.35*ks)} ${F(ky+.2*ks)} q${F(.35*ks)} ${F(-.12*ks)} ${F(.7*ks)} 0 t${F(.7*ks)} 0 t${F(.7*ks)} 0 t${F(.7*ks)} 0" fill="#1D3A44" stroke="#9DB4BA" stroke-width=".035" opacity=".9"/>`;   /* the water over its back */
+  k+=`<path d="M${F(kx-1.15*ks)} ${F(ky+.2*ks)} Q${F(kx-.6*ks)} ${F(ky-.55*ks)} ${F(kx+.1*ks)} ${F(ky-.5*ks)} Q${F(kx+.8*ks)} ${F(ky-.45*ks)} ${F(kx+1.2*ks)} ${F(ky+.2*ks)}Z" fill="#34342F" stroke="#15171A" stroke-width=".05"/>`;
+  for(const [dx,dy,r] of [[-.55,-.12,.09],[-.2,-.3,.07],[.35,-.22,.08],[.7,-.05,.06]])k+=`<circle cx="${F(kx+dx*ks)}" cy="${F(ky+dy*ks)}" r="${F(r*ks)}" fill="#46453E" opacity=".8"/>`;
+  k+=`<ellipse cx="${F(kx+.55*ks)}" cy="${F(ky-.08*ks)}" rx="${F(.16*ks)}" ry="${F(.1*ks)}" fill="#7A7458" stroke="#15171A" stroke-width=".03"/><ellipse cx="${F(kx+.57*ks)}" cy="${F(ky-.08*ks)}" rx="${F(.035*ks)}" ry="${F(.085*ks)}" fill="#15171A"/>`;
+  k+=`<path d="M${F(kx-1.35*ks)} ${F(ky+.2*ks)} q${F(.35*ks)} ${F(-.12*ks)} ${F(.7*ks)} 0 t${F(.7*ks)} 0 t${F(.7*ks)} 0 t${F(.7*ks)} 0" fill="#22404A" stroke="#7F9498" stroke-width=".035" opacity=".9"/>`;   /* the water over its back */
   /* the tentacles: arcs and curled tips just breaking the surface, around the body */
   const T=[[-3.3,.6,1.0,-1,[[0,0],[.15,-.55],[.5,-.95],[.95,-1.05],[1.2,-.85],[1.15,-.6],[.95,-.58],[.92,-.72]],.22],
            [-2.1,1.9,.75,1,[[0,0],[.1,-.45],[.35,-.75],[.7,-.72],[.85,-.5],[.7,-.38],[.6,-.5]],.2],
@@ -749,8 +749,8 @@ if(WD.kraken){const [kx,ky,ks]=WD.kraken,F=n=>n.toFixed(3);   /* KRAKEN: the gia
            [3.5,-1.1,.7,1,[[0,0],[.25,-.5],[.6,-.6],[.8,-.4],[.7,-.22],[.55,-.32]],.19],
            [-2.7,-1.4,.6,-1,[[0,0],[.12,-.4],[.38,-.58],[.6,-.48],[.6,-.3],[.48,-.28]],.18]];
   for(const [dx,dy,s,m,P,w] of T.slice().sort((a,b)=>a[1]-b[1]))k+=tent(kx+dx*ks,ky+dy*ks,s*ks,m,P,w);
-  k+=`<path d="M${F(kx+1.0*ks)} ${F(ky+2.55*ks)} q.25 -.32 .5 0" fill="none" stroke="#4E3434" stroke-width=".14" stroke-linecap="round"/><path d="M${F(kx+.92*ks)} ${F(ky+2.6*ks)} q.33 -.12 .66 0" fill="none" stroke="#9DB4BA" stroke-width=".035" opacity=".5"/>`;   /* one more, barely a loop above the water */
-  h+=k}
+  k+=`<path d="M${F(kx+1.0*ks)} ${F(ky+2.55*ks)} q.25 -.32 .5 0" fill="none" stroke="#3A3A34" stroke-width=".14" stroke-linecap="round"/><path d="M${F(kx+.92*ks)} ${F(ky+2.6*ks)} q.33 -.12 .66 0" fill="none" stroke="#7F9498" stroke-width=".035" opacity=".5"/>`;   /* one more, barely a loop above the water */
+  h+=`<g opacity=".6">${k}</g>`}   /* (blended into the sea: 60%, owner Oct 25) */
 if(WD.precarious){const [x,y]=WD.precarious;
   h+=`<rect x="${x-.2}" y="${y-.45}" width=".4" height=".9" fill="var(--wood)" stroke="var(--wood-line)" stroke-width=".03" transform="rotate(4 ${x} ${y})"/>`+[0,1,2,3,4].map(k=>`<line x1="${x-.2}" y1="${y-.35+k*.18}" x2="${x+.2}" y2="${y-.33+k*.18}" stroke="var(--wood-line)" stroke-width=".02" opacity=".6"/>`).join('');}
 // town ground inside the walls

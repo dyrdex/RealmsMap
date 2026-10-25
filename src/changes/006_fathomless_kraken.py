@@ -10,7 +10,7 @@ from shapely.ops import unary_union
 
 ROUTE = 'w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;w;se;#13 d;n'
 GAP = 4.0
-KR_SCALE = 1.0                                     # the creature: about 9 rooms across
+KR_SCALE = 1.6                                     # the creature: about 14 rooms across (owner, Oct 25: bigger; was 1.0, 9 across)
 
 
 def _parity(rings):

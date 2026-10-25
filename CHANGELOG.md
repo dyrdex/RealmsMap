@@ -27,6 +27,8 @@
 - Your request (Oct 25): a giant sea creature in the Blood Sea due west of the Forgotten Woods, at -126.9, -55.2 (level with the middle of the Woods; halfway from that coast to the map's west edge; 40 rooms off land, 6.8 from Fireball Island's boat line). Drawn as on old pirate maps: a dark shape under the water, a hump of mottled hide with one pale eye, and six tentacles barely breaking the surface (curled tips, suckers, ripples), about 9 rooms across.
 - Your request (Oct 25): the Coral Depths dock moved to the coast just north of 6291 The Docks (3.6 rooms north of the room), pointing north into the channel (it was at the peninsula's south tip, north of 12956).
 - Your request (Oct 25): Deathvein Island: the red lines removed; its dock (and marker) moved to the south shore, pointing south.
+- Your request (Oct 25): Fireball Island toned down to the map's own colours: the jungle uses the same dark greens as the map's trees (softer highlights), the palms are duller and the beach is the map's usual sand. The volcano is darker, and its crater, lava, glow and fireballs are now a dull brown-ember instead of orange.
+- Your request (Oct 25): the sea creature is toned down to faded sepia ink with no reds or yellows, drawn 60% see-through so it blends into the sea, and is bigger: about 14 rooms across (was 9), still 3.5 rooms clear of Fireball Island's boat line.
 
 ## Version 2.14 · The Hometowns · October 25, 2026
 
