@@ -18,7 +18,7 @@ PLACES = [   # name, owner's directions, marker spot (None: list only), where
     ('The Burrows', 'w;w;w;w;w;w;w;w;w;nw;w;w;nw;n;n;n;w;w;n;n;n;e;e', (-29.98, -4.46), 'in The Shire'),   # 3 north of The Shire's marker
     ('Mathlaan Lagoon',
      'e;e;e;e;e;e;e;e;ne;ne;ne;e;e;e;ne;e;ne;e;e;n;n;n;n;n;ne;e;ne;e;se;e;ne;n;n;n;ne;d;d;w;w;w;w;w;w;w;w;w;w;w;se;d',
-     (50.3, -33.6), 'past Ocean Keep'),                            # NW of the Ocean Keep marker (51.42, -32.46)
+     (48.62, -35.31), 'past Ocean Keep'),                          # NW of the Ocean Keep marker (51.42, -32.46), 4.0 off it: clear of its town drawing (owner, Oct 25: 2.5 times as far)
     ('The Keep of Mahn-Tor (The Keep)', DAG + ';#3 n;ne;n;ne;n;enter;d;e;n;u;u', None, 'through the Darkhaven Art Gallery'),
     ('Cold Comfort', DAG + ';#3 n;ne;n;ne;n;enter;d;e;#2 n;se', None, 'through the Darkhaven Art Gallery'),
     ('Galaxy', DAG + ';n;n;n;ne;n;enter', None, 'through the Darkhaven Art Gallery'),

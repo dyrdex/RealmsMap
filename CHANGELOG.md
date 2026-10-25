@@ -10,6 +10,12 @@
   - The Burrows: line stops at A Dimly Lit Path 1984 (after 16 of 26 steps); marker 3 rooms north of The Shire's.
   - Mathlaan Lagoon: line stops at Overlooking Ocean Keep 3080 (after 46 of 64 steps); marker 1.6 rooms north-west of Ocean Keep's.
   - The Keep of Mahn-Tor (The Keep), Cold Comfort, Galaxy: in the list only, no marker or name on the map; their lines stop at Law Avenue 797, outside the Darkhaven Art Gallery (after 10 steps). Your note for Cold Comfort ("scan/scry for the room with a se exit") is on its card. The directions themselves are unchanged.
+- Your request (Oct 25): Mathlaan Lagoon's marker moved further north-west, 4.0 rooms from Ocean Keep's (2.5 times as far; was 1.6), clear of Ocean Keep's town drawing (0.36 rooms between them); its name is now west of its marker.
+- Your request (Oct 25): Dwarven Catacombs (Northern Entrance)'s name moved next to its marker (it starts 0.55 rooms to the east, level with it; was 0.8 east and 0.8 below).
+- Your request (Oct 25): Dragontail Glen's name centred above its marker.
+- Your request (Oct 25): Keep of Mahn-Tor (Ogre Village) renamed The Keep of Mahn-Tor (Ogre Village).
+- Your request (Oct 25): three new destinations with your directions, all fully drawn, each marker on its last room: Southern Mountain Range (Near The End Of The Tunnel 2), Miden'nir (On a Long, Rusted Bridge 1028; the marker has no name beside it, since the map already shows the big Miden'nir name) and Western Trade Route (A Road Through the Forest of Tears 832).
+- Your request (Oct 25): 13 hometown cards: the line under the name ("Area off ... · reached at ...") now reads only your text: Keep of Lomar (Human), Qetag's Reach (Dwarf), The Island of Irrybis (Elf), The Burrows (Halfling), Reomyr Village (Pixie), City of Eldestra (Half-Elf), Mount Krozloy (Half-Orc), Opallinoc (Half-Ogre), The Ruins of T'man (Half-Troll), Mathlaan Lagoon (Sea-Elf), The City of Iniquity (Drow), Tribal Swamplands (Lizardmen) (Lizardman), Vale of Nidaros (Gnome), each "<race> Hometown". Sands of Teracchei (Gith) isn't on the map yet, so it has no card.
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 
