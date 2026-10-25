@@ -25,6 +25,9 @@
 - Your request (Oct 25): Town Hall's marker moved west, by the corner of Vertic Avenue and Horizon Road (0.8, 0.85; was 2, 1). The Astral Plane's marker moved to that corner too, east of its name (-0.8, 0.85); The Sands of Teracchei's marker directly south of it (-0.8, 1.75), east of its name. Selecting either no longer draws a route line (the card still shows the directions).
 - Your request (Oct 25): Town Hall's route line now reads as e then s: east along Horizon Road from the Square to just above the lobby (0.8 rooms), then straight south to it (it used to run east past it and back south-west).
 - Your request (Oct 25): Darkhaven Square is now square (1.28 rooms a side, paved, with a dashed inner border; was round), and the star in its middle is a small fountain (a stone basin 0.58 across with water, a pedestal and a little spray). Nothing else moved (checked pixel by pixel: only the Square changed).
+- Your Forest of Tears save (Oct 25, 03:58): the 19 new rooms placed where you put them, all hidden (nothing new is drawn; routes can now pass through them).
+- Your request (Oct 25): three new destinations with your directions: New Hope Farm (the whole way, marker on A Path Between the Trees 10015; its name under the marker, clear of Bartok Grove's), Abishai's Morgue (your directions go 7807 sw through 7810, 7811 to Abishai's Library 7829, rooms not in the editor, so the line stops at Before the Morgue 7807; marker there) and The Underworld (your directions end at The Crossing 4011 with "give 50000 coins Wicorith"; marker on The Underworld 878, just south of it).
+- Your request (Oct 25): Olympus, Scourge of Time and The Domain of World Eater in the list only (no marker, no route line). Your note "scan/scry to find Formless Void Maze" is on The Domain of World Eater's card; its commas are read as ";".
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 
