@@ -229,3 +229,4 @@ The other builders run inside `src/legacy`.
   drift if none within 3.3). Re-run its check after land changes: open snow >1.5 from a plant was 2.6%.
   Plants (owner, Oct 22; `v2.5/010`, `wild.olflora` [x,y,scale,kind p/b/s/g,variant], template OLFLORA sprites op*/ob*/os*/og*): density by the nearest room name's land kind (DENS).
   Shore ice (owner, Oct 22): floes + small bergs along the WHOLE sea coast at the south shore's density (`v2.5/006`, appended to `olsouth.floes` / `olharbor.bergs`).
+- **Fireball Island** (owner, Oct 25; `changes/002_fireball_island.py`, template FIREBALL): diameter = Angel's Landing island's height; boat-only place: `route` is the owner's text, `rhead` 'Directions:', `segs` = Sailing the Seas' route, `sail` = the dotted boat line (drawn only when selected).

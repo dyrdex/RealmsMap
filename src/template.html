@@ -198,6 +198,37 @@ WILD+=`<path d="${blobs(GEO.sand)}" fill="var(--sand)" fill-rule="evenodd" opaci
   WILD+=`<path d="${B.wash.map(P).join('')}" fill="none" stroke="#7C7258" stroke-width=".04" stroke-linecap="round" stroke-dasharray=".5 .25" opacity=".55"/>`;
   WILD+=B.spots.map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="var(--sand)" opacity=".8"/>`).join('');
 }}
+{const B=WD.fireball;if(B){const P=a=>'M'+a.map(q=>q.join(' ')).join('L')+'Z';   /* FIREBALL: Fireball Island (owner, Oct 25): a sand beach all round, jungle inside it (canopy clumps, palms on the beach's edge), a new volcano at its centre */
+  WILD+=`<defs><pattern id="fbgrain" patternUnits="userSpaceOnUse" width="1.2" height="1.0"><g fill="#9A8A62"><circle cx=".15" cy=".2" r=".022"/><circle cx=".8" cy=".12" r=".018"/><circle cx="1.05" cy=".6" r=".024"/><circle cx=".45" cy=".8" r=".018"/></g><g fill="#2F2A1E"><circle cx=".6" cy=".45" r=".018"/><circle cx=".25" cy=".6" r=".015"/></g></pattern>
+    <radialGradient id="fbglow"><stop offset="0" stop-color="#FFB347" stop-opacity=".75"/><stop offset=".45" stop-color="#E8571C" stop-opacity=".35"/><stop offset="1" stop-color="#E8571C" stop-opacity="0"/></radialGradient></defs>`;
+  WILD+=`<path d="${P(B.isle)}" fill="#5E5438"/><path d="${P(B.isle)}" fill="url(#fbgrain)" opacity=".8"/>`;   /* the beach */
+  WILD+=`<path d="${B.wash.map(P).join('')}" fill="none" stroke="#8C7E5C" stroke-width=".04" stroke-linecap="round" stroke-dasharray=".55 .3" opacity=".6"/>`;
+  WILD+=`<path d="${P(B.jungle)}" fill="#1B2E1C" stroke="#14221A" stroke-width=".08"/>`;   /* the jungle floor */
+  const CC=[['#21402A','#335C35'],['#284A2B','#3D6B3A'],['#2F5530','#4A7A40']];
+  const clump=([x,y,r,v])=>{const [a,b]=CC[v];return `<circle cx="${(x+.07).toFixed(2)}" cy="${(y+.1).toFixed(2)}" r="${r}" fill="#0E1A10" opacity=".55"/><circle cx="${x}" cy="${y}" r="${r}" fill="${a}"/><circle cx="${(x-r*.28).toFixed(2)}" cy="${(y-r*.3).toFixed(2)}" r="${(r*.5).toFixed(2)}" fill="${b}" opacity=".85"/><circle cx="${(x+r*.3).toFixed(2)}" cy="${(y-r*.05).toFixed(2)}" r="${(r*.3).toFixed(2)}" fill="${b}" opacity=".5"/>`};
+  const palm=([x,y,h,l])=>{const F=n=>n.toFixed(2),s=.5*h,tx=x+l,ty=y-1.0*s;let o=`<ellipse cx="${F(x+.05)}" cy="${F(y+.04)}" rx=".22" ry=".06" fill="#000" opacity=".3"/><path d="M${F(x)} ${F(y)} Q${F(x+l*.3)} ${F(y-.55*s)} ${F(tx)} ${F(ty)}" fill="none" stroke="#3A2C1C" stroke-width=".07" stroke-linecap="round"/>`;
+    for(const [dx,dy] of [[-.34,.1],[.34,.12],[-.22,-.14],[.24,-.12],[0,-.22]])o+=`<path d="M${F(tx)} ${F(ty)} Q${F(tx+dx*.6)} ${F(ty+dy-.12)} ${F(tx+dx)} ${F(ty+dy+.08)}" fill="none" stroke="#3F6A33" stroke-width=".085" stroke-linecap="round"/>`;
+    return o+`<circle cx="${F(tx)}" cy="${F(ty)}" r=".05" fill="#4A3622"/>`};
+  const [vx,vy,vk]=B.volcano,C=B.canopy.slice().sort((a,b)=>a[1]-b[1]);
+  WILD+=C.filter(c=>c[1]<vy-.25).map(clump).join('');
+  /* the volcano: a black basalt cone, ribbed, its foot swallowed by the jungle; a glowing crater, lava runs down into the trees, a leaning plume of ash and smoke, fireballs flung from the crater */
+  let v=`<ellipse cx="0" cy=".05" rx="4.1" ry=".55" fill="#000" opacity=".35"/><ellipse cx="0" cy="-5.75" rx="2.6" ry="1.6" fill="url(#fbglow)"/>`;
+  v+=`<path d="M-3.8 0 Q-2.7 -1.1 -1.75 -3.2 Q-1.3 -4.6 -1.0 -5.55 Q-.7 -5.95 -.4 -5.72 L-.12 -5.95 L.2 -5.7 Q.6 -6.02 .98 -5.6 Q1.35 -4.5 1.8 -3.15 Q2.75 -1.05 3.8 0Z" fill="#3B3431" stroke="#120E0C" stroke-width=".07" stroke-linejoin="round"/>`;
+  v+=`<path d="M.2 -5.7 Q.6 -6.02 .98 -5.6 Q1.35 -4.5 1.8 -3.15 Q2.75 -1.05 3.8 0 L1.1 0 Q1.0 -3 .2 -5.7Z" fill="#231D1B" opacity=".85"/><path d="M-1.0 -5.55 Q-1.3 -4.6 -1.75 -3.2 Q-2.7 -1.1 -3.8 0 L-3.2 0 Q-2.2 -1.6 -1.6 -3.4Z" fill="#544A44" opacity=".55"/>`;
+  for(const [a,b,c,d] of [[-.7,-5.3,-2.4,-.4],[-.35,-5.4,-1.3,-.3],[.05,-5.5,-.2,-.2],[.45,-5.4,.9,-.2],[.8,-5.2,2.2,-.3],[-.95,-4.9,-3.0,-.2],[1.1,-4.8,3.0,-.2]])v+=`<path d="M${a} ${b} Q${((a+c)/2+(c<0?.25:-.25)).toFixed(2)} ${((b+d)/2).toFixed(2)} ${c} ${d}" fill="none" stroke="#120E0C" stroke-width=".05" opacity=".55"/>`;   /* the ribs */
+  for(const [x,y] of [[-1.2,-2.6],[1.3,-2.1],[-.4,-3.9],[.6,-4.4],[-2.0,-1.3],[2.1,-.9]])v+=`<path d="M${x-.18} ${y} l.1 -.1 l.12 .03 l.1 .07" fill="none" stroke="#6E625A" stroke-width=".035" opacity=".6"/>`;   /* broken rock */
+  v+=`<ellipse cx="-.1" cy="-5.78" rx="1.02" ry=".26" fill="#5C1E0E" stroke="#120E0C" stroke-width=".05"/><ellipse cx="-.1" cy="-5.8" rx=".8" ry=".17" fill="#E8571C"/><ellipse cx="-.15" cy="-5.82" rx=".45" ry=".09" fill="#FFD36A"/>`;   /* the crater */
+  for(const [d,w] of [['M-.55 -5.62 Q-.9 -4.6 -.6 -3.7 Q-.3 -2.9 -.95 -2.0 Q-1.4 -1.3 -1.2 -.5',.17],['M.35 -5.62 Q.7 -4.9 .5 -4.1 Q.35 -3.4 .95 -2.6 Q1.4 -1.9 1.55 -1.0',.14],['M-.1 -5.62 Q.05 -5.0 -.15 -4.5',.11]])
+    v+=`<path d="${d}" fill="none" stroke="#7A2410" stroke-width="${(w+.08).toFixed(2)}" stroke-linecap="round" opacity=".8"/><path d="${d}" fill="none" stroke="#E8571C" stroke-width="${w}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#FFB347" stroke-width="${(w*.35).toFixed(3)}" stroke-linecap="round" opacity=".9"/>`;   /* the lava runs */
+  for(const [x,y,r,o] of [[-.15,-6.45,.42,.75],[.25,-7.15,.55,.7],[.85,-7.95,.68,.6],[1.6,-8.6,.78,.5],[2.5,-9.05,.85,.38],[3.4,-9.3,.8,.26],[-.35,-7.0,.36,.55],[.4,-8.45,.5,.45]])v+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#57504C" opacity="${o}"/><circle cx="${(x-r*.3).toFixed(2)}" cy="${(y-r*.3).toFixed(2)}" r="${(r*.45).toFixed(2)}" fill="#7A726C" opacity="${(o*.6).toFixed(2)}"/>`;   /* the plume */
+  v+=`<circle cx="-.1" cy="-6.25" r=".38" fill="#A0462A" opacity=".45"/>`;
+  for(const [x0,y0,cx,cy,x,y,r] of [[-.4,-6.0,-1.6,-8.3,-2.6,-6.9,.17],[.3,-6.0,1.5,-8.9,2.9,-6.2,.15],[-.2,-6.0,-.7,-7.9,-1.2,-7.4,.12],[.1,-6.0,.9,-7.6,1.6,-7.1,.11]])
+    v+=`<path d="M${x0} ${y0} Q${cx} ${cy} ${x} ${y}" fill="none" stroke="#E8571C" stroke-width=".05" stroke-dasharray=".14 .12" opacity=".7"/><circle cx="${x}" cy="${y}" r="${(r*1.9).toFixed(2)}" fill="url(#fbglow)"/><circle cx="${x}" cy="${y}" r="${r}" fill="#FFB347" stroke="#E8571C" stroke-width=".04"/>`;   /* fireballs */
+  for(const [x,y,r] of [[-3.5,-.2,.42],[-3.0,-.45,.5],[-2.45,-.3,.46],[-1.9,-.15,.4],[-1.4,-.25,.44],[-.85,-.12,.38],[-.3,-.2,.42],[.25,-.14,.4],[.8,-.22,.44],[1.35,-.15,.4],[1.9,-.3,.46],[2.45,-.4,.48],[3.0,-.3,.44],[3.5,-.18,.4],[-2.7,-.85,.34],[2.7,-.8,.32],[-1.6,-.65,.3],[1.65,-.6,.28]])v+=clump([x,y,r,((x*7|0)%3+3)%3]);   /* the jungle round its foot */
+  WILD+=`<g transform="translate(${vx} ${vy}) scale(${vk})">${v}</g>`;
+  WILD+=C.filter(c=>c[1]>=vy-.25).map(clump).join('');
+  WILD+=B.palms.slice().sort((a,b)=>a[1]-b[1]).map(palm).join('');
+}}
 {const D=WD.ddsand;if(D){const P=a=>'M'+a.map(q=>q.join(' ')).join('L');   /* DDSAND: the Desert of Despair's own terrain (owner, Oct 20): texture, ripples, dunes, dry lake beds, rocks, scrub, a few cacti */
   WILD+=`<defs><pattern id="ddgrain" patternUnits="userSpaceOnUse" width="2.3" height="1.9"><g fill="#7A6A4A"><circle cx=".3" cy=".4" r=".035"/><circle cx="1.4" cy=".2" r=".03"/><circle cx="2.0" cy="1.1" r=".04"/><circle cx=".9" cy="1.5" r=".03"/><circle cx="1.6" cy="1.7" r=".025"/><circle cx=".2" cy="1.2" r=".028"/></g><g fill="#2E281C"><circle cx="1.1" cy=".8" r=".03"/><circle cx="1.9" cy=".5" r=".025"/><circle cx=".6" cy="1.0" r=".025"/></g></pattern>`+
     `<pattern id="ddwind" patternUnits="userSpaceOnUse" width="3.7" height="2.9"><path d="M.2 .7 q.35 -.12 .7 0 t.7 0 M2.1 2.1 q.3 -.1 .6 0 t.6 0 M1.6 1.3 q.25 -.08 .5 0" fill="none" stroke="#6E6044" stroke-width=".035" stroke-linecap="round"/></pattern></defs>`;
@@ -745,12 +776,13 @@ LBL['Dwarven Catacombs']=[.55,.25,'start'];LBL['Dragontail Glen']=[0,-.8,'middle
 for(const n of ['The Astral Plane','The Sands of Teracchei','Town Hall'])PINNED.add(n);LBL['Town Hall']=[.3,0,'start'];LBL['The Astral Plane']=[-.3,0,'end'];LBL['The Sands of Teracchei']=[-.3,0,'end'];   /* Darkhaven's new rooms (owner, Oct 25): Town Hall's name east of its marker, the Astral Plane's and the Sands' west of theirs (owner, Oct 25) */
 LBL['New Hope Farm']=[0,1.0,'middle'];PINNED.add('New Hope Farm');for(const n of ['Major Oak','Bartok Grove','The Burrows',"Ezard's Fields"]){LBL[n]=[.55,.06,'start'];PINNED.add(n)}   /* directly east of their markers, over the trails if need be (owner, Oct 25) */   /* under its marker, clear of Bartok Grove's name (Oct 25) */
 LBL['Keep of Lomar']=[-.55,.06,'end'];LBL['Tullfuhrzky Manor']=[-.55,.06,'end'];LBL['White Pine Camp']=[.55,.06,'start'];LBL['Ashen Forest']=[.55,.06,'start'];for(const n of ['Keep of Lomar','Tullfuhrzky Manor','White Pine Camp','Ashen Forest'])PINNED.add(n);   /* directly west (Keep of Lomar, Tullfuhrzky Manor) / east (White Pine Camp, Ashen Forest) of their markers (owner, Oct 25) */
+LBL['Fireball Island']=[-.6,.32,'end'];PINNED.add('Fireball Island');   /* a large name west of its marker on the south-east beach (owner, Oct 25) */
 LBL['The Island of Irrybis']=[-.85,2.05,'end'];PINNED.add('The Island of Irrybis');   /* west of its marker (16240), under the island (owner, Oct 23) */
 LBL['Northern Plains']=[.77,-1.338,'start'];LBL['Unholy Grounds']=[.77,.175,'start'];PINNED.add('Northern Plains');PINNED.add('Unholy Grounds');   /* one marker (4221): Northern Plains above Unholy Grounds (owner, Oct 23) */   /* east of its marker, off Camelot (the label solver doesn't see drawings; owner, Oct 23) */
 for(const p of P){if(p.nolabel||p.nopin)continue;   /* named by a label already on the map */
   if(p.lake){const L=p.lake,ca=Math.cos(L.a*Math.PI/180),sa=Math.sin(L.a*Math.PI/180),tx=L.drop!=null?L.x:p.mx+ca*(L.half?1.1:.55),ty=L.drop!=null?L.y:p.my+sa*(L.half?1.1:.55);
   pins+=`<text class="plabel" data-i="${p.i}" x="${tx}" y="${ty}" transform="rotate(${L.a} ${tx} ${ty})" text-anchor="${L.drop!=null?'middle':'start'}" dominant-baseline="middle" font-size="${L.size||.66}" font-style="italic" letter-spacing="${L.ls||.14}" fill="var(--lake-label)" style="cursor:pointer;paint-order:stroke;stroke:var(--water);stroke-width:${((L.size||.66)*.24).toFixed(3)}px;stroke-linejoin:round">${esc(p.name)}</text>`;continue}
- const o=LBL[p.key||p.name]||(p.group?[.55,.06,'start']:[.35,0,'start']);pins+=`<text class="lbl plabel" data-i="${p.i}" x="${p.mx+o[0]}" y="${p.my+o[1]+.15}" text-anchor="${o[2]}" font-size="${groupHalls.includes(p.name)?.36:p.small?.6:p.group?.96:.44}" font-style="italic" style="stroke-width:${p.group?.16:.11}px;cursor:pointer">${esc(p.name)}</text>`
+ const o=LBL[p.key||p.name]||(p.group?[.55,.06,'start']:[.35,0,'start']);pins+=`<text class="lbl plabel" data-i="${p.i}" x="${p.mx+o[0]}" y="${p.my+o[1]+.15}" text-anchor="${o[2]}" font-size="${p.fs||(groupHalls.includes(p.name)?.36:p.small?.6:p.group?.96:.44)}" font-style="italic" style="stroke-width:${p.fs?(p.fs/6).toFixed(2):p.group?.16:.11}px;cursor:pointer">${esc(p.name)}</text>`   /* p.fs: a larger name (Fireball Island, owner Oct 25) */
  for(const e of (p.more||[])){const q=e.lbl||o;pins+=`<text class="lbl plabel" data-i="${p.i}" data-opt="${e.opt}" x="${e.at[0]+q[0]}" y="${e.at[1]+q[1]+.15}" text-anchor="${q[2]}" font-size="${p.group?.96:.44}" font-style="italic" style="stroke-width:${p.group?.16:.11}px;cursor:pointer">${esc(p.name)}</text>`}}
 document.getElementById('pins').innerHTML=pins;
 const LCACHE={};function laneD(pts,k){if(LCACHE[k])return LCACHE[k];let all=[];for(let i=0;i<pts.length-1;i++){const s=wobPts(pts[i],pts[i+1],.06,.35);if(i)s.shift();all=all.concat(s)}return LCACHE[k]=curve(all)}
@@ -1340,6 +1372,7 @@ function drawRoute(p){
   const sg=p.segs||[[...p.path,[p.mx,p.my]]];
   const {d,j}=routeD(sg,DATA.wild.jumps);
   L.innerHTML=`<path d="${d}" fill="none" stroke="var(--glow)" stroke-width=".42" stroke-linecap="round" stroke-linejoin="round"/><path id="rl" d="${d}" fill="none" stroke="var(--pick)" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round"/>`+(j?`<path d="${j}" fill="none" stroke="var(--pick)" stroke-width=".1" stroke-dasharray=".45 .35" stroke-linecap="round" opacity=".9"/>`:'');
+  if(p.sail){const s='M'+p.sail.map(q=>q.join(' ')).join('L');L.innerHTML+=`<path d="${s}" fill="none" stroke="var(--glow)" stroke-width=".3" stroke-dasharray=".01 .42" stroke-linecap="round" opacity=".8"/><path d="${s}" fill="none" stroke="var(--pick)" stroke-width=".15" stroke-dasharray=".01 .42" stroke-linecap="round"/>`}   /* SAIL: a boat trip, a dotted wavy line over the sea (Fireball Island, owner Oct 25) */
   if(!reduce){const rl=document.getElementById('rl'),len=rl.getTotalLength();rl.style.strokeDasharray=len;rl.style.strokeDashoffset=len;rl.getBoundingClientRect();rl.style.transition='stroke-dashoffset .8s ease';rl.style.strokeDashoffset=0}
 }
 function select(p){
@@ -1351,11 +1384,11 @@ function select(p){
   let html=`<h2>${esc(p.name)}</h2><p class="kind">${({guild:'Guild',structure:'Landmark',mob:'Mob',town:'Town'})[p.kind]||'Area'} ${p.group==='fot'?'in the Forest of Tears':p.group==='wtr'?'on the Western Trade Route':p.group==='mid'?'off Miden\'nir':p.group==='sg'?'off the Shadow Grove':p.group==='af'?(p.where||'off the Ashen Forest'):p.group==='fw'?(p.kind?'in the Forgotten Woods':'off the Forgotten Woods'):'in New Darkhaven'} · ${p.kind==='mob'?'found at':p.dir==='here'?'reached at':'entrance at'} ${esc(p.room)}</p>`;
   if(p.card)html=`<h2>${esc(p.name)}</h2><p class="kind">${esc(p.card)}</p>`;   /* the owner's own card line (e.g. 'Human Hometown'; Oct 25) */
   if(p.note)html+=`<p class="note">${esc(p.note)}</p>`;
-  html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>Full directions from Darkhaven Square:</p><code>${esc(p.route)}</code>`;
+  html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>${esc(p.rhead||'Full directions from Darkhaven Square:')}</p><code>${esc(p.route)}</code>`;
   if(p.alt&&p.alt.length)html+=`<p>Another way:</p>`+p.alt.map(a=>`<code>${esc(a)}</code>`).join('');
   document.getElementById('dbody').innerHTML=html;det.classList.add('open');
   drawRoute(p);
-  const allp=p.segs?p.segs.flat():p.path;const xs=[...allp.map(q=>q[0]),p.mx],ys=[...allp.map(q=>q[1]),p.my];
+  const allp=(p.segs?p.segs.flat():p.path).concat(p.sail||[]);const xs=[...allp.map(q=>q[0]),p.mx],ys=[...allp.map(q=>q[1]),p.my];
   let x0=Math.min(...xs)-2.5,x1=Math.max(...xs)+2.5,y0=Math.min(...ys)-2.5,y1=Math.max(...ys)+2.5;
   const cx=(x0+x1)/2,cy=(y0+y1)/2,hw=Math.max(6,(x1-x0)/2),hh=Math.max(6,(y1-y0)/2);
   flyTo(fitB(cx-hw,cy-hh,cx+hw,cy+hh,40));

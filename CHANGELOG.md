@@ -6,6 +6,9 @@
 - Your request (Oct 25): the deathtrap emblems are a darker red (skull #6E1717, was #B02424; crossbones #5E1313, was #8E1B1B), so they stand out less.
 - Your request (Oct 25): Keep of Lomar's and Tullfuhrzky Manor's names directly west of their markers; White Pine Camp's and Ashen Forest's directly east of theirs.
 - Your request (Oct 25): the watchtower and archway north of Angel's Landing redrawn as an ancient ruin: broken tower top with one merlon left, a crumbled archway with a slipped keystone, the wooden guardhouse fallen in, cracks, moss, ivy, a sapling growing from the stones, rubble and grass at the foot. Same size and spot.
+- Your request (Oct 25): Fireball Island, in the open Blood Sea due west of the Barren Peaks of Tahjliera: centred half way between the Barren Peaks' west coast (x -49.6) and the map's west edge (x -191), level with the Barren Peaks' name (-120.3, -121.4). Its size: 14.33 across on average, the full height of Angel's Landing's island, with an uneven, natural outline (15.7 wide, 14.1 tall). A sand beach all round (about 1 room wide, uneven), jungle inside it (443 canopy clumps, 34 palms along the beach), and a new volcano at its centre: a black ribbed basalt cone with a glowing crater, three lava runs down into the trees, a leaning plume of ash, and four fireballs flung from the crater.
+  - Its marker is on the south-east beach, and its name, larger than usual (1.4; other area names 0.96), runs west of the marker. The card reads "Island in the Blood Sea · reached by boat", with your directions under "Directions:".
+  - Selecting it lights Sailing the Seas' route (unchanged) and then a dotted, wavy boat line with large bends north over the Blood Sea to the island's marker (135 rooms long, at least 2 rooms off any coast). The boat line shows only while the place is selected.
 
 ## Version 2.14 · The Hometowns · October 25, 2026
 
