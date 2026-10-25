@@ -28,6 +28,7 @@
 - Your Forest of Tears save (Oct 25, 03:58): the 19 new rooms placed where you put them, all hidden (nothing new is drawn; routes can now pass through them).
 - Your request (Oct 25): three new destinations with your directions: New Hope Farm (the whole way, marker on A Path Between the Trees 10015; its name under the marker, clear of Bartok Grove's), Abishai's Morgue (your directions go 7807 sw through 7810, 7811 to Abishai's Library 7829, rooms not in the editor, so the line stops at Before the Morgue 7807; marker there) and The Underworld (your directions end at The Crossing 4011 with "give 50000 coins Wicorith"; marker on The Underworld 878, just south of it).
 - Your request (Oct 25): Olympus, Scourge of Time and The Domain of World Eater in the list only (no marker, no route line). Your note "scan/scry to find Formless Void Maze" is on The Domain of World Eater's card; its commas are read as ";".
+- Your Forest of Tears save (Oct 25, 04:13): the 13 rooms you moved (Kontaur 4002-4011, The Underworld 878, the Graveyard 7807-7809, A Dark Breezeway 7834; 0.35 to 1.44 rooms) are where you put them; still hidden. Abishai's Morgue's and The Underworld's markers and lines follow (Abishai's Morgue's marker 0.35 rooms north, The Underworld's 1.27 north-east).
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 

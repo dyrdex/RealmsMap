@@ -1,4 +1,4 @@
-"""Owner, Oct 25: the Forest of Tears editor save of Oct 25 03:58Z (`legacy/ft_layout_oct25.json`): the 19 rooms added that day
+"""Owner, Oct 25: the Forest of Tears editor save of Oct 25 04:13Z (`legacy/ft_layout_oct25b.json`; 13 of the new rooms moved since 03:58Z, `ft_layout_oct25.json`): the 19 rooms added that day
 (tools/forest_of_tears_editor/add_oct25_rooms.py) get their spots, all hidden (no trails drawn: they exist so routes can be traced through
 them; the save moved no other room). New places, traced as 001 (the line stops at the last drawn room on the way):
   - New Hope Farm: reaches A Path Between the Trees 10015; marker there.
@@ -22,7 +22,7 @@ PLACES = [   # name, owner's directions, marker room (None: list only), where, n
 
 
 def apply(town, wild, pos):
-    o = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'legacy', 'ft_layout_oct25.json')))
+    o = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'legacy', 'ft_layout_oct25b.json')))
     sv = dict(zip(o['ids'], zip(o['xs'], o['ys'])))
     for v in NEW:
         assert str(v) not in pos and v in o['hidden'], v
