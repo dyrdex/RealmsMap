@@ -7,7 +7,7 @@ import maplib
 R = lambda q: [round(q[0], 3), round(q[1], 3)]
 DAG = '#4 s;w;#2 n;give 5k coins receptionist;unlock n;open n'
 PLACES = [   # name, owner's directions, marker spot (None: list only), where
-    ('Dwarven Catacombs (Northern Entrance)',
+    ('Dwarven Catacombs',
      '#8 e;se;se;s;#3 se;e;ne;ne;n;ne;ne;n;nw;n;ne;w;push leaves;pull leaves;e;e;n;n;u;open u;u;open u;u;e;d;d;#4 n;open n;n;open n;n;d',
      (21.31, 7.5), 'past the Mountains of Desolation'),          # north of the Mountains of Desolation marker (21.31, 11.23), y 7.5
     ('Dragontail Glen',

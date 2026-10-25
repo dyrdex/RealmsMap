@@ -15,7 +15,10 @@
 - Your request (Oct 25): Dragontail Glen's name centred above its marker.
 - Your request (Oct 25): Keep of Mahn-Tor (Ogre Village) renamed The Keep of Mahn-Tor (Ogre Village).
 - Your request (Oct 25): three new destinations with your directions, all fully drawn, each marker on its last room: Southern Mountain Range (Near The End Of The Tunnel 2), Miden'nir (On a Long, Rusted Bridge 1028; the marker has no name beside it, since the map already shows the big Miden'nir name) and Western Trade Route (A Road Through the Forest of Tears 832).
-- Your request (Oct 25): 13 hometown cards: the line under the name ("Area off ... · reached at ...") now reads only your text: Keep of Lomar (Human), Qetag's Reach (Dwarf), The Island of Irrybis (Elf), The Burrows (Halfling), Reomyr Village (Pixie), City of Eldestra (Half-Elf), Mount Krozloy (Half-Orc), Opallinoc (Half-Ogre), The Ruins of T'man (Half-Troll), Mathlaan Lagoon (Sea-Elf), The City of Iniquity (Drow), Tribal Swamplands (Lizardmen) (Lizardman), Vale of Nidaros (Gnome), each "<race> Hometown". Sands of Teracchei (Gith) isn't on the map yet, so it has no card.
+- Your request (Oct 25): 13 hometown cards: the line under the name ("Area off ... · reached at ...") now reads only your text: Keep of Lomar (Human), Qetag's Reach (Dwarf), The Island of Irrybis (Elf), The Burrows (Halfling), Reomyr Village (Pixie), City of Eldestra (Half-Elf), Mount Krozloy (Half-Orc), Opallinoc (Half-Ogre), The Ruins of T'man (Half-Troll), Mathlaan Lagoon (Sea-Elf), The City of Iniquity (Drow), Tribal Swamplands (Lizardman), Vale of Nidaros (Gnome), each "<race> Hometown". Sands of Teracchei (Gith) isn't on the map yet, so it has no card.
+- Your request (Oct 25): Dwarven Catacombs (Northern Entrance) renamed Dwarven Catacombs; Tribal Swamplands (Lizardmen) renamed Tribal Swamplands.
+- Your request (Oct 25): the Western Trade Route's marker moved to Entrance to the Western Trade Route 831 (#6 w;sw), 11.3 rooms east of where it was (A Road Through the Forest of Tears 832); its directions are unchanged.
+- Your request (Oct 25): the Southern Mountain Range's big area name ("Southern" over "Mountain Range"), north-east of Suds 'n Stones (centred 5 rooms east and 4 north of its marker); it touches no marker or marker name, and crosses one trail.
 
 ## Version 2.13 · The Forgotten Coast · October 25, 2026
 
