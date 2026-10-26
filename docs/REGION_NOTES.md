@@ -29,6 +29,10 @@ number, don't read it whole.
   owner, Oct 20).
 - Changes go in `src/changes/NNN_name.py` (see its README). Never edit `base/map.json` by hand; `build.py --freeze` rewrites it.
 
+- Sidebar (site only, `src/site_template.html`; owner, Oct 26): four collapsible categories Geos / Areas / Mobs / Deities, all collapsed on load.
+  `GEOS` = [name, x0, y0, x1, y1] world boxes (from each region's editor-save rooms, minus hidden/locked); `DEITIES` = names moved out of Mobs.
+  The Darkhaven box includes Shadow Grove and Miden'nir. `realm_map.html`'s own list is unchanged.
+
 ## Layout editors
 Republished Oct 19 in the owner's current claude.ai organization (the old links in `docs/archive/` are in another organization and are not
 used any more); each was loaded with the owner's latest save (its `<key>/current` document), so it opens where the owner left off.

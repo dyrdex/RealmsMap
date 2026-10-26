@@ -2,6 +2,8 @@
 
 ## In progress (2.16)
 
+- Your request (Oct 26): the sidebar list is now four categories that expand and collapse, Geos, Areas, Mobs and Deities, all collapsed when the map loads (a + beside each, − when open). Geos lists your 11 regions (Northern Plains, Barren Peaks of Tahjliera, Forgotten Woods, Forest of Tears, Ashen Forest, Darkhaven, The Mire, Southern Mountain Range, Wastelands, Desert of Despair, Otherland); picking one zooms the map to fit that region. Areas is the old area list (187). Mobs is the old mob list minus A'enari and V'laresch (11 left), which are now under Deities. The search box searches all four and opens only the categories with matches; clearing it puts the categories back as you had them.
+
 ## Version 2.15 · Islands and Depths · October 26, 2026
 
 - Your request (Oct 25): room 8727 (A dark bend in the forest) added one room north of A Wind Torn Beach 8724, with its trail from 8724.

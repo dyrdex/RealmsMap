@@ -45,6 +45,11 @@ h1{font-family:var(--serif);font-weight:700;font-size:1.65rem;line-height:1.1;ma
 #list button:hover,#list button:focus-visible{background:var(--paper)}
 #list button:focus-visible{outline:2px solid var(--pick)}
 #list button[aria-current="true"]{background:var(--glow)}
+#list .cat{margin-top:4px}
+#list .cath{justify-content:flex-start;gap:10px;font-family:var(--sans);font-weight:700;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);padding:10px 10px}
+#list .cath:hover,#list .cath:focus-visible{color:var(--ink)}
+#list .pm{display:inline-block;width:1em;text-align:center;font-size:1.05rem;line-height:1;letter-spacing:0;color:var(--pick)}
+#list .items{list-style:none;margin:0 0 6px;padding:0 0 0 8px}
 #list .meta{font-family:var(--sans);font-size:.78rem;color:var(--soft);align-self:center;white-space:nowrap}
 #side footer{padding:10px 18px 14px;border-top:1px solid var(--edge);font-size:.8rem;color:var(--soft);line-height:1.45}
 #stage{position:relative;flex:1;min-width:0}
@@ -83,7 +88,7 @@ text{font-family:var(--serif)}
 <div id="app">
   <aside id="side" aria-label="Places">
     <header id="sideHead"><h1>The Realms</h1><p class="sub">New Darkhaven, and the wild country beginning to spread out around it.</p></header>
-    <div id="searchBox"><input id="q" type="search" placeholder="Search areas and mobs" aria-label="Search areas and mobs" autocomplete="off" spellcheck="false"><span id="qCount" aria-live="polite"></span></div>
+    <div id="searchBox"><input id="q" type="search" placeholder="Search geos, areas, mobs and deities" aria-label="Search geos, areas, mobs and deities" autocomplete="off" spellcheck="false"><span id="qCount" aria-live="polite"></span></div>
     <ul id="list"></ul>
     <footer>Drawn from your TinTin map and painted from each area's terrain and room names; trees are illustrative. Routes start at Darkhaven Square and follow your directions room by room.<br><span style="display:inline-block;margin-top:6px;font-weight:700;letter-spacing:.04em">__VERSION__</span></footer>
   </aside>
@@ -170,7 +175,7 @@ function drawRoute(p,k){
 function select(p,K=0){
   if(p&&!ROUTES_OK){ROUTES.then(()=>select(p,K));return}
   sel=p;document.querySelectorAll('.pin').forEach(g=>g.classList.toggle('sel',p&&+g.dataset.i===p.i));
-  document.querySelectorAll('#list button').forEach(b=>b.setAttribute('aria-current',p&&+b.dataset.i===p.i?'true':'false'));
+  document.querySelectorAll('#list button[data-i]').forEach(b=>b.setAttribute('aria-current',p&&+b.dataset.i===p.i?'true':'false'));document.querySelectorAll('#list button[data-g]').forEach(b=>b.setAttribute('aria-current','false'));
   const det=document.getElementById('detail');
   if(!p){det.classList.remove('open');drawRoute(null);return}
   const steps=p.path.length-1;
@@ -202,13 +207,29 @@ const li=p=>`<li><button data-i="${p.i}" aria-current="false"><span>${esc(p.name
 const sec=(t,k)=>`<li class="gh" style="padding:14px 10px 4px">${t}</li>`+P.filter(p=>(p.kind||'area')===k).map(li).join('');
 const byName=(a,b)=>a.name.replace(/^(The|A) /,'').localeCompare(b.name.replace(/^(The|A) /,''));
 const secG=(t,k)=>`<li class="gh" style="padding:14px 10px 4px">${t}</li>`+P.filter(p=>(p.kind||'area')===k&&!p.group).map(li).join('');
-document.getElementById('list').innerHTML=`<li class="gh" style="padding:14px 10px 4px">Areas</li>`+P.filter(p=>p.kind!=='mob').sort(byName).map(li).join('')+`<li class="gh" style="padding:18px 10px 4px">Mobs</li>`+P.filter(p=>p.kind==='mob').sort(byName).map(li).join('');
-document.querySelectorAll('#list button').forEach(b=>b.onclick=()=>{select(P[+b.dataset.i]);if(innerWidth<=760)side.classList.remove('open')});
-/* ---------- search: filters the list as you type ---------- */
+/* ---------- the list: four categories that expand and collapse (all collapsed on load; owner, Oct 26) ---------- */
+/* GEOS: the map's big regions; a click zooms to fit the region (boxes in world units, from the rooms of each region's editor save) */
+const GEOS=[["Northern Plains",-53,-205,63,-125],["Barren Peaks of Tahjliera",-50,-175,50,-83],["Forgotten Woods",-52,-94,52,-16],
+  ["Forest of Tears",-119,-55,-4,19],["Ashen Forest",11,-36,69,18],["Darkhaven",-27,-20,23,26],["The Mire",-122,12,-5,133],
+  ["Southern Mountain Range",-38,5,30,88],["Wastelands",-24,68,52,159],["Desert of Despair",20,56,101,147],["Otherland",-22,146,99,269]];
+const DEITIES=["A'enari","V'laresch"];
+const liG=(g,k)=>`<li><button data-g="${k}" aria-current="false"><span>${esc(g[0])}</span><span class="meta"></span></button></li>`;
+const cat=(t,rows)=>`<li class="cat"><button class="cath" aria-expanded="false"><span class="pm" aria-hidden="true">+</span>${t}</button><ul class="items" hidden>${rows}</ul></li>`;
+document.getElementById('list').innerHTML=cat('Geos',GEOS.map(liG).join(''))+
+  cat('Areas',P.filter(p=>p.kind!=='mob').sort(byName).map(li).join(''))+
+  cat('Mobs',P.filter(p=>p.kind==='mob'&&!DEITIES.includes(p.name)).sort(byName).map(li).join(''))+
+  cat('Deities',P.filter(p=>p.kind==='mob'&&DEITIES.includes(p.name)).sort(byName).map(li).join(''));
+const setOpen=(c,o)=>{const h=c.querySelector('.cath');h.setAttribute('aria-expanded',o);h.querySelector('.pm').textContent=o?'−':'+';c.querySelector('.items').hidden=!o};
+document.querySelectorAll('#list .cat').forEach(c=>c.querySelector('.cath').onclick=()=>{const o=c.querySelector('.cath').getAttribute('aria-expanded')!=='true';setOpen(c,o);c.userOpen=o});
+document.querySelectorAll('#list button[data-i]').forEach(b=>b.onclick=()=>{select(P[+b.dataset.i]);if(innerWidth<=760)side.classList.remove('open')});
+document.querySelectorAll('#list button[data-g]').forEach(b=>b.onclick=()=>{const g=GEOS[+b.dataset.g];select(null);
+  document.querySelectorAll('#list button[data-g]').forEach(x=>x.setAttribute('aria-current',x===b?'true':'false'));
+  flyTo(fitB(g[1],g[2],g[3],g[4],30));if(innerWidth<=760)side.classList.remove('open')});
+/* ---------- search: filters the list as you type (opens the categories with matches; clearing it restores them) ---------- */
 (function(){
   const q=document.getElementById('q'),count=document.getElementById('qCount'),list=document.getElementById('list');
-  const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'');           // so "ezards" finds Ezard's, "tich" finds Tich'Pyga
-  const rows=[...list.querySelectorAll('li')].map(li=>{const b=li.querySelector('button');return {li,b,head:li.classList.contains('gh'),name:b?b.querySelector('span').textContent:'',key:b?norm(b.querySelector('span').textContent):''}});
+  const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,'');           // so "ezards" finds Ezard's, "tich" finds Tich'Pyga
+  const cats=[...list.querySelectorAll('.cat')].map(c=>({c,rows:[...c.querySelectorAll('.items > li')].map(li=>{const b=li.querySelector('button'),n=b.querySelector('span').textContent;return {li,b,name:n,key:norm(n)}})}));
   const none=document.createElement('li');none.className='none';list.appendChild(none);none.hidden=true;
   const esc2=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   function mark(r,term){const span=r.b.querySelector('span');const t=r.name;                                    // highlight what matched
@@ -216,19 +237,18 @@ document.querySelectorAll('#list button').forEach(b=>b.onclick=()=>{select(P[+b.
     const raw=term.trim().toLowerCase();let idx=t.toLowerCase().indexOf(raw);
     span.innerHTML=idx>=0?esc2(t.slice(0,idx))+'<mark>'+esc2(t.slice(idx,idx+raw.length))+'</mark>'+esc2(t.slice(idx+raw.length)):esc2(t)}
   function run(){
-    const term=q.value,words=norm(term).split(/\s+/).filter(Boolean);let shown=0,heading=null,headShown=0,firstBtn=null;
-    for(const r of rows){
-      if(r.head){if(heading)heading.li.hidden=headShown===0;heading=r;headShown=0;r.li.hidden=false;continue}
-      const ok=words.every(w=>r.key.includes(w));r.li.hidden=!ok;if(ok){shown++;headShown++;if(!firstBtn)firstBtn=r.b}mark(r,ok&&words.length===1?term:'')}
-    if(heading)heading.li.hidden=headShown===0;
+    const term=q.value,words=norm(term).split(/\s+/).filter(Boolean);let shown=0,firstBtn=null;
+    for(const {c,rows} of cats){let n=0;
+      for(const r of rows){const ok=words.every(w=>r.key.includes(w));r.li.hidden=!ok;if(ok){n++;if(!firstBtn)firstBtn=r.b}mark(r,ok&&words.length===1?term:'')}
+      shown+=n;c.hidden=words.length>0&&n===0;setOpen(c,words.length?n>0:!!c.userOpen)}
     none.hidden=!(words.length&&shown===0);none.textContent=words.length&&shown===0?`Nothing matches "${term.trim()}".`:'';
     count.textContent=words.length?`${shown} match${shown===1?'':'es'}`:'';
-    list.scrollTop=0;return firstBtn}
+    list.scrollTop=0;return words.length?firstBtn:null}
   q.addEventListener('input',run);
   q.addEventListener('keydown',e=>{
     if(e.key==='Enter'){const b=run();if(b){e.preventDefault();b.click()}}                                       // Enter opens the first match
     else if(e.key==='Escape'){q.value='';run()}
-    else if(e.key==='ArrowDown'){const b=list.querySelector('li:not([hidden]) button');if(b){e.preventDefault();b.focus()}}});
+    else if(e.key==='ArrowDown'){const b=[...list.querySelectorAll('button')].find(x=>x.offsetParent);if(b){e.preventDefault();b.focus()}}});
 })();
 const side=document.getElementById('side');
 document.getElementById('sideHead').addEventListener('click',()=>{if(innerWidth<=760)side.classList.toggle('open')});
