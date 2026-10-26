@@ -34,7 +34,9 @@ number, don't read it whole.
   The Darkhaven box includes Shadow Grove and Miden'nir. `realm_map.html`'s own list is unchanged.
 - Deities (owner, Oct 26; `changes/001_deities.py`): place `deity` + `nopin`; `opts` = its locations [{dir 'Who · Sub-area', who deity|naos,
   sub, route, segs, at (marker), gap}]. Site only: purple DEITY markers (site_template) shown while selected; list click opens with no route,
-  a card radio or marker click draws that option. Lines stop on the sub-area's marker when they pass within 1.0 of it, else at the last drawn room.
+  a card radio or marker click draws that option. Lines go as far as the drawn rooms (owner, Oct 26), marker at the line's end unless the owner
+  names a spot (`MARK` kinds in 001: sub / room / place / graves); spacers followed by their other exit; a >100 gap (sea crossing) splits the line.
+  No 'not mapped' note on deity cards. `text` = a card line instead of directions; `noline` = marker only. Deities = `p.deity` (Mobs exclude them).
 
 ## Layout editors
 Republished Oct 19 in the owner's current claude.ai organization (the old links in `docs/archive/` are in another organization and are not
