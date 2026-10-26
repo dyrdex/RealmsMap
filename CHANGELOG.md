@@ -33,6 +33,9 @@
 - Your request (Oct 25): Knights of the Round now opens on the DAG route. Its line runs to the Darkhaven Art Gallery, then a dashed jump goes up to the Knights of the Round marker; Walking is the alternate route. The marker hasn't moved.
 - Your request (Oct 25): Thul Ab'hara has two markers on one card. Its two old routes are now "Northern Entrance (River)" (the default, "Safest Route") and "Northern Entrance (East)", and there's a new "Southern Entrance" with your directions. Its second marker is on Traveling the Western Road 6475, where the drawn line ends (the last 3 rooms of the route aren't drawn yet); clicking it opens the card on the Southern Entrance.
 - Your request (Oct 25): two new entries under Mobs. Karl (Camelot's Reparations): the line runs to the Darkhaven Art Gallery, jumps to the first drawn Knights of the Round room and follows the path to Camelot's Grand Entryway, where it stops with Karl's marker. Jokaan's Repair Shop: card line "Can portal from #8 s", your directions, and the line stops at Thul Ab'hara's Southern Entrance (6475); its marker is 0.9 rooms east of there, beside Thul Ab'hara's second marker. Both routes are in numbered form (e.g. Karl's "#4 n;n;n;n" reads "#7 n"; same steps).
+- Your request (Oct 26): The Spiral Reef made harder to see (half as opaque as before).
+- Your request (Oct 26): Karl renamed "Karl - Camelot Reparations", with your new directions (#4 s;w;#4 n;w;nw;w;nw;w;sw;w;enter;#3 s;#3 w;#4 s;w;e;s;e;w;#4 n;kneel;#3 n;e). Its line still stops at the castle.
+- Your request (Oct 26): Jokaan's Repair Shop's marker moved directly below Thul Ab'hara's Southern Entrance marker (1.1 rooms below, so the two names don't touch), with its name directly right of it.
 
 ## Version 2.14 · The Hometowns · October 25, 2026
 

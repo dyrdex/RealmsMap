@@ -8,14 +8,14 @@
     (`more`) on 6475 opening the card on the Southern Entrance.
   - Mobs: Karl (Camelot's Reparations): line to the gallery, a jump to the first drawn Knights of the Round room (11737), then the path to
     Camelot's Grand Entryway 14084, where it stops (the marker there). Jokaan's Repair Shop: card line 'Can portal from #8 s'; line = the
-    Southern Entrance's (ends at 6475); its marker 0.9 east of 6475 (Thul Ab'hara's second marker is on 6475)."""
+    Southern Entrance's (ends at 6475); its marker 1.1 below 6475 (Thul Ab'hara's second marker is on 6475), its name right of it (owner, Oct 26)."""
 import math, random, maplib
 from shapely.geometry import Polygon, Point
 
 R = lambda q: [round(q[0], 3), round(q[1], 3)]
 SOUTH = 's;s;s;s;s;s;s;s;s;s;s;s;s;e;e;u;u;e;se;se;se;d;s;se;se;s;s;s;s;se;se;se;sw;w;w;sw;s;s;s;se;s;sw;s;se;s;s;s;e;s;d;se;d'
 JOKAAN = SOUTH + ';ne;nw;w;nw;ne;ne;n;n;nw;e'
-KARL = '#4 s;w;#2 n;#2 n;w;nw;w;nw;w;sw;w;enter;#3 s;#3 w;#4 s;w;e;s;e;w;#4 n;n;n;n;e'
+KARL = '#4 s;w;#4 n;w;nw;w;nw;w;sw;w;enter;#3 s;#3 w;#4 s;w;e;s;e;w;#4 n;kneel;#3 n;e'   # (owner, Oct 26)
 SOUTH_ROOM, CASTLE = 6475, 14084
 NAME_W = 10.9                          # 'Blood Sea - Fathomless Depths' at .96 (from the 1.4 name 'Hurricane Island': 8.81 for 16 letters)
 TURNS, R_IN, RX, RY = 5.5, 0.7, 8.0, 5.8
@@ -49,13 +49,13 @@ def apply(town, wild, pos):
     t, kp = trace(maplib.condense(KARL), CASTLE)
     i = next(k for k, q in enumerate(kp) if q[1] < -20)                   # the first Knights of the Round room after the painting
     wild['jumps'].append([kp[i - 1][0], kp[i - 1][1], kp[i][0], kp[i][1], 'Mists at Ends painting'])
-    wild['places'].append(dict(name='Karl', route=maplib.condense(KARL), room="Camelot's Reparations", dir='here', kind='mob', group='af',
+    wild['places'].append(dict(name='Karl - Camelot Reparations', route=maplib.condense(KARL), room="Camelot's Reparations", dir='here', kind='mob', group='af',
                                where='in the Knights of the Round', note=None, path=kp, segs=[kp], at=kp[-1]))
     rep['Karl: jump, stops at'] = ((kp[i - 1], kp[i]), kp[-1], rooms[CASTLE]['name'])
     t, jp = trace(maplib.condense(JOKAAN), SOUTH_ROOM)
-    jat = [round(jp[-1][0] + 0.9, 2), jp[-1][1]]
+    jat = [jp[-1][0], round(jp[-1][1] + 1.1, 2)]                        # directly below Thul Ab'hara's second marker (owner, Oct 26)
     wild['places'].append(dict(name="Jokaan's Repair Shop", route=maplib.condense(JOKAAN), room="Jokaan's Repair Shop", dir='here', kind='mob', group='af',
-                               where="off the Desert of Despair", card='Can portal from #8 s', note=None, path=jp, segs=[jp], at=jat))
+                               where="off the Desert of Despair", card='Can portal from #8 s', note=None, path=jp, segs=[jp], at=jat, lbl=[.55, .06, 'start']))   # name right of its marker
     rep["Jokaan: line ends, marker"] = (jp[-1], jat, 'route walks %d rooms' % (len(t) - 1))
     # ---- the Spiral Reef ----
     fd = pl['Blood Sea - Fathomless Depths']; mx, my = fd['at']
