@@ -38,7 +38,9 @@ DEITIES = [   # deity, [(who, sub-area, owner's directions, marker spot or None,
     ('Bael', [
         (D, 'Underworld', '#9 w;sw;#4 w;s;sw;#5 w;sw;#4 w;#3 s;e;s;e;s;d;s;give 50k coin wicorith;#2 s (into maze, scan/scry for The Bone Chamber)', None, None),
         (N, "Thul Ab'hara", '#13 s;#2 e;#2 u;e;#3 se;d;s;#2 se;#4 s;#3 se;sw;s;#2 sw;w;#2 sw;nw;#2 d;sw;d;s;#3 se;s;sw;se;s;#3 w;#3 s;e', None, None)]),
-    ('Sarane', [   # (her Tower of Enlightenment locations: later, owner Oct 26)
+    ('Sarane', [   # Tower of Enlightenment: two ways (owner, Oct 26 later)
+        (D, 'Tower of Enlightenment (Portal)', '#52 w;c portal hanged;enter;#3 e;u;portal;u;n', ('jump', 'Tower of Enlightenment', '#52 w'), None),
+        (D, 'Tower of Enlightenment (Walking)', '#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;e;#2 se;#4 e;n;nw;#2 n;sw;e;ne;#2 s;se;s;se;s;#4 w;#2 sw;s;#2 w;s;sw;s;w;s;sw;s;se;#2 e;ne;se;#2 e;se;d;w;sw;#3 n;open n;n;open n;n;#4 n;kill anubis for key;unlock n;open n;#2 n;e;#4 u;portal;u;enter', ('sub', 'Tower of Enlightenment'), None),
         (N, 'The Shire', '#9 w;nw;#2 w;nw;#3 n;#2 w;#4 n;ne', None, None),
         (N, 'Ashen Forest/Forgotten Woods', '#6 n;#2 e;n;#3 ne;se;e;se;e;nw;#2 n;#2 ne;w;#2 nw;e;n;se', None, None)]),
     ('Wirawyth', [
@@ -72,12 +74,12 @@ DEITIES = [   # deity, [(who, sub-area, owner's directions, marker spot or None,
         (N, 'Otherland', 'nw;#2 w;#4 n;e;look painting;n;nw;#2 n;nw;w;#2 nw;#3 w;#2 nw;#2 sw;w;sw;w;nw;#2 n;nw;ne;#3 w;ne;nw;n;nw;w;nw;#4 n;d;nw;se;#2 nw;w;u;ne;#2 u;sw;#2 n (DANGER - Ledge of Life rooms may force kill you)', None, None)]),   # ends on Mouth of the Blizzard
     ('Cawyn', [
         (D, 'Olympus', '#8 u;n;unlock north;open north;track juna;say Will you take me to Olympus?;#7 n;u;open u;u;open u;#3 u', None, None),
-        (N, "Lake Tich'Pyga", '#7 w;nw;n;#3 nw;n;#2 nw;ne;n;e;#2 n;#2 ne;n;#2 ne;s', None, None)]),   # ends in Central Lake Tich'Pyga
+        (N, "Lake Tich'Pyga", '#7 w;nw;n;#3 nw;n;#2 nw;ne;n;e;#2 n;#2 ne;n;#2 ne;s', ('xy', (-25.5, -23.5)), None)]),   # the rough centre of the lake (owner, Oct 26 later: centre of its water rooms)
     ('Sil-Galith', [
         (D, 'Moria', '#8 e;#2 se;s;#2 se;#2 w;s;#3 w;nw;u;ne;u;ne;se;sw;se;u;nw;u;enter;nw;n', None, None),
         (N, 'Mithril Hall', '#6 s;ne;#2 s;se;#2 e;s;#2 sw;u;ne;nw;#2 w;sw;#3 s;#2 se;sw;#2 u;w;nw;#4 w;#2 n;e;#2 n;w;d;#2 e;open mountain;#4 n;e;#3 n;#2 e;n;#2 w;d;e;#2 s;#2 e;d;e', None, None)]),
     ('Masefi', [
-        (D, 'Blood Sea (Hurricane Island)', '#53 w;se;d;u;d;u;#3 u;ne', None, None),
+        (D, 'Blood Sea (Hurricane Island)', '#53 w;se;d;u;d;u;#3 u;ne', ('copy', 'Hurricane Island'), None),   # Hurricane Island's own line and marker (owner, Oct 26 later)
         (N, 'Treetops & Canopy', '#9 w;sw;#4 w;s;sw;#13 w;u;#5 w;n;#2 w;#6 n;e;#2 n;w;u;e;s;e;#8 s;#3 e;u', ('sub', 'Treetops and Canopy'), None)]),
     ('Tempus', [
         ('likeness', 'Northern Plains', 'nw;#2 w;#4 n;e;look painting;op n;n;#28 w;#2 s;#4 e;ne;n', None, None),
@@ -129,16 +131,27 @@ def apply(town, wild, pos):
                 m = mark_of(P[spot[1]])
                 opts.append(dict(dir=title, who=who, sub=sub, route=route, segs=[], at=m, text=text, noline=True))
                 rep[title] = {'no line, marker on': (spot[1], m)}; continue
+            if spot and spot[0] == 'copy':                           # another place's line and marker
+                q = P[spot[1]]; m = mark_of(q); sg = [[list(c) for c in seg] for seg in q['segs']]
+                if sg[-1][-1] != m: sg[-1].append(m)
+                opts.append(dict(dir=title, who=who, sub=sub, route=route, segs=sg, at=m))
+                rep[title] = {'line and marker of': (spot[1], m)}; continue
             t = walk(route)
             idx = [i for i, v in enumerate(t) if at(v)]
             if spot and spot[0] == 'room': last = max(i for i in idx if t[i] == spot[1])
             elif spot and spot[0] == 'sub':
                 m = mark_of(P[spot[1]]); last = min(idx, key=lambda i: math.dist(at(t[i]), m))
+            elif spot and spot[0] == 'xy':
+                m = R(spot[1]); last = min(idx, key=lambda i: math.dist(at(t[i]), m))
+            elif spot and spot[0] == 'jump':                         # the line up to the jump (its first steps), then a jump to that place's marker
+                m = mark_of(P[spot[1]]); last = len(walk(maplib.condense(spot[2]))) - 1
             else: last = max(idx)
             pts = []
             for v in t[:last + 1]:
                 if at(v) and (not pts or pts[-1] != R(at(v))): pts.append(R(at(v)))
-            if spot and spot[0] == 'sub' and pts[-1] != m: pts.append(m)
+            if spot and spot[0] in ('sub', 'xy') and pts[-1] != m: pts.append(m)
+            if spot and spot[0] == 'jump':
+                wild['jumps'].append([pts[-1][0], pts[-1][1], m[0], m[1], f'{name}: {sub}']); jumps.append((tuple(pts[-1]), tuple(m))); pts.append(m)
             if spot and spot[0] == 'graves':                         # Mak'kor (owner, Oct 26): over the painting's jump to the Unholy Grounds marker,
                 m = mark_of(P[spot[1]]); g = gfx['graves']           # then a short stretch south toward the graveyard drawing (route line only)
                 if pts[-1] != m: pts.append(m)
