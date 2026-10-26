@@ -1,6 +1,8 @@
 # Realm Map changelog
 
-## In progress (2.15)
+## In progress (2.16)
+
+## Version 2.15 · Islands and Depths · October 26, 2026
 
 - Your request (Oct 25): room 8727 (A dark bend in the forest) added one room north of A Wind Torn Beach 8724, with its trail from 8724.
 - Your request (Oct 25): the deathtrap emblems are a darker red (skull #6E1717, was #B02424; crossbones #5E1313, was #8E1B1B), so they stand out less.
