@@ -32,6 +32,9 @@ number, don't read it whole.
 - Sidebar (site only, `src/site_template.html`; owner, Oct 26): four collapsible categories Geos / Areas / Mobs / Deities, all collapsed on load.
   `GEOS` = [name, x0, y0, x1, y1] world boxes (from each region's editor-save rooms, minus hidden/locked); `DEITIES` = names moved out of Mobs.
   The Darkhaven box includes Shadow Grove and Miden'nir. `realm_map.html`'s own list is unchanged.
+- Deities (owner, Oct 26; `changes/001_deities.py`): place `deity` + `nopin`; `opts` = its locations [{dir 'Who · Sub-area', who deity|naos,
+  sub, route, segs, at (marker), gap}]. Site only: purple DEITY markers (site_template) shown while selected; list click opens with no route,
+  a card radio or marker click draws that option. Lines stop on the sub-area's marker when they pass within 1.0 of it, else at the last drawn room.
 
 ## Layout editors
 Republished Oct 19 in the owner's current claude.ai organization (the old links in `docs/archive/` are in another organization and are not

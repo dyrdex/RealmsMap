@@ -59,6 +59,7 @@ text{font-family:var(--serif)}
 .lbl{fill:var(--ink);paint-order:stroke;stroke:var(--halo);stroke-width:3.5px;stroke-linejoin:round}
 .st{font-family:var(--serif);font-style:italic;font-size:.4px;letter-spacing:.02em;fill:var(--soft);paint-order:stroke;stroke:var(--street);stroke-width:.1px;stroke-linejoin:round}
 .pin{cursor:pointer}
+.dmark .dring{fill:none;stroke:none;stroke-width:.09}.dmark:hover .dring,.dmark.cur .dring{stroke:#E9D8FF}
 .pin:hover .dot,.pin.sel .dot{fill:var(--pick)}
 #detail{position:absolute;top:14px;right:14px;width:min(360px,calc(100% - 28px));background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.45);display:none;max-height:calc(100% - 28px);overflow:auto}
 #detail.open{display:block}
@@ -132,11 +133,15 @@ const TileL=L.TileLayer.extend({getTileUrl(c){if(!IN)return L.TileLayer.prototyp
   const t=IN.tiles[`${c.z}/${c.x}/${c.y}`];return t?'data:image/webp;base64,'+t:BLANK}});
 new TileL('tiles/{z}/{x}/{y}.webp',{tileSize:D.tile,minNativeZoom:D.zmin,maxNativeZoom:D.zmax,minZoom:D.zmin-1,maxZoom:D.zmax,
   bounds:B,noWrap:true,keepBuffer:2}).addTo(map);
+/* DEITY: a deity location's marker (owner, Oct 26: large, purple, religious): a radiant eight-pointed star on a violet medallion, a soft glow */
+const DEITY=(()=>{let st='';for(let k=0;k<16;k++){const a=k*Math.PI/8-Math.PI/2,r=k%2?.27:.62;st+=(k?'L':'M')+(r*Math.cos(a)).toFixed(3)+' '+(r*Math.sin(a)).toFixed(3)}
+  return `<circle r="1.15" fill="#9B5DE5" opacity=".22"/><circle r=".8" fill="#2E1648" stroke="#A974EE" stroke-width=".09"/><circle r=".66" fill="none" stroke="#7B4BB8" stroke-width=".035"/><path d="${st}Z" fill="#CDA8FF" stroke="#2E1648" stroke-width=".03" stroke-linejoin="round"/><circle r=".11" fill="#F6EEFF"/><circle class="dring" r="1.0"/>`})();
 /* ---------- live layer: area names, selected route, markers and their names (world units) ---------- */
 const attrs=o=>Object.entries(o).map(([k,v])=>`${k}="${esc(v)}"`).join(' ');
 let s=`<defs>${A.defs.join('')}</defs>${A.areas.join('')}<g id="routeLayer"></g><g id="pins">${D.extras.join('')}`;
 for(const p of P)if(p.shape)s+=`<g class="pin" data-i="${p.i}" transform="translate(${p.mx},${p.my})"><circle r=".55" fill="transparent"/>${p.shape}</g>`;
 for(const p of P)for(const e of (p.more||[])){s+=`<g class="pin" data-i="${p.i}" data-opt="${e.opt}" transform="translate(${e.mx},${e.my})"><circle r=".55" fill="transparent"/>${e.shape}</g>`;if(e.label)s+=`<text class="lbl plabel" data-i="${p.i}" data-opt="${e.opt}" ${attrs(e.label)}>${esc(p.name)}</text>`}   /* a place's other markers: each opens the card on its route option (Oct 25) */
+for(const p of P)if(p.deity)p.opts.forEach((o,k)=>{s+=`<g class="pin dmark" data-i="${p.i}" data-opt="${k}" data-tip="${esc(o.dir)}" transform="translate(${o.at[0]},${o.at[1]})" style="display:none">${DEITY}</g>`});   /* a deity's locations: no pin; shown only while it is selected (owner, Oct 26) */
 for(const p of P)if(p.label)s+=`<text class="lbl plabel" data-i="${p.i}" ${attrs(p.label)}>${esc(p.name)}</text>`;
 const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
 svg.id='live';svg.setAttribute('viewBox',`${x0} ${y0} ${x1-x0} ${y1-y0}`);svg.innerHTML=s+'</g>';
@@ -172,26 +177,31 @@ function drawRoute(p,k){
   if(p.sail&&!k){const s='M'+p.sail.map(q=>q.join(' ')).join('L');L.innerHTML+=`<path d="${s}" fill="none" stroke="var(--glow)" stroke-width=".3" stroke-dasharray=".01 .42" stroke-linecap="round" opacity=".8"/><path d="${s}" fill="none" stroke="var(--pick)" stroke-width=".15" stroke-dasharray=".01 .42" stroke-linecap="round"/>`}   /* SAIL: a boat trip, a dotted wavy line over the sea (Fireball Island, owner Oct 25) */
   if(!reduce){const rl=document.getElementById('rl'),len=rl.getTotalLength();rl.style.strokeDasharray=len;rl.style.strokeDashoffset=len;rl.getBoundingClientRect();rl.style.transition='stroke-dashoffset .8s ease';rl.style.strokeDashoffset=0}
 }
-function select(p,K=0){
+function select(p,K=(p&&p.deity?-1:0)){   /* K: the route option; a deity opens with none drawn (-1) */
   if(p&&!ROUTES_OK){ROUTES.then(()=>select(p,K));return}
   sel=p;document.querySelectorAll('.pin').forEach(g=>g.classList.toggle('sel',p&&+g.dataset.i===p.i));
   document.querySelectorAll('#list button[data-i]').forEach(b=>b.setAttribute('aria-current',p&&+b.dataset.i===p.i?'true':'false'));document.querySelectorAll('#list button[data-g]').forEach(b=>b.setAttribute('aria-current','false'));
+  document.querySelectorAll('.dmark').forEach(g=>{const on=p&&+g.dataset.i===p.i;g.style.display=on?'':'none';g.classList.toggle('cur',on&&+g.dataset.opt===K)});
   const det=document.getElementById('detail');
   if(!p){det.classList.remove('open');drawRoute(null);return}
   const steps=p.path.length-1;
-  let html=`<h2>${esc(p.name)}</h2><p class="kind">${({guild:'Guild',structure:'Landmark',mob:'Mob',town:'Town'})[p.kind]||'Area'} ${p.group==='fot'?'in the Forest of Tears':p.group==='wtr'?'on the Western Trade Route':p.group==='mid'?'off Miden\'nir':p.group==='sg'?'off the Shadow Grove':p.group==='af'?(p.where||'off the Ashen Forest'):p.group==='fw'?(p.kind?'in the Forgotten Woods':'off the Forgotten Woods'):'in New Darkhaven'} · ${p.kind==='mob'?'found at':p.dir==='here'?'reached at':'entrance at'} ${esc(p.room)}</p>`;
+  let html=`<h2>${esc(p.name)}</h2><p class="kind">${(p.deity?'Deity':({guild:'Guild',structure:'Landmark',mob:'Mob',town:'Town'})[p.kind])||'Area'} ${p.group==='fot'?'in the Forest of Tears':p.group==='wtr'?'on the Western Trade Route':p.group==='mid'?'off Miden\'nir':p.group==='sg'?'off the Shadow Grove':p.group==='af'?(p.where||'off the Ashen Forest'):p.group==='fw'?(p.kind?'in the Forgotten Woods':'off the Forgotten Woods'):'in New Darkhaven'} · ${p.kind==='mob'?'found at':p.dir==='here'?'reached at':'entrance at'} ${esc(p.room)}</p>`;
   if(p.card)html=`<h2>${esc(p.name)}</h2><p class="kind">${esc(p.card)}</p>`;   /* the owner's own card line (e.g. 'Human Hometown'; Oct 25) */
   if(p.note)html+=`<p class="note">${esc(p.note)}</p>`;
   const opt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k===K?' checked':''}><span>${esc(o.dir)}${o.rooms!=null?` (${o.rooms} rooms)`:''}${o.note?': '+esc(o.note):''}</span></label><code>${esc(o.route)}</code>${o.gap?`<p class="note">${esc(o.gap)}</p>`:''}</div>`;
-  if(p.opts)html+=`<p>Full directions from Darkhaven Square:</p>`+opt(p.opts[0],0)+(p.opts.length>1?`<p class="ralt">Alternate routes:</p>`+p.opts.slice(1).map((o,k)=>opt(o,k+1)).join(''):'');
+  if(p.deity)html=`<h2>${esc(p.name)}</h2><p class="kind">Deity</p><p>Locations (pick one for its route from Darkhaven Square):</p>`+p.opts.map(opt).join('');
+  else if(p.opts)html+=`<p>Full directions from Darkhaven Square:</p>`+opt(p.opts[0],0)+(p.opts.length>1?`<p class="ralt">Alternate routes:</p>`+p.opts.slice(1).map((o,k)=>opt(o,k+1)).join(''):'');
   else html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>${esc(p.rhead||'Full directions from Darkhaven Square:')}</p><code>${esc(p.route)}</code>`;
   if(p.alt&&p.alt.length)html+=`<p>Another way:</p>`+p.alt.map(a=>`<code>${esc(a)}</code>`).join('');
   document.getElementById('dbody').innerHTML=html;det.classList.add('open');
-  document.querySelectorAll('#dbody input[name=ropt]').forEach(r=>r.onchange=()=>{drawRoute(p,+r.value);fitRoute(p,+r.value)});
+  document.querySelectorAll('#dbody input[name=ropt]').forEach(r=>r.onchange=()=>{if(p.deity)return select(p,+r.value);drawRoute(p,+r.value);fitRoute(p,+r.value)});
+  if(p.deity&&K<0){drawRoute(null);const xs=p.opts.map(o=>o.at[0]),ys=p.opts.map(o=>o.at[1]);   /* all its locations in view */
+    const cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2,hw=Math.max(8,(Math.max(...xs)-Math.min(...xs))/2+4),hh=Math.max(8,(Math.max(...ys)-Math.min(...ys))/2+4);
+    flyTo(fitB(cx-hw,cy-hh,cx+hw,cy+hh,40));return}
   drawRoute(p,K);fitRoute(p,K);
 }
 function fitRoute(p,k){
-  const m=(k&&(p.more||[]).find(e=>e.opt===k))||p;   /* (the marker of that option) */
+  const m=p.deity?{mx:p.opts[k].at[0],my:p.opts[k].at[1]}:(k&&(p.more||[]).find(e=>e.opt===k))||p;   /* (the marker of that option) */
   const allp=routeSegs(p,k).flat().concat((!k&&p.sail)||[]);const xs=[...allp.map(q=>q[0]),m.mx],ys=[...allp.map(q=>q[1]),m.my];
   let x0=Math.min(...xs)-2.5,x1=Math.max(...xs)+2.5,y0=Math.min(...ys)-2.5,y1=Math.max(...ys)+2.5;
   const cx=(x0+x1)/2,cy=(y0+y1)/2,hw=Math.max(6,(x1-x0)/2),hh=Math.max(6,(y1-y0)/2);
@@ -201,7 +211,7 @@ document.getElementById('close').onclick=()=>select(null);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')select(null)});
 svg.querySelectorAll('.pin,.plabel').forEach(g=>{const p=P[+g.dataset.i];
   g.addEventListener('click',()=>select(p,+(g.dataset.opt||0)));
-  g.addEventListener('mousemove',e=>{const r=stage.getBoundingClientRect();tip.style.display='block';tip.textContent=p.name;tip.style.left=(e.clientX-r.left+14)+'px';tip.style.top=(e.clientY-r.top+12)+'px'});
+  g.addEventListener('mousemove',e=>{const r=stage.getBoundingClientRect();tip.style.display='block';tip.textContent=g.dataset.tip||p.name;tip.style.left=(e.clientX-r.left+14)+'px';tip.style.top=(e.clientY-r.top+12)+'px'});
   g.addEventListener('mouseleave',()=>tip.style.display='none')});
 const li=p=>`<li><button data-i="${p.i}" aria-current="false"><span>${esc(p.name)}</span><span class="meta">${groupHalls.includes(p.name)?'in the Halls':''}</span></button></li>`;
 const sec=(t,k)=>`<li class="gh" style="padding:14px 10px 4px">${t}</li>`+P.filter(p=>(p.kind||'area')===k).map(li).join('');

@@ -3,6 +3,9 @@
 ## In progress (2.16)
 
 - Your request (Oct 26): the sidebar list is now four categories that expand and collapse, Geos, Areas, Mobs and Deities, all collapsed when the map loads (a + beside each, − when open). Geos lists your 11 regions (Northern Plains, Barren Peaks of Tahjliera, Forgotten Woods, Forest of Tears, Ashen Forest, Darkhaven, The Mire, Southern Mountain Range, Wastelands, Desert of Despair, Otherland); picking one zooms the map to fit that region. Areas is the old area list (187). Mobs is the old mob list minus A'enari and V'laresch (11 left), which are now under Deities. The search box searches all four and opens only the categories with matches; clearing it puts the categories back as you had them.
+- Your request (Oct 26): deities have no pin on the map any more. Selecting a deity (sidebar or search) shows its locations as large purple markers (a radiant eight-pointed star on a violet medallion, no name) and zooms to fit them all; the card says "Deity" (was "Mob") and lists every location, each with its directions. Picking a location on the card, or clicking its marker, draws that route. Routes are drawn as far as the map goes: a route that passes its sub-area's marker stops on that marker.
+  - A'enari: 4 locations. A'enari · Pixie Forest (drawn all the way, to Serenity, where the old marker was); A'enari · King's Castle (stops on the King's Castle marker); Naos · Emerald Hills (stops on the Emerald Hills marker, Below Mount Chivalry); Naos · Town of Solace (stops on the Town of Solace marker, its entrance).
+  - V'laresch: its one known location so far (V'laresch · Forest of Tears, the old route and line; marker where the old pin was).
 
 ## Version 2.15 · Islands and Depths · October 26, 2026
 
