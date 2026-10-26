@@ -22,7 +22,7 @@ TILE_CACHE = os.environ.get('TILE_CACHE', os.path.abspath('../.tile_cache'))
 # big area and maze names: kept live (sharp at every zoom), not baked into tiles
 AREA_NAMES = ["The Forgotten Woods", "Shadow Grove", "Miden'nir", "The Maze of Trees",
               "Lost in the Swamp", "The Hidden Grove", "Ashen", "Forest", "Forest of Tears"]
-CARD_KEYS = ('name', 'route', 'room', 'dir', 'note', 'kind', 'noroute', 'group', 'where', 'alt', 'card', 'hidepath')
+CARD_KEYS = ('name', 'route', 'room', 'dir', 'note', 'kind', 'noroute', 'group', 'where', 'alt', 'card', 'hidepath', 'rhead')
 
 EXPORT_JS = '''(names)=>{
   const w=document.getElementById('world');
@@ -143,7 +143,7 @@ def main():
         if q.get('more'): c['more'] = q['more']                                                # a place's other markers (Oct 25)
         if p.get('opts'): c['opts'] = [{k: v for k, v in o.items() if k != 'segs' and v not in (None, '', False)} for o in p['opts']]   # route options: text on the card, lines in routes.json
         places.append(c)
-        routes.append({'path': r2(p['path']), **({'segs': r2(p['segs'])} if p.get('segs') else {}), **({'opts': [r2(o['segs']) for o in p['opts']]} if p.get('opts') else {})})
+        routes.append({'path': r2(p['path']), **({'segs': r2(p['segs'])} if p.get('segs') else {}), **({'opts': [r2(o['segs']) for o in p['opts']]} if p.get('opts') else {}), **({'sail': r2(p['sail'])} if p.get('sail') else {})})
     J = lambda o: json.dumps(o, separators=(',', ':'), ensure_ascii=False)
     files = {'places.json': J({'bounds': live['bounds'], 'zmin': ZMIN, 'zmax': ZMAX, 'tile': TS, 'places': places, 'extras': live['extras'], 'jumps': live.get('jumps') or []}),
              'areanames.json': J({'areas': live['areas'], 'defs': live['defs']}),

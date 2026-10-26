@@ -112,7 +112,7 @@ The other builders run inside `src/legacy`.
   lines (4317-14314-22557, 4317-Edo) kept, new lines end on them.
   Primary water route (owner, Oct 23) = `PRIMARY` in that change (the chain's western-most rooms, 14257 .. 4317), standard water path; every other
   exit = the **secondary water path** (owner's name, Oct 23, for type C / `olharborways`, the Harbor of Icebergs style), ends on the primary line.
-  Deathtrap 14279 'Death on the Rocks' (owner, Oct 23; the owner said 12479, a World of Quests room): `DEATHTRAPS`, dark red skull and crossbones (`deathtraps`, template SKULL; size g[2] .6 = 1.3 rooms); the primary route goes round it (14278-14280-14281), never through.
+  Deathtrap 14279 'Death on the Rocks' (owner, Oct 23; the owner said 12479, a World of Quests room): `DEATHTRAPS`, dark red skull and crossbones (`deathtraps`, template SKULL; size g[2] .6 = 1.3 rooms); the primary route goes round it (14278-14280-14281), never through. Darker red since Oct 25 (owner): skull #6E1717, crossbones #5E1313.
   Save of Oct 23 17:11Z moved 4317/5749/5966: the old standard lines to 4316 and to Edo are redrawn (`STANDARD`), place routes through moved rooms follow.
 - **Forest of Tears**: Fog Cliffs mountains reach 2 rooms east of the cliff path (Oct 19, so the Tree of Life is in the forest).
 - **Miden'nir**: the painting (Black Forest, brambles, Mount Doom) stays; the tunnels under Mount Doom are left out; Forest rooms
@@ -229,3 +229,8 @@ The other builders run inside `src/legacy`.
   drift if none within 3.3). Re-run its check after land changes: open snow >1.5 from a plant was 2.6%.
   Plants (owner, Oct 22; `v2.5/010`, `wild.olflora` [x,y,scale,kind p/b/s/g,variant], template OLFLORA sprites op*/ob*/os*/og*): density by the nearest room name's land kind (DENS).
   Shore ice (owner, Oct 22): floes + small bergs along the WHOLE sea coast at the south shore's density (`v2.5/006`, appended to `olsouth.floes` / `olharbor.bergs`).
+- **Fireball Island** (owner, Oct 25; `changes/002_fireball_island.py`, template FIREBALL): diameter = Angel's Landing island's height; boat-only place: `route` is the owner's text, `rhead` 'Directions:', `segs` = Sailing the Seas' route, `sail` = the dotted boat line (drawn only when selected).
+- **Hurricane Island** (owner, Oct 25; `changes/003_hurricane_island.py`, template HURRICANE): 2/3 of Fireball's diameter, kept 2 off the coast; route '#53 w;se;d;u;d;u' drawn as #53 w's drawn part + a straight line to the pin (owner: ignore the se;d;u;d;u).
+- **Small docks** (owner, Oct 25; `changes/004_small_docks.py`, template DOCK): from 0.3 inside the shore to 1.0 past it. Anything that reaches out over the sea must be drawn after the sea layer (`h`, as WD.docks), not in WILD: geo.water is painted over WILD's land layers.
+- **Bilwen, Eurion, Deathvein Island** (owner, Oct 25; `changes/005_three_isles.py`, template ISLES): placed level with the middle of an area's ground tint's bounds, half way from the coast to the map edge; boat-only places: no route (`hidepath`), owner's text as directions.
+- **New island/creature colours** (owner, Oct 25): match the map's palette (tree greens t-dark/t-mid/t-light, --sand); no bright oranges/reds; creatures as faded old-map ink, partly see-through.

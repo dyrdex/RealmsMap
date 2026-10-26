@@ -115,7 +115,7 @@ const groupHalls=['Isle of the Monkeys','A Moment in Nature'];
 const [D,A]=await Promise.all([get('places.json'),get('areanames.json')]);
 const P=D.places;
 let ROUTES_OK=false;
-const ROUTES=get('routes.json').then(R=>{R.forEach((r,i)=>{P[i].path=r.path;if(r.segs)P[i].segs=r.segs;if(r.opts)P[i].optsegs=r.opts});ROUTES_OK=true});
+const ROUTES=get('routes.json').then(R=>{R.forEach((r,i)=>{P[i].path=r.path;if(r.segs)P[i].segs=r.segs;if(r.opts)P[i].optsegs=r.opts;if(r.sail)P[i].sail=r.sail});ROUTES_OK=true});
 /* ---------- map: baked terrain tiles (1 unit = 1 room, latlng = [y, x]) ---------- */
 const [x0,y0,x1,y1]=D.bounds;
 const CRS=L.extend({},L.CRS.Simple,{transformation:new L.Transformation(1,-x0,1,-y0)});
@@ -164,6 +164,7 @@ function drawRoute(p,k){
   const sg=routeSegs(p,k);
   const {d,j}=routeD(sg,D.jumps);
   L.innerHTML=`<path d="${d}" fill="none" stroke="var(--glow)" stroke-width=".42" stroke-linecap="round" stroke-linejoin="round"/><path id="rl" d="${d}" fill="none" stroke="var(--pick)" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round"/>`+(j?`<path d="${j}" fill="none" stroke="var(--pick)" stroke-width=".1" stroke-dasharray=".45 .35" stroke-linecap="round" opacity=".9"/>`:'');
+  if(p.sail&&!k){const s='M'+p.sail.map(q=>q.join(' ')).join('L');L.innerHTML+=`<path d="${s}" fill="none" stroke="var(--glow)" stroke-width=".3" stroke-dasharray=".01 .42" stroke-linecap="round" opacity=".8"/><path d="${s}" fill="none" stroke="var(--pick)" stroke-width=".15" stroke-dasharray=".01 .42" stroke-linecap="round"/>`}   /* SAIL: a boat trip, a dotted wavy line over the sea (Fireball Island, owner Oct 25) */
   if(!reduce){const rl=document.getElementById('rl'),len=rl.getTotalLength();rl.style.strokeDasharray=len;rl.style.strokeDashoffset=len;rl.getBoundingClientRect();rl.style.transition='stroke-dashoffset .8s ease';rl.style.strokeDashoffset=0}
 }
 function select(p,K=0){
@@ -178,7 +179,7 @@ function select(p,K=0){
   if(p.note)html+=`<p class="note">${esc(p.note)}</p>`;
   const opt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k===K?' checked':''}><span>${esc(o.dir)}${o.rooms!=null?` (${o.rooms} rooms)`:''}${o.note?': '+esc(o.note):''}</span></label><code>${esc(o.route)}</code>${o.gap?`<p class="note">${esc(o.gap)}</p>`:''}</div>`;
   if(p.opts)html+=`<p>Full directions from Darkhaven Square:</p>`+opt(p.opts[0],0)+(p.opts.length>1?`<p class="ralt">Alternate routes:</p>`+p.opts.slice(1).map((o,k)=>opt(o,k+1)).join(''):'');
-  else html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>Full directions from Darkhaven Square:</p><code>${esc(p.route)}</code>`;
+  else html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>${esc(p.rhead||'Full directions from Darkhaven Square:')}</p><code>${esc(p.route)}</code>`;
   if(p.alt&&p.alt.length)html+=`<p>Another way:</p>`+p.alt.map(a=>`<code>${esc(a)}</code>`).join('');
   document.getElementById('dbody').innerHTML=html;det.classList.add('open');
   document.querySelectorAll('#dbody input[name=ropt]').forEach(r=>r.onchange=()=>{drawRoute(p,+r.value);fitRoute(p,+r.value)});
@@ -186,7 +187,7 @@ function select(p,K=0){
 }
 function fitRoute(p,k){
   const m=(k&&(p.more||[]).find(e=>e.opt===k))||p;   /* (the marker of that option) */
-  const allp=routeSegs(p,k).flat();const xs=[...allp.map(q=>q[0]),m.mx],ys=[...allp.map(q=>q[1]),m.my];
+  const allp=routeSegs(p,k).flat().concat((!k&&p.sail)||[]);const xs=[...allp.map(q=>q[0]),m.mx],ys=[...allp.map(q=>q[1]),m.my];
   let x0=Math.min(...xs)-2.5,x1=Math.max(...xs)+2.5,y0=Math.min(...ys)-2.5,y1=Math.max(...ys)+2.5;
   const cx=(x0+x1)/2,cy=(y0+y1)/2,hw=Math.max(6,(x1-x0)/2),hh=Math.max(6,(y1-y0)/2);
   flyTo(fitB(cx-hw,cy-hh,cx+hw,cy+hh,40));
