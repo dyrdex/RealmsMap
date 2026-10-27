@@ -71,3 +71,43 @@ def warpline(line):
         n = max(2, int(math.dist((ax, ay), (bx, by)) / 0.2))
         out += [[round(c, 3) for c in warp(ax + (bx - ax) * i / n, ay + (by - ay) * i / n)] for i in range(0 if not out else 1, n + 1)]
     return out
+
+
+_DIRV = {'n': (0, -1), 's': (0, 1), 'e': (1, 0), 'w': (-1, 0), 'ne': (.7, -.7), 'nw': (-.7, -.7), 'se': (.7, .7), 'sw': (-.7, .7)}
+_NUDGE = {"Intrigues of the Miden'nir": (-.3, .45), 'Southern Plains': (0, .8), 'Florebit in Immortalis Iuvenis': (.4, -.35),
+          'Haven of Everlasting Light': (-.6, -.9), 'Old Thalos': (-.6, 0), "V'laresch": (.15, .55), 'Tullfuhrzky Manor': (-.6, 0), 'Ofcol': (-.85, 0)}
+
+
+def pin(p):
+    """A place's marker spot as template.html sets it (its DIRV step off the line's end, 'd', `at`, NUDGE; keep in step with the template)."""
+    ex, ey = p['path'][-1][:2]; vx, vy = _DIRV.get(p.get('dir'), (0, 0))
+    x, y = ex + vx * .62, ey + vy * .62
+    if p.get('dir') == 'd': x, y = ex + .62, ey + .05
+    if p.get('dir') == 'here': x, y = ex, ey
+    if p.get('at'): x, y = p['at'][:2]
+    nx, ny = _NUDGE.get(p.get('key') or p['name'], (0, 0))
+    return [round(x + nx, 3), round(y + ny, 3)]
+
+
+def walker(pos, wild=None):
+    """tracer()'s walk, but spacer rooms are also followed by their one other exit and notes in brackets are skipped
+    (as changes/001_deities.py); returns walk(route) -> room trail, and at(room) -> its spot or None."""
+    rooms, exits = world()
+    _, at = tracer(pos, wild)
+    isspacer = lambda v: bool(rooms[v]['flags'] & 8) and rooms[v]['area'] == ''
+    def walk(route):
+        v = 764; trail = [v]
+        for tok in [x.strip() for x in re.sub(r'\([^)]*\)', ';', route).split(';') if x.strip()]:
+            tok = re.sub(r'^l ', 'look ', tok)
+            m = re.match(r'^#\s*(\d+)\s*(.+)$', tok); n, dd = (int(m.group(1)), m.group(2).strip()) if m else (1, tok)
+            for _ in range(n):
+                nx = [e for e in exits.get(v, []) if e['name'] == dd or e['cmd'].split(';')[-1] == dd or e['cmd'] == tok]
+                if not nx and dd not in DIRS: break
+                if not nx: return trail
+                prev, v = v, nx[0]['to']; trail.append(v); k = 0
+                while isspacer(v) and k < 40:
+                    c = [x['to'] for x in exits.get(v, []) if x['name'] == dd] or [x['to'] for x in exits.get(v, []) if x['to'] != prev]
+                    if len(c) != 1: break
+                    prev, v = v, c[0]; trail.append(v); k += 1
+        return trail
+    return walk, at

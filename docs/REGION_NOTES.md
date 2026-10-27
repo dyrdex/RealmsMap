@@ -29,6 +29,20 @@ number, don't read it whole.
   owner, Oct 20).
 - Changes go in `src/changes/NNN_name.py` (see its README). Never edit `base/map.json` by hand; `build.py --freeze` rewrites it.
 
+- Sidebar (site only, `src/site_template.html`; owner, Oct 26): four collapsible categories Geos / Areas / Mobs / Deities, all collapsed on load.
+  `GEOS` = [name, x0, y0, x1, y1] world boxes (from each region's editor-save rooms, minus hidden/locked); `DEITIES` = names moved out of Mobs.
+  The Darkhaven box includes Shadow Grove and Miden'nir. `realm_map.html`'s own list is unchanged.
+- Deities (owner, Oct 26; `changes/001_deities.py`): place `deity` + `nopin`; `opts` = its locations [{dir 'Who · Sub-area', who deity|naos,
+  sub, route, segs, at (marker), gap}]. Site only: purple DEITY markers (site_template) shown while selected; list click opens with no route,
+  a card radio or marker click draws that option. Lines go as far as the drawn rooms (owner, Oct 26), marker at the line's end unless the owner
+  names a spot (`MARK` kinds in 001: sub / room / place / graves); spacers followed by their other exit; a >100 gap (sea crossing) splits the line.
+  A place's marker spot in Python: `maplib.pin(p)` (template's DIRV step / at / NUDGE; keep in step with template.html).
+  `poi` (changes/005): no pin; site POI marker shown on select (as deities, `.dmark`), card line 'Point of Interest'. `maplib.walker` = the spacer-following tracer.
+  `deco` (changes/004): marker + name drawn on the site, not clickable, not listed. Sidebar 'Points of Interest' = kind mob, not deity/deco.
+  Area cards: `astral` = 'Astral Points:' line, `astrallocal` = + 'No astral travel to or from other regions.' (`changes/003_astral_points.py`).
+  `priests` = the card's 'Priests:' line (PRIESTS in 001). Race-only hometown routes: `changes/002_race_routes.py` (opt + jump; `show` on an opt overrides `hidepath`).
+  No 'not mapped' note on deity cards. `text` = a card line instead of directions; `noline` = marker only. Deities = `p.deity` (Mobs exclude them).
+
 ## Layout editors
 Republished Oct 19 in the owner's current claude.ai organization (the old links in `docs/archive/` are in another organization and are not
 used any more); each was loaded with the owner's latest save (its `<key>/current` document), so it opens where the owner left off.
