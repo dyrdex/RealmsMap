@@ -1,6 +1,6 @@
 """Owner, Oct 27: card warnings.
   - The Blood Sea break (Otherland (Southern), and the North option of the Otherland sub-areas and mobs) now reads NS.
-  - The 'isn't mapped / line stops' notes and the shared-pin note come off (the lines stay as drawn).
+  - The 'isn't mapped / line stops' notes, the shared-pin note and the notes on where a pin is (16) come off (the lines stay as drawn).
   - Abattoir Asylum, Cold Comfort, The Domain of World Eater: the owner's full directions (their closing scan/scry steps back in the
     directions, not on the card); their notes come off."""
 import maplib
@@ -13,6 +13,9 @@ ROUTES = {   # owner's directions (Oct 27)
 }
 DROP = ['Dragontail Glen', 'The Blood Sea', 'The Burrows', 'Mathlaan Lagoon', 'The Keep of Mahn-Tor (The Keep)', 'Galaxy',
         'Machine Dreams'] + list(ROUTES)
+PINS = ['Corruption of Anciastra', 'Vale of Nidaros', 'Valley of Mysts', 'The Tower of Zenothir', "Wyvern's Tower",   # notes on where the pin is (owner, Oct 27)
+        "La Chute D'eau De L'ancients", 'Raven Tor', 'Gnarlwood Forest', 'The Keep of Mahn-Tor (Ogre Village)', 'New Ofcol',
+        'Tullfuhrzky Manor', "Ezard's Fields", 'Moria', 'Fire Station', 'Eastern Trade Route', 'Reomyr Village']
 
 
 def apply(town, wild, pos):
@@ -22,7 +25,7 @@ def apply(town, wild, pos):
         if p.get('note') and 'down into the Blood Sea' in p['note']: p['note'] = NS; rep['NS'] += 1
         for o in p.get('opts') or []:
             if o.get('gap') and 'down into the Blood Sea' in o['gap']: o['gap'] = NS; rep['NS'] += 1
-    for n in DROP:
+    for n in DROP + PINS:
         assert pl[n].get('note'), n
         pl[n]['note'] = None; rep['notes removed'] += 1
     dc = pl['Dwarven Catacombs']['opts'][0]
