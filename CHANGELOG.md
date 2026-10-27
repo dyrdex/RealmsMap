@@ -2,6 +2,9 @@
 
 ## In progress (2.17)
 
+- Your request (Oct 27): card warnings. The Blood Sea break on 9 cards (Otherland (Southern) + the North option of Wild Tundra, The Ziggurat, Valley of Crucifixion, Cursed Lands, The Kirre, Inishie, Kujrajgi, Jarl) now reads "North-South link: Route runs far north and links to far south off Otherland". The "isn't mapped, line stops at ..." notes removed from 9 cards (Dwarven Catacombs Northern Entrance, Dragontail Glen, The Blood Sea, The Burrows, Mathlaan Lagoon, The Keep of Mahn-Tor (The Keep), Galaxy, Cold Comfort, Machine Dreams); the shared-pin note removed from Machine Dreams and The Domain of World Eater. Lines unchanged.
+- Fix (Oct 27): Abattoir Asylum, Cold Comfort and The Domain of World Eater have your full directions again (the closing scry/scan steps, and Abattoir's final e, are in the directions); their card notes removed.
+
 ## Version 2.16 · Gods and Guides · October 27, 2026
 
 - Your request (Oct 27): Points of Interest now work like deities: no marker on the map until one is picked, then a larger mob-style marker (pink, soft glow) and its route. The section is now the last in the sidebar. Card notes: Sonoria "Respawn point for non-guilded/ordered characters" (replacing the old note); Jokaan's Repair Shop and Camelot Reparations "Affordable Equipment Repairs". Their card line reads "Point of Interest" (was "Mob").
