@@ -136,11 +136,14 @@ new TileL('tiles/{z}/{x}/{y}.webp',{tileSize:D.tile,minNativeZoom:D.zmin,maxNati
 /* DEITY: a deity location's marker (owner, Oct 26: large, purple, religious): a radiant eight-pointed star on a violet medallion, a soft glow */
 const DEITY=(()=>{let st='';for(let k=0;k<16;k++){const a=k*Math.PI/8-Math.PI/2,r=k%2?.27:.62;st+=(k?'L':'M')+(r*Math.cos(a)).toFixed(3)+' '+(r*Math.sin(a)).toFixed(3)}
   return `<circle r="1.15" fill="#9B5DE5" opacity=".22"/><circle r=".8" fill="#2E1648" stroke="#A974EE" stroke-width=".09"/><circle r=".66" fill="none" stroke="#7B4BB8" stroke-width=".035"/><path d="${st}Z" fill="#CDA8FF" stroke="#2E1648" stroke-width=".03" stroke-linejoin="round"/><circle r=".11" fill="#F6EEFF"/><circle class="dring" r="1.0"/>`})();
+/* POI: a point of interest's marker, shown only while it is selected (owner, Oct 27): the mob marker, larger, with a soft glow */
+const POI=`<circle r="1.0" fill="var(--mob)" opacity=".2"/><circle r=".72" fill="none" stroke="var(--mob)" stroke-width=".1"/><circle r=".42" fill="var(--mob)" stroke="var(--panel)" stroke-width=".08"/><circle class="dring" r="1.0"/>`;
 /* ---------- live layer: area names, selected route, markers and their names (world units) ---------- */
 const attrs=o=>Object.entries(o).map(([k,v])=>`${k}="${esc(v)}"`).join(' ');
 let s=`<defs>${A.defs.join('')}</defs>${A.areas.join('')}<g id="routeLayer"></g><g id="pins">${D.extras.join('')}`;
 for(const p of P)if(p.shape)s+=`<g class="${p.deco?'dpin':'pin'}" data-i="${p.i}" transform="translate(${p.mx},${p.my})"><circle r=".55" fill="transparent"/>${p.shape}</g>`;
 for(const p of P)for(const e of (p.more||[])){s+=`<g class="pin" data-i="${p.i}" data-opt="${e.opt}" transform="translate(${e.mx},${e.my})"><circle r=".55" fill="transparent"/>${e.shape}</g>`;if(e.label)s+=`<text class="lbl plabel" data-i="${p.i}" data-opt="${e.opt}" ${attrs(e.label)}>${esc(p.name)}</text>`}   /* a place's other markers: each opens the card on its route option (Oct 25) */
+for(const p of P)if(p.poi)s+=`<g class="pin dmark" data-i="${p.i}" data-opt="0" transform="translate(${p.mx},${p.my})" style="display:none">${POI}</g>`;
 for(const p of P)if(p.deity)p.opts.forEach((o,k)=>{s+=`<g class="pin dmark" data-i="${p.i}" data-opt="${k}" data-tip="${esc(o.dir)}" transform="translate(${o.at[0]},${o.at[1]})" style="display:none">${DEITY}</g>`});   /* a deity's locations: no pin; shown only while it is selected (owner, Oct 26) */
 for(const p of P)if(p.label)s+=`<text class="lbl${p.deco?'':' plabel'}" data-i="${p.i}" ${attrs(p.label)}>${esc(p.name)}</text>`;
 const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
@@ -186,6 +189,7 @@ function select(p,K=(p&&p.deity?-1:0)){   /* K: the route option; a deity opens 
   if(!p){det.classList.remove('open');drawRoute(null);return}
   const steps=p.path.length-1;
   let html=`<h2>${esc(p.name)}</h2><p class="kind">${(p.deity?'Deity':({guild:'Guild',structure:'Landmark',mob:'Mob',town:'Town'})[p.kind])||'Area'} ${p.group==='fot'?'in the Forest of Tears':p.group==='wtr'?'on the Western Trade Route':p.group==='mid'?'off Miden\'nir':p.group==='sg'?'off the Shadow Grove':p.group==='af'?(p.where||'off the Ashen Forest'):p.group==='fw'?(p.kind?'in the Forgotten Woods':'off the Forgotten Woods'):'in New Darkhaven'} · ${p.kind==='mob'?'found at':p.dir==='here'?'reached at':'entrance at'} ${esc(p.room)}</p>`;
+  if(p.poi&&!p.card)html=`<h2>${esc(p.name)}</h2><p class="kind">Point of Interest${p.room?' · found at '+esc(p.room):''}</p>`;   /* not 'Mob' (owner, Oct 27) */
   if(p.card)html=`<h2>${esc(p.name)}</h2><p class="kind">${esc(p.card)}</p>`;   /* the owner's own card line (e.g. 'Human Hometown'; Oct 25) */
   if(p.astral)html+=`<p>Astral Points: ${esc(p.astral)}</p>`+(p.astrallocal?`<p class="note">No astral travel to or from other geos.</p>`:'');   /* the area's portal points (owner, Oct 27) */
   if(p.note)html+=`<p class="note">${esc(p.note)}</p>`;
@@ -228,8 +232,8 @@ const liG=(g,k)=>`<li><button data-g="${k}" aria-current="false"><span>${esc(g[0
 const cat=(t,rows)=>`<li class="cat"><button class="cath" aria-expanded="false"><span class="pm" aria-hidden="true">+</span>${t}</button><ul class="items" hidden>${rows}</ul></li>`;
 document.getElementById('list').innerHTML=cat('Geos',GEOS.map(liG).join(''))+
   cat('Areas',P.filter(p=>p.kind!=='mob'&&!p.deity).sort(byName).map(li).join(''))+
-  cat('Points of Interest',P.filter(p=>p.kind==='mob'&&!p.deity&&!p.deco).sort(byName).map(li).join(''))+
-  cat('Deities',P.filter(p=>p.deity).sort(byName).map(li).join(''));
+  cat('Deities',P.filter(p=>p.deity).sort(byName).map(li).join(''))+
+  cat('Points of Interest',P.filter(p=>p.kind==='mob'&&!p.deity&&!p.deco).sort(byName).map(li).join(''));   /* last (owner, Oct 27) */
 const setOpen=(c,o)=>{const h=c.querySelector('.cath');h.setAttribute('aria-expanded',o);h.querySelector('.pm').textContent=o?'−':'+';c.querySelector('.items').hidden=!o};
 document.querySelectorAll('#list .cat').forEach(c=>c.querySelector('.cath').onclick=()=>{const o=c.querySelector('.cath').getAttribute('aria-expanded')!=='true';setOpen(c,o);c.userOpen=o});
 document.querySelectorAll('#list button[data-i]').forEach(b=>b.onclick=()=>{select(P[+b.dataset.i]);if(innerWidth<=760)side.classList.remove('open')});

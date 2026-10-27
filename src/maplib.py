@@ -87,3 +87,27 @@ def pin(p):
     if p.get('at'): x, y = p['at'][:2]
     nx, ny = _NUDGE.get(p.get('key') or p['name'], (0, 0))
     return [round(x + nx, 3), round(y + ny, 3)]
+
+
+def walker(pos, wild=None):
+    """tracer()'s walk, but spacer rooms are also followed by their one other exit and notes in brackets are skipped
+    (as changes/001_deities.py); returns walk(route) -> room trail, and at(room) -> its spot or None."""
+    rooms, exits = world()
+    _, at = tracer(pos, wild)
+    isspacer = lambda v: bool(rooms[v]['flags'] & 8) and rooms[v]['area'] == ''
+    def walk(route):
+        v = 764; trail = [v]
+        for tok in [x.strip() for x in re.sub(r'\([^)]*\)', ';', route).split(';') if x.strip()]:
+            tok = re.sub(r'^l ', 'look ', tok)
+            m = re.match(r'^#\s*(\d+)\s*(.+)$', tok); n, dd = (int(m.group(1)), m.group(2).strip()) if m else (1, tok)
+            for _ in range(n):
+                nx = [e for e in exits.get(v, []) if e['name'] == dd or e['cmd'].split(';')[-1] == dd or e['cmd'] == tok]
+                if not nx and dd not in DIRS: break
+                if not nx: return trail
+                prev, v = v, nx[0]['to']; trail.append(v); k = 0
+                while isspacer(v) and k < 40:
+                    c = [x['to'] for x in exits.get(v, []) if x['name'] == dd] or [x['to'] for x in exits.get(v, []) if x['to'] != prev]
+                    if len(c) != 1: break
+                    prev, v = v, c[0]; trail.append(v); k += 1
+        return trail
+    return walk, at
