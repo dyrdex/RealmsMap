@@ -86,11 +86,12 @@ def apply(town, wild, pos):
     for v in walk('#8 n'):
         if at(v) and (not path or path[-1] != R(at(v))): path.append(R(at(v)))
     rooms, _ = maplib.world()
-    wild['places'].append(dict(name='Shadow Grove', route='#8 n', room=rooms[walk('#8 n')[-1]]['name'], dir='here', path=path, segs=[path],
-                               group='af', where='in the Shadow Grove', nolabel=True))
+    MK = [0, -14.4]                                                  # just south of the big 'Shadow Grove' name (its baseline at x 0: -14.9; owner, Oct 27)
+    wild['places'].append(dict(name='Shadow Grove', route='#8 n', room=rooms[walk('#8 n')[-1]]['name'], dir='here', path=path, segs=[path + [MK]],
+                               group='af', where='in the Shadow Grove', nolabel=True, at=MK))
     P = {p['name']: p for p in wild['places'] + town['places']}
     P["Redferne's Residence"]['card'] = "Area in the Mire · reached at Damp Trail. Contains Dylan's Area"
     for name, pts in ASTRAL.items():
         P[name]['astral'] = pts
         if name in LOCAL: P[name]['astrallocal'] = True
-    return {'areas': len(ASTRAL), 'local only': len(LOCAL), 'Shadow Grove marker': path[-1]}
+    return {'areas': len(ASTRAL), 'local only': len(LOCAL), 'Shadow Grove marker': MK}

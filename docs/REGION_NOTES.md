@@ -37,6 +37,7 @@ number, don't read it whole.
   a card radio or marker click draws that option. Lines go as far as the drawn rooms (owner, Oct 26), marker at the line's end unless the owner
   names a spot (`MARK` kinds in 001: sub / room / place / graves); spacers followed by their other exit; a >100 gap (sea crossing) splits the line.
   A place's marker spot in Python: `maplib.pin(p)` (template's DIRV step / at / NUDGE; keep in step with template.html).
+  `deco` (changes/004): marker + name drawn on the site, not clickable, not listed. Sidebar 'Points of Interest' = kind mob, not deity/deco.
   Area cards: `astral` = 'Astral Points:' line, `astrallocal` = + 'No astral travel to or from other regions.' (`changes/003_astral_points.py`).
   `priests` = the card's 'Priests:' line (PRIESTS in 001). Race-only hometown routes: `changes/002_race_routes.py` (opt + jump; `show` on an opt overrides `hidepath`).
   No 'not mapped' note on deity cards. `text` = a card line instead of directions; `noline` = marker only. Deities = `p.deity` (Mobs exclude them).

@@ -22,7 +22,7 @@ TILE_CACHE = os.environ.get('TILE_CACHE', os.path.abspath('../.tile_cache'))
 # big area and maze names: kept live (sharp at every zoom), not baked into tiles
 AREA_NAMES = ["The Forgotten Woods", "Shadow Grove", "Miden'nir", "The Maze of Trees",
               "Lost in the Swamp", "The Hidden Grove", "Ashen", "Forest", "Forest of Tears"]
-CARD_KEYS = ('name', 'route', 'room', 'dir', 'note', 'kind', 'noroute', 'group', 'where', 'alt', 'card', 'hidepath', 'rhead', 'deity', 'priests', 'astral', 'astrallocal')
+CARD_KEYS = ('name', 'route', 'room', 'dir', 'note', 'kind', 'noroute', 'group', 'where', 'alt', 'card', 'hidepath', 'rhead', 'deity', 'priests', 'astral', 'astrallocal', 'deco')
 
 EXPORT_JS = '''(names)=>{
   const w=document.getElementById('world');
