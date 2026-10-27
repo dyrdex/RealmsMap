@@ -2,6 +2,8 @@
 
 ## In progress (2.16)
 
+- Your request (Oct 27): Sh'Vath's Tullfuhrzky Manor naos: the second painting is a portal like the first, so the line now jumps from Charity's Blessed Hand to the Tullfuhrzky Manor marker. Gre'Vos's Revelation City directions end "scry/move to 'The Stone of Silence';enter, #3 n" (was "(see notes)"). Z'hyal's "u**" steps are now plain "u". Route cards now always sit above the map key.
+- Fix (Oct 27): deity and race-route markers placed on another place's marker now sit exactly on it (Tullfuhrzky Manor was 0.86 off, Dragon Tower 0.62; 2 race jumps a hair off).
 - Your request (Oct 27): race-only routes on the 13 hometowns ("Human Only", "Dwarf Only", ... "Gnome Only"): the line runs #2 ne;#2 n to Unity of the Nations, then a dashed jump to the area's marker. Areas that had one route now list it as "All races" first; The Ruins of T'man's Half-Troll route is its fourth option. On The Sands of Teracchei the Gith route draws its line (its own route still draws none).
 - Your request (Oct 27): every deity card has a "Priests:" line under "Deity" (22 deities; Tempus and Grishnakh have none).
 - Your request (Oct 27): three more deities. Sh'Vath (The Warehouse; Naos Tullfuhrzky Manor), Z'hyal (8 locations) and Gre'Vos (8 locations), with times of day in the titles (always-open ones first). The two Dragon Tower naos have no line: a marker on Dragon Tower and your text on the card. Lines stop at the last mapped room as usual.

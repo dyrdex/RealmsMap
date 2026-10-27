@@ -30,7 +30,7 @@ def apply(town, wild, pos):
     P = {p['name']: p for p in wild['places']}
     rep = {}
     for name, race, raw in RACES:
-        p = P[name]; m = R(p['at'] if p.get('at') else p['path'][-1])
+        p = P[name]; m = maplib.pin(p)
         if not p.get('opts'):
             p['opts'] = [dict(dir='All races', route=p['route'], segs=p.get('segs') or [p['path']])]
         p['opts'].append(dict(dir=f'{race} Only', route=maplib.condense(raw), segs=[town_pts + [m]], **({'show': True} if p.get('hidepath') else {})))

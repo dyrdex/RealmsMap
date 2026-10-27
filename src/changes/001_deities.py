@@ -86,14 +86,14 @@ DEITIES = [   # deity, [(who, sub-area, owner's directions, marker spot or None,
         (N, "The Village of Tar'pa Cithm (Barb only)", 'From Barb Recall: w;#2 n;nw;w;n;nw;#4 n', ('place', "Village of Tar'pa Cithm"), None)]),
     ("Sh'Vath", [   # (owner, Oct 27)
         (D, 'The Warehouse', '#4 w;n;n;open sw;sw;open s;s;open s;#2 s;#5 w;#4 s;#2 u;e;enter;nw;n;u;se', None, None),
-        (N, 'Tullfuhrzky Manor', 'nw;w;w;#4 n;w;look painting;open n;n;open n;#3 n;open n;#2 n;e;#2 n;e;ne', None, None)]),
+        (N, 'Tullfuhrzky Manor', 'nw;w;w;#4 n;w;look painting;open n;n;open n;#3 n;open n;#2 n;e;#2 n;e;ne', ('jump', 'Tullfuhrzky Manor', 'nw;w;w;#4 n;w'), None)]),   # a painting portal to the manor (owner, Oct 27)
     ("Z'hyal", [   # times of day in the title; the always-open one first (owner, Oct 27)
-        (D, 'Barren Peaks', '#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;#6 nw;n;#2 nw;#2 n;ne;w;n;ne;s;ne;ne;u**;sw;e', None, None),
+        (D, 'Barren Peaks', '#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;#6 nw;n;#2 nw;#2 n;ne;w;n;ne;s;ne;ne;u;sw;e', None, None),
         (D, 'Northern Plains (6am - 7pm)', 'nw;#2 w;#4 n;e;look painting;open n;n;nw;#2 n;nw;w;#2 nw;#3 w;#2 nw;#2 sw;w;sw;w;nw;#8 w;s;u;sw;e', None, None),
-        (D, 'Valley of the Elves (6am - 7pm)', 'nw;#2 w;#4 n;e;look painting;open n;n;nw;#2 n;nw;w;#2 nw;#3 w;#2 nw;#2 sw;w;sw;w;nw;#2 n;nw;#2 sw;#3 w;#2 nw;#2 sw;#3 w;#2 sw;#2 nw;#2 w;#2 sw;nw;w;n;#2 e;n;e;#2 ne;nw;d;#2 nw;#5 n;e;#2 n;u**;sw;e', None, None),
+        (D, 'Valley of the Elves (6am - 7pm)', 'nw;#2 w;#4 n;e;look painting;open n;n;nw;#2 n;nw;w;#2 nw;#3 w;#2 nw;#2 sw;w;sw;w;nw;#2 n;nw;#2 sw;#3 w;#2 nw;#2 sw;#3 w;#2 sw;#2 nw;#2 w;#2 sw;nw;w;n;#2 e;n;e;#2 ne;nw;d;#2 nw;#5 n;e;#2 n;u;sw;e', None, None),
         (D, 'Treetop & Canopy (6am - 7pm)', '#9 w;#2 nw;#18 w;u;#4 n;#3 u;nw;sw;e', None, None),
-        (D, 'Shattered Refuge (6am - 7pm)', '#11 s;w;s;w;#2 s;u;n;give 500 coin troll;s;ne;u**;sw;e', None, None),
-        (D, 'The Mire (6am - 7pm)', '#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;ne;nw;#2 n;ne;n;e;#2 se;e;s;se;sw;#2 s;sw;#2 s;sw;s;se;#3 e;u**;sw;e', None, None),
+        (D, 'Shattered Refuge (6am - 7pm)', '#11 s;w;s;w;#2 s;u;n;give 500 coin troll;s;ne;u;sw;e', None, None),
+        (D, 'The Mire (6am - 7pm)', '#6 s;ne;#2 s;se;#2 e;s;#2 sw;s;#5 sw;nw;n;ne;nw;#2 n;ne;n;e;#2 se;e;s;se;sw;#2 s;sw;#2 s;sw;s;se;#3 e;u;sw;e', None, None),
         (N, 'Dunhill (6am - 7pm)', 'nw;#2 w;#4 n;e;look painting;open n;n;nw;#2 n;nw;w;#2 nw;#3 w;#2 nw;#2 sw;w;sw;w;nw;#2 n;nw;ne;#16 w;n;w;n;sw;#4 w;#2 s;#2 w;s;#4 w;ne;n;ne;#2 se;e;n', None, None),
         (N, 'Dragon Tower (6am - 7pm)', '', ('place', 'Dragon Tower'), "Play the entire Dragon Tower area up to outside Tiamat's room. Go east.")]),
     ("Gre'Vos", [
@@ -102,7 +102,7 @@ DEITIES = [   # deity, [(who, sub-area, owner's directions, marker spot or None,
         (D, 'The Graveyard (8pm - 1pm)', '#9 w;sw;#4 w;s;sw;#2 w;#2 s;sw;s;#3 w;leave;#2 n', None, None),
         (D, 'Mountains of Desolation (8pm - 4am)', '#8 e;#2 se;s;#3 se;e;ne;e;leave;#2 n', None, None),
         (D, 'SMR (8pm - 4am)', '#13 s;#2 e;#2 u;w;s;leave;#2 n', None, None),
-        (D, 'Revelation City (8pm - 4am)', '#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;#5 nw;w;#3 n;w;#2 n;w;w (see notes)', None, None),
+        (D, 'Revelation City (8pm - 4am)', '#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;#2 sw;#2 s;#2 ne;n;nw;w;#2 nw;w;#3 nw;#3 w;#2 nw;#3 w;#5 nw;w;#3 n;w;#2 n;w;w;scry/move to \'The Stone of Silence\';enter, #3 n', None, None),
         (N, "Wyvern's Tower (8pm - 4am)", '#6 n;#3 nw;w;n;#4 e;s;w;sw;s;sw;#2 s;sw;#3 w;ne;e;ne;n;nw;#3 n', None, None),
         (N, 'Dragon Tower (8pm - 4am)', '', ('place', 'Dragon Tower'), "Play the entire Dragon Tower area up to outside Tiamat's room. Go west.")]),
 ]
@@ -121,7 +121,7 @@ def apply(town, wild, pos):
     def walk(route):                                                 # maplib.tracer's walk, + spacers followed by their one other exit
         v = 764; trail = [v]
         for tok in [x.strip() for x in re.sub(r'\([^)]*\)', ';', route).split(';') if x.strip()]:
-            tok = re.sub(r'^l ', 'look ', tok).replace('*', '')   # ('u**': a way open only at times; traced as u)
+            tok = re.sub(r'^l ', 'look ', tok)
             m = re.match(r'^#\s*(\d+)\s*(.+)$', tok); n, dd = (int(m.group(1)), m.group(2).strip()) if m else (1, tok)
             for _ in range(n):
                 nx = [e for e in exits.get(v, []) if e['name'] == dd or e['cmd'].split(';')[-1] == dd or e['cmd'] == tok]
@@ -143,7 +143,7 @@ def apply(town, wild, pos):
         return out
     gfx = {g.get('k'): g for g in wild['gfx'] if isinstance(g, dict)}
     P = {p['name']: p for p in wild['places']}
-    mark_of = lambda p: R(p['at'] if p.get('at') else p['path'][-1])
+    mark_of = maplib.pin                                             # (the marker as the template places it)
     rep = {}
     for name, locs in DEITIES:
         opts = []
