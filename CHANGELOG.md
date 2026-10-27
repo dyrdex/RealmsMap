@@ -1,6 +1,8 @@
 # Realm Map changelog
 
-## In progress (2.16)
+## In progress (2.17)
+
+## Version 2.16 · Gods and Guides · October 27, 2026
 
 - Your request (Oct 27): Points of Interest now work like deities: no marker on the map until one is picked, then a larger mob-style marker (pink, soft glow) and its route. The section is now the last in the sidebar. Card notes: Sonoria "Respawn point for non-guilded/ordered characters" (replacing the old note); Jokaan's Repair Shop and Camelot Reparations "Affordable Equipment Repairs". Their card line reads "Point of Interest" (was "Mob").
 - Your request (Oct 27): six new Points of Interest, with your notes: Dalach, Adventurer's Emporium, Seolwyn Smoke Shop, Cultic Candies, Hobgoblin Cave, Queen Mordrineagh Ni Riain. Lines go as far as the mapped rooms, the marker at the end. Seolwyn Smoke Shop's directions stop matching the map's exits at The Trail Towards the Canyon Continues, so its card names no room.
