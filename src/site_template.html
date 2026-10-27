@@ -170,7 +170,7 @@ function routeD(sg,J){let d='',j='';const at=(a,x,y)=>Math.abs(a[0]-x)<.03&&Math
 function drawRoute(p,k){
   const L=document.getElementById('routeLayer');
   if(!p){L.innerHTML='';return}
-  if(p.noroute||p.hidepath){L.innerHTML='';return}   /* hidepath: directions on the card, no line drawn (owner, Oct 25) */
+  if(p.noroute||(p.hidepath&&!(p.opts&&(p.opts[k||0]||{}).show))){L.innerHTML='';return}   /* hidepath: directions on the card, no line drawn (owner, Oct 25) */
   const sg=routeSegs(p,k);if(!sg||!sg.length){L.innerHTML='';return}   /* a location with no line (deities) */
   const {d,j}=routeD(sg,D.jumps);
   L.innerHTML=`<path d="${d}" fill="none" stroke="var(--glow)" stroke-width=".42" stroke-linecap="round" stroke-linejoin="round"/><path id="rl" d="${d}" fill="none" stroke="var(--pick)" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round"/>`+(j?`<path d="${j}" fill="none" stroke="var(--pick)" stroke-width=".1" stroke-dasharray=".45 .35" stroke-linecap="round" opacity=".9"/>`:'');
@@ -190,7 +190,7 @@ function select(p,K=(p&&p.deity?-1:0)){   /* K: the route option; a deity opens 
   if(p.note)html+=`<p class="note">${esc(p.note)}</p>`;
   const opt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k===K?' checked':''}><span>${esc(o.dir)}${o.rooms!=null?` (${o.rooms} rooms)`:''}${o.note?': '+esc(o.note):''}</span></label><code>${esc(o.route)}</code>${o.gap?`<p class="note">${esc(o.gap)}</p>`:''}</div>`;
   const dopt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k===K?' checked':''}><span>${esc(o.dir)}</span></label>${o.text?`<p>${esc(o.text)}</p>`:`<code>${esc(o.route)}</code>`}</div>`;   /* a deity's location: no 'not mapped' note (owner, Oct 26); text instead of directions where given */
-  if(p.deity)html=`<h2>${esc(p.name)}</h2><p class="kind">Deity</p><p>Locations (pick one for its route from Darkhaven Square):</p>`+p.opts.map(dopt).join('');
+  if(p.deity)html=`<h2>${esc(p.name)}</h2><p class="kind">Deity</p>${p.priests?`<p>Priests: ${esc(p.priests)}</p>`:''}<p>Locations (pick one for its route from Darkhaven Square):</p>`+p.opts.map(dopt).join('');
   else if(p.opts)html+=`<p>Full directions from Darkhaven Square:</p>`+opt(p.opts[0],0)+(p.opts.length>1?`<p class="ralt">Alternate routes:</p>`+p.opts.slice(1).map((o,k)=>opt(o,k+1)).join(''):'');
   else html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>${esc(p.rhead||'Full directions from Darkhaven Square:')}</p><code>${esc(p.route)}</code>`;
   if(p.alt&&p.alt.length)html+=`<p>Another way:</p>`+p.alt.map(a=>`<code>${esc(a)}</code>`).join('');
