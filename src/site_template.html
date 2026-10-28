@@ -153,7 +153,7 @@ L.svgOverlay(svg,B,{interactive:false}).addTo(map);
 function fitB(a,b,c,d,pad=40){return {b:L.latLngBounds([b,a],[d,c]),pad}}
 function padOpt(pad){const VW=map.getSize().x,det=document.getElementById('detail').classList.contains('open')&&VW>760?380:0,bp=VW<=760?64:0;
   return {paddingTopLeft:[pad,pad],paddingBottomRight:[pad+det,pad+bp]}}
-function flyTo(t){const o={...padOpt(t.pad),maxZoom:D.zmax},{center,zoom}=map._getBoundsCenterZoom(t.b,o);
+function flyTo(t){const o={...padOpt(t.pad),maxZoom:D.zmax},r=map._getBoundsCenterZoom(t.b,o),center=r.center,zoom=Math.min(D.zmax,r.zoom+(t.dz||0));   /* dz: whole levels closer than the fit (owner, Oct 28: The Mire, Otherland) */
   const c=map._limitCenter(center,zoom,map.options.maxBounds);   /* aim inside maxBounds up front, or the map lands and then gets pulled back */
   if(reduce)map.setView(c,zoom,{animate:false});else map.flyTo(c,zoom,{duration:.6})}
 const fitAll=()=>fitB(x0,y0,x1,y1,24);
@@ -224,10 +224,10 @@ const sec=(t,k)=>`<li class="gh" style="padding:14px 10px 4px">${t}</li>`+P.filt
 const byName=(a,b)=>a.name.replace(/^(The|A) /,'').localeCompare(b.name.replace(/^(The|A) /,''));
 const secG=(t,k)=>`<li class="gh" style="padding:14px 10px 4px">${t}</li>`+P.filter(p=>(p.kind||'area')===k&&!p.group).map(li).join('');
 /* ---------- the list: four categories that expand and collapse (all collapsed on load; owner, Oct 26) ---------- */
-/* GEOS: the map's big regions; a click zooms to fit the region (boxes in world units, from the rooms of each region's editor save) */
+/* GEOS: the map's big regions; a click zooms to fit the region (6th value: zoom levels closer than the fit) (boxes in world units, from the rooms of each region's editor save) */
 const GEOS=[["Northern Plains",-53,-205,63,-125],["Barren Peaks of Tahjliera",-50,-175,50,-83],["Forgotten Woods",-52,-94,52,-16],
-  ["Forest of Tears",-119,-55,-4,19],["Ashen Forest",11,-36,69,18],["Darkhaven",-27,-20,23,26],["The Mire",-122,12,-5,133],
-  ["Southern Mountain Range",-38,5,30,88],["Wastelands",-24,68,52,159],["Desert of Despair",20,56,101,147],["Otherland",-22,146,99,269]];
+  ["Forest of Tears",-119,-55,-4,19],["Ashen Forest",11,-36,69,18],["Darkhaven",-27,-20,23,26],["The Mire",-122,12,-5,133,1],
+  ["Southern Mountain Range",-38,5,30,88],["Wastelands",-24,68,52,159],["Desert of Despair",20,56,101,147],["Otherland",-22,146,99,269,1]];
 const liG=(g,k)=>`<li><button data-g="${k}" aria-current="false"><span>${esc(g[0])}</span><span class="meta"></span></button></li>`;
 const cat=(t,rows)=>`<li class="cat"><button class="cath" aria-expanded="false"><span class="pm" aria-hidden="true">+</span>${t}</button><ul class="items" hidden>${rows}</ul></li>`;
 document.getElementById('list').innerHTML=cat('Geos',GEOS.map(liG).join(''))+
@@ -239,7 +239,7 @@ document.querySelectorAll('#list .cat').forEach(c=>c.querySelector('.cath').oncl
 document.querySelectorAll('#list button[data-i]').forEach(b=>b.onclick=()=>{select(P[+b.dataset.i]);if(innerWidth<=760)side.classList.remove('open')});
 document.querySelectorAll('#list button[data-g]').forEach(b=>b.onclick=()=>{const g=GEOS[+b.dataset.g];select(null);
   document.querySelectorAll('#list button[data-g]').forEach(x=>x.setAttribute('aria-current',x===b?'true':'false'));
-  flyTo(fitB(g[1],g[2],g[3],g[4],30));if(innerWidth<=760)side.classList.remove('open')});
+  flyTo({...fitB(g[1],g[2],g[3],g[4],30),dz:g[5]||0});if(innerWidth<=760)side.classList.remove('open')});
 /* ---------- search: filters the list as you type (opens the categories with matches; clearing it restores them) ---------- */
 (function(){
   const q=document.getElementById('q'),count=document.getElementById('qCount'),list=document.getElementById('list');

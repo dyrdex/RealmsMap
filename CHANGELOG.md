@@ -2,6 +2,8 @@
 
 ## In progress (2.17)
 
+- Your request (Oct 28): clicking The Mire or Otherland under Geos now zooms one level closer (zoom 3, was 2), like the other regions.
+
 - Your request (Oct 27): notes about where a pin is removed from 16 cards (Corruption of Anciastra, Vale of Nidaros, Valley of Mysts, The Tower of Zenothir, Wyvern's Tower, La Chute D'eau De L'ancients, Raven Tor, Gnarlwood Forest, The Keep of Mahn-Tor (Ogre Village), New Ofcol, Tullfuhrzky Manor, Ezard's Fields, Moria, Fire Station, Eastern Trade Route, Reomyr Village).
 
 - Your request (Oct 27): card warnings. The Blood Sea break on 9 cards (Otherland (Southern) + the North option of Wild Tundra, The Ziggurat, Valley of Crucifixion, Cursed Lands, The Kirre, Inishie, Kujrajgi, Jarl) now reads "North-South link: Route runs far north and links to far south off Otherland". The "isn't mapped, line stops at ..." notes removed from 9 cards (Dwarven Catacombs Northern Entrance, Dragontail Glen, The Blood Sea, The Burrows, Mathlaan Lagoon, The Keep of Mahn-Tor (The Keep), Galaxy, Cold Comfort, Machine Dreams); the shared-pin note removed from Machine Dreams and The Domain of World Eater. Lines unchanged.
