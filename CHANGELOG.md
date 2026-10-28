@@ -2,6 +2,9 @@
 
 ## In progress (2.17)
 
+- Your request (Oct 28): the page now opens one zoom level closer (zoom 1, was 0); the fit button still shows the whole map.
+- Your request (Oct 28): bigger click areas when zoomed out: each marker's grows to 16 px around it on screen and each name's to 7 px past its letters (never smaller than before), each limited to half the gap to its neighbours, so no two places' click areas overlap (checked at zooms 1-4: no new overlaps).
+
 - Your request (Oct 28): clicking The Mire or Otherland under Geos now zooms one level closer (zoom 3, was 2), like the other regions.
 
 - Your request (Oct 27): notes about where a pin is removed from 16 cards (Corruption of Anciastra, Vale of Nidaros, Valley of Mysts, The Tower of Zenothir, Wyvern's Tower, La Chute D'eau De L'ancients, Raven Tor, Gnarlwood Forest, The Keep of Mahn-Tor (Ogre Village), New Ofcol, Tullfuhrzky Manor, Ezard's Fields, Moria, Fire Station, Eastern Trade Route, Reomyr Village).
