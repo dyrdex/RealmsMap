@@ -2,6 +2,9 @@
 
 ## In progress (2.17)
 
+- Your request (Oct 28): two copy buttons at the bottom right of every card with directions, "Copy (zMud/TinTin)" and "Copy (Mudlet)"; they copy the selected route, stop before the first instruction step (scan/scry, track, kill, notes, steps that mix a move with a note) and say so ("Copied up to '...'"); Tempus's Tar'pa Cithm copies "w;#2 n;nw;w;n;nw;#4 n". No buttons where there is nothing to copy (the 3 text-only deity locations, Bilwen, Eurion, Deathvein Island, a deity with no location picked).
+- Fix (Oct 28): Revelation City (8pm - 4am): "enter, #3 n" -> "enter;#3 n".
+
 - Your request (Oct 28): the page now opens one zoom level closer (zoom 1, was 0); the fit button still shows the whole map.
 - Your request (Oct 28): bigger click areas when zoomed out: each marker's grows to 16 px around it on screen and each name's to 7 px past its letters (never smaller than before), each limited to half the gap to its neighbours, so no two places' click areas overlap (checked at zooms 1-4: no new overlaps).
 
