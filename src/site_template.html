@@ -54,7 +54,7 @@ h1{font-family:var(--serif);font-weight:700;font-size:1.65rem;line-height:1.1;ma
 #side footer{padding:10px 18px 14px;border-top:1px solid var(--edge);font-size:.8rem;color:var(--soft);line-height:1.45}
 #stage{position:relative;flex:1;min-width:0}
 #map{position:absolute;inset:0;background:var(--paper);font:inherit}#map.leaflet-container{background:var(--paper)}html{background:#1B2220}.leaflet-container{background:var(--paper);color:var(--ink)}.leaflet-bar,.leaflet-control{border-color:var(--edge)!important;box-shadow:0 1px 6px rgba(0,0,0,.5)}.leaflet-bar a,.leaflet-bar a:hover,.leaflet-control-zoom a{background:var(--panel);color:var(--ink);border-bottom-color:var(--edge)}.leaflet-bar a:hover{background:var(--edge)}.leaflet-bar a.leaflet-disabled{background:var(--paper);color:var(--soft)}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--panel);color:var(--ink);box-shadow:0 3px 14px rgba(0,0,0,.6)}.leaflet-container a.leaflet-popup-close-button{color:var(--soft)}.leaflet-container a.leaflet-popup-close-button:hover{color:var(--ink)}.leaflet-control-attribution,.leaflet-container .leaflet-control-attribution{background:rgba(27,34,32,.85);color:var(--soft)}.leaflet-control-attribution a,.leaflet-container a{color:var(--pick)}.leaflet-tile-container,.leaflet-tile{background:transparent}*{scrollbar-color:var(--edge) var(--panel)}::-webkit-scrollbar{width:10px;height:10px;background:var(--panel)}::-webkit-scrollbar-thumb{background:var(--edge);border-radius:5px}
-#live{pointer-events:none!important}#live .pin,#live .plabel{pointer-events:auto;cursor:pointer}#tools,#legend{z-index:1000}#detail{z-index:1001}#tip{z-index:1002}html{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#live{pointer-events:none!important}#live .pin,#live .plabel,#live .lhit{pointer-events:auto;cursor:pointer}#tools,#legend{z-index:1000}#detail{z-index:1001}#tip{z-index:1002}html{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 text{font-family:var(--serif)}
 .lbl{fill:var(--ink);paint-order:stroke;stroke:var(--halo);stroke-width:3.5px;stroke-linejoin:round}
 .st{font-family:var(--serif);font-style:italic;font-size:.4px;letter-spacing:.02em;fill:var(--soft);paint-order:stroke;stroke:var(--street);stroke-width:.1px;stroke-linejoin:round}
@@ -140,9 +140,9 @@ const DEITY=(()=>{let st='';for(let k=0;k<16;k++){const a=k*Math.PI/8-Math.PI/2,
 const POI=`<circle r="1.0" fill="var(--mob)" opacity=".2"/><circle r=".72" fill="none" stroke="var(--mob)" stroke-width=".1"/><circle r=".42" fill="var(--mob)" stroke="var(--panel)" stroke-width=".08"/><circle class="dring" r="1.0"/>`;
 /* ---------- live layer: area names, selected route, markers and their names (world units) ---------- */
 const attrs=o=>Object.entries(o).map(([k,v])=>`${k}="${esc(v)}"`).join(' ');
-let s=`<defs>${A.defs.join('')}</defs>${A.areas.join('')}<g id="routeLayer"></g><g id="pins">${D.extras.join('')}`;
-for(const p of P)if(p.shape)s+=`<g class="${p.deco?'dpin':'pin'}" data-i="${p.i}" transform="translate(${p.mx},${p.my})"><circle r=".55" fill="transparent"/>${p.shape}</g>`;
-for(const p of P)for(const e of (p.more||[])){s+=`<g class="pin" data-i="${p.i}" data-opt="${e.opt}" transform="translate(${e.mx},${e.my})"><circle r=".55" fill="transparent"/>${e.shape}</g>`;if(e.label)s+=`<text class="lbl plabel" data-i="${p.i}" data-opt="${e.opt}" ${attrs(e.label)}>${esc(p.name)}</text>`}   /* a place's other markers: each opens the card on its route option (Oct 25) */
+let s=`<defs>${A.defs.join('')}</defs>${A.areas.join('')}<g id="routeLayer"></g><g id="pins">${D.extras.join('')}<g id="lhits"></g>`;
+for(const p of P)if(p.shape)s+=`<g class="${p.deco?'dpin':'pin'}" data-i="${p.i}" transform="translate(${p.mx},${p.my})"><circle class="hit" r=".55" fill="transparent"/>${p.shape}</g>`;
+for(const p of P)for(const e of (p.more||[])){s+=`<g class="pin" data-i="${p.i}" data-opt="${e.opt}" transform="translate(${e.mx},${e.my})"><circle class="hit" r=".55" fill="transparent"/>${e.shape}</g>`;if(e.label)s+=`<text class="lbl plabel" data-i="${p.i}" data-opt="${e.opt}" ${attrs(e.label)}>${esc(p.name)}</text>`}   /* a place's other markers: each opens the card on its route option (Oct 25) */
 for(const p of P)if(p.poi)s+=`<g class="pin dmark" data-i="${p.i}" data-opt="0" transform="translate(${p.mx},${p.my})" style="display:none">${POI}</g>`;
 for(const p of P)if(p.deity)p.opts.forEach((o,k)=>{s+=`<g class="pin dmark" data-i="${p.i}" data-opt="${k}" data-tip="${esc(o.dir)}" transform="translate(${o.at[0]},${o.at[1]})" style="display:none">${DEITY}</g>`});   /* a deity's locations: no pin; shown only while it is selected (owner, Oct 26) */
 for(const p of P)if(p.label)s+=`<text class="lbl${p.deco?'':' plabel'}" data-i="${p.i}" ${attrs(p.label)}>${esc(p.name)}</text>`;
@@ -160,7 +160,28 @@ const fitAll=()=>fitB(x0,y0,x1,y1,24);
 document.getElementById('zin').onclick=()=>map.zoomIn();
 document.getElementById('zout').onclick=()=>map.zoomOut();
 document.getElementById('zfit').onclick=()=>flyTo(fitAll());
-map.fitBounds(fitAll().b,padOpt(24));
+{const f=fitAll(),r=map._getBoundsCenterZoom(f.b,padOpt(f.pad)),z=Math.min(D.zmax,r.zoom+1);   /* the first view: one level closer than the whole map (owner, Oct 28; the fit button still shows it all) */
+  map.setView(map._limitCenter(r.center,z,map.options.maxBounds),z,{animate:false})}
+/* HITS: the click areas of the markers and their names grow when zoomed out (owner, Oct 28): a marker's to PIN_PX on screen, a name's box
+   LBL_PX past its letters; never smaller than drawn, and never into another marker's or name's area (each takes at most half the gap) */
+{const PIN_PX=16,LBL_PX=7,R0=.55,NS='http://www.w3.org/2000/svg',lh=svg.querySelector('#lhits');
+  const key=e=>e.dataset.i+':'+(e.dataset.opt||0);
+  const pins=[...svg.querySelectorAll('.pin:not(.dmark)')].map(g=>{const t=g.transform.baseVal.consolidate().matrix;return {k:key(g),x:t.e,y:t.f,c:g.querySelector('.hit'),cap:1e9}});
+  const labs=[...svg.querySelectorAll('text.plabel')].filter(t=>!t.hasAttribute('transform')).map(t=>{const r=document.createElementNS(NS,'rect');
+    r.setAttribute('class','lhit');r.setAttribute('fill','transparent');lh.appendChild(r);
+    for(const ev of ['click','mousemove','mouseleave'])r.addEventListener(ev,e=>t.dispatchEvent(new MouseEvent(ev,e)));
+    return {k:key(t),t,r}});
+  const pd=(p,b)=>Math.hypot(Math.max(b.x0-p.x,0,p.x-b.x1),Math.max(b.y0-p.y,0,p.y-b.y1));
+  const caps=()=>{   /* (measured again on each zoom and once the web fonts are in: the names' widths change) */
+    for(const b of labs){const q=b.t.getBBox();Object.assign(b,{x0:q.x,y0:q.y,x1:q.x+q.width,y1:q.y+q.height,cap:1e9})}
+    for(const p of pins)p.cap=1e9;
+    for(const a of pins)for(const b of pins)if(a!==b&&a.k!==b.k)a.cap=Math.min(a.cap,Math.hypot(a.x-b.x,a.y-b.y)/2);
+    for(const a of labs)for(const b of labs)if(a!==b&&a.k!==b.k)a.cap=Math.min(a.cap,Math.max(b.x0-a.x1,a.x0-b.x1,b.y0-a.y1,a.y0-b.y1,0)/2);
+    for(const p of pins)for(const b of labs)if(p.k!==b.k){const d=pd(p,b);p.cap=Math.min(p.cap,Math.max(R0,d/2));b.cap=Math.min(b.cap,Math.max(0,d-Math.max(R0,d/2)))}};
+  const size=()=>{const u=map.latLngToContainerPoint([0,1]).x-map.latLngToContainerPoint([0,0]).x;   /* screen px per world unit */
+    for(const p of pins)p.c.setAttribute('r',Math.max(R0,Math.min(p.cap,PIN_PX/u)).toFixed(3));
+    for(const b of labs){const q=Math.min(b.cap,LBL_PX/u);b.r.setAttribute('x',b.x0-q);b.r.setAttribute('y',b.y0-q);b.r.setAttribute('width',b.x1-b.x0+2*q);b.r.setAttribute('height',b.y1-b.y0+2*q);b.r.setAttribute('rx',q)}};   /* (corners rounded by the pad: the box keeps the same distance all round) */
+  const all=()=>{caps();size()};all();map.on('zoomend',all);document.fonts.ready.then(all);document.fonts.addEventListener('loadingdone',all)}
 /* ---------- selection ---------- */
 const tip=document.getElementById('tip'),stage=document.getElementById('stage');
 let sel=null;
