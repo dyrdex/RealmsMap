@@ -1,6 +1,8 @@
 # Realm Map changelog
 
-## In progress (2.17)
+## In progress (2.18)
+
+## Version 2.17 · Cards and Copies · October 29, 2026
 
 - Your request (Oct 29): Northern Trade Route's "Its entrance is just outside Darktrail, the north gate." removed; "Danger: No Supplicate Area!" on Shadar Logoth; "Danger!" on Realm of Worship, Shai'ghool and Mulciber's Forge.
 
