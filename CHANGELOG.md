@@ -2,6 +2,8 @@
 
 ## In progress (2.17)
 
+- Your request (Oct 29): "Restricted: Level N and under" (N = top of the level range) on Along the Forest Path (25), The Sentinel (20), Ezard's Fields (20), Haven of Everlasting Light (49). "No astral travel to or from other geos." on 9 more cards (The Blood Sea, Hurricane Island, Blood Sea - Fathomless Depths, Azure Sea, Otherland (Northern)/(Southern), Eastern/Northern/Western Trade Route). Deity cards say "Full directions from Darkhaven Square:". Tagerte's Conveyances: "Teleport Tickets for Lowbies".
+
 - Your request (Oct 29): new Point of Interest, Tagerte's Conveyances (#3 s;#3 e;n, Level 2 - 25, no link): marker on its room, north of Park Avenue at the Hawk Street corner. The deity link now reads "More on dyrdex.com".
 
 - Your request (Oct 29): renamed "Barren Peaks" to "Barren Peaks of Tahjliera" (its card, map name and list entry, the 10 cards reached at it, Z'hyal's location there) and "City of Aurora" to "The Ancient City of Aurora" (card, map name, list).

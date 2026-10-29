@@ -233,11 +233,13 @@ function select(p,K=(p&&p.deity?-1:0)){   /* K: the route option; a deity opens 
   if(p.poi&&!p.card)html=`<h2>${esc(p.name)}</h2><p class="kind">Point of Interest${p.room?' · found at '+esc(p.room):''}</p>`;   /* not 'Mob' (owner, Oct 27) */
   if(p.card)html=`<h2>${esc(p.name)}</h2><p class="kind">${esc(p.card)}</p>`;   /* the owner's own card line (e.g. 'Human Hometown'; Oct 25) */
   if(p.lvl)html=html.replace(/<\/p>/,` (Level ${esc(p.lvl)})</p>`);   /* the level range, after the card's first line (owner, Oct 29) */
-  if(p.astral)html+=`<p>Astral Points: ${esc(p.astral)}</p>`+(p.astrallocal?`<p class="note">No astral travel to or from other geos.</p>`:'');   /* the area's portal points (owner, Oct 27) */
+  if(p.restricted&&p.lvl)html+=`<p class="note">Restricted: Level ${esc(p.lvl.split('-').pop().trim())} and under</p>`;   /* level-restricted areas (owner, Oct 29) */
+  if(p.astral)html+=`<p>Astral Points: ${esc(p.astral)}</p>`;
+  if(p.astrallocal)html+=`<p class="note">No astral travel to or from other geos.</p>`;   /* (also on cards without astral points; owner, Oct 29) */   /* the area's portal points (owner, Oct 27) */
   if(p.note)html+=`<p class="note">${esc(p.note)}</p>`;
   const opt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k===K?' checked':''}><span>${esc(o.dir)}${o.rooms!=null?` (${o.rooms} rooms)`:''}${o.note?': '+esc(o.note):''}</span></label><code>${esc(o.route)}</code>${o.gap?`<p class="note">${esc(o.gap)}</p>`:''}</div>`;
   const dopt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k===K?' checked':''}><span>${esc(o.dir)}</span></label>${o.text?`<p>${esc(o.text)}</p>`:`<code>${esc(o.route)}</code>`}</div>`;   /* a deity's location: no 'not mapped' note (owner, Oct 26); text instead of directions where given */
-  if(p.deity)html=`<h2>${esc(p.name)}</h2><p class="kind">Deity</p>${p.priests?`<p>Priests: ${esc(p.priests)}</p>`:''}<p>Locations (pick one for its route from Darkhaven Square):</p>`+p.opts.map(dopt).join('');
+  if(p.deity)html=`<h2>${esc(p.name)}</h2><p class="kind">Deity</p>${p.priests?`<p>Priests: ${esc(p.priests)}</p>`:''}<p>Full directions from Darkhaven Square:</p>`+p.opts.map(dopt).join('');
   else if(p.opts)html+=`<p>Full directions from Darkhaven Square:</p>`+opt(p.opts[0],0)+(p.opts.length>1?`<p class="ralt">Alternate routes:</p>`+p.opts.slice(1).map((o,k)=>opt(o,k+1)).join(''):'');
   else html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>${esc(p.rhead||'Full directions from Darkhaven Square:')}</p><code>${esc(p.route)}</code>`;
   if(p.alt&&p.alt.length)html+=`<p>Another way:</p>`+p.alt.map(a=>`<code>${esc(a)}</code>`).join('');
