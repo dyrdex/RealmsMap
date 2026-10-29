@@ -2,6 +2,8 @@
 
 ## In progress (2.17)
 
+- Your request (Oct 29): new Point of Interest, Tagerte's Conveyances (#3 s;#3 e;n, Level 2 - 25, no link): marker on its room, north of Park Avenue at the Hawk Street corner. The deity link now reads "More on dyrdex.com".
+
 - Your request (Oct 29): renamed "Barren Peaks" to "Barren Peaks of Tahjliera" (its card, map name and list entry, the 10 cards reached at it, Z'hyal's location there) and "City of Aurora" to "The Ancient City of Aurora" (card, map name, list).
 - Your request (Oct 29): New Ofcol's RoDpedia link now goes to New_Ofcol. Deity cards get a "More on Dyrdex" link from your list (23 deities; Grishnakh has no card yet). The list is kept in src/deities.tsv.
 
