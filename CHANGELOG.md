@@ -2,6 +2,9 @@
 
 ## In progress (2.17)
 
+- Your request (Oct 29): renamed "Barren Peaks" to "Barren Peaks of Tahjliera" (its card, map name and list entry, the 10 cards reached at it, Z'hyal's location there) and "City of Aurora" to "The Ancient City of Aurora" (card, map name, list).
+- Your request (Oct 29): New Ofcol's RoDpedia link now goes to New_Ofcol. Deity cards get a "More on Dyrdex" link from your list (23 deities; Grishnakh has no card yet). The list is kept in src/deities.tsv.
+
 - Your request (Oct 29): level ranges from your list on the cards' sub-heading, e.g. "... · entrance at ... (Level 25 - 50)" (181 cards), and a "More on RoDpedia" link next to the copy buttons (171 cards; none where your list has no link). Your list is kept in src/rodpedia.tsv.
 
 - Your request (Oct 28): two copy buttons at the bottom right of every card with directions, "Copy (zMud/TinTin)" and "Copy (Mudlet)"; they copy the selected route, stop before the first instruction step (scan/scry, track, kill, notes, steps that mix a move with a note) and say so ("Copied up to '...'"); Tempus's Tar'pa Cithm copies "w;#2 n;nw;w;n;nw;#4 n". No buttons where there is nothing to copy (the 3 text-only deity locations, Bilwen, Eurion, Deathvein Island, a deity with no location picked).

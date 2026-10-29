@@ -241,7 +241,7 @@ function select(p,K=(p&&p.deity?-1:0)){   /* K: the route option; a deity opens 
   else if(p.opts)html+=`<p>Full directions from Darkhaven Square:</p>`+opt(p.opts[0],0)+(p.opts.length>1?`<p class="ralt">Alternate routes:</p>`+p.opts.slice(1).map((o,k)=>opt(o,k+1)).join(''):'');
   else html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>${esc(p.rhead||'Full directions from Darkhaven Square:')}</p><code>${esc(p.route)}</code>`;
   if(p.alt&&p.alt.length)html+=`<p>Another way:</p>`+p.alt.map(a=>`<code>${esc(a)}</code>`).join('');
-  html+=`<div class="copyrow">${p.wiki?`<a class="wiki" href="${esc(p.wiki)}" target="_blank" rel="noopener">More on RoDpedia</a>`:''}<button data-fmt="tt">Copy (zMud/TinTin)</button><button data-fmt="mud">Copy (Mudlet)</button><span class="copymsg" aria-live="polite"></span></div>`;   /* RoDpedia link (owner, Oct 29) */   /* COPY (owner, Oct 28) */
+  html+=`<div class="copyrow">${p.wiki?`<a class="wiki" href="${esc(p.wiki)}" target="_blank" rel="noopener">More on ${/rodpedia\./.test(p.wiki)?'RoDpedia':'Dyrdex'}</a>`:''}<button data-fmt="tt">Copy (zMud/TinTin)</button><button data-fmt="mud">Copy (Mudlet)</button><span class="copymsg" aria-live="polite"></span></div>`;   /* RoDpedia link (owner, Oct 29) */   /* COPY (owner, Oct 28) */
   document.getElementById('dbody').innerHTML=html;det.classList.add('open');
   const cur=()=>{const r=document.querySelector('#dbody input[name=ropt]:checked');return p.opts?(r?p.opts[+r.value].route:null):p.noroute?null:p.route};
   const row=document.querySelector('#dbody .copyrow'),vis=()=>{const c=cur(),on=!!(c&&copySteps(c).steps.length);row.querySelectorAll('button').forEach(b=>b.hidden=!on);row.hidden=!on&&!p.wiki};vis();

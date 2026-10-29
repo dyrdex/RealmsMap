@@ -130,8 +130,7 @@ def write_tiles(mosaic, root):
 
 # RODPEDIA: the owner's list of areas (Oct 29): name, level range, RoDpedia link (empty: no link); matched to the cards by name
 # ('The', '(Nation)', '(Arena)', case and punctuation aside), plus ALIAS where the list's name differs from the card's.
-ALIAS = {'Barren Peaks of Tahjliera': ['Barren Peaks'], 'Dwarven Catacombs (Northern Entrance)': ['Dwarven Catacombs'],
-         'The Ancient City of Aurora': ['City of Aurora'], 'Fathomless Depths': ['Blood Sea - Fathomless Depths'],
+ALIAS = {'Dwarven Catacombs (Northern Entrance)': ['Dwarven Catacombs'], 'Fathomless Depths': ['Blood Sea - Fathomless Depths'],
          'Otherland': ['Otherland', 'Otherland (Northern)', 'Otherland (Southern)'], 'The Mire': ['The Mire', 'The Mire (Central)']}
 
 def rodpedia():
@@ -144,6 +143,14 @@ def rodpedia():
             out.setdefault(N(n), {'lvl': lvl, **({'wiki': url.strip()} if url.strip() else {})})
     return lambda name: out.get(N(name))
 
+def deitylinks():   # DEITIES: the owner's deity links (Oct 29): name, link (no level range)
+    N = lambda s: re.sub(r'[^a-z0-9]', '', s.lower())
+    out = {}
+    for line in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deities.tsv'), encoding='utf-8'):
+        name, url = (line.rstrip('\n').split('\t') + [''])[:2]
+        if url.strip(): out[N(name)] = {'wiki': url.strip()}
+    return lambda name: out.get(N(name))
+
 def main():
     t0 = time.time()
     live, mosaic = render()
@@ -152,12 +159,13 @@ def main():
         os.makedirs(os.path.join(SITE, d))
     stats = write_tiles(mosaic, os.path.join(SITE, 'tiles'))
     places, routes = [], []
-    rod = rodpedia()
+    rod, dei = rodpedia(), deitylinks()
     for q in live['places']:
         p = q['p']
         c = {k: p[k] for k in CARD_KEYS if k in p and p[k] not in (None, '', [], False)}
         c.update(i=p['i'], mx=round(p['mx'], 3), my=round(p['my'], 3), shape=q['shape'], label=q['label'])
-        if not p.get('deity') and rod(p['name']): c.update(rod(p['name']))                       # level range + RoDpedia link (Oct 29)
+        if not p.get('deity') and rod(p['name']): c.update(rod(p['name']))
+        if p.get('deity') and dei(p['name']): c.update(dei(p['name']))                       # level range + RoDpedia link (Oct 29)
         if q.get('more'): c['more'] = q['more']                                                # a place's other markers (Oct 25)
         if p.get('opts'): c['opts'] = [{k: v for k, v in o.items() if k != 'segs' and v not in (None, '', False)} for o in p['opts']]   # route options: text on the card, lines in routes.json
         places.append(c)
