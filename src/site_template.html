@@ -54,7 +54,7 @@ h1{font-family:var(--serif);font-weight:700;font-size:1.65rem;line-height:1.1;ma
 #side footer{padding:10px 18px 14px;border-top:1px solid var(--edge);font-size:.8rem;color:var(--soft);line-height:1.45}
 #stage{position:relative;flex:1;min-width:0}
 #map{position:absolute;inset:0;background:var(--paper);font:inherit}#map.leaflet-container{background:var(--paper)}html{background:#1B2220}.leaflet-container{background:var(--paper);color:var(--ink)}.leaflet-bar,.leaflet-control{border-color:var(--edge)!important;box-shadow:0 1px 6px rgba(0,0,0,.5)}.leaflet-bar a,.leaflet-bar a:hover,.leaflet-control-zoom a{background:var(--panel);color:var(--ink);border-bottom-color:var(--edge)}.leaflet-bar a:hover{background:var(--edge)}.leaflet-bar a.leaflet-disabled{background:var(--paper);color:var(--soft)}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--panel);color:var(--ink);box-shadow:0 3px 14px rgba(0,0,0,.6)}.leaflet-container a.leaflet-popup-close-button{color:var(--soft)}.leaflet-container a.leaflet-popup-close-button:hover{color:var(--ink)}.leaflet-control-attribution,.leaflet-container .leaflet-control-attribution{background:rgba(27,34,32,.85);color:var(--soft)}.leaflet-control-attribution a,.leaflet-container a{color:var(--pick)}.leaflet-tile-container,.leaflet-tile{background:transparent}*{scrollbar-color:var(--edge) var(--panel)}::-webkit-scrollbar{width:10px;height:10px;background:var(--panel)}::-webkit-scrollbar-thumb{background:var(--edge);border-radius:5px}
-#live{pointer-events:none!important}#live .pin,#live .plabel{pointer-events:auto;cursor:pointer}#tools,#legend{z-index:1000}#detail{z-index:1001}#tip{z-index:1002}html{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#live{pointer-events:none!important}#live .pin,#live .plabel,#live .lhit{pointer-events:auto;cursor:pointer}#tools,#legend{z-index:1000}#detail{z-index:1001}#tip{z-index:1002}html{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 text{font-family:var(--serif)}
 .lbl{fill:var(--ink);paint-order:stroke;stroke:var(--halo);stroke-width:3.5px;stroke-linejoin:round}
 .st{font-family:var(--serif);font-style:italic;font-size:.4px;letter-spacing:.02em;fill:var(--soft);paint-order:stroke;stroke:var(--street);stroke-width:.1px;stroke-linejoin:round}
@@ -68,6 +68,7 @@ text{font-family:var(--serif)}
 #detail p{margin:6px 0;font-size:.93rem;line-height:1.45}
 #detail .note{border-left:3px solid var(--pick);padding-left:9px}
 #detail .ropt{margin:8px 0 10px;padding-left:9px;border-left:3px solid transparent}#detail .ropt:has(input:checked){border-left-color:var(--pick)}#detail .ropt label{display:flex;gap:7px;align-items:baseline;cursor:pointer;font-size:.93rem;line-height:1.4}#detail .ropt input{accent-color:var(--pick);margin:0;flex:none;transform:translateY(1px)}#detail .ralt{margin-top:12px;color:var(--soft)}
+#detail .copyrow[hidden],#detail .copyrow button[hidden]{display:none!important}#detail .copyrow{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:6px;margin-top:10px}#detail .copyrow button{font:inherit;font-size:.78rem;padding:4px 9px;border-radius:6px;border:1px solid var(--edge);background:var(--paper);color:var(--soft);cursor:pointer}#detail .copyrow .wiki{font-size:.78rem;padding:4px 9px;border-radius:6px;border:1px solid var(--edge);color:var(--soft);text-decoration:none}#detail .copyrow .wiki:hover{color:var(--ink);border-color:var(--pick)}#detail .copyrow button:hover{color:var(--ink);border-color:var(--pick)}#detail .copymsg{flex-basis:100%;text-align:right;font-size:.78rem;color:var(--soft);min-height:1em}
 #detail code{display:block;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.8rem;background:var(--paper);border-radius:6px;padding:8px 10px;margin-top:8px;white-space:pre-wrap;word-break:break-word;line-height:1.5}
 #close{position:absolute;top:8px;right:8px;width:30px;height:30px;border:0;background:transparent;color:var(--soft);font-size:1.3rem;cursor:pointer;border-radius:6px}
 #close:hover{background:var(--paper)}
@@ -140,9 +141,9 @@ const DEITY=(()=>{let st='';for(let k=0;k<16;k++){const a=k*Math.PI/8-Math.PI/2,
 const POI=`<circle r="1.0" fill="var(--mob)" opacity=".2"/><circle r=".72" fill="none" stroke="var(--mob)" stroke-width=".1"/><circle r=".42" fill="var(--mob)" stroke="var(--panel)" stroke-width=".08"/><circle class="dring" r="1.0"/>`;
 /* ---------- live layer: area names, selected route, markers and their names (world units) ---------- */
 const attrs=o=>Object.entries(o).map(([k,v])=>`${k}="${esc(v)}"`).join(' ');
-let s=`<defs>${A.defs.join('')}</defs>${A.areas.join('')}<g id="routeLayer"></g><g id="pins">${D.extras.join('')}`;
-for(const p of P)if(p.shape)s+=`<g class="${p.deco?'dpin':'pin'}" data-i="${p.i}" transform="translate(${p.mx},${p.my})"><circle r=".55" fill="transparent"/>${p.shape}</g>`;
-for(const p of P)for(const e of (p.more||[])){s+=`<g class="pin" data-i="${p.i}" data-opt="${e.opt}" transform="translate(${e.mx},${e.my})"><circle r=".55" fill="transparent"/>${e.shape}</g>`;if(e.label)s+=`<text class="lbl plabel" data-i="${p.i}" data-opt="${e.opt}" ${attrs(e.label)}>${esc(p.name)}</text>`}   /* a place's other markers: each opens the card on its route option (Oct 25) */
+let s=`<defs>${A.defs.join('')}</defs>${A.areas.join('')}<g id="routeLayer"></g><g id="pins">${D.extras.join('')}<g id="lhits"></g>`;
+for(const p of P)if(p.shape)s+=`<g class="${p.deco?'dpin':'pin'}" data-i="${p.i}" transform="translate(${p.mx},${p.my})"><circle class="hit" r=".55" fill="transparent"/>${p.shape}</g>`;
+for(const p of P)for(const e of (p.more||[])){s+=`<g class="pin" data-i="${p.i}" data-opt="${e.opt}" transform="translate(${e.mx},${e.my})"><circle class="hit" r=".55" fill="transparent"/>${e.shape}</g>`;if(e.label)s+=`<text class="lbl plabel" data-i="${p.i}" data-opt="${e.opt}" ${attrs(e.label)}>${esc(p.name)}</text>`}   /* a place's other markers: each opens the card on its route option (Oct 25) */
 for(const p of P)if(p.poi)s+=`<g class="pin dmark" data-i="${p.i}" data-opt="0" transform="translate(${p.mx},${p.my})" style="display:none">${POI}</g>`;
 for(const p of P)if(p.deity)p.opts.forEach((o,k)=>{s+=`<g class="pin dmark" data-i="${p.i}" data-opt="${k}" data-tip="${esc(o.dir)}" transform="translate(${o.at[0]},${o.at[1]})" style="display:none">${DEITY}</g>`});   /* a deity's locations: no pin; shown only while it is selected (owner, Oct 26) */
 for(const p of P)if(p.label)s+=`<text class="lbl${p.deco?'':' plabel'}" data-i="${p.i}" ${attrs(p.label)}>${esc(p.name)}</text>`;
@@ -153,14 +154,35 @@ L.svgOverlay(svg,B,{interactive:false}).addTo(map);
 function fitB(a,b,c,d,pad=40){return {b:L.latLngBounds([b,a],[d,c]),pad}}
 function padOpt(pad){const VW=map.getSize().x,det=document.getElementById('detail').classList.contains('open')&&VW>760?380:0,bp=VW<=760?64:0;
   return {paddingTopLeft:[pad,pad],paddingBottomRight:[pad+det,pad+bp]}}
-function flyTo(t){const o={...padOpt(t.pad),maxZoom:D.zmax},{center,zoom}=map._getBoundsCenterZoom(t.b,o);
+function flyTo(t){const o={...padOpt(t.pad),maxZoom:D.zmax},r=map._getBoundsCenterZoom(t.b,o),center=r.center,zoom=Math.min(D.zmax,r.zoom+(t.dz||0));   /* dz: whole levels closer than the fit (owner, Oct 28: The Mire, Otherland) */
   const c=map._limitCenter(center,zoom,map.options.maxBounds);   /* aim inside maxBounds up front, or the map lands and then gets pulled back */
   if(reduce)map.setView(c,zoom,{animate:false});else map.flyTo(c,zoom,{duration:.6})}
 const fitAll=()=>fitB(x0,y0,x1,y1,24);
 document.getElementById('zin').onclick=()=>map.zoomIn();
 document.getElementById('zout').onclick=()=>map.zoomOut();
 document.getElementById('zfit').onclick=()=>flyTo(fitAll());
-map.fitBounds(fitAll().b,padOpt(24));
+{const f=fitAll(),r=map._getBoundsCenterZoom(f.b,padOpt(f.pad)),z=Math.min(D.zmax,r.zoom+1);   /* the first view: one level closer than the whole map (owner, Oct 28; the fit button still shows it all) */
+  map.setView(map._limitCenter(r.center,z,map.options.maxBounds),z,{animate:false})}
+/* HITS: the click areas of the markers and their names grow when zoomed out (owner, Oct 28): a marker's to PIN_PX on screen, a name's box
+   LBL_PX past its letters; never smaller than drawn, and never into another marker's or name's area (each takes at most half the gap) */
+{const PIN_PX=16,LBL_PX=7,R0=.55,NS='http://www.w3.org/2000/svg',lh=svg.querySelector('#lhits');
+  const key=e=>e.dataset.i+':'+(e.dataset.opt||0);
+  const pins=[...svg.querySelectorAll('.pin:not(.dmark)')].map(g=>{const t=g.transform.baseVal.consolidate().matrix;return {k:key(g),x:t.e,y:t.f,c:g.querySelector('.hit'),cap:1e9}});
+  const labs=[...svg.querySelectorAll('text.plabel')].filter(t=>!t.hasAttribute('transform')).map(t=>{const r=document.createElementNS(NS,'rect');
+    r.setAttribute('class','lhit');r.setAttribute('fill','transparent');lh.appendChild(r);
+    for(const ev of ['click','mousemove','mouseleave'])r.addEventListener(ev,e=>t.dispatchEvent(new MouseEvent(ev,e)));
+    return {k:key(t),t,r}});
+  const pd=(p,b)=>Math.hypot(Math.max(b.x0-p.x,0,p.x-b.x1),Math.max(b.y0-p.y,0,p.y-b.y1));
+  const caps=()=>{   /* (measured again on each zoom and once the web fonts are in: the names' widths change) */
+    for(const b of labs){const q=b.t.getBBox();Object.assign(b,{x0:q.x,y0:q.y,x1:q.x+q.width,y1:q.y+q.height,cap:1e9})}
+    for(const p of pins)p.cap=1e9;
+    for(const a of pins)for(const b of pins)if(a!==b&&a.k!==b.k)a.cap=Math.min(a.cap,Math.hypot(a.x-b.x,a.y-b.y)/2);
+    for(const a of labs)for(const b of labs)if(a!==b&&a.k!==b.k)a.cap=Math.min(a.cap,Math.max(b.x0-a.x1,a.x0-b.x1,b.y0-a.y1,a.y0-b.y1,0)/2);
+    for(const p of pins)for(const b of labs)if(p.k!==b.k){const d=pd(p,b);p.cap=Math.min(p.cap,Math.max(R0,d/2));b.cap=Math.min(b.cap,Math.max(0,d-Math.max(R0,d/2)))}};
+  const size=()=>{const u=map.latLngToContainerPoint([0,1]).x-map.latLngToContainerPoint([0,0]).x;   /* screen px per world unit */
+    for(const p of pins)p.c.setAttribute('r',Math.max(R0,Math.min(p.cap,PIN_PX/u)).toFixed(3));
+    for(const b of labs){const q=Math.min(b.cap,LBL_PX/u);b.r.setAttribute('x',b.x0-q);b.r.setAttribute('y',b.y0-q);b.r.setAttribute('width',b.x1-b.x0+2*q);b.r.setAttribute('height',b.y1-b.y0+2*q);b.r.setAttribute('rx',q)}};   /* (corners rounded by the pad: the box keeps the same distance all round) */
+  const all=()=>{caps();size()};all();map.on('zoomend',all);document.fonts.ready.then(all);document.fonts.addEventListener('loadingdone',all)}
 /* ---------- selection ---------- */
 const tip=document.getElementById('tip'),stage=document.getElementById('stage');
 let sel=null;
@@ -180,6 +202,25 @@ function drawRoute(p,k){
   if(p.sail&&!k){const s='M'+p.sail.map(q=>q.join(' ')).join('L');L.innerHTML+=`<path d="${s}" fill="none" stroke="var(--glow)" stroke-width=".3" stroke-dasharray=".01 .42" stroke-linecap="round" opacity=".8"/><path d="${s}" fill="none" stroke="var(--pick)" stroke-width=".15" stroke-dasharray=".01 .42" stroke-linecap="round"/>`}   /* SAIL: a boat trip, a dotted wavy line over the sea (Fireball Island, owner Oct 25) */
   if(!reduce){const rl=document.getElementById('rl'),len=rl.getTotalLength();rl.style.strokeDasharray=len;rl.style.strokeDashoffset=len;rl.getBoundingClientRect();rl.style.transition='stroke-dashoffset .8s ease';rl.style.strokeDashoffset=0}
 }
+/* COPY: the card's two copy buttons (owner, Oct 28). The copy stops before the first step that is not a move or a game command (an
+   instruction: scan/scry, track, kill, notes in brackets, ...); a leading 'From ...:' label is left out. Mudlet: '#' once, then single-letter
+   moves as '4w', two-letter ones as '3(nw)', commands as '(open s)'; repeated moves next to each other merged. */
+const MOVE=/^(?:#(\d+)\s*)?(n|s|e|w|u|d|ne|nw|se|sw)$/i;
+const CMDS=new Set(['open','op','unlock','pick','pull','push','say','tell','give','enter','leave','look','l','examine','c','kneel','dig','drop','chop','tree','window','portal','cauldron','rowboat','north']);
+function copySteps(route){const all=route.split(';').map(t=>t.trim()).filter(Boolean),steps=[];
+  if(all.length){const m=all[0].match(/^From [^:;]+:\s*(.+)$/);if(m)all[0]=m[1]}
+  for(const t of all){if(MOVE.test(t)){steps.push(t);continue}
+    const w=t.replace(/^#\d+\s*/,'').split(/\s+/)[0].toLowerCase();
+    if(!CMDS.has(w)||/[()\[\]:"“”,&]|->/.test(t))return {steps,cut:t};
+    steps.push(t)}
+  return {steps,cut:null}}
+function toMudlet(steps){const out=[];
+  for(const t of steps){const m=t.match(MOVE),n=m?+(m[1]||1):+((t.match(/^#(\d+)\s/)||[0,1])[1]),c=m?m[2].toLowerCase():t.replace(/^#\d+\s*/,''),last=out[out.length-1];
+    if(last&&last.c===c)last.n+=n;else out.push({c,n})}
+  return '#'+out.map(({c,n})=>(n>1?n:'')+(MOVE.test(c)&&c.length===1?c:'('+c+')')).join(' ')}
+function copyText(t){if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(t).then(()=>true,()=>fallback());return Promise.resolve(fallback());
+  function fallback(){const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();
+    let ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();return ok}}
 function select(p,K=(p&&p.deity?-1:0)){   /* K: the route option; a deity opens with none drawn (-1) */
   if(p&&!ROUTES_OK){ROUTES.then(()=>select(p,K));return}
   sel=p;document.querySelectorAll('.pin').forEach(g=>g.classList.toggle('sel',p&&+g.dataset.i===p.i));
@@ -191,16 +232,24 @@ function select(p,K=(p&&p.deity?-1:0)){   /* K: the route option; a deity opens 
   let html=`<h2>${esc(p.name)}</h2><p class="kind">${(p.deity?'Deity':({guild:'Guild',structure:'Landmark',mob:'Mob',town:'Town'})[p.kind])||'Area'} ${p.group==='fot'?'in the Forest of Tears':p.group==='wtr'?'on the Western Trade Route':p.group==='mid'?'off Miden\'nir':p.group==='sg'?'off the Shadow Grove':p.group==='af'?(p.where||'off the Ashen Forest'):p.group==='fw'?(p.kind?'in the Forgotten Woods':'off the Forgotten Woods'):'in New Darkhaven'} · ${p.kind==='mob'?'found at':p.dir==='here'?'reached at':'entrance at'} ${esc(p.room)}</p>`;
   if(p.poi&&!p.card)html=`<h2>${esc(p.name)}</h2><p class="kind">Point of Interest${p.room?' · found at '+esc(p.room):''}</p>`;   /* not 'Mob' (owner, Oct 27) */
   if(p.card)html=`<h2>${esc(p.name)}</h2><p class="kind">${esc(p.card)}</p>`;   /* the owner's own card line (e.g. 'Human Hometown'; Oct 25) */
-  if(p.astral)html+=`<p>Astral Points: ${esc(p.astral)}</p>`+(p.astrallocal?`<p class="note">No astral travel to or from other geos.</p>`:'');   /* the area's portal points (owner, Oct 27) */
+  if(p.lvl)html=html.replace(/<\/p>/,` (Level ${esc(p.lvl)})</p>`);   /* the level range, after the card's first line (owner, Oct 29) */
+  if(p.restricted&&p.lvl)html+=`<p class="note">Restricted: Level ${esc(p.lvl.split('-').pop().trim())} and under</p>`;   /* level-restricted areas (owner, Oct 29) */
+  if(p.astral)html+=`<p>Astral Points: ${esc(p.astral)}</p>`;
+  if(p.astrallocal)html+=`<p class="note">No astral travel to or from other geos.</p>`;   /* (also on cards without astral points; owner, Oct 29) */   /* the area's portal points (owner, Oct 27) */
   if(p.note)html+=`<p class="note">${esc(p.note)}</p>`;
   const opt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k===K?' checked':''}><span>${esc(o.dir)}${o.rooms!=null?` (${o.rooms} rooms)`:''}${o.note?': '+esc(o.note):''}</span></label><code>${esc(o.route)}</code>${o.gap?`<p class="note">${esc(o.gap)}</p>`:''}</div>`;
   const dopt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k===K?' checked':''}><span>${esc(o.dir)}</span></label>${o.text?`<p>${esc(o.text)}</p>`:`<code>${esc(o.route)}</code>`}</div>`;   /* a deity's location: no 'not mapped' note (owner, Oct 26); text instead of directions where given */
-  if(p.deity)html=`<h2>${esc(p.name)}</h2><p class="kind">Deity</p>${p.priests?`<p>Priests: ${esc(p.priests)}</p>`:''}<p>Locations (pick one for its route from Darkhaven Square):</p>`+p.opts.map(dopt).join('');
+  if(p.deity)html=`<h2>${esc(p.name)}</h2><p class="kind">Deity</p>${p.priests?`<p>Priests: ${esc(p.priests)}</p>`:''}<p>Full directions from Darkhaven Square:</p>`+p.opts.map(dopt).join('');
   else if(p.opts)html+=`<p>Full directions from Darkhaven Square:</p>`+opt(p.opts[0],0)+(p.opts.length>1?`<p class="ralt">Alternate routes:</p>`+p.opts.slice(1).map((o,k)=>opt(o,k+1)).join(''):'');
   else html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>${esc(p.rhead||'Full directions from Darkhaven Square:')}</p><code>${esc(p.route)}</code>`;
   if(p.alt&&p.alt.length)html+=`<p>Another way:</p>`+p.alt.map(a=>`<code>${esc(a)}</code>`).join('');
+  html+=`<div class="copyrow">${p.wiki?`<a class="wiki" href="${esc(p.wiki)}" target="_blank" rel="noopener">More on ${/rodpedia\./.test(p.wiki)?'RoDpedia':'dyrdex.com'}</a>`:''}<button data-fmt="tt">Copy (zMud/TinTin)</button><button data-fmt="mud">Copy (Mudlet)</button><span class="copymsg" aria-live="polite"></span></div>`;   /* RoDpedia link (owner, Oct 29) */   /* COPY (owner, Oct 28) */
   document.getElementById('dbody').innerHTML=html;det.classList.add('open');
-  document.querySelectorAll('#dbody input[name=ropt]').forEach(r=>r.onchange=()=>{if(p.deity)return select(p,+r.value);drawRoute(p,+r.value);fitRoute(p,+r.value)});
+  const cur=()=>{const r=document.querySelector('#dbody input[name=ropt]:checked');return p.opts?(r?p.opts[+r.value].route:null):p.noroute?null:p.route};
+  const row=document.querySelector('#dbody .copyrow'),vis=()=>{const c=cur(),on=!!(c&&copySteps(c).steps.length);row.querySelectorAll('button').forEach(b=>b.hidden=!on);row.hidden=!on&&!p.wiki};vis();
+  row.querySelectorAll('button').forEach(b=>b.onclick=()=>{const c=copySteps(cur()),t=b.dataset.fmt==='mud'?toMudlet(c.steps):c.steps.join(';'),m=row.querySelector('.copymsg');
+    copyText(t).then(ok=>{m.textContent=!ok?'Copy failed: select the directions and copy them by hand.':c.cut?`Copied up to '${c.cut}'`:'Copied';clearTimeout(row.tm);row.tm=setTimeout(()=>m.textContent='',4000)})});
+  document.querySelectorAll('#dbody input[name=ropt]').forEach(r=>r.onchange=()=>{if(p.deity)return select(p,+r.value);drawRoute(p,+r.value);fitRoute(p,+r.value);vis()});
   if(p.deity&&K<0){drawRoute(null);const xs=p.opts.map(o=>o.at[0]),ys=p.opts.map(o=>o.at[1]);   /* all its locations in view */
     const cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2,hw=Math.max(8,(Math.max(...xs)-Math.min(...xs))/2+4),hh=Math.max(8,(Math.max(...ys)-Math.min(...ys))/2+4);
     flyTo(fitB(cx-hw,cy-hh,cx+hw,cy+hh,40));return}
@@ -224,10 +273,10 @@ const sec=(t,k)=>`<li class="gh" style="padding:14px 10px 4px">${t}</li>`+P.filt
 const byName=(a,b)=>a.name.replace(/^(The|A) /,'').localeCompare(b.name.replace(/^(The|A) /,''));
 const secG=(t,k)=>`<li class="gh" style="padding:14px 10px 4px">${t}</li>`+P.filter(p=>(p.kind||'area')===k&&!p.group).map(li).join('');
 /* ---------- the list: four categories that expand and collapse (all collapsed on load; owner, Oct 26) ---------- */
-/* GEOS: the map's big regions; a click zooms to fit the region (boxes in world units, from the rooms of each region's editor save) */
+/* GEOS: the map's big regions; a click zooms to fit the region (6th value: zoom levels closer than the fit) (boxes in world units, from the rooms of each region's editor save) */
 const GEOS=[["Northern Plains",-53,-205,63,-125],["Barren Peaks of Tahjliera",-50,-175,50,-83],["Forgotten Woods",-52,-94,52,-16],
-  ["Forest of Tears",-119,-55,-4,19],["Ashen Forest",11,-36,69,18],["Darkhaven",-27,-20,23,26],["The Mire",-122,12,-5,133],
-  ["Southern Mountain Range",-38,5,30,88],["Wastelands",-24,68,52,159],["Desert of Despair",20,56,101,147],["Otherland",-22,146,99,269]];
+  ["Forest of Tears",-119,-55,-4,19],["Ashen Forest",11,-36,69,18],["Darkhaven",-27,-20,23,26],["The Mire",-122,12,-5,133,1],
+  ["Southern Mountain Range",-38,5,30,88],["Wastelands",-24,68,52,159],["Desert of Despair",20,56,101,147],["Otherland",-22,146,99,269,1]];
 const liG=(g,k)=>`<li><button data-g="${k}" aria-current="false"><span>${esc(g[0])}</span><span class="meta"></span></button></li>`;
 const cat=(t,rows)=>`<li class="cat"><button class="cath" aria-expanded="false"><span class="pm" aria-hidden="true">+</span>${t}</button><ul class="items" hidden>${rows}</ul></li>`;
 document.getElementById('list').innerHTML=cat('Geos',GEOS.map(liG).join(''))+
@@ -239,7 +288,7 @@ document.querySelectorAll('#list .cat').forEach(c=>c.querySelector('.cath').oncl
 document.querySelectorAll('#list button[data-i]').forEach(b=>b.onclick=()=>{select(P[+b.dataset.i]);if(innerWidth<=760)side.classList.remove('open')});
 document.querySelectorAll('#list button[data-g]').forEach(b=>b.onclick=()=>{const g=GEOS[+b.dataset.g];select(null);
   document.querySelectorAll('#list button[data-g]').forEach(x=>x.setAttribute('aria-current',x===b?'true':'false'));
-  flyTo(fitB(g[1],g[2],g[3],g[4],30));if(innerWidth<=760)side.classList.remove('open')});
+  flyTo({...fitB(g[1],g[2],g[3],g[4],30),dz:g[5]||0});if(innerWidth<=760)side.classList.remove('open')});
 /* ---------- search: filters the list as you type (opens the categories with matches; clearing it restores them) ---------- */
 (function(){
   const q=document.getElementById('q'),count=document.getElementById('qCount'),list=document.getElementById('list');

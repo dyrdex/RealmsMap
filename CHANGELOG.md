@@ -1,6 +1,32 @@
 # Realm Map changelog
 
-## In progress (2.17)
+## In progress (2.18)
+
+## Version 2.17 · Cards and Copies · October 29, 2026
+
+- Your request (Oct 29): Northern Trade Route's "Its entrance is just outside Darktrail, the north gate." removed; "Danger: No Supplicate Area!" on Shadar Logoth; "Danger!" on Realm of Worship, Shai'ghool and Mulciber's Forge.
+
+- Your request (Oct 29): "Restricted: Level N and under" (N = top of the level range) on Along the Forest Path (25), The Sentinel (20), Ezard's Fields (20), Haven of Everlasting Light (49). "No astral travel to or from other geos." on 9 more cards (The Blood Sea, Hurricane Island, Blood Sea - Fathomless Depths, Azure Sea, Otherland (Northern)/(Southern), Eastern/Northern/Western Trade Route). Deity cards say "Full directions from Darkhaven Square:". Tagerte's Conveyances: "Teleport Tickets for Lowbies".
+
+- Your request (Oct 29): new Point of Interest, Tagerte's Conveyances (#3 s;#3 e;n, Level 2 - 25, no link): marker on its room, north of Park Avenue at the Hawk Street corner. The deity link now reads "More on dyrdex.com".
+
+- Your request (Oct 29): renamed "Barren Peaks" to "Barren Peaks of Tahjliera" (its card, map name and list entry, the 10 cards reached at it, Z'hyal's location there) and "City of Aurora" to "The Ancient City of Aurora" (card, map name, list).
+- Your request (Oct 29): New Ofcol's RoDpedia link now goes to New_Ofcol. Deity cards get a "More on Dyrdex" link from your list (23 deities; Grishnakh has no card yet). The list is kept in src/deities.tsv.
+
+- Your request (Oct 29): level ranges from your list on the cards' sub-heading, e.g. "... · entrance at ... (Level 25 - 50)" (181 cards), and a "More on RoDpedia" link next to the copy buttons (171 cards; none where your list has no link). Your list is kept in src/rodpedia.tsv.
+
+- Your request (Oct 28): two copy buttons at the bottom right of every card with directions, "Copy (zMud/TinTin)" and "Copy (Mudlet)"; they copy the selected route, stop before the first instruction step (scan/scry, track, kill, notes, steps that mix a move with a note) and say so ("Copied up to '...'"); Tempus's Tar'pa Cithm copies "w;#2 n;nw;w;n;nw;#4 n". No buttons where there is nothing to copy (the 3 text-only deity locations, Bilwen, Eurion, Deathvein Island, a deity with no location picked).
+- Fix (Oct 28): Revelation City (8pm - 4am): "enter, #3 n" -> "enter;#3 n".
+
+- Your request (Oct 28): the page now opens one zoom level closer (zoom 1, was 0); the fit button still shows the whole map.
+- Your request (Oct 28): bigger click areas when zoomed out: each marker's grows to 16 px around it on screen and each name's to 7 px past its letters (never smaller than before), each limited to half the gap to its neighbours, so no two places' click areas overlap (checked at zooms 1-4: no new overlaps).
+
+- Your request (Oct 28): clicking The Mire or Otherland under Geos now zooms one level closer (zoom 3, was 2), like the other regions.
+
+- Your request (Oct 27): notes about where a pin is removed from 16 cards (Corruption of Anciastra, Vale of Nidaros, Valley of Mysts, The Tower of Zenothir, Wyvern's Tower, La Chute D'eau De L'ancients, Raven Tor, Gnarlwood Forest, The Keep of Mahn-Tor (Ogre Village), New Ofcol, Tullfuhrzky Manor, Ezard's Fields, Moria, Fire Station, Eastern Trade Route, Reomyr Village).
+
+- Your request (Oct 27): card warnings. The Blood Sea break on 9 cards (Otherland (Southern) + the North option of Wild Tundra, The Ziggurat, Valley of Crucifixion, Cursed Lands, The Kirre, Inishie, Kujrajgi, Jarl) now reads "North-South link: Route runs far north and links to far south off Otherland". The "isn't mapped, line stops at ..." notes removed from 9 cards (Dwarven Catacombs Northern Entrance, Dragontail Glen, The Blood Sea, The Burrows, Mathlaan Lagoon, The Keep of Mahn-Tor (The Keep), Galaxy, Cold Comfort, Machine Dreams); the shared-pin note removed from Machine Dreams and The Domain of World Eater. Lines unchanged.
+- Fix (Oct 27): Abattoir Asylum, Cold Comfort and The Domain of World Eater have your full directions again (the closing scry/scan steps, and Abattoir's final e, are in the directions); their card notes removed.
 
 ## Version 2.16 · Gods and Guides · October 27, 2026
 

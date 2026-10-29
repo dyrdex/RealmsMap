@@ -4,7 +4,7 @@ tiled site to ../site/ (index.html, tiles/, data/, vendor/) and the single-file 
 Called by build.py; run alone with: python3 site_build.py
 Zoom z: 2**z px per room, z1..z5 rendered; tile (z,x,y) pixel 0 = world bounds x0,y0.
 Needs: playwright (+ chromium), Pillow."""
-import hashlib, base64, io, json, os, shutil, sys, time
+import hashlib, base64, io, json, os, re, shutil, sys, time
 from PIL import Image
 from playwright.sync_api import sync_playwright
 
@@ -22,7 +22,7 @@ TILE_CACHE = os.environ.get('TILE_CACHE', os.path.abspath('../.tile_cache'))
 # big area and maze names: kept live (sharp at every zoom), not baked into tiles
 AREA_NAMES = ["The Forgotten Woods", "Shadow Grove", "Miden'nir", "The Maze of Trees",
               "Lost in the Swamp", "The Hidden Grove", "Ashen", "Forest", "Forest of Tears"]
-CARD_KEYS = ('name', 'route', 'room', 'dir', 'note', 'kind', 'noroute', 'group', 'where', 'alt', 'card', 'hidepath', 'rhead', 'deity', 'priests', 'astral', 'astrallocal', 'deco', 'poi')
+CARD_KEYS = ('name', 'route', 'room', 'dir', 'note', 'kind', 'noroute', 'group', 'where', 'alt', 'card', 'hidepath', 'rhead', 'deity', 'priests', 'astral', 'astrallocal', 'deco', 'poi', 'restricted')
 
 EXPORT_JS = '''(names)=>{
   const w=document.getElementById('world');
@@ -128,6 +128,29 @@ def write_tiles(mosaic, root):
         print('tiles reused from the cache:', reused, 'of', sum(v[0] for v in stats.values()))
     return stats
 
+# RODPEDIA: the owner's list of areas (Oct 29): name, level range, RoDpedia link (empty: no link); matched to the cards by name
+# ('The', '(Nation)', '(Arena)', case and punctuation aside), plus ALIAS where the list's name differs from the card's.
+ALIAS = {'Dwarven Catacombs (Northern Entrance)': ['Dwarven Catacombs'], 'Fathomless Depths': ['Blood Sea - Fathomless Depths'],
+         'Otherland': ['Otherland', 'Otherland (Northern)', 'Otherland (Southern)'], 'The Mire': ['The Mire', 'The Mire (Central)']}
+
+def rodpedia():
+    N = lambda s: re.sub(r'[^a-z0-9]', '', re.sub(r'\s*\((nation|arena)\)\s*$', '', s.lower()).replace('the ', ''))
+    out = {}
+    for line in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rodpedia.tsv'), encoding='utf-8'):
+        name, lvl, url = (line.rstrip('\n').split('\t') + ['', ''])[:3]
+        lvl = re.sub(r'^m\s+|\s+m$', '', lvl.strip())                           # (two stray 'm's in the owner's list)
+        for n in ALIAS.get(name, [name]):
+            out.setdefault(N(n), {'lvl': lvl, **({'wiki': url.strip()} if url.strip() else {})})
+    return lambda name: out.get(N(name))
+
+def deitylinks():   # DEITIES: the owner's deity links (Oct 29): name, link (no level range)
+    N = lambda s: re.sub(r'[^a-z0-9]', '', s.lower())
+    out = {}
+    for line in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deities.tsv'), encoding='utf-8'):
+        name, url = (line.rstrip('\n').split('\t') + [''])[:2]
+        if url.strip(): out[N(name)] = {'wiki': url.strip()}
+    return lambda name: out.get(N(name))
+
 def main():
     t0 = time.time()
     live, mosaic = render()
@@ -136,10 +159,13 @@ def main():
         os.makedirs(os.path.join(SITE, d))
     stats = write_tiles(mosaic, os.path.join(SITE, 'tiles'))
     places, routes = [], []
+    rod, dei = rodpedia(), deitylinks()
     for q in live['places']:
         p = q['p']
         c = {k: p[k] for k in CARD_KEYS if k in p and p[k] not in (None, '', [], False)}
         c.update(i=p['i'], mx=round(p['mx'], 3), my=round(p['my'], 3), shape=q['shape'], label=q['label'])
+        if not p.get('deity') and rod(p['name']): c.update(rod(p['name']))
+        if p.get('deity') and dei(p['name']): c.update(dei(p['name']))                       # level range + RoDpedia link (Oct 29)
         if q.get('more'): c['more'] = q['more']                                                # a place's other markers (Oct 25)
         if p.get('opts'): c['opts'] = [{k: v for k, v in o.items() if k != 'segs' and v not in (None, '', False)} for o in p['opts']]   # route options: text on the card, lines in routes.json
         places.append(c)
