@@ -6,9 +6,10 @@
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#1B2220">
 <title>The Realms</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+__FONTS__
 <link rel="stylesheet" href="vendor/leaflet.css">
 <style>
 :root{
@@ -28,7 +29,7 @@
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden}
-#app{position:relative;height:100%;display:flex}
+#app{position:fixed;inset:0;display:flex}
 #side{width:300px;flex:0 0 300px;background:var(--panel);border-right:1px solid var(--edge);display:flex;flex-direction:column;z-index:3;min-height:0}
 #side header{padding:18px 18px 10px}
 h1{font-family:var(--serif);font-weight:700;font-size:1.65rem;line-height:1.1;margin:0 0 4px}
@@ -51,8 +52,7 @@ h1{font-family:var(--serif);font-weight:700;font-size:1.65rem;line-height:1.1;ma
 #list .pm{display:inline-block;width:1em;text-align:center;font-size:1.05rem;line-height:1;letter-spacing:0;color:var(--pick)}
 #list .items{list-style:none;margin:0 0 6px;padding:0 0 0 8px}
 #list .meta{font-family:var(--sans);font-size:.78rem;color:var(--soft);align-self:center;white-space:nowrap}
-#side footer{padding:10px 18px 14px;border-top:1px solid var(--edge);font-size:.8rem;color:var(--soft);line-height:1.45}
-#stage{position:relative;flex:1;min-width:0}
+#stage{position:relative;flex:1;min-width:0;isolation:isolate}
 #map{position:absolute;inset:0;background:var(--paper);font:inherit}#map.leaflet-container{background:var(--paper)}html{background:#1B2220}.leaflet-container{background:var(--paper);color:var(--ink)}.leaflet-bar,.leaflet-control{border-color:var(--edge)!important;box-shadow:0 1px 6px rgba(0,0,0,.5)}.leaflet-bar a,.leaflet-bar a:hover,.leaflet-control-zoom a{background:var(--panel);color:var(--ink);border-bottom-color:var(--edge)}.leaflet-bar a:hover{background:var(--edge)}.leaflet-bar a.leaflet-disabled{background:var(--paper);color:var(--soft)}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--panel);color:var(--ink);box-shadow:0 3px 14px rgba(0,0,0,.6)}.leaflet-container a.leaflet-popup-close-button{color:var(--soft)}.leaflet-container a.leaflet-popup-close-button:hover{color:var(--ink)}.leaflet-control-attribution,.leaflet-container .leaflet-control-attribution{background:rgba(27,34,32,.85);color:var(--soft)}.leaflet-control-attribution a,.leaflet-container a{color:var(--pick)}.leaflet-tile-container,.leaflet-tile{background:transparent}*{scrollbar-color:var(--edge) var(--panel)}::-webkit-scrollbar{width:10px;height:10px;background:var(--panel)}::-webkit-scrollbar-thumb{background:var(--edge);border-radius:5px}
 #live{pointer-events:none!important}#live .pin,#live .plabel,#live .lhit{pointer-events:auto;cursor:pointer}#tools,#legend{z-index:1000}#detail{z-index:1001}#tip{z-index:1002}html{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 text{font-family:var(--serif)}
@@ -79,9 +79,11 @@ text{font-family:var(--serif)}
 #legend .keys{display:grid;grid-template-columns:18px 1fr;gap:4px 6px;align-items:center}
 #tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--edge);border-radius:6px;padding:4px 8px;font-family:var(--serif);font-size:.95rem;display:none;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.45)}
 @media (max-width:760px){
-  #side{position:absolute;left:0;right:0;bottom:0;width:auto;height:min(55%,440px);border-right:0;border-top:1px solid var(--edge);border-radius:14px 14px 0 0;transform:translateY(calc(100% - 64px));transition:transform .25s ease}
-  #side.open{transform:none}#side header{padding:12px 16px 6px;cursor:pointer}h1{font-size:1.3rem}
-  #legend{display:none}#tools{bottom:78px}#detail{top:10px;right:10px;width:calc(100% - 20px);max-height:45%}#stage{position:absolute;inset:0}
+  #side{position:absolute;left:0;right:0;bottom:0;width:auto;height:min(60%,480px);border-right:0;border-top:1px solid var(--edge);border-radius:14px 14px 0 0;
+    padding-bottom:env(safe-area-inset-bottom,0px);transform:translateY(calc(100% - 76px - env(safe-area-inset-bottom,0px)));transition:transform .25s ease;box-shadow:0 -4px 18px rgba(0,0,0,.45)}
+  #side.open{transform:none}#side header{padding:6px 16px 8px;cursor:pointer;touch-action:none}h1{font-size:1.3rem}
+  #side header::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:var(--soft);opacity:.6;margin:0 auto 8px}   /* the sheet's grab handle */
+  #legend{display:none}#tools{bottom:calc(90px + env(safe-area-inset-bottom,0px))}#detail{top:10px;right:10px;width:calc(100% - 20px);max-height:45%}#stage{position:absolute;inset:0}
 }
 @media (prefers-reduced-motion: reduce){#side{transition:none}}
 </style>
@@ -89,10 +91,9 @@ text{font-family:var(--serif)}
 <body>
 <div id="app">
   <aside id="side" aria-label="Places">
-    <header id="sideHead"><h1>The Realms</h1><p class="sub">New Darkhaven, and the wild country beginning to spread out around it.</p></header>
+    <header id="sideHead"><h1>The Realms</h1><p class="sub">Darkhaven and the surrounding despair</p></header>
     <div id="searchBox"><input id="q" type="search" placeholder="Search geos, areas, mobs and deities" aria-label="Search geos, areas, mobs and deities" autocomplete="off" spellcheck="false"><span id="qCount" aria-live="polite"></span></div>
     <ul id="list"></ul>
-    <footer>Drawn from your TinTin map and painted from each area's terrain and room names; trees are illustrative. Routes start at Darkhaven Square and follow your directions room by room.<br><span style="display:inline-block;margin-top:6px;font-weight:700;letter-spacing:.04em">__VERSION__</span></footer>
   </aside>
   <main id="stage">
     <div id="map" role="region" aria-label="Map of the Realms"></div>
@@ -114,8 +115,7 @@ text{font-family:var(--serif)}
 <script>
 (async function(){
 /* ---------- data: places first, routes in the background ---------- */
-const IN=window.__INLINE;
-const get=f=>IN?Promise.resolve(IN[f]):fetch('data/'+f).then(r=>r.json());
+const get=f=>fetch('data/'+f).then(r=>r.json());
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const groupHalls=['Isle of the Monkeys','A Moment in Nature'];
@@ -129,10 +129,11 @@ const CRS=L.extend({},L.CRS.Simple,{transformation:new L.Transformation(1,-x0,1,
 const B=L.latLngBounds([y0,x0],[y1,x1]);
 const map=L.map('map',{crs:CRS,zoomControl:false,attributionControl:false,minZoom:D.zmin-1,maxZoom:D.zmax,
   zoomSnap:1,zoomDelta:1,wheelPxPerZoomLevel:80,maxBounds:B.pad(.15),maxBoundsViscosity:.8});
-const BLANK='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-const TileL=L.TileLayer.extend({getTileUrl(c){if(!IN)return L.TileLayer.prototype.getTileUrl.call(this,c);
-  const t=IN.tiles[`${c.z}/${c.x}/${c.y}`];return t?'data:image/webp;base64,'+t:BLANK}});
-new TileL('tiles/{z}/{x}/{y}.webp',{tileSize:D.tile,minNativeZoom:D.zmin,maxNativeZoom:D.zmax,minZoom:D.zmin-1,maxZoom:D.zmax,
+/* FLAT: tiles of one colour all over (open sea, background) are not files: painted here (3.0) */
+const FLAT={};for(const [c,l] of Object.entries(D.flat||{}))for(const k of l)FLAT[k]=c;
+const Tiles=L.TileLayer.extend({createTile(c,done){const f=FLAT[`${c.z}/${c.x}/${c.y}`];if(!f)return L.TileLayer.prototype.createTile.call(this,c,done);
+  const d=document.createElement('div');d.style.background=f;setTimeout(()=>done(null,d));return d}});
+new Tiles('tiles/{z}/{x}/{y}.webp',{tileSize:D.tile,minNativeZoom:D.zmin,maxNativeZoom:D.zmax,minZoom:D.zmin-1,maxZoom:D.zmax,
   bounds:B,noWrap:true,keepBuffer:2}).addTo(map);
 /* DEITY: a deity location's marker (owner, Oct 26: large, purple, religious): a radiant eight-pointed star on a violet medallion, a soft glow */
 const DEITY=(()=>{let st='';for(let k=0;k<16;k++){const a=k*Math.PI/8-Math.PI/2,r=k%2?.27:.62;st+=(k?'L':'M')+(r*Math.cos(a)).toFixed(3)+' '+(r*Math.sin(a)).toFixed(3)}
@@ -316,6 +317,12 @@ document.querySelectorAll('#list button[data-g]').forEach(b=>b.onclick=()=>{cons
 })();
 const side=document.getElementById('side');
 document.getElementById('sideHead').addEventListener('click',()=>{if(innerWidth<=760)side.classList.toggle('open')});
+/* phones: swipe the sheet's top up to open it, down to close it; the search box opens it too */
+{let y0=null;const head=document.getElementById('sideHead');
+  head.addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});
+  head.addEventListener('touchend',e=>{if(y0===null||innerWidth>760)return;const dy=e.changedTouches[0].clientY-y0;y0=null;
+    if(Math.abs(dy)>24){side.classList.toggle('open',dy<0);e.preventDefault()}});
+  document.getElementById('q').addEventListener('focus',()=>{if(innerWidth<=760)side.classList.add('open')})}
 window.__map=map;window.__ready=true;
 })();
 </script>
