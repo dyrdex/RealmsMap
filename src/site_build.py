@@ -186,6 +186,8 @@ def main():
         shutil.copy(os.path.join('vendor', 'leaflet-1.9.4', f), os.path.join(SITE, 'vendor', f))
     for fam, st, w in FACES:
         shutil.copy(os.path.join('fonts', FONT_FILE(fam, st, w)), os.path.join(SITE, 'fonts'))
+    for f in ('favicon.svg', 'favicon-32.png', 'apple-touch-icon.png'):   # the tab icon: two crossed swords (owner, Oct 30)
+        shutil.copy(f, SITE)
     fonts = ''.join('<link rel="preload" href="fonts/%s" as="font" type="font/woff2" crossorigin>\n' % FONT_FILE(*f) for f in FONT_PRELOAD) + '<style>' + FONT_CSS + '</style>'
     page = open('site_template.html', encoding='utf-8').read().replace('__FONTS__', fonts)
     # a stamp of this build in the tile and data folder names (tiles/<stamp>/z/x/y.webp, data/<stamp>/...), so neither a browser nor the
