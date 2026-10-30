@@ -126,7 +126,13 @@ const CRS=L.extend({},L.CRS.Simple,{transformation:new L.Transformation(1,-x0,1,
 const B=L.latLngBounds([y0,x0],[y1,x1]);
 const map=L.map('map',{crs:CRS,zoomControl:false,attributionControl:false,minZoom:D.zmin-1,maxZoom:D.zmax,
   zoomSnap:1,zoomDelta:1,wheelPxPerZoomLevel:80,maxBounds:B.pad(.15),maxBoundsViscosity:.8});
-L.tileLayer('tiles/{z}/{x}/{y}.webp',{tileSize:D.tile,minNativeZoom:D.zmin,maxNativeZoom:D.zmax,minZoom:D.zmin-1,maxZoom:D.zmax,
+/* FLAT: tiles of one colour all over (open sea, background) are not files: painted here (3.0) */
+const FLAT={};for(const [c,l] of Object.entries(D.flat||{}))for(const k of l)FLAT[k]=c;
+const Tiles=L.TileLayer.extend({createTile(c,done){const f=FLAT[`${c.z}/${c.x}/${c.y}`];if(!f)return L.TileLayer.prototype.createTile.call(this,c,done);
+  const d=document.createElement('div');d.style.background=f;setTimeout(()=>done(null,d));return d}});
+let TILES='tiles/{z}/{x}/{y}.webp';
+if(new URLSearchParams(location.search).has('lossless'))TILES=TILES.replace(/^(tiles\/[^/]+)/,'$1-lossless');   /* 3.0 tile test (temporary): the lossless set */
+new Tiles(TILES,{tileSize:D.tile,minNativeZoom:D.zmin,maxNativeZoom:D.zmax,minZoom:D.zmin-1,maxZoom:D.zmax,
   bounds:B,noWrap:true,keepBuffer:2}).addTo(map);
 /* DEITY: a deity location's marker (owner, Oct 26: large, purple, religious): a radiant eight-pointed star on a violet medallion, a soft glow */
 const DEITY=(()=>{let st='';for(let k=0;k<16;k++){const a=k*Math.PI/8-Math.PI/2,r=k%2?.27:.62;st+=(k?'L':'M')+(r*Math.cos(a)).toFixed(3)+' '+(r*Math.sin(a)).toFixed(3)}

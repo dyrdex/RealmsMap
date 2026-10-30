@@ -9,8 +9,10 @@ from playwright.sync_api import sync_playwright
 
 ZMIN, ZMAX, TS, CHUNK = 1, 5, 256, 2048
 PAPER = (0x1B, 0x22, 0x20)   # --paper, the dark map background (the map is dark mode only)
-# tiles: lossless WebP by default; TILE_QUALITY=90 (say) gives smaller high-quality lossy tiles
-TILE_QUALITY = int(os.environ.get('TILE_QUALITY', '0'))
+# tiles: high-quality lossy WebP (3.0; about a third the size of lossless); TILE_QUALITY=0 gives lossless tiles
+TILE_QUALITY = int(os.environ.get('TILE_QUALITY', '90'))
+TILE_OPTS = lambda q: {'quality': q, 'method': 6} if q else {'lossless': True, 'quality': 60, 'method': 4}
+COMPARE = True   # 3.0 tile test (temporary): also the lossless set, shown with ?lossless
 K = 2 ** ZMAX
 SRC = os.path.abspath('../realm_map.html')
 SITE = os.path.abspath('../site')
@@ -103,12 +105,10 @@ def render():
         b.close()
     return live, mosaic
 
-def write_tiles(mosaic, root):
-    stats, img = {}, mosaic
-    opts = {'quality': TILE_QUALITY, 'method': 6} if TILE_QUALITY else {'lossless': True, 'quality': 60, 'method': 4}
+def write_tiles(mosaic, root, opts, used):
+    """Tiles of one colour all over (open sea, background) are not written: they go in the returned list and the page paints them."""
+    stats, img, flat, reused = {}, mosaic, {}, 0
     salt = json.dumps(opts, sort_keys=True).encode()
-    if TILE_CACHE: os.makedirs(TILE_CACHE, exist_ok=True)
-    used, reused = set(), 0
     for z in range(ZMAX, ZMIN - 1, -1):
         if z < ZMAX:
             img = img.resize((-(-img.width // 2), -(-img.height // 2)), Image.LANCZOS)
@@ -117,6 +117,9 @@ def write_tiles(mosaic, root):
             for tx in range(-(-img.width // TS)):
                 tile = Image.new('RGB', (TS, TS), PAPER)
                 tile.paste(img.crop((tx * TS, ty * TS, min(img.width, (tx + 1) * TS), min(img.height, (ty + 1) * TS))), (0, 0))
+                ex = tile.getextrema()
+                if all(a == b for a, b in ex):
+                    flat.setdefault('#%02X%02X%02X' % tuple(a for a, b in ex), []).append(f'{z}/{tx}/{ty}'); continue
                 d = os.path.join(root, str(z), str(tx)); os.makedirs(d, exist_ok=True)
                 f = os.path.join(d, f'{ty}.webp')
                 if TILE_CACHE:
@@ -126,11 +129,8 @@ def write_tiles(mosaic, root):
                 else: tile.save(f, 'WEBP', **opts)
                 n += 1; byt += os.path.getsize(f)
         stats[z] = (n, round(byt / 1024))
-    if TILE_CACHE:
-        for h in os.listdir(TILE_CACHE):                                         # (only this build's tiles are kept)
-            if h not in used: os.remove(os.path.join(TILE_CACHE, h))
-        print('tiles reused from the cache:', reused, 'of', sum(v[0] for v in stats.values()))
-    return stats
+    if TILE_CACHE: print('tiles reused from the cache:', reused, 'of', sum(v[0] for v in stats.values()))
+    return stats, flat
 
 # RODPEDIA: the owner's list of areas (Oct 29): name, level range, RoDpedia link (empty: no link); matched to the cards by name
 # ('The', '(Nation)', '(Arena)', case and punctuation aside), plus ALIAS where the list's name differs from the card's.
@@ -161,7 +161,13 @@ def main():
     shutil.rmtree(SITE, ignore_errors=True)
     for d in ('tiles', 'data', 'vendor', 'fonts'):
         os.makedirs(os.path.join(SITE, d))
-    stats = write_tiles(mosaic, os.path.join(SITE, 'tiles'))
+    used = set()
+    if TILE_CACHE: os.makedirs(TILE_CACHE, exist_ok=True)
+    stats, flat = write_tiles(mosaic, os.path.join(SITE, 'tiles'), TILE_OPTS(TILE_QUALITY), used)
+    if COMPARE: stats_ll, _ = write_tiles(mosaic, os.path.join(SITE, 'tiles_ll'), TILE_OPTS(0), used)
+    if TILE_CACHE:
+        for h in os.listdir(TILE_CACHE):                                         # (only this build's tiles are kept)
+            if h not in used: os.remove(os.path.join(TILE_CACHE, h))
     places, routes = [], []
     rod, dei = rodpedia(), deitylinks()
     for q in live['places']:
@@ -175,7 +181,7 @@ def main():
         places.append(c)
         routes.append({'path': r2(p['path']), **({'segs': r2(p['segs'])} if p.get('segs') else {}), **({'opts': [r2(o['segs']) for o in p['opts']]} if p.get('opts') else {}), **({'sail': r2(p['sail'])} if p.get('sail') else {})})
     J = lambda o: json.dumps(o, separators=(',', ':'), ensure_ascii=False)
-    files = {'places.json': J({'bounds': live['bounds'], 'zmin': ZMIN, 'zmax': ZMAX, 'tile': TS, 'places': places, 'extras': live['extras'], 'jumps': live.get('jumps') or []}),
+    files = {'places.json': J({'bounds': live['bounds'], 'zmin': ZMIN, 'zmax': ZMAX, 'tile': TS, 'flat': flat, 'places': places, 'extras': live['extras'], 'jumps': live.get('jumps') or []}),
              'areanames.json': J({'areas': live['areas'], 'defs': live['defs']}),
              'routes.json': J(routes)}
     for f in ('leaflet.js', 'leaflet.css'):
@@ -189,6 +195,7 @@ def main():
     stamp = hashlib.sha1(open(SRC, 'rb').read() + ''.join(files.values()).encode()).hexdigest()[:10]
     os.rename(os.path.join(SITE, 'tiles'), os.path.join(SITE, '_tiles')); os.makedirs(os.path.join(SITE, 'tiles'))
     os.rename(os.path.join(SITE, '_tiles'), os.path.join(SITE, 'tiles', stamp))
+    if COMPARE: os.rename(os.path.join(SITE, 'tiles_ll'), os.path.join(SITE, 'tiles', stamp + '-lossless'))
     os.makedirs(os.path.join(SITE, 'data', stamp))
     for f, s in files.items():
         open(os.path.join(SITE, 'data', stamp, f), 'w', encoding='utf-8').write(s)
@@ -197,6 +204,7 @@ def main():
     open(os.path.join(SITE, 'index.html'), 'w', encoding='utf-8').write(page)
     print('site written:', json.dumps({'tiles_per_level': {z: v[0] for z, v in stats.items()},
           'tiles_total': sum(v[0] for v in stats.values()), 'tiles_mb': round(sum(v[1] for v in stats.values()) / 1024, 2),
+          'flat_tiles': sum(map(len, flat.values())), **({'lossless_mb': round(sum(v[1] for v in stats_ll.values()) / 1024, 2)} if COMPARE else {}),
           'data_kb': {f: round(len(s.encode()) / 1024, 1) for f, s in files.items()}, 'seconds': round(time.time() - t0, 1)}))
 
 if __name__ == '__main__':
