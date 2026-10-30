@@ -1,6 +1,11 @@
 # Realm Map changelog
 
-## In progress (2.18)
+## In progress (2.19)
+
+## Version 2.18 · Small Fixes · October 30, 2026
+
+- Your request (Oct 30): Inishie's marker (Otherland) moved one room northeast, from 13106 Afloat in the Harbor of Ice to 13105, at the end of the dock. Routes unchanged.
+- Your request (Oct 30): the card button "Copy (Mudlet)" now reads "Copy (Mush)" (the copy format is unchanged).
 
 ## Version 2.17 · Cards and Copies · October 29, 2026
 
