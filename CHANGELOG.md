@@ -1,6 +1,9 @@
 # Realm Map changelog
 
-## In progress (2.19)
+## In progress (3.0)
+
+- Your request (Oct 30, launch cleanup): the site now serves its own fonts (no calls to Google Fonts; the same Alegreya files the map is drawn with), loaded only when a page needs them, the two main ones first.
+- Your request (Oct 30): the unused single-file preview (realm_map_preview.html) is no longer built, and the map data is written once instead of twice. The map, tiles and data are byte-for-byte unchanged.
 
 ## Version 2.18 · Small Fixes · October 30, 2026
 

@@ -1,6 +1,5 @@
 """Final pipeline stage: render the built ../realm_map.html into image tiles and write the
-tiled site to ../site/ (index.html, tiles/, data/, vendor/) and the single-file preview
-../realm_map_preview.html (everything inlined, for publishing as one page).
+tiled site to ../site/ (index.html, tiles/, data/, vendor/, fonts/).
 Called by build.py; run alone with: python3 site_build.py
 Zoom z: 2**z px per room, z1..z5 rendered; tile (z,x,y) pixel 0 = world bounds x0,y0.
 Needs: playwright (+ chromium), Pillow."""
@@ -15,7 +14,6 @@ TILE_QUALITY = int(os.environ.get('TILE_QUALITY', '0'))
 K = 2 ** ZMAX
 SRC = os.path.abspath('../realm_map.html')
 SITE = os.path.abspath('../site')
-PREVIEW = os.path.abspath('../realm_map_preview.html')
 # encoded tiles from earlier builds, by a hash of their pixels: a tile whose pixels are unchanged is copied, not encoded again
 # (GitHub Actions keeps this folder between runs; TILE_CACHE= turns it off)
 TILE_CACHE = os.environ.get('TILE_CACHE', os.path.abspath('../.tile_cache'))
@@ -56,12 +54,18 @@ HIDE_JS = '''(names)=>{
 # label solver use the same letter shapes a visitor sees. The page script runs only after they load.
 FACES = [('Alegreya', 'normal', w) for w in (400, 600, 700)] + [('Alegreya', 'italic', w) for w in (400, 600)] + \
         [('Alegreya Sans', 'normal', w) for w in (400, 500, 700)]
+FONT_FILE = lambda fam, st, w: '%s-latin-%d-%s.woff2' % (fam.lower().replace(' ', '-'), w, st)
+# the site serves the same font files itself (3.0; was Google Fonts): latin range as Google's, shown with a fallback until loaded
+FONT_CSS = ''.join("@font-face{font-family:'%s';font-style:%s;font-weight:%d;font-display:swap;src:url(fonts/%s) format('woff2');"
+                   "unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}"
+                   % (fam, st, w, FONT_FILE(fam, st, w)) for fam, st, w in FACES)
+FONT_PRELOAD = ('Alegreya', 'italic', 400), ('Alegreya Sans', 'normal', 400)    # the place names and the panels: wanted at first paint
 def font_page():
     import re
     h = open(SRC, encoding='utf-8').read()
     h = re.sub(r'<link[^>]*fonts\.(googleapis|gstatic)\.com[^>]*>', '', h)
     css = ''.join("@font-face{font-family:'%s';font-style:%s;font-weight:%d;src:url(data:font/woff2;base64,%s) format('woff2')}" % (
-        fam, st, w, base64.b64encode(open(os.path.join('fonts', '%s-latin-%d-%s.woff2' % (fam.lower().replace(' ', '-'), w, st)), 'rb').read()).decode())
+        fam, st, w, base64.b64encode(open(os.path.join('fonts', FONT_FILE(fam, st, w)), 'rb').read()).decode())
         for fam, st, w in FACES)
     h = re.sub(r'<html([^>]*)>', r'<html\1 data-theme="dark">', h, count=1)   # dark only (forced as well as the default)
     h = h.replace('</head>', '<style>' + css + '</style></head>', 1)
@@ -155,7 +159,7 @@ def main():
     t0 = time.time()
     live, mosaic = render()
     shutil.rmtree(SITE, ignore_errors=True)
-    for d in ('tiles', 'data', 'vendor'):
+    for d in ('tiles', 'data', 'vendor', 'fonts'):
         os.makedirs(os.path.join(SITE, d))
     stats = write_tiles(mosaic, os.path.join(SITE, 'tiles'))
     places, routes = [], []
@@ -174,11 +178,12 @@ def main():
     files = {'places.json': J({'bounds': live['bounds'], 'zmin': ZMIN, 'zmax': ZMAX, 'tile': TS, 'places': places, 'extras': live['extras'], 'jumps': live.get('jumps') or []}),
              'areanames.json': J({'areas': live['areas'], 'defs': live['defs']}),
              'routes.json': J(routes)}
-    for f, s in files.items():
-        open(os.path.join(SITE, 'data', f), 'w', encoding='utf-8').write(s)
     for f in ('leaflet.js', 'leaflet.css'):
         shutil.copy(os.path.join('vendor', 'leaflet-1.9.4', f), os.path.join(SITE, 'vendor', f))
-    page = open('site_template.html', encoding='utf-8').read().replace('__VERSION__', open('VERSION').read().strip())
+    for fam, st, w in FACES:
+        shutil.copy(os.path.join('fonts', FONT_FILE(fam, st, w)), os.path.join(SITE, 'fonts'))
+    fonts = ''.join('<link rel="preload" href="fonts/%s" as="font" type="font/woff2" crossorigin>\n' % FONT_FILE(*f) for f in FONT_PRELOAD) + '<style>' + FONT_CSS + '</style>'
+    page = open('site_template.html', encoding='utf-8').read().replace('__VERSION__', open('VERSION').read().strip()).replace('__FONTS__', fonts)
     # a stamp of this build in the tile and data folder names (tiles/<stamp>/z/x/y.webp, data/<stamp>/...), so neither a browser nor the
     # Pages CDN can show tiles or data saved from an older build (a ?v= query was not enough: Oct 12, zoomed-in tiles stayed old)
     stamp = hashlib.sha1(open(SRC, 'rb').read() + ''.join(files.values()).encode()).hexdigest()[:10]
@@ -190,23 +195,9 @@ def main():
     for a, b in (("'tiles/{z}/{x}/{y}.webp'", "'tiles/" + stamp + "/{z}/{x}/{y}.webp'"), ("fetch('data/'+f)", "fetch('data/" + stamp + "/'+f)")):
         assert page.count(a) == 1; page = page.replace(a, b)
     open(os.path.join(SITE, 'index.html'), 'w', encoding='utf-8').write(page)
-    # single-file preview: same page with Leaflet, data and tiles inlined
-    tiles = {}
-    for z in range(ZMIN, ZMAX + 1):
-        for dx in sorted(os.listdir(os.path.join(SITE, 'tiles', stamp, str(z))), key=int):
-            for fy in sorted(os.listdir(os.path.join(SITE, 'tiles', stamp, str(z), dx)), key=lambda s: int(s[:-5])):
-                tiles[f'{z}/{dx}/{fy[:-5]}'] = base64.b64encode(open(os.path.join(SITE, 'tiles', stamp, str(z), dx, fy), 'rb').read()).decode()
-    rd = lambda f: open(os.path.join(SITE, f), encoding='utf-8').read()
-    safe = lambda s: s.replace('</', '<\\/')
-    pv = page.replace('<link rel="stylesheet" href="vendor/leaflet.css">', '<style>' + rd('vendor/leaflet.css') + '</style>')
-    pv = pv.replace('<script src="vendor/leaflet.js"></script>', '<script>' + safe(rd('vendor/leaflet.js')) + '</script>\n<script>window.__INLINE={' +
-                    ','.join(f'"{k}":{safe(v)}' for k, v in files.items()) + ',"tiles":' + J(tiles) + '};</script>')
-    assert pv.count('window.__INLINE={') == 1 and '<style>' in pv
-    open(PREVIEW, 'w', encoding='utf-8').write(pv)
     print('site written:', json.dumps({'tiles_per_level': {z: v[0] for z, v in stats.items()},
           'tiles_total': sum(v[0] for v in stats.values()), 'tiles_mb': round(sum(v[1] for v in stats.values()) / 1024, 2),
-          'data_kb': {f: round(len(s.encode()) / 1024, 1) for f, s in files.items()},
-          'preview_mb': round(os.path.getsize(PREVIEW) / 1048576, 2), 'seconds': round(time.time() - t0, 1)}))
+          'data_kb': {f: round(len(s.encode()) / 1024, 1) for f, s in files.items()}, 'seconds': round(time.time() - t0, 1)}))
 
 if __name__ == '__main__':
     main()

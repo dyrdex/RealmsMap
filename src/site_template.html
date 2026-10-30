@@ -6,9 +6,7 @@
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#1B2220">
 <title>The Realms</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+__FONTS__
 <link rel="stylesheet" href="vendor/leaflet.css">
 <style>
 :root{
@@ -114,8 +112,7 @@ text{font-family:var(--serif)}
 <script>
 (async function(){
 /* ---------- data: places first, routes in the background ---------- */
-const IN=window.__INLINE;
-const get=f=>IN?Promise.resolve(IN[f]):fetch('data/'+f).then(r=>r.json());
+const get=f=>fetch('data/'+f).then(r=>r.json());
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const groupHalls=['Isle of the Monkeys','A Moment in Nature'];
@@ -129,10 +126,7 @@ const CRS=L.extend({},L.CRS.Simple,{transformation:new L.Transformation(1,-x0,1,
 const B=L.latLngBounds([y0,x0],[y1,x1]);
 const map=L.map('map',{crs:CRS,zoomControl:false,attributionControl:false,minZoom:D.zmin-1,maxZoom:D.zmax,
   zoomSnap:1,zoomDelta:1,wheelPxPerZoomLevel:80,maxBounds:B.pad(.15),maxBoundsViscosity:.8});
-const BLANK='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-const TileL=L.TileLayer.extend({getTileUrl(c){if(!IN)return L.TileLayer.prototype.getTileUrl.call(this,c);
-  const t=IN.tiles[`${c.z}/${c.x}/${c.y}`];return t?'data:image/webp;base64,'+t:BLANK}});
-new TileL('tiles/{z}/{x}/{y}.webp',{tileSize:D.tile,minNativeZoom:D.zmin,maxNativeZoom:D.zmax,minZoom:D.zmin-1,maxZoom:D.zmax,
+L.tileLayer('tiles/{z}/{x}/{y}.webp',{tileSize:D.tile,minNativeZoom:D.zmin,maxNativeZoom:D.zmax,minZoom:D.zmin-1,maxZoom:D.zmax,
   bounds:B,noWrap:true,keepBuffer:2}).addTo(map);
 /* DEITY: a deity location's marker (owner, Oct 26: large, purple, religious): a radiant eight-pointed star on a violet medallion, a soft glow */
 const DEITY=(()=>{let st='';for(let k=0;k<16;k++){const a=k*Math.PI/8-Math.PI/2,r=k%2?.27:.62;st+=(k?'L':'M')+(r*Math.cos(a)).toFixed(3)+' '+(r*Math.sin(a)).toFixed(3)}
