@@ -4,7 +4,8 @@
 
 - Your request (Oct 30, launch cleanup): the site now serves its own fonts (no calls to Google Fonts; the same Alegreya files the map is drawn with), loaded only when a page needs them, the two main ones first.
 - Your request (Oct 30): the unused single-file preview (realm_map_preview.html) is no longer built, and the map data is written once instead of twice. The map, tiles and data are byte-for-byte unchanged.
-- Your request (Oct 30): tile test. Map tiles are now high-quality lossy WebP: 6.8 MB instead of 22.2 MB. Tiles that are a single colour all over (2,289 of 4,314: open sea and background) are no longer downloaded; the page paints them. Add ?lossless to the address to see the old tiles for comparison (temporary, until you decide).
+- Your request (Oct 30): tile test. Map tiles are now high-quality lossy WebP: 6.8 MB instead of 22.2 MB. Tiles that are a single colour all over (2,289 of 4,314: open sea and background) are no longer downloaded; the page paints them. (Lossy approved Oct 30; the comparison set is removed.)
+- Your request (Oct 30): all text removed from the bottom of the sidebar (the "Drawn from your TinTin map…" note and the version line).
 
 ## Version 2.18 · Small Fixes · October 30, 2026
 

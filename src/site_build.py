@@ -12,7 +12,6 @@ PAPER = (0x1B, 0x22, 0x20)   # --paper, the dark map background (the map is dark
 # tiles: high-quality lossy WebP (3.0; about a third the size of lossless); TILE_QUALITY=0 gives lossless tiles
 TILE_QUALITY = int(os.environ.get('TILE_QUALITY', '90'))
 TILE_OPTS = lambda q: {'quality': q, 'method': 6} if q else {'lossless': True, 'quality': 60, 'method': 4}
-COMPARE = True   # 3.0 tile test (temporary): also the lossless set, shown with ?lossless
 K = 2 ** ZMAX
 SRC = os.path.abspath('../realm_map.html')
 SITE = os.path.abspath('../site')
@@ -164,7 +163,6 @@ def main():
     used = set()
     if TILE_CACHE: os.makedirs(TILE_CACHE, exist_ok=True)
     stats, flat = write_tiles(mosaic, os.path.join(SITE, 'tiles'), TILE_OPTS(TILE_QUALITY), used)
-    if COMPARE: stats_ll, _ = write_tiles(mosaic, os.path.join(SITE, 'tiles_ll'), TILE_OPTS(0), used)
     if TILE_CACHE:
         for h in os.listdir(TILE_CACHE):                                         # (only this build's tiles are kept)
             if h not in used: os.remove(os.path.join(TILE_CACHE, h))
@@ -189,13 +187,12 @@ def main():
     for fam, st, w in FACES:
         shutil.copy(os.path.join('fonts', FONT_FILE(fam, st, w)), os.path.join(SITE, 'fonts'))
     fonts = ''.join('<link rel="preload" href="fonts/%s" as="font" type="font/woff2" crossorigin>\n' % FONT_FILE(*f) for f in FONT_PRELOAD) + '<style>' + FONT_CSS + '</style>'
-    page = open('site_template.html', encoding='utf-8').read().replace('__VERSION__', open('VERSION').read().strip()).replace('__FONTS__', fonts)
+    page = open('site_template.html', encoding='utf-8').read().replace('__FONTS__', fonts)
     # a stamp of this build in the tile and data folder names (tiles/<stamp>/z/x/y.webp, data/<stamp>/...), so neither a browser nor the
     # Pages CDN can show tiles or data saved from an older build (a ?v= query was not enough: Oct 12, zoomed-in tiles stayed old)
     stamp = hashlib.sha1(open(SRC, 'rb').read() + ''.join(files.values()).encode()).hexdigest()[:10]
     os.rename(os.path.join(SITE, 'tiles'), os.path.join(SITE, '_tiles')); os.makedirs(os.path.join(SITE, 'tiles'))
     os.rename(os.path.join(SITE, '_tiles'), os.path.join(SITE, 'tiles', stamp))
-    if COMPARE: os.rename(os.path.join(SITE, 'tiles_ll'), os.path.join(SITE, 'tiles', stamp + '-lossless'))
     os.makedirs(os.path.join(SITE, 'data', stamp))
     for f, s in files.items():
         open(os.path.join(SITE, 'data', stamp, f), 'w', encoding='utf-8').write(s)
@@ -204,7 +201,7 @@ def main():
     open(os.path.join(SITE, 'index.html'), 'w', encoding='utf-8').write(page)
     print('site written:', json.dumps({'tiles_per_level': {z: v[0] for z, v in stats.items()},
           'tiles_total': sum(v[0] for v in stats.values()), 'tiles_mb': round(sum(v[1] for v in stats.values()) / 1024, 2),
-          'flat_tiles': sum(map(len, flat.values())), **({'lossless_mb': round(sum(v[1] for v in stats_ll.values()) / 1024, 2)} if COMPARE else {}),
+          'flat_tiles': sum(map(len, flat.values())),
           'data_kb': {f: round(len(s.encode()) / 1024, 1) for f, s in files.items()}, 'seconds': round(time.time() - t0, 1)}))
 
 if __name__ == '__main__':

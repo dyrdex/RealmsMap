@@ -49,7 +49,6 @@ h1{font-family:var(--serif);font-weight:700;font-size:1.65rem;line-height:1.1;ma
 #list .pm{display:inline-block;width:1em;text-align:center;font-size:1.05rem;line-height:1;letter-spacing:0;color:var(--pick)}
 #list .items{list-style:none;margin:0 0 6px;padding:0 0 0 8px}
 #list .meta{font-family:var(--sans);font-size:.78rem;color:var(--soft);align-self:center;white-space:nowrap}
-#side footer{padding:10px 18px 14px;border-top:1px solid var(--edge);font-size:.8rem;color:var(--soft);line-height:1.45}
 #stage{position:relative;flex:1;min-width:0}
 #map{position:absolute;inset:0;background:var(--paper);font:inherit}#map.leaflet-container{background:var(--paper)}html{background:#1B2220}.leaflet-container{background:var(--paper);color:var(--ink)}.leaflet-bar,.leaflet-control{border-color:var(--edge)!important;box-shadow:0 1px 6px rgba(0,0,0,.5)}.leaflet-bar a,.leaflet-bar a:hover,.leaflet-control-zoom a{background:var(--panel);color:var(--ink);border-bottom-color:var(--edge)}.leaflet-bar a:hover{background:var(--edge)}.leaflet-bar a.leaflet-disabled{background:var(--paper);color:var(--soft)}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--panel);color:var(--ink);box-shadow:0 3px 14px rgba(0,0,0,.6)}.leaflet-container a.leaflet-popup-close-button{color:var(--soft)}.leaflet-container a.leaflet-popup-close-button:hover{color:var(--ink)}.leaflet-control-attribution,.leaflet-container .leaflet-control-attribution{background:rgba(27,34,32,.85);color:var(--soft)}.leaflet-control-attribution a,.leaflet-container a{color:var(--pick)}.leaflet-tile-container,.leaflet-tile{background:transparent}*{scrollbar-color:var(--edge) var(--panel)}::-webkit-scrollbar{width:10px;height:10px;background:var(--panel)}::-webkit-scrollbar-thumb{background:var(--edge);border-radius:5px}
 #live{pointer-events:none!important}#live .pin,#live .plabel,#live .lhit{pointer-events:auto;cursor:pointer}#tools,#legend{z-index:1000}#detail{z-index:1001}#tip{z-index:1002}html{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -90,7 +89,6 @@ text{font-family:var(--serif)}
     <header id="sideHead"><h1>The Realms</h1><p class="sub">New Darkhaven, and the wild country beginning to spread out around it.</p></header>
     <div id="searchBox"><input id="q" type="search" placeholder="Search geos, areas, mobs and deities" aria-label="Search geos, areas, mobs and deities" autocomplete="off" spellcheck="false"><span id="qCount" aria-live="polite"></span></div>
     <ul id="list"></ul>
-    <footer>Drawn from your TinTin map and painted from each area's terrain and room names; trees are illustrative. Routes start at Darkhaven Square and follow your directions room by room.<br><span style="display:inline-block;margin-top:6px;font-weight:700;letter-spacing:.04em">__VERSION__</span></footer>
   </aside>
   <main id="stage">
     <div id="map" role="region" aria-label="Map of the Realms"></div>
@@ -130,9 +128,7 @@ const map=L.map('map',{crs:CRS,zoomControl:false,attributionControl:false,minZoo
 const FLAT={};for(const [c,l] of Object.entries(D.flat||{}))for(const k of l)FLAT[k]=c;
 const Tiles=L.TileLayer.extend({createTile(c,done){const f=FLAT[`${c.z}/${c.x}/${c.y}`];if(!f)return L.TileLayer.prototype.createTile.call(this,c,done);
   const d=document.createElement('div');d.style.background=f;setTimeout(()=>done(null,d));return d}});
-let TILES='tiles/{z}/{x}/{y}.webp';
-if(new URLSearchParams(location.search).has('lossless'))TILES=TILES.replace(/^(tiles\/[^/]+)/,'$1-lossless');   /* 3.0 tile test (temporary): the lossless set */
-new Tiles(TILES,{tileSize:D.tile,minNativeZoom:D.zmin,maxNativeZoom:D.zmax,minZoom:D.zmin-1,maxZoom:D.zmax,
+new Tiles('tiles/{z}/{x}/{y}.webp',{tileSize:D.tile,minNativeZoom:D.zmin,maxNativeZoom:D.zmax,minZoom:D.zmin-1,maxZoom:D.zmax,
   bounds:B,noWrap:true,keepBuffer:2}).addTo(map);
 /* DEITY: a deity location's marker (owner, Oct 26: large, purple, religious): a radiant eight-pointed star on a violet medallion, a soft glow */
 const DEITY=(()=>{let st='';for(let k=0;k<16;k++){const a=k*Math.PI/8-Math.PI/2,r=k%2?.27:.62;st+=(k?'L':'M')+(r*Math.cos(a)).toFixed(3)+' '+(r*Math.sin(a)).toFixed(3)}
