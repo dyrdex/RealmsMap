@@ -2,6 +2,9 @@
 
 ## In progress (2.18)
 
+- Your request (Oct 30): Inishie's marker (Otherland) moved one room northeast, from 13106 Afloat in the Harbor of Ice to 13105, at the end of the dock. Routes unchanged.
+- Your request (Oct 30): the card button "Copy (Mudlet)" now reads "Copy (Mush)" (the copy format is unchanged).
+
 ## Version 2.17 · Cards and Copies · October 29, 2026
 
 - Your request (Oct 29): Northern Trade Route's "Its entrance is just outside Darktrail, the north gate." removed; "Danger: No Supplicate Area!" on Shadar Logoth; "Danger!" on Realm of Worship, Shai'ghool and Mulciber's Forge.
