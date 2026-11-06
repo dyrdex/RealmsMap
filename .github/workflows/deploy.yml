@@ -1,0 +1,29 @@
+# Copied into the published site (dyrdex/RealmsMap, branch gh-pages) as .github/workflows/deploy.yml by pages.yml.
+# Deploys the site through GitHub Actions instead of GitHub's branch builder (owner, Nov 4: the branch builder's runs sat
+# 'queued'; it also allows only ~10 builds an hour). Needs: dyrdex/RealmsMap -> Settings -> Pages -> Source = GitHub Actions.
+name: Deploy site
+on:
+  push:
+    branches: [gh-pages]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true      # only the newest site matters
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deploy
+        uses: actions/deploy-pages@v4

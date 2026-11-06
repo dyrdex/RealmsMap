@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#1B2220">
+<title>The Realms</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="fonts/alegreya-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/alegreya-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Alegreya';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/alegreya-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Alegreya';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/alegreya-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Alegreya';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/alegreya-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Alegreya';font-style:italic;font-weight:400;font-display:swap;src:url(fonts/alegreya-latin-400-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Alegreya';font-style:italic;font-weight:600;font-display:swap;src:url(fonts/alegreya-latin-600-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Alegreya Sans';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/alegreya-sans-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Alegreya Sans';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/alegreya-sans-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Alegreya Sans';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/alegreya-sans-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style>
+<link rel="stylesheet" href="vendor/leaflet.css">
+<style>
+:root{
+  --paper:#1B2220; --ink:#DCE3D7; --soft:#9AA79E; --panel:#232B28; --edge:#39443F; --halo:rgba(27,34,32,.9);
+  --ground:#2B3826; --city:#2F2D27; --block:#3A372F; --street:#46423A; --street-edge:#5F5849; --wall:#A89B8A;
+  --water:#2A4652; --pick:#F0A04B; --glow:rgba(240,160,75,.3); --pin:#DCE3D7; --grove:#34452E; --landmark:#4A4338; --mob:#E07A85; --lane:#544E43;
+  --roof1:#7A5646; --roof2:#6A5C4B; --roof3:#545B5E; --roof-shade:rgba(0,0,0,.22); --roof-line:rgba(0,0,0,.5); --stone-hi:rgba(220,210,190,.22);
+  --w-land:#28332A; --maze-fill:#2F3829; --maze-line:#9FAE93; --sand:#4F4733; --blight:#3E2B26; --dread:#050805; --g-stone:#7D7766; --g-wall:#8D7F63; --g-roof:#7A4638; --g-wood:#6B5334; --g-cloth:#B6AE98; --g-flag:#A33426; --g-line:#14110D; --g-dark:#0C0A07; --g-lit:#C9A24C; --road:#6F6759; --road-edge:#1F1C17; --road-hi:#8B8271; --road-ground:#3B382F; --w-ash:#4A4A43; --ash-tree:#9C988A; --peak:#4A463E; --peak-shade:rgba(0,0,0,.3); --peak-line:#A49A86; --peak-snow:#CFCAC0; --lake-label:#A9CBD8; --shadow-grass:#2B3029; --shadow-grass2:#252A23; --hill:#4B4535; --hill-line:#A89A78; --stone:#9A9182; --stone-top:#4A4740; --sail:#B9B2A2; --t-black:#06080A; --t-black2:#141A16; --thorn:#B4604C; --bramble:#463B2E; --black-wood:#18201B; --black-heart:#0F1411; --doom:#38332F; --doom-dark:#1E1A17; --rust:#B0683F; --wood:#6E5440; --wood-roof:#4E3626; --wood-line:#2A1E14; --wood-win:#C9A35A; --w-path:#3A4431; --t-darkest:#0A120D; --darkfog:0,0,0; --w-meadow:#34412E; --tuft:#7E8C5E; --dirt:#6A5A42; --dirt-edge:#2F271D; --dirt-hi:#8C7A5C; --w-edge:rgba(200,215,200,.18); --w-wood:#2C3A2D; --w-sparse:#353B2B; --w-deep:#1F2B24; --w-bog:#2E3326; --w-bogdeep:#252A1F; --w-water:#24404A; --w-shore:#5E8794; --w-cliff:#3C3A35; --w-hach:#A39A88;
+  --t-dark:#16241C; --t-mid:#2A3D2C; --t-light:#3E5236; --t-shade:rgba(0,0,0,.35); --reed:#7E8C62; --trail:#A8977C; --mist:170,190,185; --w-label:#DCE3D7; --w-labelhalo:rgba(10,16,12,.7);
+  --serif:"Alegreya","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Alegreya Sans","Gill Sans","Segoe UI","Helvetica Neue",Arial,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden}
+#app{position:fixed;inset:0;display:flex}
+#side{width:300px;flex:0 0 300px;background:var(--panel);border-right:1px solid var(--edge);display:flex;flex-direction:column;z-index:3;min-height:0}
+#side header{padding:18px 18px 10px}
+h1{font-family:var(--serif);font-weight:700;font-size:1.65rem;line-height:1.1;margin:0 0 4px}
+.sub{font-size:.9rem;color:var(--soft);margin:0;line-height:1.4}
+.gh{font-weight:700;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);padding:14px 18px 4px}
+#searchBox{padding:2px 14px 8px;position:relative}
+#q{width:100%;box-sizing:border-box;font:inherit;font-size:.95rem;padding:8px 10px;border-radius:8px;border:1px solid var(--edge);background:var(--paper);color:var(--ink)}
+#q:focus{outline:2px solid var(--pick);outline-offset:0;border-color:var(--pick)}
+#qCount{display:block;font-family:var(--sans);font-size:.76rem;color:var(--soft);min-height:1em;padding:3px 4px 0}
+#list .none{padding:10px 12px;font-size:.92rem;color:var(--soft);font-family:var(--sans)}
+#list mark{background:var(--glow);color:inherit;border-radius:2px;padding:0 1px}
+#list{list-style:none;margin:0;padding:0 8px 12px;overflow:auto;flex:1;min-height:0}
+#list button{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;gap:8px;width:100%;padding:7px 10px;border-radius:6px;cursor:pointer;font-family:var(--serif);font-size:1.02rem}
+#list button:hover,#list button:focus-visible{background:var(--paper)}
+#list button:focus-visible{outline:2px solid var(--pick)}
+#list button[aria-current="true"]{background:var(--glow)}
+#list .cat{margin-top:4px}
+#list .cath{justify-content:flex-start;gap:10px;font-family:var(--sans);font-weight:700;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);padding:10px 10px}
+#list .cath:hover,#list .cath:focus-visible{color:var(--ink)}
+#list .pm{display:inline-block;width:1em;text-align:center;font-size:1.05rem;line-height:1;letter-spacing:0;color:var(--pick)}
+#list .items{list-style:none;margin:0 0 6px;padding:0 0 0 8px}
+#list .meta{font-family:var(--sans);font-size:.78rem;color:var(--soft);align-self:center;white-space:nowrap}
+#stage{position:relative;flex:1;min-width:0;isolation:isolate}
+#map{position:absolute;inset:0;background:var(--paper);font:inherit}#map.leaflet-container{background:var(--paper)}html{background:#1B2220}.leaflet-container{background:var(--paper);color:var(--ink)}.leaflet-bar,.leaflet-control{border-color:var(--edge)!important;box-shadow:0 1px 6px rgba(0,0,0,.5)}.leaflet-bar a,.leaflet-bar a:hover,.leaflet-control-zoom a{background:var(--panel);color:var(--ink);border-bottom-color:var(--edge)}.leaflet-bar a:hover{background:var(--edge)}.leaflet-bar a.leaflet-disabled{background:var(--paper);color:var(--soft)}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--panel);color:var(--ink);box-shadow:0 3px 14px rgba(0,0,0,.6)}.leaflet-container a.leaflet-popup-close-button{color:var(--soft)}.leaflet-container a.leaflet-popup-close-button:hover{color:var(--ink)}.leaflet-control-attribution,.leaflet-container .leaflet-control-attribution{background:rgba(27,34,32,.85);color:var(--soft)}.leaflet-control-attribution a,.leaflet-container a{color:var(--pick)}.leaflet-tile-container,.leaflet-tile{background:transparent}*{scrollbar-color:var(--edge) var(--panel)}::-webkit-scrollbar{width:10px;height:10px;background:var(--panel)}::-webkit-scrollbar-thumb{background:var(--edge);border-radius:5px}
+#live{pointer-events:none!important}#live .pin,#live .plabel,#live .lhit{pointer-events:auto;cursor:pointer}#tools,#legend{z-index:1000}#detail{z-index:1001}#tip{z-index:1002}html{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+text{font-family:var(--serif)}
+.lbl{fill:var(--ink);paint-order:stroke;stroke:var(--halo);stroke-width:3.5px;stroke-linejoin:round}
+.st{font-family:var(--serif);font-style:italic;font-size:.4px;letter-spacing:.02em;fill:var(--soft);paint-order:stroke;stroke:var(--street);stroke-width:.1px;stroke-linejoin:round}
+.pin{cursor:pointer}
+.dmark .dring{fill:none;stroke:none;stroke-width:.09}.dmark:hover .dring,.dmark.cur .dring{stroke:#E9D8FF}
+.pin:hover .dot,.pin.sel .dot{fill:var(--pick)}
+#detail{position:absolute;top:14px;right:14px;width:min(360px,calc(100% - 28px));background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.45);display:none;max-height:calc(100% - 28px);overflow:auto}
+#detail.open{display:block}
+#detail h2{font-family:var(--serif);font-size:1.4rem;margin:0 26px 2px 0;line-height:1.15}
+#detail .kind{font-size:.88rem;color:var(--soft);margin:0 0 10px}
+#detail p{margin:6px 0;font-size:.93rem;line-height:1.45}
+#detail .note{border-left:3px solid var(--pick);padding-left:9px}
+#detail .ropt{margin:8px 0 10px;padding-left:9px;border-left:3px solid transparent}#detail .ropt:has(input:checked){border-left-color:var(--pick)}#detail .ropt label{display:flex;gap:7px;align-items:baseline;cursor:pointer;font-size:.93rem;line-height:1.4}#detail .ropt input{accent-color:var(--pick);margin:0;flex:none;transform:translateY(1px)}#detail .ralt{margin-top:12px;color:var(--soft)}
+#detail .copyrow[hidden],#detail .copyrow button[hidden]{display:none!important}#detail .copyrow{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:6px;margin-top:10px}#detail .copyrow button{font:inherit;font-size:.78rem;padding:4px 9px;border-radius:6px;border:1px solid var(--edge);background:var(--paper);color:var(--soft);cursor:pointer}#detail .copyrow .wiki{font-size:.78rem;padding:4px 9px;border-radius:6px;border:1px solid var(--edge);color:var(--soft);text-decoration:none}#detail .copyrow .wiki:hover{color:var(--ink);border-color:var(--pick)}#detail .copyrow button:hover{color:var(--ink);border-color:var(--pick)}#detail .copymsg{flex-basis:100%;text-align:right;font-size:.78rem;color:var(--soft);min-height:1em}
+#detail code{display:block;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.8rem;background:var(--paper);border-radius:6px;padding:8px 10px;margin-top:8px;white-space:pre-wrap;word-break:break-word;line-height:1.5}
+#close{position:absolute;top:8px;right:8px;width:30px;height:30px;border:0;background:transparent;color:var(--soft);font-size:1.3rem;cursor:pointer;border-radius:6px}
+#close:hover{background:var(--paper)}
+#tools{position:absolute;left:14px;bottom:14px;display:flex;flex-direction:column;gap:6px}
+#tools button{width:36px;height:36px;border-radius:8px;border:1px solid var(--edge);background:var(--panel);color:var(--ink);font-size:1.15rem;cursor:pointer}
+#tools button:focus-visible,#close:focus-visible{outline:2px solid var(--pick)}
+#legend{position:absolute;right:14px;bottom:14px;background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:10px 12px;font-size:.8rem;color:var(--soft)}
+#legend .keys{display:grid;grid-template-columns:18px 1fr;gap:4px 6px;align-items:center}
+#tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--edge);border-radius:6px;padding:4px 8px;font-family:var(--serif);font-size:.95rem;display:none;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.45)}
+@media (max-width:760px){
+  #side{position:absolute;left:0;right:0;bottom:0;width:auto;height:min(60%,480px);border-right:0;border-top:1px solid var(--edge);border-radius:14px 14px 0 0;
+    padding-bottom:env(safe-area-inset-bottom,0px);transform:translateY(calc(100% - 76px - env(safe-area-inset-bottom,0px)));transition:transform .25s ease;box-shadow:0 -4px 18px rgba(0,0,0,.45)}
+  #side.open{transform:none}#side header{padding:6px 16px 8px;cursor:pointer;touch-action:none}h1{font-size:1.3rem}
+  #side header::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:var(--soft);opacity:.6;margin:0 auto 8px}   /* the sheet's grab handle */
+  #legend{display:none}#tools{bottom:calc(90px + env(safe-area-inset-bottom,0px))}#detail{top:10px;right:10px;width:calc(100% - 20px);max-height:45%}#stage{position:absolute;inset:0}
+}
+@media (prefers-reduced-motion: reduce){#side{transition:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="side" aria-label="Places">
+    <header id="sideHead"><h1>The Realms</h1><p class="sub">Darkhaven and the surrounding despair</p></header>
+    <div id="searchBox"><input id="q" type="search" placeholder="Search geos, areas, mobs and deities" aria-label="Search geos, areas, mobs and deities" autocomplete="off" spellcheck="false"><span id="qCount" aria-live="polite"></span></div>
+    <ul id="list"></ul>
+  </aside>
+  <main id="stage">
+    <div id="map" role="region" aria-label="Map of the Realms"></div>
+    <div id="tip"></div>
+    <div id="tools"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button><button id="zfit" aria-label="Show whole town">⤢</button></div>
+    <section id="detail" aria-live="polite"><button id="close" aria-label="Close">×</button><div id="dbody"></div></section>
+    <div id="legend"><div class="keys">
+      <svg width="16" height="16"><circle cx="8" cy="8" r="5" fill="currentColor" stroke="var(--panel)" stroke-width="1.5"/></svg><span>Area</span>
+      <svg width="16" height="16"><circle cx="8" cy="8" r="3.4" fill="var(--mob)"/><circle cx="8" cy="8" r="6" fill="none" stroke="var(--mob)" stroke-width="1"/></svg><span>Mob</span>
+      <svg width="16" height="16" viewBox="-1.75 -1.62 3.5 3.0"><g fill="#7D7766" stroke="#14110D" stroke-width=".09" stroke-linejoin="round"><rect x="-1.25" y="-.35" width=".8" height="1.15"/><rect x=".45" y="-.5" width=".85" height="1.3"/><rect x="-.45" y="-.95" width=".9" height="1.75"/><path d="M-.45 -.95 Q0 -1.5 .45 -.95Z"/><rect x="-1.62" y=".55" width="3.24" height=".65"/></g><line x1="0" y1="-1.22" x2="0" y2="-1.55" stroke="#14110D" stroke-width=".08"/><path d="M-.2 1.2 V.85 A.2 .2 0 0 1 .2 .85 V1.2Z" fill="#0C0A07"/></svg><span>Town or city</span>
+      <svg width="16" height="16"><path d="M2 8 H14" stroke="var(--street-edge)" stroke-width="4"/><path d="M2 8 H14" stroke="var(--lane)" stroke-width="2.4"/></svg><span>Footpath</span>
+      <svg width="16" height="16"><path d="M1.5 8 H14.5" stroke="var(--road-ground)" stroke-width="15" stroke-linecap="round" opacity=".6"/><path d="M1.5 8 H14.5" stroke="var(--road-edge)" stroke-width="8.4" stroke-linecap="round"/><path d="M1.5 8 H14.5" stroke="var(--road)" stroke-width="6.6" stroke-linecap="round"/><path d="M1.5 8 H14.5" stroke="var(--road-hi)" stroke-width="4.8" stroke-dasharray="1 2" stroke-linecap="round" opacity=".85"/></svg><span>Road (Trade Routes)</span>
+      <svg width="16" height="16"><circle cx="8" cy="8" r="6.6" fill="var(--road-edge)"/><circle cx="8" cy="8" r="5.5" fill="var(--road)"/><circle cx="8" cy="8" r="2.2" fill="var(--road-hi)" stroke="var(--road-edge)" stroke-width=".8"/></svg><span>Trade Route Entrance/Exit</span>
+      <svg width="16" height="16"><path d="M2 8 H14" stroke="var(--pick)" stroke-width="3" stroke-linecap="round"/></svg><span>Selected route</span>
+    </div></div>
+  </main>
+</div>
+<script src="vendor/leaflet.js"></script>
+<script>
+(async function(){
+/* ---------- data: places first, routes in the background ---------- */
+const get=f=>fetch('data/ba34f7e234/'+f).then(r=>r.json());
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const groupHalls=['Isle of the Monkeys','A Moment in Nature'];
+const [D,A]=await Promise.all([get('places.json'),get('areanames.json')]);
+const P=D.places;
+let ROUTES_OK=false;
+const ROUTES=get('routes.json').then(R=>{R.forEach((r,i)=>{P[i].path=r.path;if(r.segs)P[i].segs=r.segs;if(r.opts)P[i].optsegs=r.opts;if(r.sail)P[i].sail=r.sail});ROUTES_OK=true});
+/* ---------- map: baked terrain tiles (1 unit = 1 room, latlng = [y, x]) ---------- */
+const [x0,y0,x1,y1]=D.bounds;
+const CRS=L.extend({},L.CRS.Simple,{transformation:new L.Transformation(1,-x0,1,-y0)});
+const B=L.latLngBounds([y0,x0],[y1,x1]);
+const map=L.map('map',{crs:CRS,zoomControl:false,attributionControl:false,minZoom:D.zmin-1,maxZoom:D.zmax,
+  zoomSnap:1,zoomDelta:1,wheelPxPerZoomLevel:80,maxBounds:B.pad(.15),maxBoundsViscosity:.8});
+/* FLAT: tiles of one colour all over (open sea, background) are not files: painted here (3.0) */
+const FLAT={};for(const [c,l] of Object.entries(D.flat||{}))for(const k of l)FLAT[k]=c;
+const Tiles=L.TileLayer.extend({createTile(c,done){const f=FLAT[`${c.z}/${c.x}/${c.y}`];if(!f)return L.TileLayer.prototype.createTile.call(this,c,done);
+  const d=document.createElement('div');d.style.background=f;setTimeout(()=>done(null,d));return d}});
+new Tiles('tiles/ba34f7e234/{z}/{x}/{y}.webp',{tileSize:D.tile,minNativeZoom:D.zmin,maxNativeZoom:D.zmax,minZoom:D.zmin-1,maxZoom:D.zmax,
+  bounds:B,noWrap:true,keepBuffer:2}).addTo(map);
+/* DEITY: a deity location's marker (owner, Oct 26: large, purple, religious): a radiant eight-pointed star on a violet medallion, a soft glow */
+const DEITY=(()=>{let st='';for(let k=0;k<16;k++){const a=k*Math.PI/8-Math.PI/2,r=k%2?.27:.62;st+=(k?'L':'M')+(r*Math.cos(a)).toFixed(3)+' '+(r*Math.sin(a)).toFixed(3)}
+  return `<circle r="1.15" fill="#9B5DE5" opacity=".22"/><circle r=".8" fill="#2E1648" stroke="#A974EE" stroke-width=".09"/><circle r=".66" fill="none" stroke="#7B4BB8" stroke-width=".035"/><path d="${st}Z" fill="#CDA8FF" stroke="#2E1648" stroke-width=".03" stroke-linejoin="round"/><circle r=".11" fill="#F6EEFF"/><circle class="dring" r="1.0"/>`})();
+/* POI: a point of interest's marker, shown only while it is selected (owner, Oct 27): the mob marker, larger, with a soft glow */
+const POI=`<circle r="1.0" fill="var(--mob)" opacity=".2"/><circle r=".72" fill="none" stroke="var(--mob)" stroke-width=".1"/><circle r=".42" fill="var(--mob)" stroke="var(--panel)" stroke-width=".08"/><circle class="dring" r="1.0"/>`;
+/* ---------- live layer: area names, selected route, markers and their names (world units) ---------- */
+const attrs=o=>Object.entries(o).map(([k,v])=>`${k}="${esc(v)}"`).join(' ');
+let s=`<defs>${A.defs.join('')}</defs>${A.areas.join('')}<g id="routeLayer"></g><g id="pins">${D.extras.join('')}<g id="lhits"></g>`;
+for(const p of P)if(p.shape)s+=`<g class="${p.deco?'dpin':'pin'}" data-i="${p.i}" transform="translate(${p.mx},${p.my})"><circle class="hit" r=".55" fill="transparent"/>${p.shape}</g>`;
+for(const p of P)for(const e of (p.more||[])){s+=`<g class="pin" data-i="${p.i}" data-opt="${e.opt}" transform="translate(${e.mx},${e.my})"><circle class="hit" r=".55" fill="transparent"/>${e.shape}</g>`;if(e.label)s+=`<text class="lbl plabel" data-i="${p.i}" data-opt="${e.opt}" ${attrs(e.label)}>${esc(p.name)}</text>`}   /* a place's other markers: each opens the card on its route option (Oct 25) */
+for(const p of P)if(p.poi)s+=`<g class="pin dmark" data-i="${p.i}" data-opt="0" transform="translate(${p.mx},${p.my})" style="display:none">${POI}</g>`;
+for(const p of P)if(p.deity)p.opts.forEach((o,k)=>{s+=`<g class="pin dmark" data-i="${p.i}" data-opt="${k}" data-tip="${esc(o.dir)}" transform="translate(${o.at[0]},${o.at[1]})" style="display:none">${DEITY}</g>`});   /* a deity's locations: no pin; shown only while it is selected (owner, Oct 26) */
+for(const p of P)if(p.label)s+=`<text class="lbl${p.deco?'':' plabel'}" data-i="${p.i}" ${attrs(p.label)}>${esc(p.name)}</text>`;
+const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+svg.id='live';svg.setAttribute('viewBox',`${x0} ${y0} ${x1-x0} ${y1-y0}`);svg.innerHTML=s+'</g>';
+L.svgOverlay(svg,B,{interactive:false}).addTo(map);
+/* ---------- camera (Leaflet) ---------- */
+function fitB(a,b,c,d,pad=40){return {b:L.latLngBounds([b,a],[d,c]),pad}}
+function padOpt(pad){const VW=map.getSize().x,det=document.getElementById('detail').classList.contains('open')&&VW>760?380:0,bp=VW<=760?64:0;
+  return {paddingTopLeft:[pad,pad],paddingBottomRight:[pad+det,pad+bp]}}
+function flyTo(t){const snap=map.options.zoomSnap;if(t.exact)map.options.zoomSnap=0;   /* exact: a route's fit stops between whole steps (owner, Nov 2); wheel/buttons still whole steps */
+  const o={...padOpt(t.pad),maxZoom:D.zmax},r=map._getBoundsCenterZoom(t.b,o),center=r.center,zoom=Math.min(D.zmax,r.zoom+(t.dz||0));   /* dz: whole levels closer than the fit (owner, Oct 28: The Mire, Otherland) */
+  const c=map._limitCenter(center,zoom,map.options.maxBounds);   /* aim inside maxBounds up front, or the map lands and then gets pulled back */
+  if(reduce)map.setView(c,zoom,{animate:false});else map.flyTo(c,zoom,{duration:.6});
+  map.options.zoomSnap=snap}   /* (the zoom is rounded only when a move starts: whole steps again for everything after) */
+const fitAll=()=>fitB(x0,y0,x1,y1,24);
+document.getElementById('zin').onclick=()=>map.zoomIn();
+document.getElementById('zout').onclick=()=>map.zoomOut();
+document.getElementById('zfit').onclick=()=>flyTo(fitAll());
+{const f=fitAll(),r=map._getBoundsCenterZoom(f.b,padOpt(f.pad)),z=Math.min(D.zmax,r.zoom+1);   /* the first view: one level closer than the whole map (owner, Oct 28; the fit button still shows it all) */
+  map.setView(map._limitCenter(r.center,z,map.options.maxBounds),z,{animate:false})}
+/* HITS: the click areas of the markers and their names grow when zoomed out (owner, Oct 28): a marker's to PIN_PX on screen, a name's box
+   LBL_PX past its letters; never smaller than drawn, and never into another marker's or name's area (each takes at most half the gap) */
+{const PIN_PX=16,LBL_PX=7,R0=.55,NS='http://www.w3.org/2000/svg',lh=svg.querySelector('#lhits');
+  const key=e=>e.dataset.i+':'+(e.dataset.opt||0);
+  const pins=[...svg.querySelectorAll('.pin:not(.dmark)')].map(g=>{const t=g.transform.baseVal.consolidate().matrix;return {k:key(g),x:t.e,y:t.f,c:g.querySelector('.hit'),cap:1e9}});
+  const labs=[...svg.querySelectorAll('text.plabel')].filter(t=>!t.hasAttribute('transform')).map(t=>{const r=document.createElementNS(NS,'rect');
+    r.setAttribute('class','lhit');r.setAttribute('fill','transparent');lh.appendChild(r);
+    for(const ev of ['click','mousemove','mouseleave'])r.addEventListener(ev,e=>t.dispatchEvent(new MouseEvent(ev,e)));
+    return {k:key(t),t,r}});
+  const pd=(p,b)=>Math.hypot(Math.max(b.x0-p.x,0,p.x-b.x1),Math.max(b.y0-p.y,0,p.y-b.y1));
+  const caps=()=>{   /* (measured again on each zoom and once the web fonts are in: the names' widths change) */
+    for(const b of labs){const q=b.t.getBBox();Object.assign(b,{x0:q.x,y0:q.y,x1:q.x+q.width,y1:q.y+q.height,cap:1e9})}
+    for(const p of pins)p.cap=1e9;
+    for(const a of pins)for(const b of pins)if(a!==b&&a.k!==b.k)a.cap=Math.min(a.cap,Math.hypot(a.x-b.x,a.y-b.y)/2);
+    for(const a of labs)for(const b of labs)if(a!==b&&a.k!==b.k)a.cap=Math.min(a.cap,Math.max(b.x0-a.x1,a.x0-b.x1,b.y0-a.y1,a.y0-b.y1,0)/2);
+    for(const p of pins)for(const b of labs)if(p.k!==b.k){const d=pd(p,b);p.cap=Math.min(p.cap,Math.max(R0,d/2));b.cap=Math.min(b.cap,Math.max(0,d-Math.max(R0,d/2)))}};
+  const size=()=>{const u=map.latLngToContainerPoint([0,1]).x-map.latLngToContainerPoint([0,0]).x;   /* screen px per world unit */
+    for(const p of pins)p.c.setAttribute('r',Math.max(R0,Math.min(p.cap,PIN_PX/u)).toFixed(3));
+    for(const b of labs){const q=Math.min(b.cap,LBL_PX/u);b.r.setAttribute('x',b.x0-q);b.r.setAttribute('y',b.y0-q);b.r.setAttribute('width',b.x1-b.x0+2*q);b.r.setAttribute('height',b.y1-b.y0+2*q);b.r.setAttribute('rx',q)}};   /* (corners rounded by the pad: the box keeps the same distance all round) */
+  const all=()=>{caps();size()};all();map.on('zoomend',all);document.fonts.ready.then(all);document.fonts.addEventListener('loadingdone',all)}
+/* ---------- selection ---------- */
+const tip=document.getElementById('tip'),stage=document.getElementById('stage');
+let sel=null;
+const routeSegs=(p,k)=>p.optsegs?p.optsegs[k||0]:p.segs||[[...p.path,[p.mx,p.my]]];   /* k: which of the place's route options (0 = the default) */
+/* JUMP: the jumps the owner names (changes/017) drawn as a thin dashed arc; the rest of the route as usual (owner, Oct 23) */
+function routeD(sg,J){let d='',j='';const at=(a,x,y)=>Math.abs(a[0]-x)<.03&&Math.abs(a[1]-y)<.03,hit=(a,b)=>(J||[]).some(x=>(at(a,x[0],x[1])&&at(b,x[2],x[3]))||(at(b,x[0],x[1])&&at(a,x[2],x[3])));
+  for(const s of sg){let pen=false;s.forEach((q,i)=>{if(i&&hit(s[i-1],q)){const a=s[i-1],L=Math.hypot(q[0]-a[0],q[1]-a[1])||1,k=Math.min(.15*L,10)/L;
+    j+=`M${a[0]} ${a[1]}Q${((a[0]+q[0])/2-(q[1]-a[1])*k).toFixed(2)} ${((a[1]+q[1])/2+(q[0]-a[0])*k).toFixed(2)} ${q[0]} ${q[1]}`;pen=false}
+    d+=(pen?'L':'M')+q[0]+' '+q[1];pen=true})}return {d,j}}
+function drawRoute(p,k){
+  const L=document.getElementById('routeLayer');
+  if(!p){L.innerHTML='';return}
+  if(p.noroute||(p.hidepath&&!(p.opts&&(p.opts[k||0]||{}).show))){L.innerHTML='';return}   /* hidepath: directions on the card, no line drawn (owner, Oct 25) */
+  const sg=routeSegs(p,k);if(!sg||!sg.length){L.innerHTML='';return}   /* a location with no line (deities) */
+  const {d,j}=routeD(sg,D.jumps);
+  L.innerHTML=`<path d="${d}" fill="none" stroke="var(--glow)" stroke-width=".42" stroke-linecap="round" stroke-linejoin="round"/><path id="rl" d="${d}" fill="none" stroke="var(--pick)" stroke-width=".14" stroke-linecap="round" stroke-linejoin="round"/>`+(j?`<path d="${j}" fill="none" stroke="var(--pick)" stroke-width=".1" stroke-dasharray=".45 .35" stroke-linecap="round" opacity=".9"/>`:'');
+  if(p.sail&&!k){const s='M'+p.sail.map(q=>q.join(' ')).join('L');L.innerHTML+=`<path d="${s}" fill="none" stroke="var(--glow)" stroke-width=".3" stroke-dasharray=".01 .42" stroke-linecap="round" opacity=".8"/><path d="${s}" fill="none" stroke="var(--pick)" stroke-width=".15" stroke-dasharray=".01 .42" stroke-linecap="round"/>`}   /* SAIL: a boat trip, a dotted wavy line over the sea (Fireball Island, owner Oct 25) */
+  if(!reduce){const rl=document.getElementById('rl'),len=rl.getTotalLength();rl.style.strokeDasharray=len;rl.style.strokeDashoffset=len;rl.getBoundingClientRect();rl.style.transition='stroke-dashoffset .8s ease';rl.style.strokeDashoffset=0}
+}
+/* COPY: the card's two copy buttons (owner, Oct 28). The copy stops before the first step that is not a move or a game command (an
+   instruction: scan/scry, track, kill, notes in brackets, ...); a leading 'From ...:' label is left out. Mudlet: '#' once, then single-letter
+   moves as '4w', two-letter ones as '3(nw)', commands as '(open s)'; repeated moves next to each other merged. */
+const MOVE=/^(?:#(\d+)\s*)?(n|s|e|w|u|d|ne|nw|se|sw)$/i;
+const CMDS=new Set(['open','op','unlock','pick','pull','push','say','tell','give','enter','leave','look','l','examine','c','kneel','dig','drop','chop','tree','window','portal','cauldron','rowboat','north']);
+function copySteps(route){const all=route.split(';').map(t=>t.trim()).filter(Boolean),steps=[];
+  if(all.length){const m=all[0].match(/^From [^:;]+:\s*(.+)$/);if(m)all[0]=m[1]}
+  for(const t of all){if(MOVE.test(t)){steps.push(t);continue}
+    const w=t.replace(/^#\d+\s*/,'').split(/\s+/)[0].toLowerCase();
+    if(!CMDS.has(w)||/[()\[\]:"“”,&]|->/.test(t))return {steps,cut:t};
+    steps.push(t)}
+  return {steps,cut:null}}
+function toMudlet(steps){const out=[];
+  for(const t of steps){const m=t.match(MOVE),n=m?+(m[1]||1):+((t.match(/^#(\d+)\s/)||[0,1])[1]),c=m?m[2].toLowerCase():t.replace(/^#\d+\s*/,''),last=out[out.length-1];
+    if(last&&last.c===c)last.n+=n;else out.push({c,n})}
+  return '#'+out.map(({c,n})=>(n>1?n:'')+(MOVE.test(c)&&c.length===1?c:'('+c+')')).join(' ')}
+function copyText(t){if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(t).then(()=>true,()=>fallback());return Promise.resolve(fallback());
+  function fallback(){const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();
+    let ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();return ok}}
+function select(p,K=(p&&p.deity?-1:0)){   /* K: the route option; a deity opens with none drawn (-1) */
+  if(p&&!ROUTES_OK){ROUTES.then(()=>select(p,K));return}
+  sel=p;document.querySelectorAll('.pin').forEach(g=>g.classList.toggle('sel',p&&+g.dataset.i===p.i));
+  document.querySelectorAll('#list button[data-i]').forEach(b=>b.setAttribute('aria-current',p&&+b.dataset.i===p.i?'true':'false'));document.querySelectorAll('#list button[data-g]').forEach(b=>b.setAttribute('aria-current','false'));
+  document.querySelectorAll('.dmark').forEach(g=>{const on=p&&+g.dataset.i===p.i;g.style.display=on?'':'none';g.classList.toggle('cur',on&&+g.dataset.opt===K)});
+  const det=document.getElementById('detail');
+  if(!p){det.classList.remove('open');drawRoute(null);return}
+  const steps=p.path.length-1;
+  let html=`<h2>${esc(p.name)}</h2><p class="kind">${(p.deity?'Deity':({guild:'Guild',structure:'Landmark',mob:'Mob',town:'Town'})[p.kind])||'Area'} ${p.group==='fot'?'in the Forest of Tears':p.group==='wtr'?'on the Western Trade Route':p.group==='mid'?'off Miden\'nir':p.group==='sg'?'off the Shadow Grove':p.group==='af'?(p.where||'off the Ashen Forest'):p.group==='fw'?(p.kind?'in the Forgotten Woods':'off the Forgotten Woods'):'in New Darkhaven'} · ${p.kind==='mob'?'found at':p.dir==='here'?'reached at':'entrance at'} ${esc(p.room)}</p>`;
+  if(p.poi&&!p.card)html=`<h2>${esc(p.name)}</h2><p class="kind">Point of Interest${p.room?' · found at '+esc(p.room):''}</p>`;   /* not 'Mob' (owner, Oct 27) */
+  if(p.card)html=`<h2>${esc(p.name)}</h2><p class="kind">${esc(p.card)}</p>`;   /* the owner's own card line (e.g. 'Human Hometown'; Oct 25) */
+  if(p.lvl)html=html.replace(/<\/p>/,` (Level ${esc(p.lvl)})</p>`);   /* the level range, after the card's first line (owner, Oct 29) */
+  if(p.restricted&&p.lvl)html+=`<p class="note">Restricted: Level ${esc(p.lvl.split('-').pop().trim())} and under</p>`;   /* level-restricted areas (owner, Oct 29) */
+  if(p.astral)html+=`<p>Astral Points: ${esc(p.astral)}</p>`;
+  if(p.astrallocal)html+=`<p class="note">No astral travel to or from other geos.</p>`;   /* (also on cards without astral points; owner, Oct 29) */   /* the area's portal points (owner, Oct 27) */
+  if(p.note)html+=`<p class="note">${esc(p.note)}</p>`;
+  const opt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k===K?' checked':''}><span>${esc(o.dir)}${o.rooms!=null?` (${o.rooms} rooms)`:''}${o.note?': '+esc(o.note):''}</span></label><code>${esc(o.route)}</code>${o.gap?`<p class="note">${esc(o.gap)}</p>`:''}</div>`;
+  const dopt=(o,k)=>`<div class="ropt"><label><input type="radio" name="ropt" value="${k}"${k===K?' checked':''}><span>${esc(o.dir)}</span></label>${o.text?`<p>${esc(o.text)}</p>`:`<code>${esc(o.route)}</code>`}</div>`;   /* a deity's location: no 'not mapped' note (owner, Oct 26); text instead of directions where given */
+  if(p.deity)html=`<h2>${esc(p.name)}</h2><p class="kind">Deity</p>${p.priests?`<p>Priests: ${esc(p.priests)}</p>`:''}<p>Full directions from Darkhaven Square:</p>`+p.opts.map(dopt).join('');
+  else if(p.opts)html+=`<p>Full directions from Darkhaven Square:</p>`+opt(p.opts[0],0)+(p.opts.length>1?`<p class="ralt">Alternate routes:</p>`+p.opts.slice(1).map((o,k)=>opt(o,k+1)).join(''):'');
+  else html+=p.noroute?`<p class="note">There are no directions for this on your lists yet.</p>`:`<p>${esc(p.rhead||'Full directions from Darkhaven Square:')}</p><code>${esc(p.route)}</code>`;
+  if(p.alt&&p.alt.length)html+=`<p>Another way:</p>`+p.alt.map(a=>`<code>${esc(a)}</code>`).join('');
+  html+=`<div class="copyrow">${p.wiki?`<a class="wiki" href="${esc(p.wiki)}" target="_blank" rel="noopener">More on ${/rodpedia\./.test(p.wiki)?'RoDpedia':'dyrdex.com'}</a>`:''}<button data-fmt="tt">Copy (zMud/TinTin)</button><button data-fmt="mud">Copy (Mush)</button><span class="copymsg" aria-live="polite"></span></div>`;   /* RoDpedia link (owner, Oct 29) */   /* COPY (owner, Oct 28) */
+  document.getElementById('dbody').innerHTML=html;det.classList.add('open');
+  const cur=()=>{const r=document.querySelector('#dbody input[name=ropt]:checked');return p.opts?(r?p.opts[+r.value].route:null):p.noroute?null:p.route};
+  const row=document.querySelector('#dbody .copyrow'),vis=()=>{const c=cur(),on=!!(c&&copySteps(c).steps.length);row.querySelectorAll('button').forEach(b=>b.hidden=!on);row.hidden=!on&&!p.wiki};vis();
+  row.querySelectorAll('button').forEach(b=>b.onclick=()=>{const c=copySteps(cur()),t=b.dataset.fmt==='mud'?toMudlet(c.steps):c.steps.join(';'),m=row.querySelector('.copymsg');
+    copyText(t).then(ok=>{m.textContent=!ok?'Copy failed: select the directions and copy them by hand.':c.cut?`Copied up to '${c.cut}'`:'Copied';clearTimeout(row.tm);row.tm=setTimeout(()=>m.textContent='',4000)})});
+  document.querySelectorAll('#dbody input[name=ropt]').forEach(r=>r.onchange=()=>{if(p.deity)return select(p,+r.value);drawRoute(p,+r.value);fitRoute(p,+r.value);vis()});
+  if(p.deity&&K<0){drawRoute(null);const xs=p.opts.map(o=>o.at[0]),ys=p.opts.map(o=>o.at[1]);   /* all its locations in view */
+    const cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2,hw=Math.max(8,(Math.max(...xs)-Math.min(...xs))/2+4),hh=Math.max(8,(Math.max(...ys)-Math.min(...ys))/2+4);
+    flyTo(fitB(cx-hw,cy-hh,cx+hw,cy+hh,40));return}
+  drawRoute(p,K);fitRoute(p,K);
+}
+function fitRoute(p,k){
+  const m=p.deity?{mx:p.opts[k].at[0],my:p.opts[k].at[1]}:(k&&(p.more||[]).find(e=>e.opt===k))||p;   /* (the marker of that option) */
+  const allp=routeSegs(p,k).flat().concat((!k&&p.sail)||[]);const xs=[...allp.map(q=>q[0]),m.mx],ys=[...allp.map(q=>q[1]),m.my];
+  let x0=Math.min(...xs)-2.5,x1=Math.max(...xs)+2.5,y0=Math.min(...ys)-2.5,y1=Math.max(...ys)+2.5;
+  const cx=(x0+x1)/2,cy=(y0+y1)/2,hw=Math.max(6,(x1-x0)/2),hh=Math.max(6,(y1-y0)/2);
+  flyTo({...fitB(cx-hw,cy-hh,cx+hw,cy+hh,40),exact:true});
+}
+document.getElementById('close').onclick=()=>select(null);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')select(null)});
+svg.querySelectorAll('.pin,.plabel').forEach(g=>{const p=P[+g.dataset.i];
+  g.addEventListener('click',()=>select(p,+(g.dataset.opt||0)));
+  g.addEventListener('mousemove',e=>{const r=stage.getBoundingClientRect();tip.style.display='block';tip.textContent=g.dataset.tip||p.name;tip.style.left=(e.clientX-r.left+14)+'px';tip.style.top=(e.clientY-r.top+12)+'px'});
+  g.addEventListener('mouseleave',()=>tip.style.display='none')});
+const li=p=>`<li><button data-i="${p.i}" aria-current="false"><span>${esc(p.name)}</span><span class="meta">${groupHalls.includes(p.name)?'in the Halls':''}</span></button></li>`;
+const sec=(t,k)=>`<li class="gh" style="padding:14px 10px 4px">${t}</li>`+P.filter(p=>(p.kind||'area')===k).map(li).join('');
+const byName=(a,b)=>a.name.replace(/^(The|A) /,'').localeCompare(b.name.replace(/^(The|A) /,''));
+const secG=(t,k)=>`<li class="gh" style="padding:14px 10px 4px">${t}</li>`+P.filter(p=>(p.kind||'area')===k&&!p.group).map(li).join('');
+/* ---------- the list: four categories that expand and collapse (all collapsed on load; owner, Oct 26) ---------- */
+/* GEOS: the map's big regions; a click zooms to fit the region (6th value: zoom levels closer than the fit) (boxes in world units, from the rooms of each region's editor save) */
+const GEOS=[["Northern Plains",-53,-205,63,-125],["Barren Peaks of Tahjliera",-50,-175,50,-83],["Forgotten Woods",-52,-94,52,-16],
+  ["Forest of Tears",-119,-55,-4,19],["Ashen Forest",11,-36,69,18],["Darkhaven",-27,-20,23,26],["The Mire",-122,12,-5,133,1],
+  ["Southern Mountain Range",-38,5,30,88],["Wastelands",-24,68,52,159],["Desert of Despair",20,56,101,147],["Otherland",-22,146,99,269,1]];
+const liG=(g,k)=>`<li><button data-g="${k}" aria-current="false"><span>${esc(g[0])}</span><span class="meta"></span></button></li>`;
+const cat=(t,rows)=>`<li class="cat"><button class="cath" aria-expanded="false"><span class="pm" aria-hidden="true">+</span>${t}</button><ul class="items" hidden>${rows}</ul></li>`;
+document.getElementById('list').innerHTML=cat('Geos',GEOS.map(liG).join(''))+
+  cat('Areas',P.filter(p=>p.kind!=='mob'&&!p.deity).sort(byName).map(li).join(''))+
+  cat('Deities',P.filter(p=>p.deity).sort(byName).map(li).join(''))+
+  cat('Points of Interest',P.filter(p=>p.kind==='mob'&&!p.deity&&!p.deco).sort(byName).map(li).join(''));   /* last (owner, Oct 27) */
+const setOpen=(c,o)=>{const h=c.querySelector('.cath');h.setAttribute('aria-expanded',o);h.querySelector('.pm').textContent=o?'−':'+';c.querySelector('.items').hidden=!o};
+document.querySelectorAll('#list .cat').forEach(c=>c.querySelector('.cath').onclick=()=>{const o=c.querySelector('.cath').getAttribute('aria-expanded')!=='true';setOpen(c,o);c.userOpen=o});
+document.querySelectorAll('#list button[data-i]').forEach(b=>b.onclick=()=>{select(P[+b.dataset.i]);if(innerWidth<=760)side.classList.remove('open')});
+document.querySelectorAll('#list button[data-g]').forEach(b=>b.onclick=()=>{const g=GEOS[+b.dataset.g];select(null);
+  document.querySelectorAll('#list button[data-g]').forEach(x=>x.setAttribute('aria-current',x===b?'true':'false'));
+  flyTo({...fitB(g[1],g[2],g[3],g[4],30),dz:g[5]||0});if(innerWidth<=760)side.classList.remove('open')});
+/* ---------- search: filters the list as you type (opens the categories with matches; clearing it restores them) ---------- */
+(function(){
+  const q=document.getElementById('q'),count=document.getElementById('qCount'),list=document.getElementById('list');
+  const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,'');           // so "ezards" finds Ezard's, "tich" finds Tich'Pyga
+  const cats=[...list.querySelectorAll('.cat')].map(c=>({c,rows:[...c.querySelectorAll('.items > li')].map(li=>{const b=li.querySelector('button'),n=b.querySelector('span').textContent;return {li,b,name:n,key:norm(n)}})}));
+  const none=document.createElement('li');none.className='none';list.appendChild(none);none.hidden=true;
+  const esc2=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function mark(r,term){const span=r.b.querySelector('span');const t=r.name;                                    // highlight what matched
+    if(!term){span.textContent=t;return}
+    const raw=term.trim().toLowerCase();let idx=t.toLowerCase().indexOf(raw);
+    span.innerHTML=idx>=0?esc2(t.slice(0,idx))+'<mark>'+esc2(t.slice(idx,idx+raw.length))+'</mark>'+esc2(t.slice(idx+raw.length)):esc2(t)}
+  function run(){
+    const term=q.value,words=norm(term).split(/\s+/).filter(Boolean);let shown=0,firstBtn=null;
+    for(const {c,rows} of cats){let n=0;
+      for(const r of rows){const ok=words.every(w=>r.key.includes(w));r.li.hidden=!ok;if(ok){n++;if(!firstBtn)firstBtn=r.b}mark(r,ok&&words.length===1?term:'')}
+      shown+=n;c.hidden=words.length>0&&n===0;setOpen(c,words.length?n>0:!!c.userOpen)}
+    none.hidden=!(words.length&&shown===0);none.textContent=words.length&&shown===0?`Nothing matches "${term.trim()}".`:'';
+    count.textContent=words.length?`${shown} match${shown===1?'':'es'}`:'';
+    list.scrollTop=0;return words.length?firstBtn:null}
+  q.addEventListener('input',run);
+  q.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){const b=run();if(b){e.preventDefault();b.click()}}                                       // Enter opens the first match
+    else if(e.key==='Escape'){q.value='';run()}
+    else if(e.key==='ArrowDown'){const b=[...list.querySelectorAll('button')].find(x=>x.offsetParent);if(b){e.preventDefault();b.focus()}}});
+})();
+const side=document.getElementById('side');
+document.getElementById('sideHead').addEventListener('click',()=>{if(innerWidth<=760)side.classList.toggle('open')});
+/* phones: swipe the sheet's top up to open it, down to close it; the search box opens it too */
+{let y0=null;const head=document.getElementById('sideHead');
+  head.addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});
+  head.addEventListener('touchend',e=>{if(y0===null||innerWidth>760)return;const dy=e.changedTouches[0].clientY-y0;y0=null;
+    if(Math.abs(dy)>24){side.classList.toggle('open',dy<0);e.preventDefault()}});
+  document.getElementById('q').addEventListener('focus',()=>{if(innerWidth<=760)side.classList.add('open')})}
+/* #place=<name>: open with that place selected (the room maps' Back to World Map link, Nov 2); the hash is then cleared */
+{const m=location.hash.match(/^#place=(.+)$/);if(m){let n='';try{n=decodeURIComponent(m[1]).toLowerCase()}catch(e){}
+  const p=P.find(q=>q.name.toLowerCase()===n);try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+  if(p)select(p)}}
+window.__map=map;window.__ready=true;
+})();
+</script>
+</body>
+</html>
